@@ -4,17 +4,18 @@ JavaScript Tools Framework that includes:
 
 ADDCSSRULE
 ------------
-Description
+### Description
 Functionality to create add rules to style sheets. This function is feed four parameters: sheet, selector, styles and index.
 Click here for obtein help about AddCSSRule.
-Example
+### Example
+```javascript
 // For general help about script/plugin
 AddCSSRule('help');
 AddCSSRule({help: '', theme: 'dark'});
 
 // For specific method or property
 AddCSSRule({help: 'sheet', theme: 'dark'});
-
+```
 ALERT
 ------------
 Description
