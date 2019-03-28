@@ -401,7 +401,7 @@ this.Autocomplete = it.Autocomplete = function (cfg) {
 				if (opt.format == "table") cval = opt.data[i][opt.tableFields.return_value];
 
 				if (b.classList.contains("value")) {
-					b.innerHTML += "<input type='hidden' data-index='" + i + "' value='" + cval + "'>";
+					b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
 					b.addEventListener("click", function (e) {
 						opt.target.value = this.getElementsByTagName("input")[0].value;
 						if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
@@ -427,7 +427,7 @@ this.Autocomplete = it.Autocomplete = function (cfg) {
 							b.classList.add("value");
 							b.style.width = "100%";
 							b.innerHTML += "<span>" + opt.data[i].items[z] + "</span>";
-							b.innerHTML += "<input type='hidden' data-index='" + i + "," + z + "' value='" + opt.data[i].items[z] + "'>";
+							b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + opt.data[i].items[z] + "'>";
 							// Add element
 							bc.appendChild(b);
 							// Add event on click
@@ -1377,10 +1377,10 @@ this.Debugger = it.Debugger = {
     enableHistory: false,
     history: {},
     messages:{
-        ajaxBeforeSend:'Processing request. Method: <method>. Type: <type>. CrossDomain: <crossDomain>.  File: <url>. Content Type: <contentType>',
-        ajaxComplete:'The Ajax processing request FINISHED for the <url> file.',
+        ajaxBeforeSend:'PROCESSING request <url> in format <type>. Result: <statusText>.',
+        ajaxComplete:'The Ajax processing request FINISHED for the <url> file. Result: <statusText>.',
         ajaxSuccess:'The Ajax request was completed SUCCESSFULLY for the <url> file.',
-        ajaxError:'An error occurred into Ajax processing request into <url> file.',
+        ajaxError:'An error occurred into Ajax processing request into <url> file. Result: <statusCode>: <statusText>.',
         beforeUnloadPage:'Page request unload',
         unloadPage:'Unloaded page',
         errorPage:'An error occurred into file',
@@ -1540,6 +1540,48 @@ this.Debugger = it.Debugger = {
 					this.showMessage(s, 'proccessing');
 				}
 			});
+		} else {
+			var oldXHR = window.XMLHttpRequest;
+			function newXHR() {
+				var realXHR = new oldXHR();
+
+				//open(method, url, async, user, psw)
+		
+				realXHR.addEventListener("readystatechange", function(e) { 
+					if(this.readyState == 1){
+						// Client has been created. open() not called yet.
+						Debugger.showMessage(this.responseURL + ': Client has been created. open() not called yet.', 'proccessing');
+
+					} else if(this.readyState == 2){
+						// Has been called. The headers and status are available.
+						Debugger.showMessage(this.responseURL + ' has been called. The headers and status are available.', 'proccessing');
+
+					} else if(this.readyState == 3){
+						// Request in progress
+
+						var s = Debugger.messages.ajaxBeforeSend.replace('<type>', this.responseType).replace('<url>', this.responseURL).replace('<statusText>', this.statusText);
+						Debugger.showMessage(s, 'proccessing');
+
+					} else if(this.readyState == 4 && this.status == 200){
+						// Request successfully completed
+						var s = Debugger.messages.ajaxSuccess.replace('<url>', this.responseURL);
+						Debugger.showMessage(s, 'updated');
+
+					} else if(this.readyState == 4 && this.status >= 400){
+						// Request had errors
+						Debugger.showMessage(Debugger.messages.ajaxError+(Debugger.target=='console'?'\n':'<br/>')+" Status Error: "+this.status+(Debugger.target=='console'?'\n':'<br/>')+"Status Text: "+this.statusText+(Debugger.target=='console'?'\n':'<br/>')+"Description: "+this.responseText, 'error');
+
+					} else if(this.readyState == 4){
+						// Request is done
+						var s = Debugger.messages.ajaxComplete.replace('<url>', this.url).replace('<statusText>', this.statusText);
+						Debugger.showMessage(s, 'readyState');
+					}
+				}, false);
+		
+				return realXHR;
+			}
+		
+			window.XMLHttpRequest = newXHR;
 		}
 
 		// Show messages on ready
