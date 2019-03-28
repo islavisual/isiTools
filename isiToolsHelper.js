@@ -104,7 +104,7 @@ WikiHelper.Autocomplete = {
 	additional: [
 		{
 			description: 'You can get all information of selected item from callback function. For example:',
-			example: '// Example\nnew Autocomplete({target: "catalogBox", data: arrayList, callback: callback});\nfunction callback(input){\n\tvar idx = inp.dataset.index.split(",");\n\tvar idxGroup  = idx[0];\n\tvar idxItem   = idx[1];\n\tvar itemGroup = clusterList[idxGroup].group;\n\tvar itemName  = clusterList[idxGroup].items[idxItem];\n}'
+			example: '// Example\nnew Autocomplete({target: "catalogBox", data: arrayList, callback: callback});\n\n// The "callback" capability will returns an input similar to:\n// &lt;input type="hidden" data-id="catalogBox" data-index="2,3" value="product name"&gt;\nfunction callback(input){\n\t// Therefore, the element where the autocomplete event occurred\n\tvar target = document.getElementById(inp.dataset.id);\n\t// To "cluster" format:\n\tvar idx = inp.dataset.index.split(",");\n\tvar idxGroup  = idx[0];\n\tvar idxItem   = idx[1];\n\tvar itemGroup = clusterList[idxGroup].group;\n\tvar itemName  = clusterList[idxGroup].items[idxItem];\n}'
 		}
 	],
 	autofocus: {
@@ -349,7 +349,7 @@ WikiHelper.Debugger = {
 	init: {
 	  type: "function",
 	  description: "It is very easy to install and configure. It is enough to include the library in the HEAD of the page and a single instruction.",
-	  example: '<script src="js/buglow/buglow-min.js"></script>\n// To debug through console\nbugLow.init("console");\n// To debug in an external window\nbugLow.init("window");'
+	  example: '// To debug through console\nDebugger.init("console");\n// To debug in an external window\nDebugger.init("window");'
 	},
 	attributesFilter: {
 		type: "Object",
@@ -394,7 +394,7 @@ WikiHelper.Debugger = {
 	colors: {
 		type: "Object",
 		description: '',
-		example: "colors: {\n\t// For elements added in the DOM\n\tadded:\"#709050\",\n\t// For changes in attributes in the DOM\n\tattributeChanged: '#ff00ff',\n\t// Background of the BUGLOW window\n\tbackground:\"#000000\",\n\t// For events Blur\n\tblur:\"#907080\",\n\t// For Focus events\n\tfocus:\"#9070a0\",\n\t// For events Click\n\tclick:\"#909090\",\n\t// For Mouse Over events\n\tmouseOver:\"#a07090\",\n\t// For Mouse Out events\n\tmouseOut:\"#807090\",\n\t// For Keypress events\n\tkeyPress:\"#80a090\",\n\t// For detected errors\n\terror: '#a02020',\n\t// Header Text\n\theaderForeground:\"#ffffff\",\n\t// Header Background\n\theaderBackground:\"#333\",\n\t// For standard and unregistered changes\n\tnormal:\"#606060\",\n\t// For Ajax in mode Processing\n\tproccessing:\"#8AC007\",\n\t// For state changes of Ajax\n\treadyState:\"#8AC007\",\n\t// For deleted items in the DOM\n\tremoved:\"#a01010\",\n\t// For Ajax in Sending\n\tsending mode:\"#8AC007\",\n\t// For Ajax in Updating mode\n\tupdated:\"#80a0e0\",\n\t// For changes to the value attributes\n\tvalueChanged:\"#FE2466\"\n}"
+		example: "colors: {\n\t// For elements added in the DOM\n\tadded:\"#709050\",\n\t// For changes in attributes in the DOM\n\tattributeChanged: '#ff00ff',\n\t// Background of the Debugger window\n\tbackground:\"#000000\",\n\t// For events Blur\n\tblur:\"#907080\",\n\t// For Focus events\n\tfocus:\"#9070a0\",\n\t// For events Click\n\tclick:\"#909090\",\n\t// For Mouse Over events\n\tmouseOver:\"#a07090\",\n\t// For Mouse Out events\n\tmouseOut:\"#807090\",\n\t// For Keypress events\n\tkeyPress:\"#80a090\",\n\t// For detected errors\n\terror: '#a02020',\n\t// Header Text\n\theaderForeground:\"#ffffff\",\n\t// Header Background\n\theaderBackground:\"#333\",\n\t// For standard and unregistered changes\n\tnormal:\"#606060\",\n\t// For Ajax in mode Processing\n\tproccessing:\"#8AC007\",\n\t// For state changes of Ajax\n\treadyState:\"#8AC007\",\n\t// For deleted items in the DOM\n\tremoved:\"#a01010\",\n\t// For Ajax in Sending\n\tsending mode:\"#8AC007\",\n\t// For Ajax in Updating mode\n\tupdated:\"#80a0e0\",\n\t// For changes to the value attributes\n\tvalueChanged:\"#FE2466\"\n}"
 	}
   }
 
@@ -1180,3 +1180,4 @@ this.showHelper = it.showHelper = function(cs, cfg){
 		return;
 	}
 }
+
