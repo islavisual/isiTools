@@ -1,5 +1,7 @@
 IsiTools 1.0
 =========
+You can see all help executing "Helper()" from console.
+
 JavaScript Tools Framework that includes:
 
 ADDCSSRULE
