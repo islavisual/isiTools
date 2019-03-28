@@ -4,6 +4,7 @@ this.it = {
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "28/03/2019",
+	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
 			var http = new XMLHttpRequest();
@@ -49,6 +50,8 @@ function isiToolsCallback(json){
 			json[item] = true;
 		}
 	}
+
+	it.enabledModules = json;
 
 	/**
 		 AddCSSRule functionality																		
