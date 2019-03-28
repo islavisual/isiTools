@@ -1,0 +1,26 @@
+{
+	"name": "isiTools",
+	"version": 1.0,
+	"author": "Pablo E. Fernández (islavisual@gmail.com)",
+	"copyright": "2017-2019 Islavisual",
+	"modules":{
+		"AddCSSRule": true,
+		"Alert": true,
+		"Autocomplete": true,
+		"Benchmark": true,
+		"Constraint": true,
+		"DOM": true,
+		"Debugger": true,
+		"GetBrowser": true,
+		"GetParam": true,
+		"HttpRequest": true,
+		"Include": true,
+		"IntelliForm": true,
+		"IsMobile": true,
+		"Now": true,
+		"SendForm": true,
+		"StripTags": true,
+		"TreeView": true,
+		"Validator": true
+	}
+}
