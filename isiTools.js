@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "14/03/2019",
+	lastupdate: "28/03/2019",
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
 			var http = new XMLHttpRequest();
