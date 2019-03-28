@@ -1153,11 +1153,16 @@ this.IntelliForm = it.IntelliForm = {
 		// focusin the current element
 		function _focus(e){
 			if(e != null){
-				e.style = "background: #2f2f2f; box-shadow: 0 0 2px 1px #fff; color: #ffffff !important";
+				if(e.style.length != 0) e.setAttribute("data-style", e.getAttribute("style").replace(/\s{2,8}/g, ' ').trim());
+				e.style.background = "#2f2f2f";
+				e.style.boxShadow = "0 0 2px 1px #fff";
+				e.style.color = "#ffffff";
 
 				var aux = document.querySelector('[for=' + e.id + ']');
 				if( aux != null){
-					aux.style = "background: #2f2f2f; color: #ffffff !important";
+					if(aux.style.length != 0) aux.setAttribute("data-style", aux.getAttribute("style").replace(/\s{2,8}/g, ' ').trim());
+					aux.style.background = "#2f2f2f";
+					aux.style.color = "#ffffff";
 				};
 			}
 		}
@@ -1168,12 +1173,14 @@ this.IntelliForm = it.IntelliForm = {
 				e.style.background = "";
 				e.style.boxShadow = "";
 				e.style.color = "";
+				if(e.getAttribute("data-style")) e.style = e.dataset.style;
 
 				var aux = document.querySelector('[for=' + e.id + ']');
 				if( aux != null){
 					aux.style.background = "";
 					aux.style.boxShadow = "";
 					aux.style.color = "";
+					if(aux.getAttribute("data-style")) aux.style = aux.dataset.style;
 				};
 			}
 		}		
