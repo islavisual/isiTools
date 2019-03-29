@@ -213,52 +213,53 @@ if(it.enabledModules.Constraint){
 		general: {
 			version: 1.0,
 			name: 'Constraint',
+			help: 1,
 			description: "Constraint is a client script that provides a simple way to avoid introducing values ​​that are known, in advance, to be invalid. Its operation is based on regular expressions and is easily integrated with other JavaScript or HTML5 components.\nOnce the control is defined, its methods can be accessed through document.inputTextID.Constraint.",
 		},
 		base: {
 			type: 'integer',
 			description: 'The "base" parameter establishes a numerical base different to 10, the one established by default. The binary type automatically sets the base to 2. The hexadecimal type automatically sets the base to 16.',
-			example: 'new Constraint({target: "inputTextID", type: "decimal", base: 2});'
+			example: 'new Constraint.set({target: "inputTextID", type: "decimal", base: 2});'
 		},
 		decimalpoint: {
 			type: 'string',
 			description: 'The "decimalpoint" parameter indicates the character that will separate the entire part of the decimal part. It will only be valid in the types of float numbers. By default the value is "." (point).',
-			example: 'new Constraint({target: "inputTextID", type: "decimal", decimalpoint: ","});'
+			example: 'new Constraint.set({target: "inputTextID", type: "decimal", decimalpoint: ","});'
 		},
 		function: {
 			type: 'function',
 			description: 'The "function" parameter defines the validation function that will control the input format and the supported values. The validation performed by this function can be defined through regular expressions (in the case of the subtype "binary", the function could be "return /^(0|1)*$/.test(value);") although it\'s not mandatory. If the "function" parameter is defined, the "type" parameter must also be set to "custom".',
-			example: '// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
+			example: '// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
 		},
 		indicators: {
 			type: 'object',
 			description: 'The "indicators" parameter indicates whether the arrow up and arrow down icons should be displayed and color style. These icons are often associated with the number-type controls in HTML5, so it\'s usually a good idea to show them. By default the value is set to true.\nThe "indicators" parameter is composed of enabled and color values.',
-			example: 'new Constraint({target: "inputTextID", type: "decimal", indicators: {enabled: true, color: "rgba(0,0,0,0.25)"}});\nnew Constraint({target: "inputTextID", type: "decimal", indicators: {color: "red"}});'
+			example: 'new Constraint.set({target: "inputTextID", type: "decimal", indicators: {enabled: true, color: "rgba(0,0,0,0.25)"}});\nnew Constraint.set({target: "inputTextID", type: "decimal", indicators: {color: "red"}});'
 		},
 		target: {
 			type: 'string',
 			description: 'ID from Input where the control will be implemented.',
-			example: 'new Constraint({target: "inputTextID", type: "integer"});'
+			example: 'new Constraint.set({target: "inputTextID", type: "int"});'
 		},
 		step: {
 			type: 'float',
 			description: 'The "step" parameter indicates the interval of increment or decrement when the user press the up cursor or down cursor. By default the value is 1.',
-			example: 'new Constraint({target: "inputTextID", type: "decimal", step: 0.01});'
+			example: 'new Constraint.set({target: "inputTextID", type: "decimal", step: 0.01});'
 		},
 		type: {
 			type: 'string',
 			description: 'The "type" parameter defines the format or type of data that control will allow. The accepted values are:\n\t● <b>int</b>: The allowed values are positive and negative integers.\n\t● <b>uint</b>: The allowed values are only positive integers.\n\t● <b>float</b>: The allowed values are integers and real numbers with infinite decimals.\n\t● <b>decimal</b>: The allowed values are integers and real numbers with two decimals.\n\t● <b>percent</b>: The allowed values are between 0 and 100.\n\t● <b>binary</b>: The allowed values are those defined by their base, in this case 0 and 1.\n\t● <b>hexadecimal</b>: The allowed values are those defined by their base, in this case from 0 to 9 and from A to F.\n\t● <b>hour</b>: The allowed values are from 00:00 to 23:59.\n\t● <b>custom</b>: Allows you to define a custom function/type. The subtype "custom" is fed from the function parameter, so if the control is defined as "custom", the function parameter will be mandatory.',
-			example: '// Example of Integer subtype\nnew Constraint({target: "inputTextID", type: "int"});\n\n// Example of Hour subtype\nnew Constraint({target: "inputTextID", type: "hour"});\n\n// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
+			example: '// Example of Integer subtype\nnew Constraint.set({target: "inputTextID", type: "int"});\n\n// Example of Hour subtype\nnew Constraint.set({target: "inputTextID", type: "hour"});\n\n// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
 		},
 		increment: {
 			type: 'string',
 			description: 'Increases the value of the associated input the value set by "step". By default "step" is 1.',
-			example: 'document.inputTextID.Constraint("increment");'
+			example: 'Constraint.increment("inputTextID");'
 		},
 		decrement: {
 			type: 'string',
 			description: 'Decrements the value of the associated input the value set by "step". By default "step" is 1.',
-			example: 'document.inputTextID.Constraint("decrement");'
+			example: 'Constraint.decrement("inputTextID");'
 		},
 	}
 }
