@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "28/03/2019",
+	lastupdate: "29/03/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -678,85 +678,146 @@ function isiToolsCallback(json){
 		@Last update: 04/03/2019
 	**/
 	if(json.Constraint){
-		this.Constraint = it.Constraint = function (cfg) {
-			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
+		this.Constraint = it.Constraint = {
+			version: '1.01',
+			options: {},
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
 				if (typeof showHelper != "undefined") showHelper("Constraint", cfg);
 				else alert("Helper not available!")
 				return;
-			}
-
-			if (typeof cfg == "string" && cfg == "increment") {
-				var opt = this.options;
+			},
+			increment: function(t){
+				var opt = document[t].options;
 				if (opt.type == 'hour') {
-					setHour(document.getElementById(opt.target), "up");
+					this._setHour(document.getElementById(opt.target), "up");
 				} else {
-					setNumber(document.getElementById(opt.target), "up");
+					this._setNumber(document.getElementById(opt.target), "up");
 				}
-				return;
-			} else if (typeof cfg == "string" && cfg == "decrement") {
-				var opt = this.options;
+			},
+			decrement: function(t){
+				var opt = document[t].options;
 				if (opt.type == 'hour') {
-					setHour(document.getElementById(opt.target), "down");
+					this._setHour(document.getElementById(opt.target), "down");
 				} else {
-					setNumber(document.getElementById(opt.target), "down");
+					this._setNumber(document.getElementById(opt.target), "down");
 				}
-				return;
-			}
+			},
+			set: function (cfg){
+				// If configuration object is invalid
+				if (!cfg.hasOwnProperty('target')) { alert("You need set an input ID into 'target' parameter!. Please, see the help with the Constraint.help();"); return false; }
+				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
+				if (!cfg.hasOwnProperty('type')) { alert("You need set an input type!. Please, see the help with the Constraint.help();"); return false; }
 
-			// If configuration object is invalid
-			if (!cfg.hasOwnProperty('target')) { alert("You need set an input ID into 'target' parameter!. Please, see the help with the Constraint('help');"); return false; }
-			if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
-			if (!cfg.hasOwnProperty('type')) { alert("You need set an input type!. Please, see the help with the Constraint('help');"); return false; }
+				// Create JSON with current opt
+				var opt = {
+					target: cfg.target,
+					type: cfg.type,
+					step: !cfg.hasOwnProperty('step') ? 1 : parseFloat(cfg.step),
+					indicators: !cfg.hasOwnProperty('indicators') ? { enabled: true, color: 'rgba(0,0,0,0.25)' } : cfg.indicators,
+					ds: !cfg.hasOwnProperty('decimalpoint') ? '.' : cfg.decimalpoint,
+					base: !cfg.hasOwnProperty('base') ? (cfg.type == "binary" ? 2 : (cfg.type == "hexadecimal" ? 16 : 10)) : cfg.base,
+					custom: cfg.type == "custom" ? true : false,
+					function: !cfg.hasOwnProperty('function') ? null : cfg.function,
+				}
+				if (!opt.hasOwnProperty('enabled')) opt.indicators.enabled = true;
+				if (!opt.hasOwnProperty('color')) opt.indicators.color = 'rgba(0,0,0,0.25)';
 
-			// Create JSON with current opt
-			var opt = {
-				target: cfg.target,
-				type: cfg.type,
-				step: !cfg.hasOwnProperty('step') ? 1 : parseFloat(cfg.step),
-				indicators: !cfg.hasOwnProperty('indicators') ? { enabled: true, color: 'rgba(0,0,0,0.25)' } : cfg.indicators,
-				ds: !cfg.hasOwnProperty('decimalpoint') ? '.' : cfg.decimalpoint,
-				base: !cfg.hasOwnProperty('base') ? (cfg.type == "binary" ? 2 : (cfg.type == "hexadecimal" ? 16 : 10)) : cfg.base,
-				custom: cfg.type == "custom" ? true : false,
-				function: !cfg.hasOwnProperty('function') ? null : cfg.function,
-			}
-			if (!opt.hasOwnProperty('enabled')) opt.indicators.enabled = true;
-			if (!opt.hasOwnProperty('color')) opt.indicators.color = 'rgba(0,0,0,0.25)';
+				// Update input type assigned
+				document.getElementById(opt.target).setAttribute("type", "text");
+				
+				if (opt.custom && opt.function == null) alert("You must define a function. Please, see the help with the Constraint('help');");
 
-			// Formats by default
-			var types = {
-				int: function (value) { return /^-?\d*$/.test(value); },
-				uint: function (value) { return /^\d*$/.test(value); },
-				float: function (value) { return new RegExp('^-?\\d*[' + opt.ds + ']?\\d*$').test(value); },
-				decimal: function (value) { return new RegExp('^-?\\d*[' + opt.ds + ']?\\d{0,2}$').test(value); },
-				percent: function (value) { return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 100); },
-				binary: function (value) { return /^(0|1)*$/.test(value); },
-				hexadecimal: function (value) { return /^[0-9a-f]*$/i.test(value); },
-				hour: function (value) { return /^([0-2]{0,1}|0[0-9]|1[0-9]|2[0-3])([:]?|:[0-5]{1}[0-9]{0,1})$/.test(value); },
-				custom: opt.function ? opt.function : null,
-			}
+				// Set events to input
+				function assignEvents(textbox, type, ds) {
+					["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function (event) {
+						textbox.addEventListener(event, function () {
+							var valid;
+							if(type == "decimal" || type == "float"){ valid = Constraint._types[type](this.value, ds); } 
+							else { valid = Constraint._types[type](this.value); }
 
-			if (opt.custom && opt.function == null) alert("You must define a function. Please, see the help with the Constraint('help');");
+							if(valid){ this.oldValue = this.value; } 
+							else if (this.hasOwnProperty("oldValue")) { this.value = this.oldValue; }
 
-			// Set events to input
-			function assignEvents(textbox, filterFn) {
-				["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function (event) {
-					textbox.addEventListener(event, function () {
-						if (filterFn(this.value)) {
-							this.oldValue = this.value;
-							this.oldSelectionStart = this.selectionStart;
-							this.oldSelectionEnd = this.selectionEnd;
-						} else if (this.hasOwnProperty("oldValue")) {
-							this.value = this.oldValue;
-							this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-						}
+							return valid;
+						});
 					});
-				});
-			}
+				}
 
-			// update hours / minutes from cursor position
-			function setHour(e, d) {
-				if (e.value.trim() == "") e.value = 0;
+				// Set indicators into input
+				if (opt.indicators.enabled) {
+					var input = document.getElementById(opt.target), iDown = document.createElement("div"), iUp = document.createElement("div");
+					iDown.setAttribute("class", "caret-down");
+					iDown.setAttribute("onclick", 'Constraint.decrement("' + opt.target + '")');
+					iDown.style = 'cursor: pointer; border: 5px solid red; border-width: 5px 5px 0 5px; border-color: ' + opt.indicators.color + ' transparent transparent transparent; width: 7px; position: absolute; bottom: 0; margin: 10px; right: 15px;';
+					iUp.setAttribute("class", "caret-up");
+					iUp.setAttribute("onclick", 'Constraint.increment("' + opt.target + '")');
+					iUp.style = 'cursor: pointer; border: 5px solid red; border-width: 0 5px 5px 5px; border-color: transparent transparent ' + opt.indicators.color + ' transparent; width: 7px; position: absolute; bottom: 10px; margin: 10px; right: 15px;';
 
+					input.parentNode.insertBefore(iDown, input.nextSibling);
+					input.parentNode.insertBefore(iUp, input.nextSibling);
+
+					// Add events of increment and decrement
+					input.addEventListener("keydown", function (e) {
+						if (e.keyCode == 38) {
+							if (opt.type == "hour") {
+								Constraint._setHour(e.target, 'up');
+								return false;
+							} else {
+								Constraint._setNumber(e.target, 'up');
+							}
+
+
+						} else if (e.keyCode == 40) {
+							if (opt.type == "hour") {
+								Constraint._setHour(e.target, 'down');
+								return false;
+							} else {
+								Constraint._setNumber(e.target, 'down');
+							}
+						}
+
+						return true;
+					});
+				}
+
+				// Enable control
+				assignEvents(document.getElementById(opt.target), opt.type, opt.ds);
+
+				document[opt.target] = {};
+				document[opt.target]['Constraint'] = Constraint;
+				document[opt.target]['options'] = opt;
+				return this;
+			},
+			_setNumber: function(e, d){
+				var opt = document[e.id].options, aux = '';
+				var d = (d == 'down' ? -1 : 1) * opt.step;
+				var v = parseFloat(opt.ds != "." ? e.value.replace(opt.ds, ".") : e.value);
+				var md = parseInt((Math.abs(d) < 1.0) ? d.toString().split(".")[1].length : 0);
+				var dec = e.value.indexOf(opt.ds) != -1 ? (e.value.length - e.value.indexOf(opt.ds) - 1) : md;
+				dec = dec < md ? md : dec;
+
+				if (opt.base != 10) {
+					aux = parseInt(e.value, opt.base) + d;
+					aux = aux.toString(opt.base);
+				} else {
+					aux = (v + d).toFixed(dec);
+					aux = opt.ds != "." ? aux.toString().replace(".", opt.ds) : aux;
+				}
+
+				var _type = opt.type, valid;
+				if(_type == "decimal" || _type == "float"){
+					valid = Constraint._types[opt.type](aux, opt.ds);
+				} else {
+					valid = Constraint._types[opt .type](aux);
+				}
+				
+				if(!valid) aux = '0';
+				e.value = aux;
+			},
+			_setHour: function(e, d) {
 				var aux = e.value.split(":"), sep = e.value.indexOf(":"), sp = e.selectionStart < sep ? 0 : 5;
 				var va = 0, d = d == 'down' ? -1 : 1;
 
@@ -770,73 +831,27 @@ function isiToolsCallback(json){
 					va = parseInt(aux) + d;
 					aux = va < 10 ? ('0' + va) : va;
 				}
+
+				var valid = Constraint._types[document[e.id].options.type](aux);
+				if(!valid && aux.toString().length < 3) aux = '00:00';
+				else if(valid && aux.toString().length < 3) aux = aux + ':00';
+				else if(!valid) aux = e.value;
 				e.value = aux;
-
+				
 				setTimeout(function () { e.setSelectionRange(sp, sp); }, 10);
+			},
+			_types: {
+				// Formats by default
+				int: function (value) { return /^-?\d*$/.test(value); },
+				uint: function (value) { return /^\d*$/.test(value); },
+				float: function (value, ds) { return new RegExp('^-?\\d*[' + ds + ']?\\d*$').test(value); },
+				decimal: function (value, ds) { return new RegExp('^-?\\d*[' + ds + ']?\\d{0,2}$').test(value); },
+				percent: function (value) { return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 100); },
+				binary: function (value) { return /^(0|1)*$/.test(value); },
+				hexadecimal: function (value) { return /^[0-9a-f]*$/i.test(value); },
+				hour: function (value) { return /^([0-2]{0,1}|0[0-9]|1[0-9]|2[0-3])([:]?|:[0-5]{1}[0-9]{0,1})$/.test(value); },
+				custom: this.function ? this.function : null,
 			}
-
-			function setNumber(e, d) {
-				if (e.value.trim() == "") e.value = 0;
-
-				var aux = '';
-				var d = (d == 'down' ? -1 : 1) * opt.step;
-				var v = parseFloat(opt.ds != "." ? e.value.replace(opt.ds, ".") : e.value);
-				var md = parseInt((Math.abs(d) < 1.0) ? d.toString().split(".")[1].length : 0);
-				var dec = e.value.indexOf(opt.ds) != -1 ? (e.value.length - e.value.indexOf(opt.ds) - 1) : md;
-				dec = dec < md ? md : dec;
-
-				if (opt.base != 10) {
-					aux = parseInt(e.value, opt.base) + d;
-					e.value = aux.toString(opt.base);
-				} else {
-					aux = (v + d).toFixed(dec);
-					e.value = opt.ds != "." ? aux.toString().replace(".", opt.ds) : aux;
-				}
-			}
-
-			// Set indicators into input
-			if (opt.indicators.enabled) {
-				var input = document.getElementById(opt.target), iDown = document.createElement("div"), iUp = document.createElement("div");
-				iDown.setAttribute("class", "caret-down");
-				iDown.setAttribute("onclick", 'document[\'' + opt.target + '\'].Constraint("decrement")');
-				iDown.style = 'cursor: pointer; border: 5px solid red; border-width: 5px 5px 0 5px; border-color: ' + opt.indicators.color + ' transparent transparent transparent; width: 7px; position: absolute; bottom: 0; margin: 10px; right: 15px;';
-				iUp.setAttribute("class", "caret-up");
-				iUp.setAttribute("onclick", 'document[\'' + opt.target + '\'].Constraint("increment")');
-				iUp.style = 'cursor: pointer; border: 5px solid red; border-width: 0 5px 5px 5px; border-color: transparent transparent ' + opt.indicators.color + ' transparent; width: 7px; position: absolute; bottom: 10px; margin: 10px; right: 15px;';
-
-				input.parentNode.insertBefore(iDown, input.nextSibling);
-				input.parentNode.insertBefore(iUp, input.nextSibling);
-
-				// Add events of increment and decrement
-				input.addEventListener("keydown", function (e) {
-					if (e.keyCode == 38) {
-						if (opt.type == "hour") {
-							setHour(e.target, 'up');
-							return false;
-						} else {
-							setNumber(e.target, 'up');
-						}
-
-
-					} else if (e.keyCode == 40) {
-						if (opt.type == "hour") {
-							setHour(e.target, 'down');
-							return false;
-						} else {
-							setNumber(e.target, 'down');
-						}
-					}
-
-					return true;
-				});
-			}
-
-			// Enable control
-			assignEvents(document.getElementById(opt.target), types[opt.type]);
-
-			document[opt.target] = {};
-			document[opt.target]['options'] = opt;
-			document[opt.target]['Constraint'] = Constraint;
 		}
 	}
 
@@ -855,6 +870,15 @@ function isiToolsCallback(json){
 			redo: {},
 			target: [],
 			_startAt: -1,
+			version: '1.0',
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("IntelliForm", cfg);
+				else alert("Helper not available!")
+				return;
+			},
 			addElements: function(cfg){
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a JSON 'data' parameter!. Please, see the help with the IntelliForm.help({help: 'send'});"); return false; }
@@ -908,15 +932,6 @@ function isiToolsCallback(json){
 						}
 					}
 				} catch(e){ }
-			},
-			version: '1.0',
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
-
-				if (typeof showHelper != "undefined") showHelper("IntelliForm", cfg);
-				else alert("Helper not available!")
-				return;
 			},
 			setUndo: function(cfg){
 				// Assign configuration obteins from parameter
@@ -2206,7 +2221,7 @@ function isiToolsCallback(json){
 		@Copyright 2019 Islavisual.
 		@Last update: 14/03/2019
 	**/
-	if(json.now){
+	if(json.Now){
 		Date.prototype.currentDate = (function () { var local = new Date(this); local.setMinutes(this.getMinutes() - this.getTimezoneOffset()); return local.toJSON().slice(0, 10); });
 		this.now = it.now = function () {
 			return new Date().currentDate();
