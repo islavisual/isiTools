@@ -178,6 +178,20 @@ Click here for obtein help about IsMobile.
 IsMobile('help');
 IsMobile({help: '', theme: 'dark'});
 ```
+LANGUAGE
+------------
+### Description
+This script allows you to activate and manage the multilanguage feature on your website.
+Click here for obtein help about Language.
+### Example
+```javascript
+// For general help about script/plugin
+Language.help();
+Language.help({theme: 'dark'});
+
+// For specific method or property
+Language.help({help: 'init', theme: 'dark'});
+```
 SENDFORM
 ------------
 ### Description
