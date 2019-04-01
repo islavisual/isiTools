@@ -592,8 +592,8 @@ function isiToolsCallback(json){
 			},
 			test: function(cfg){
 				// Default parameters
-				if(typeof cfg.name == "undefined"){ alert("You need to specify a name or condition\nPlease see the Benchmark.test('help');"); return; }
-				if(typeof cfg.fn == "undefined"){ alert("You need to specify a function where test the name or condition!\nPlease see the Benchmark.test('help');"); return; }
+				if(typeof cfg.name == "undefined"){ alert("You need to specify a name or condition\nPlease see the Benchmark.help();"); return; }
+				if(typeof cfg.fn == "undefined"){ alert("You need to specify a function where test the name or condition!\nPlease see the Benchmark.help();"); return; }
 
 				// Assign configuration obteins from parameter
 				for(var key in cfg){ this[key] = cfg[key]; }
@@ -1706,9 +1706,9 @@ function isiToolsCallback(json){
 								} else if(type == 'keydown' || type == 'keyup' || type == 'keypress'){
 									var charCode = (e.which) ? e.which : e.keyCode;
 									var strKey = "", strCombKey = "", codeCombKey = "";
-									if(e.shiftKey || charCode == 16){ strCombKey += "Shift + "; codeCombKey = "16 + "; }
+									if(e.shifdata-tkey || charCode == 16){ strCombKey += "Shift + "; codeCombKey = "16 + "; }
 									if(e.ctrlKey  || charCode == 17){ strCombKey += "Ctrl + ";  codeCombKey = "17 + "; }
-									if(e.altKey   || charCode == 18){ strCombKey += "Alt + ";   codeCombKey = "18 + "; }
+									if(e.aldata-tkey   || charCode == 18){ strCombKey += "Alt + ";   codeCombKey = "18 + "; }
 
 									if(charCode == 8) strKey += 'Backspace';
 									else if(charCode == 9) strKey += 'Tab';
@@ -2212,6 +2212,110 @@ function isiToolsCallback(json){
 			if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) mobile = true;
 			return mobile;
 		};
+	}
+	
+	/**
+		Multi-Language functionality
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 31/03/2019
+	**/
+	
+	if(json.Language){
+		this.Language = it.Language = {
+			version: '1.0',
+			translations: {},
+			selectedLang: '',
+			availableLangs: [],
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("Language", cfg);
+				else alert("Helper not available!")
+				return;
+			},
+			get: function(id, lang){
+				if(typeof id == "undefined" || id.trim() == ""){
+					alert("You need to specify a string id to translate.\nPlease see the Language.help();")
+				}
+
+				if(typeof lang == "undefined" || lang.trim() == ""){
+					lang = this.selectedLang;
+				}
+				
+				var tkeys = this.translations[lang];
+				
+				for(var x = 0; x < tkeys.length; x++){
+					var item = tkeys[x];
+					
+					if(item.id == id) return item.text;
+				}
+				
+				return id;
+			},
+			set: function(lang){
+				if(typeof lang == "undefined" || lang.trim() == "" || lang.length < 5){
+					alert("The language must be described using BCP 47 language tags.\nPlease see the Language.help();")
+				}
+				this.selectedLang = lang;
+				sessionStorage.setItem("itLang", lang)
+			},
+			render: function(){
+				// Replace labels
+				var items = document.querySelectorAll("[data-tkey]");
+				for(var x = 0; x < items.length; x++){
+					var item = items[x], tn = item.tagName.toLowerCase();
+					
+					if(tn == "input" || tn == "select" || tn == "textarea"){
+						item.value = this.get(item.getAttribute("data-tkey"));
+					} else {
+						item.innerHTML = this.get(item.getAttribute("data-tkey"));
+					}
+					item.setAttribute("lang", this.selectedLang);
+				}
+				
+				// Replace common attributes (title, placeholder,...)
+				var items = document.querySelectorAll("[placeholder], [title]");
+				for(var x = 0; x < items.length; x++){
+					var item = items[x];
+					
+					if(item.getAttribute("title")){
+						if(!item.getAttribute("data-title-tkey")){
+							item.setAttribute("data-title-tkey", item.getAttribute("title"));
+						}
+
+						item.setAttribute("title", this.get(item.getAttribute("data-title-tkey")));
+					}
+
+					if(item.getAttribute("placeholder")){
+						if(!item.getAttribute("data-placeholder-tkey")){
+							item.setAttribute("data-placeholder-tkey", item.getAttribute("placeholder"));
+						}
+						
+						item.setAttribute("placeholder", this.get(item.getAttribute("data-placeholder-tkey")));
+					}
+				}
+			},
+			init: function(availableLangs, translations){
+				if(typeof availableLangs != "object" || availableLangs.length == 0){
+					alert("You need to specify a object with the available languages.\nPlease see the Language.help();")
+				} else if(typeof translations != "object" || translations.length == 0){
+					alert("You need to specify a object with the available translations of every language.\nPlease see the Language.help();")
+				}
+
+				// Get language saved
+				this.selectedLang = sessionStorage.getItem("itLang") ? sessionStorage.getItem("itLang") : navigator.languages[0];
+				
+				// Set document language
+				document.querySelector("html").setAttribute("lang", this.selectedLang.substr(0, 2));
+
+				// Set availables languages and translations
+				this.availableLangs = availableLangs;
+				this.translations = translations;
+			}
+		}
 	}
 
 	/**
