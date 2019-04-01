@@ -17,6 +17,7 @@
 		"Include": true,
 		"IntelliForm": true,
 		"IsMobile": true,
+		"Language": true,
 		"Now": true,
 		"SendForm": true,
 		"StripTags": true,
