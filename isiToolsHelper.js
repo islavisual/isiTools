@@ -1043,7 +1043,17 @@ this.Helper = it.Helper = function (func, cfg) {
 		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
 		<h2>Table of Contents of isiTools ' +  general.version.toFixed(2) + '</h2>\
 		<div style="margin-top: 64px">\
-		IsiTools is a set of tools to help developers during the project creation process. The tools provided are designed to obtain a better user experience and a more usable and reusable development.\
+		IsiTools is a set of tools to help developers during the project creation process. The tools provided are designed to obtain a better user experience and a more usable and reusable development. Allows each script to be load independently through json provided by config.json or through "modules" parameter into url.\
+		<br/>\
+		<br/>\
+		Installation<br/>\
+		Download/copy and paste libraries into javascript folder. After, insert the isiTools code. For example:\
+		<code><comm>// Load all library</comm><br/>\
+&lt;script src="isitools.js" /><br/>\
+&lt;script src="isitoolsHerlper.js" /><br/>\
+<comm>// Load a few features</comm><br/>\
+&lt;script src="isitools.js<int>?modules=AddCSSRule+Alert+Autocomplete+DOM</int>" /><br/>\
+&lt;script src="isitoolsHerlper.js" /><br/></code>\
 			__TEXT__\
 		</div>\
 		';
