@@ -671,6 +671,44 @@ if(it.enabledModules.IsMobile){
 }
 
 /**
+   Language Helper																		
+   @version: 1.00																					
+   @author: Pablo E. Fernández (islavisual@gmail.com).												
+   @Copyright 2017-2019 Islavisual. 																	
+   @Last update: 31/03/2019																			
+ **/
+if(it.enabledModules.Language){
+	WikiHelper.Language = {
+		general: {
+			version: 1.0,
+			name: 'Language',
+			help: 1,
+			description: "This script allows you to activate and manage the multilanguage feature on your website.",
+		},
+		init: {
+			type: 'function',
+			description: 'Assign and initialize the multilanguage feature.',
+			example: 'var availableLangs = [\n\t{id: "en-US", name: "English"},\n\t{id: "es-ES", name: "Spanish"},\n];\nvar translations = {\n\t"es-ES": [\n\t\t{ id: "Loading...", text: "Cargando..." },\n\t\t{ id: "Loaded!", text: "Cargado!" },\n\t\t{ id: "Comments", text: "Observaciones" }\n\t],\n\t"en-US": [\n\t\t{ id: "Loading...", text: "<i class="fa fa-spin"></i>" },\n\t\t{ id: "Loaded!", text: "OK!" }\n\t]\n};\nLanguage.init(availableLangs, translations);'
+		},
+		render: {
+			type: 'function',
+			description: 'Analyzes all the document and replace all pattern matches. This functionality is feeds of "data-tkey", "data-placeholder-tkey" and "data-title-tkey" attributes.',
+			example: '// The availableLangs and translations objects are defined before.\n// For example, supposed the next HTML code:\n//\t&lt;label for="notes" data-tkey="Comments">&lt;/label>\n//\t&lt;input id="notes" name="notes" placeholder="Comments" type="text" maxlength="255" />\nLanguage.init(availableLangs, translations);\nLanguage.render();\n\n// Note that the placeholder is translated and assugn the source text to "data-placeholder-tkey" attribute.'
+		},
+		set: {
+			type: 'function',
+			description: 'Set the current language. By default, the language is the one provided by the browser.\nWarning: For support the browser compatibility, is the language code sent would be coded into ISO-639-1.',
+			example: '// Supposed that language by default in Chrome is "es-ES" (ISO 639-1 code to Spain)\nLanguage.set("en-US");'
+		},
+		get: {
+			type: 'function',
+			description: 'Returns the translation for received string. If match is not found, it is assumed that don\'t have traduction and returns the same string.',
+			example: 'var tkey = Language.get("Loading...");\n// If you want recover the translation for another language, you can send the language like second parameter:\nvar tkey_ES = Language.get("Loading...", "es-ES");'
+		}
+	}
+}
+
+/**
 	 Create and send forms in real time.
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
@@ -1005,6 +1043,7 @@ this.Helper = it.Helper = function (func, cfg) {
 		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
 		<h2>Table of Contents of isiTools ' +  general.version.toFixed(2) + '</h2>\
 		<div style="margin-top: 64px">\
+		IsiTools is a set of tools to help developers during the project creation process. The tools provided are designed to obtain a better user experience and a more usable and reusable development.\
 			__TEXT__\
 		</div>\
 		';
