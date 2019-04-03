@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "29/03/2019",
+	lastupdate: "03/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -2337,7 +2337,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 02/04/2019
+		@Last update: 03/04/2019
 		@status PENDING to UPDATE
 	**/
 	if(json.Selectpicker){
