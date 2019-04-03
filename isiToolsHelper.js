@@ -713,6 +713,49 @@ if(it.enabledModules.Language){
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2019 Islavisual.
+	 @Last update: 03/04/2019
+ **/
+if(it.enabledModules.Selectpicker){
+	WikiHelper.Selectpicker = {
+		general: {
+			version: 1.0,
+			help: 1,
+			name: 'Selectpicker',
+			description: "Selectpicker is a form control that allows you to manage a selection as a drop-down list that can be easily customized.",
+		},
+		additional: [
+			{
+				description: 'Enable search into dropdown:',
+				example: '// Supposed the next code:\n&lt;select id="months" name="months" class="select-picker" data-live-search="true">\n\t&lt;option value="01">January&lt;/option>\n\t...\n&lt;/select>\n\n// Once set data-live-search to true into select, initialize\nSelectpicker.init(".select-picker");'
+			},
+			{
+				description: 'To custom Selectpicker through CSS:',
+				example: '<bool>.select-picker{</bool>\n\tposition: relative;\n\twidth: 100%;\n</bool>}</bool>\n<bool>.select-picker .dropdown-container{</bool>\n\tlist-style: none;\n\tbackground: #fff;\n\tborder: 1px solid rgba(0,0,0,0.1);\n\tpadding: 0;\n\tposition: absolute;\n\ttop: 53px;\n\twidth: 100%;\n\tz-index: 99999;\n</bool>}</bool>\n<bool>.select-picker ul{</bool>\n\toverflow: auto;\n\tmax-height: 164px;\n\tpadding: 0;\n\tlist-style: none;\n\tmargin: 0;\n</bool>}</bool>\n<bool>.select-picker button{</bool>\n\tbackground: #f4f4f4;\n\tborder: 1px solid rgba(0,0,0,0.1);\n\twidth: 100%;\n\theight: 54px;\n\ttext-align: left;\n\tline-height: 70px;\n\tfont-weight: 500;\n</bool>}</bool>\n<bool>.select-picker button::before{</bool>\n\tcontent: "";\n\tdisplay: inline-block;\n\twidth: 0;\n\theight: 0;\n\tmargin-left: 2px;\n\tvertical-align: middle;\n\tborder-top: 4px dashed;\n\tborder-right: 4px solid transparent;\n\tborder-left: 4px solid transparent;\n\tposition: absolute;\n\tright: 15px;\n\ttop: 26px;\n</bool>}</bool>\n<bool>.select-picker button:hover{</bool>\n\tborder-color: #adadad;\n</bool>}</bool>\n<bool>.select-picker.open button{</bool>\n\tbackground: #02a5a5;\n\tcolor: #ffffff;\n</bool>}</bool>\n<bool>.select-picker li{</bool>\n\tmin-height: 36px;\n\tborder-bottom: 1px solid rgba(0,0,0,0.1);\n\tpadding: 4px 10px 0px 10px;\n\tline-height: 36px;\n</bool>}</bool>\n<bool>.select-picker li:not(.searcher):hover{</bool>\n\tbackground: #02A5A5;\n\tcolor: #fff;\n\twidth: 100%;\n</bool>}</bool>\n<bool>.select-picker .searcher{</bool>\n\tposition: relative;\n\tpadding: 3px 40px 0 4px;\n\tmin-height: 39px;\n\tborder-bottom: 1px solid rgba(0,0,0,0.1);\n</bool>}</bool>\n<bool>.select-picker .searcher .input-search{</bool>\n\tline-height: 36px;\n\theight: 32px;\n\tpadding-right: 26px;\n\tcolor: #fff;\n</bool>}</bool>\n<bool>.select-picker .search-icon::before{</bool>\n\tcontent: "";\n\tbackground: #ccc;\n\twidth: 10px;\n\theight: 3px;\n\tposition: absolute;\n\tborder-radius: 100px;\n\ttop: 21px;\n\tright: 6px;\n\ttransform: rotate(40deg);\n</bool>}</bool>\n<bool>.select-picker .search-icon:after{</bool>\n\tcontent: "";\n\twidth: 16px;\n\theight: 16px;\n\tborder: 3px solid #ccc;\n\tborder-radius: 100px;\n\tdisplay: block;\n\tposition: absolute;\n\ttop: 8px;\n\tright: 12px;\n</bool>}</bool>\n<bool>.select-picker-active{</bool>\n\tbackground: #02a5a5;\n\tcolor: #fff;\n</bool>}</bool>'
+			},
+		],
+		init: {
+			type: 'function',
+			description: 'Set the configure the requested select\'s.',
+			example: 'Selectpicker.init(".select-picker");'
+		},
+		target: {
+			type: 'string',
+			description: 'If init method receives a string, this string will takes as target pattern. If init method receives an object, the target parameter will be the pattern to initialize the dropdowns.',
+			example: '//Through simple way:\nSelectpicker.init(target: ".select-picker");\n\n// Through target parameter:\nSelectpicker.init({ target: ".select-picker" });'
+		},
+		liveSearch: {
+			type: 'boolean',
+			description: 'Enable search into dropdown.',
+			example: 'Selectpicker.init({ target: ".select-picker", liveSearch: true });'
+		},
+	}
+}
+
+/**
+	 Create and send forms in real time.
+	 @version: 1.00
+	 @author: Pablo E. Fernández (islavisual@gmail.com).
+	 @Copyright 2017-2019 Islavisual.
 	 @Last update: 11/03/2019
 	 @status PENDING to UPDATE
  **/
@@ -1252,3 +1295,4 @@ this.showHelper = it.showHelper = function(cs, cfg){
 		return;
 	}
 }
+
