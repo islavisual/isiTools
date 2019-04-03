@@ -2338,7 +2338,6 @@ function isiToolsCallback(json){
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 03/04/2019
-		@status PENDING to UPDATE
 	**/
 	if(json.Selectpicker){
 		this.Selectpicker = it.Selectpicker = {
@@ -2354,12 +2353,19 @@ function isiToolsCallback(json){
 			init: function(cfg){
 				var sp = this;
 
+				// Get options
+				if(typeof cfg == "string") cfg = { target: cfg };
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create Selectpicker!. Please, see the help with the Selectpicker.help();"); return false; }
+				if(!cfg.hasOwnProperty('liveSearch')) cfg.liveSearch = false;
 
+				// Creating and initializing dropdowns
 				var trgs = document.querySelectorAll(cfg.target);
 				for(var tgri = 0; tgri < trgs.length; tgri++){
 					// Get target
 					var trg = trgs[tgri];
+
+					// select needs searcher
+					if(trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "true") cfg.liveSearch = true; else cfg.liveSearch = false; 
 
 					sp._curIndex[trg.id] = -1;
 
@@ -2398,6 +2404,9 @@ function isiToolsCallback(json){
 
 						t.parentElement.classList.toggle("open");
 						div.style.display = div.style.display === 'none' ? '' : 'none';
+
+						// Set aria attributes
+						t.setAttribute("aria-expanded", t.getAttribute("aria-expanded") == "false" ? "true": "false");
 
 						// Set focus into input search
 						var t = t.parentElement;
@@ -2520,10 +2529,8 @@ function isiToolsCallback(json){
 					src.appendChild(inp);
 					
 					// If search is disabled, hide searcher
-					if(trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "false"){
-						src.style = 'opacity: 0; height: 0; overflow: hidden; min-height: inherit;';
-					}
-
+					if(!cfg.liveSearch)	src.style = 'opacity: 0; height: 0; overflow: hidden; min-height: inherit;';
+					
 					// Add icon search
 					var ic = document.createElement("i");
 					ic.setAttribute("class", "search-icon");
@@ -2612,6 +2619,7 @@ function isiToolsCallback(json){
 				// Close selectpicker list
 				e.nextElementSibling.classList.remove("open");
 				e.nextElementSibling.children[1].style.display = "none";
+				e.nextElementSibling.children[0].setAttribute("aria-expanded", "false");
 			},
 			_windowListener: function(e){
 				var p = e.target;
@@ -2622,8 +2630,10 @@ function isiToolsCallback(json){
 				if(p == document){
 					var items = document.querySelectorAll("div.select-picker");
 					for(var i = 0; i < items.length; i++){
-						items[i].classList.remove("open");
-						items[i].querySelector(".dropdown-container").style.display = 'none';
+						var item = items[i];
+						item.classList.remove("open");
+						item.querySelector(".dropdown-container").style.display = 'none';
+						item.querySelector("button").setAttribute("aria-expanded", "false");
 					}
 				}
 			},
