@@ -2319,7 +2319,7 @@ function isiToolsCallback(json){
 	}
 
 	/**
-		 Now functionality
+		Now functionality
 		@version: 1.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
@@ -2331,9 +2331,307 @@ function isiToolsCallback(json){
 			return new Date().currentDate();
 		}
 	}
+
+	/**
+		Dropdown select
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 02/04/2019
+		@status PENDING to UPDATE
+	**/
+	if(json.Selectpicker){
+		this.Selectpicker = it.Selectpicker = {
+			version: 1.0,
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("Selectpicker", cfg);
+				else alert("Helper not available!");
+				return;
+			},
+			init: function(cfg){
+				var sp = this;
+
+				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create Selectpicker!. Please, see the help with the Selectpicker.help();"); return false; }
+
+				var trgs = document.querySelectorAll(cfg.target);
+				for(var tgri = 0; tgri < trgs.length; tgri++){
+					// Get target
+					var trg = trgs[tgri];
+
+					sp._curIndex[trg.id] = -1;
+
+					if (trg.tagName.toLowerCase() != "select") { 
+						alert("Error into #" + trg.id + " element. You need set an SELECT element like target to create Selectpicker!. Please, see the help with the Selectpicker.help();"); 
+						return false; 
+					}
+
+					// Add layer will contents button and list
+					var div = document.createElement("div");
+					div.setAttribute("class", "select-picker");
+
+					// Add button will contents the selected text
+					var btn = document.createElement("button");
+					btn.setAttribute("id", trg.id + "trigger");
+					btn.setAttribute("class", trg.getAttribute('class') + "-trigger");
+					btn.setAttribute("data-id", trg.id);
+					btn.setAttribute("aria-expanded", "false");
+					btn.setAttribute("type", "button");
+					btn.setAttribute("tabindex", "-1");
+
+					// Assign all select properties 
+					for (var i = 0, atts = trg.attributes, n = atts.length; i < n; i++){
+						var att = atts[i];
+						if(att.name == "id" || att.name == "name" || att.name == "class") continue;
+					
+						btn.setAttribute(att.name, att.value);
+					}
+
+					// If select was hidden, remove style
+					btn.style.display = "";
+
+					// Add events to button trigger
+					btn.addEventListener("click", function(e){
+						var t = e.target, div = t.nextElementSibling;
+
+						t.parentElement.classList.toggle("open");
+						div.style.display = div.style.display === 'none' ? '' : 'none';
+
+						// Set focus into input search
+						var t = t.parentElement;
+						if(t.classList.contains("open") && t.querySelectorAll("input").length != 0)
+							t.querySelector("input").focus();
+						
+						// Mark active
+						var items = t.querySelectorAll("li"), btn = t.querySelector("button");
+						for(var i = 0; i < items.length; i++){
+							var item = items[i];
+
+							if(item.innerHTML == btn.innerText){
+								item.classList.add("select-picker-active");
+								sp._curIndex[t.previousElementSibling.id] = i;
+							} else{
+								item.classList.remove("select-picker-active");
+							}
+						}
+
+						// Allocate scroll
+						var active = t.querySelector('.select-picker-active');
+						var trg = t.querySelector("ul");
+						if(active) trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
+					});
+
+					window.addEventListener("click", this._windowListener);
+
+					// Add dropdown-container
+					var diC = document.createElement("div");
+					diC.setAttribute("class", "dropdown-container");
+					diC.setAttribute("style", "display: none");
+
+					// Add list with possibles values
+					var lst = document.createElement("ul");
+					lst.setAttribute("class", "dropdown options");
+					lst.setAttribute("role", "menu");
+					
+					// If autocomplete is requested
+					var inp = document.createElement("input");
+					inp.setAttribute("class", "input-search");
+					inp.setAttribute("type", "search");
+					inp.setAttribute("data-id", trg.id);
+					inp.addEventListener("input", function(e){
+						var trg = e.target, val = trg.value.trim(), lis = trg.parentElement.nextElementSibling.querySelectorAll("li");
+						for(var i = 0; i < lis.length; i++){
+							var li = lis[i];
+							if(val != "" && li.innerHTML.toLowerCase().indexOf(val.toLowerCase()) == -1){
+								li.style.display = "none";
+							} else {
+								li.style.display = "";
+							}
+						}
+					});
+
+					// Keyboard management
+					inp.addEventListener("keydown", function(){
+						var e = arguments[0], trg = e.target, val = trg.value;
+
+						function getList(id) {
+							var x = document.getElementById(id).nextElementSibling.querySelectorAll("li");
+							return x;
+						}
+
+						function setActive(x, dir){
+							if(x >= 0 && x <= list.length - 1) list[x].classList.remove("select-picker-active");
+
+							function getNext(){
+								if(dir == '+') x++; else x--;
+								if (x >= list.length) x = 0;
+								else if (x < 0) x = list.length - 1;
+	
+								return x;
+							}
+							
+							x = getNext();
+							while(list[x].style.display == "none"){	x = getNext(); }
+						
+							list[x].classList.add("select-picker-active");
+							return x;
+						}
+
+						function setScrollTop(dir, trg) {
+							try {
+								trg = trg.parentElement.nextElementSibling;
+								
+								// Move scroll to current position
+								var active = trg.querySelector('.select-picker-active');
+								if (dir == "down") {
+									trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
+								} else if (active.offsetTop < trg.scrollTop || document.querySelector('.select-picker-active:last-child').offsetTop == active.offsetTop) {
+									trg.scrollTop = active.offsetTop - trg.offsetHeight + trg.offsetHeight + 2;
+								}
+							} catch (e) { }
+						}
+
+						if(e.keyCode == 38){ // up
+							var list = getList(trg.dataset.id);
+							
+							sp._curIndex[trg.dataset.id] = setActive(sp._curIndex[trg.dataset.id], '-');
+							setScrollTop('up', trg);
+
+						} else if(e.keyCode == 40){ // down
+							var list = getList(trg.dataset.id);
+							sp._curIndex[trg.dataset.id] = setActive(sp._curIndex[trg.dataset.id], '+');
+							setScrollTop('down', trg);
+
+						} else if(e.keyCode == 13){ // enter
+							e.preventDefault();
+							e.stopPropagation();
+
+							var list = getList(trg.dataset.id);
+							document.getElementById(trg.dataset.id).selectedIndex = sp._curIndex[trg.dataset.id];
+							return false;
+						}
+					}.bind(sp));
+
+					// Create and add input picker
+					var src = document.createElement("div");
+					src.setAttribute("class", "searcher");
+					src.appendChild(inp);
+					
+					// If search is disabled, hide searcher
+					if(trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "false"){
+						src.style = 'opacity: 0; height: 0; overflow: hidden; min-height: inherit;';
+					}
+
+					// Add icon search
+					var ic = document.createElement("i");
+					ic.setAttribute("class", "search-icon");
+					src.appendChild(ic);
+
+					// Add like first option
+					diC.appendChild(src);
+
+					var idx = 0;
+					if(trg.getAttribute("placeholder")){
+						var li = document.createElement("li");
+						li.setAttribute("rel", "0");
+						li.setAttribute("data-value", "");
+						li.innerHTML = trg.getAttribute("placeholder");
+					
+						lst.appendChild(li);
+						idx++
+					} 
+
+					var items = trg.querySelectorAll("option");
+					for(var i = idx; i < items.length; i++){
+						var item = items[i];
+
+						var li = document.createElement("li");
+						li.setAttribute("rel", i);
+						li.setAttribute("data-value", item.value);
+						li.innerHTML = item.innerText;
+						li.setAttribute("onclick", 'Selectpicker._update("' + trg.id + '", ' + i + ')');
+						if(item.getAttribute("selected") != null && item.getAttribute("disabled") == null){
+							li.setAttribute("class", "selected");
+							btn.innerText = item.innerText;
+						}
+						
+						lst.appendChild(li);
+					}
+
+					// Auto-select first option
+					if(btn.innerText.trim() == "") btn.innerText = items[0].innerHTML;
+					
+					// Add components to layer
+					diC.appendChild(lst);
+					div.appendChild(btn);
+					div.appendChild(diC);
+
+					// Hide select and append new dropdown
+					trg.parentNode.insertBefore(div, trg.nextSibling);
+
+					trg.style = 'display: block !important; height: 0 !important; width: 0; overflow: hidden !important; opacity: 0; font-size: 0; position: absolute;';
+					
+					setInterval(function(e){ 
+						if(e.getAttribute("data-value") != e.value){
+							e.setAttribute("data-value", e.value);
+							e.dispatchEvent(new Event('change'));
+							Selectpicker._update(e.id, e.querySelector('option[value="' + e.value + '"]').index);
+						}
+					}.bind(null, trg), 150);
+				} /* End for trgi */
+
+				// Add default Styles
+				if(typeof it.AddCSSRule != "undefined"){
+					AddCSSRule('', ".select-picker", 'position: relative; width: auto; width: 164px;');
+					AddCSSRule('', ".select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 32px; width: 100%; z-index: 99999;');
+					AddCSSRule('', ".select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
+					AddCSSRule('', ".select-picker button", 'background: #f4f4f4; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 32px; text-align: left; line-height: 28px; font-weight: 500; padding-right: 32px; position: relative;');
+					AddCSSRule('', ".select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 15px; top: 15px;');
+					AddCSSRule('', ".select-picker button:hover", 'border-color: #adadad;');
+					AddCSSRule('', ".select-picker.open button", ' background: #000; color: #ffffff;');
+					AddCSSRule('', ".select-picker li", 'min-height: 36px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 4px 10px 0px 10px; line-height: 36px;');
+					AddCSSRule('', ".select-picker li:not(.searcher):hover", 'background: #000; color: #fff;');
+					AddCSSRule('', ".select-picker .searcher", 'position: relative; padding: 3px 40px 0 4px; min-height: 39px; border-bottom: 1px solid rgba(0,0,0,0.1);');
+					AddCSSRule('', ".select-picker .searcher .input-search", 'line-height: 36px;  height: 32px; padding-right: 26px; color: #000; width: 100%;');
+					AddCSSRule('', ".select-picker .search-icon::before", 'content: ""; background: #ccc; width: 10px; height: 3px; position: absolute; border-radius: 100px; top: 21px; right: 4px; transform: rotate(40deg);');
+					AddCSSRule('', ".select-picker .search-icon:after", 'content: ""; width: 10px; height: 10px; border: 3px solid #ccc; border-radius: 100px; display: block; position: absolute; top: 8px; right: 10px;');
+					AddCSSRule('', ".select-picker-active", 'background: #000; color: #fff;');
+				}
+			},
+			_curIndex: {},
+			_update: function(e, i){
+				// update HTML select
+				e = document.getElementById(e);
+				e.selectedIndex = i;
+				
+				// update selectpicker
+				e.nextElementSibling.children[0].innerText = e[i].innerText;
+				
+				// Close selectpicker list
+				e.nextElementSibling.classList.remove("open");
+				e.nextElementSibling.children[1].style.display = "none";
+			},
+			_windowListener: function(e){
+				var p = e.target;
+				while (p != document && !p.classList.contains("select-picker")){
+					p = p.parentNode;
+				}
+				
+				if(p == document){
+					var items = document.querySelectorAll("div.select-picker");
+					for(var i = 0; i < items.length; i++){
+						items[i].classList.remove("open");
+						items[i].querySelector(".dropdown-container").style.display = 'none';
+					}
+				}
+			},
+		}
+	}
 	
 	/**
-		 Create and send forms in real time.
+		Create and send forms in real time.
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
