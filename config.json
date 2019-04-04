@@ -19,9 +19,10 @@
 		"IsMobile": true,
 		"Language": true,
 		"Now": true,
+		"Selectpicker": true,
 		"SendForm": true,
 		"StripTags": true,
-		"TreeView": true,
+		"Treeview": true,
 		"Validator": true
 	}
 }
