@@ -55,7 +55,7 @@ if(it.enabledModules.Alert){
 		additional: [
 			{
 				description: 'You can customize the styles through CSS rules. For example:',
-				example: '// styles.css (from your site)\n.Alert .btn-cancel { padding: 5px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n.Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n.Alert footer { position: relative; top: 5px; padding: 10px 10px 8px; height: auto; display: inline-block; width: 100%; margin: 0px; }\n.Alert .Alert-body { background-color: rgb(240, 0, 32); color: rgb(255, 255, 255); display: inline-block; width: 100%; padding: 10px; min-height: 100px; font-weight: 600; }\n.Alert header i { float: right; color: rgb(240, 240, 240); cursor: pointer; padding: 0px 2px; }\n.Alert header h3 { font-size: 14px; margin: 0px; color: rgb(240, 240, 240); display: inline-block; }\n.Alert header { padding: 10px 8px; background-color: rgb(208, 0, 16); border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: rgb(240, 240, 240); }\n.Alert { width: 400px; margin: 100px auto 0px; background-color: rgb(240, 0, 32); overflow: hidden; color: rgb(255, 255, 255); }\n.Alert-overlay { position: fixed; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; left: 0px; top: 0px; display: block; z-index: 999999; }\nbody.fixed { position: fixed; width: 100%; }\nbody.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }'
+				example: '_CSS_// styles.css (from your site)\n.Alert .btn-cancel { padding: 5px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n.Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n.Alert footer { position: relative; top: 5px; padding: 10px 10px 8px; height: auto; display: inline-block; width: 100%; margin: 0px; }\n.Alert .Alert-body { background-color: rgb(240, 0, 32); color: rgb(255, 255, 255); display: inline-block; width: 100%; padding: 10px; min-height: 100px; font-weight: 600; }\n.Alert header i { float: right; color: rgb(240, 240, 240); cursor: pointer; padding: 0px 2px; }\n.Alert header h3 { font-size: 14px; margin: 0px; color: rgb(240, 240, 240); display: inline-block; }\n.Alert header { padding: 10px 8px; background-color: rgb(208, 0, 16); border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: rgb(240, 240, 240); }\n.Alert { width: 400px; margin: 100px auto 0px; background-color: rgb(240, 0, 32); overflow: hidden; color: rgb(255, 255, 255); }\n.Alert-overlay { position: fixed; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; left: 0px; top: 0px; display: block; z-index: 999999; }\nbody.fixed { position: fixed; width: 100%; }\nbody.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }_CSS_'
 			}
 		],
 		theme: {
@@ -730,7 +730,7 @@ if(it.enabledModules.Selectpicker){
 			},
 			{
 				description: 'To custom Selectpicker through CSS:',
-				example: '<bool>.select-picker{</bool>\n\tposition: relative;\n\twidth: 100%;\n</bool>}</bool>\n<bool>.select-picker .dropdown-container{</bool>\n\tlist-style: none;\n\tbackground: #fff;\n\tborder: 1px solid rgba(0,0,0,0.1);\n\tpadding: 0;\n\tposition: absolute;\n\ttop: 53px;\n\twidth: 100%;\n\tz-index: 99999;\n</bool>}</bool>\n<bool>.select-picker ul{</bool>\n\toverflow: auto;\n\tmax-height: 164px;\n\tpadding: 0;\n\tlist-style: none;\n\tmargin: 0;\n</bool>}</bool>\n<bool>.select-picker button{</bool>\n\tbackground: #f4f4f4;\n\tborder: 1px solid rgba(0,0,0,0.1);\n\twidth: 100%;\n\theight: 54px;\n\ttext-align: left;\n\tline-height: 70px;\n\tfont-weight: 500;\n</bool>}</bool>\n<bool>.select-picker button::before{</bool>\n\tcontent: "";\n\tdisplay: inline-block;\n\twidth: 0;\n\theight: 0;\n\tmargin-left: 2px;\n\tvertical-align: middle;\n\tborder-top: 4px dashed;\n\tborder-right: 4px solid transparent;\n\tborder-left: 4px solid transparent;\n\tposition: absolute;\n\tright: 15px;\n\ttop: 26px;\n</bool>}</bool>\n<bool>.select-picker button:hover{</bool>\n\tborder-color: #adadad;\n</bool>}</bool>\n<bool>.select-picker.open button{</bool>\n\tbackground: #02a5a5;\n\tcolor: #ffffff;\n</bool>}</bool>\n<bool>.select-picker li{</bool>\n\tmin-height: 36px;\n\tborder-bottom: 1px solid rgba(0,0,0,0.1);\n\tpadding: 4px 10px 0px 10px;\n\tline-height: 36px;\n</bool>}</bool>\n<bool>.select-picker li:not(.searcher):hover{</bool>\n\tbackground: #02A5A5;\n\tcolor: #fff;\n\twidth: 100%;\n</bool>}</bool>\n<bool>.select-picker .searcher{</bool>\n\tposition: relative;\n\tpadding: 3px 40px 0 4px;\n\tmin-height: 39px;\n\tborder-bottom: 1px solid rgba(0,0,0,0.1);\n</bool>}</bool>\n<bool>.select-picker .searcher .input-search{</bool>\n\tline-height: 36px;\n\theight: 32px;\n\tpadding-right: 26px;\n\tcolor: #fff;\n</bool>}</bool>\n<bool>.select-picker .search-icon::before{</bool>\n\tcontent: "";\n\tbackground: #ccc;\n\twidth: 10px;\n\theight: 3px;\n\tposition: absolute;\n\tborder-radius: 100px;\n\ttop: 21px;\n\tright: 6px;\n\ttransform: rotate(40deg);\n</bool>}</bool>\n<bool>.select-picker .search-icon:after{</bool>\n\tcontent: "";\n\twidth: 16px;\n\theight: 16px;\n\tborder: 3px solid #ccc;\n\tborder-radius: 100px;\n\tdisplay: block;\n\tposition: absolute;\n\ttop: 8px;\n\tright: 12px;\n</bool>}</bool>\n<bool>.select-picker-active{</bool>\n\tbackground: #02a5a5;\n\tcolor: #fff;\n</bool>}</bool>'
+				example: '.select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}'
 			},
 		],
 		init: {
@@ -819,7 +819,7 @@ if(it.enabledModules.Treeview){
 		additional: [
 			{
 				description: 'You can customize the styles through CSS rules. For example:',
-				example: '// styles.css (from your site)\nul.treeview li .active { background: lightgray; color: rgb(51, 51, 51); }\nul.treeview li.search-box input { width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); }\nul.treeview li i.icon { margin-right: 8px; }\nul.treeview li span { padding: 2px 5px; display: inline-block; }\nul.treeview li a { color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\nul.treeview li.collapsed ul { max-height: 0px; }\nul.treeview li ul { transition: all 0.3s ease 0s; max-height: 10000px; overflow: hidden; }\nul.treeview li i { cursor: pointer; }\nul.treeview li { color: rgb(0, 0, 0); }\nul.treeview, ul.treeview ul { list-style: none; }\nul.treeview { background: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }'
+				example: '_CSS_// styles.css (from your site)\nul.treeview li .active { background: lightgray; color: rgb(51, 51, 51); }\nul.treeview li.search-box input { width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); }\nul.treeview li i.icon { margin-right: 8px; }\nul.treeview li span { padding: 2px 5px; display: inline-block; }\nul.treeview li a { color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\nul.treeview li.collapsed ul { max-height: 0px; }\nul.treeview li ul { transition: all 0.3s ease 0s; max-height: 10000px; overflow: hidden; }\nul.treeview li i { cursor: pointer; }\nul.treeview li { color: rgb(0, 0, 0); }\nul.treeview, ul.treeview ul { list-style: none; }\nul.treeview { background: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }_CSS_'
 			}
 		],
 		classLeaf: {
@@ -924,7 +924,7 @@ if(it.enabledModules.Validator){
 		additional: [
 			{
 				description: 'You can customize de validator-error and validator-error-msg class through CSS styles.',
-				example: '// Custom style to input field\n.validator-error\t{ box-shadow: 0 0 0 2px #f00 inset }\n//Custom color validation message\n.validator-error-msg\t{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }'
+				example: '_CSS_// Custom style to input field\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Custom color validation message\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
 			}
 		],
 		set: {
@@ -1121,7 +1121,7 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r func', 'color: ' + opt.funcColor + ';');
 		AddCSSRule('', '#h31p3r name', 'color: ' + opt.funcNameColor + ';');
 		AddCSSRule('', '#h31p3r null', 'color: ' + opt.nullColor + ';');
-		AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool', 'color: ' + opt.commentColor + ';');
+		AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
 		AddCSSRule('', '#h31p3r code, #h31p3r pre code', 'color: ' + opt.exampleColor + '; padding-left: 32px; display: block; ');
 		AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
 		AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 32px; top: 15px; width: 24px; height: 24px; opacity: 0.3; z-index:9; cursor: pointer;');
@@ -1189,6 +1189,13 @@ this.Helper = it.Helper = function (func, cfg) {
 
 	function styleItems(key, items) {
 		var text = '';
+		
+		var isCSS = items.join('|').match(/_CSS_(.*?)_CSS_/g);
+		if(isCSS){
+			items = highlightCSS(isCSS);
+			items = items.join().replace(/_CSS_/ig, '').split("|");
+		}
+
 		for (var i = 0; i < items.length; i++) {
 			var aux = items[i];
 
@@ -1199,7 +1206,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			}
 
 			// Set color and content to example lines
-			if (key == "example") {
+			if (key == "example" && !isCSS) {
 				aux = aux.replace(/[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+|px|em|rem|%|s)?/ig, function (s) { return '<int>' + s + '</int>' });
 				aux = aux.replace(/"(.*?)"/g, function (s) { return '<str>' + s + '</str>' });
 				aux = aux.replace(/'(.*?)'/g, function (s) { return '<str>' + s + '</str>' });
@@ -1209,11 +1216,55 @@ this.Helper = it.Helper = function (func, cfg) {
 				aux = aux.indexOf("//") != -1 ? ('<comm>' + aux + '</comm>') : aux;
 				aux = aux.replace(new RegExp(func + "(\\.|\\()", "ig"), function($0, $1){ return "<name>" + $0.substr(0, $0.length-1) + "</name>" + $1})
 				aux += '<br/>';
-			}
 
-			text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+
+			} else if (key == "example" && isCSS) {
+				text += aux;
+			}
 		}
 		return text;
+	}
+
+	function highlightCSS(txt){
+		for(var c = 0; c < txt.length; c++){
+			var item = txt[c];
+			
+			if(typeof it.StripTags == "function") item = it.StripTags(item, '');
+			
+			var props = item.match(/\{.*?\}/g), rulesNew = '';
+			var sltrs = item.split("}");
+	
+			for(var i = 0; i < props.length; i++){
+				var feats = props[i].split(";");
+				var key = (sltrs[i]+"}").replace(props[i], '');
+				var str = '';
+			
+				for(var j = 0; j < feats.length; j++){
+					var feat = feats[j].trim().replace("{", '').replace("}", '').trim();
+					if(feat != "") 
+						str += "\n\t<null>" + feat.substr(0, feat.indexOf(":")) + "</null>:" + feat.substr(feat.indexOf(":") + 1) + "; ";
+				}
+				str += "\n}";
+				
+				rulesNew += "<name>" + key + "</name> { " + str + "<br/>";
+			}
+			txt[c] = txt[c].replace(item, rulesNew);
+
+			var aux = txt[c].split("|");
+			for(var x = 0; x < aux.length; x++){
+				if(aux[x].indexOf("//") != -1 && aux[x].indexOf("<name>") != -1){
+					aux[x] = '<comm>' + aux[x] + '</name></comm><name>';
+				} else if(aux[x].indexOf("//") != -1 && aux[x].indexOf("<name>") == -1){
+					aux[x] = '<comm>' + aux[x] + '</comm>';
+				} 
+
+				aux[x] += '|';
+			}
+			txt[c] = aux.join("\n");
+		}
+
+		return txt;
 	}
 
 	function printIntoConsole(json) {
@@ -1248,12 +1299,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			arr.push(style);
 			arr.push('');
 
-			if (style == _string) {
-				//if(/<b>/.test(match)){ arr.push(_bold); arr.push(''); }
-				//if(/<\/b>/.test(match)){ arr.push(_normal); arr.push(''); }
-
-				match = match.replace(/<b>/gm, "«").replace(/<\/b>/gm, "»");
-			}
+			if (style == _string) match = match.replace(/<b>/gm, "«").replace(/<\/b>/gm, "»");
 
 			match = match.replace(/\\t/ig, "\t")
 				.replace(/\\n/ig, "\n")
@@ -1295,4 +1341,3 @@ this.showHelper = it.showHelper = function(cs, cfg){
 		return;
 	}
 }
-
