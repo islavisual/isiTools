@@ -5,7 +5,7 @@ var WikiHelper = {}
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2019 Islavisual. 																	
-   @Last update: 13/03/2019																			
+   @Last update: 05/04/2019																			
  **/
 
 if(it.enabledModules.AddCSSRule){
@@ -13,11 +13,11 @@ if(it.enabledModules.AddCSSRule){
 		general: {
 			version: 1.0,
 			name: 'AddCSSRule',
-			description: "Functionality to create add rules to style sheets. This function is feed four parameters: sheet, selector, styles and index.",
+			description: "Functionality to create and/or update rules into the stylesheets. This function is feed four parameters: sheet, selector, styles and index.",
 		},
 		sheet: {
 			type: 'string',
-			description: 'Style sheet where the rule will be inserted. This parameter can take 3 values:\n\t● <b>""</b>: Indicates that a new style sheet must be created (created at the beginning of the head of page).\n\t● <b>Integer</b>: Indicates the number of index or position inside head of page where the stylesheet was inserted.\n\t● <b>Object</b>: Indicates a CSSStyleSheet Object of JavaScript.',
+			description: 'This parameter indicates the stylesheet where the rule will be inserted. Can take 3 values:\n\t● <b>""</b>: Indicates that a new style sheet must be created (created at the beginning of the head of page).\n\t● <b>Integer</b>: Indicates the number of index or position inside head of page where the stylesheet was inserted.\n\t● <b>Object</b>: Indicates a CSSStyleSheet Object of JavaScript.',
 			example: '// Insert new stylesheet with the new rule\nAddCSSRule("", ".input", "background-color: lightgray; color: #333");\n\n// Insert a new rule into stylesheet ID equal to 0\nAddCSSRule(0, "#name", "background-color: lightgray; color: #333");\n\n// Insert a new rule into CSSStyleSheet identifies by 0\nAddCSSRule(document.styleSheets[0], "input", "background-color: lightgray; color: #333");',
 		},
 		selector: {
@@ -65,8 +65,8 @@ if(it.enabledModules.Alert){
 		},
 		class: {
 			type: 'string',
-			description: 'Add a class rule to alert. This is useful if you want to define customized alerts through CSS rules, for example.',
-			example: 'new Alert({title: "Warning!", body:"The field is empty.", class: "danger"});'
+			description: 'Add a CSS rule to alert. This is useful if you want to define customized alerts through CSS rules, for example.',
+			example: 'new Alert({title: "Warning!", body:"The field is empty.", class: "warning"});'
 		},
 		title: {
 			type: 'string',
@@ -185,7 +185,7 @@ if(it.enabledModules.Benchmark){
 		},
 		maxIterations:{
 			type: 'Integer',
-			description: 'Set the maximum operation by test. By default is "0x3FFFFFFF" (1 TB)',
+			description: 'Set the maximum number of operations per test. By default is "0x3FFFFFFF" (1 TB)',
 			example: 'Benchmark.maxIterations = 2500000;'
 		},
 		showLog:{
@@ -219,7 +219,7 @@ if(it.enabledModules.Constraint){
 		base: {
 			type: 'integer',
 			description: 'The "base" parameter establishes a numerical base different to 10, the one established by default. The binary type automatically sets the base to 2. The hexadecimal type automatically sets the base to 16.',
-			example: 'new Constraint.set({target: "inputTextID", type: "decimal", base: 2});'
+			example: 'new Constraint.set({target: "inputTextID", type: "decimal", base: 2});\n// Through binary type\nnew Constraint.set({target: "inputTextID", type: "binary"});'
 		},
 		decimalpoint: {
 			type: 'string',
@@ -229,7 +229,7 @@ if(it.enabledModules.Constraint){
 		function: {
 			type: 'function',
 			description: 'The "function" parameter defines the validation function that will control the input format and the supported values. The validation performed by this function can be defined through regular expressions (in the case of the subtype "binary", the function could be "return /^(0|1)*$/.test(value);") although it\'s not mandatory. If the "function" parameter is defined, the "type" parameter must also be set to "custom".',
-			example: '// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
+			example: '// Example of Custom subtype (Number in octal format).\nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
 		},
 		indicators: {
 			type: 'object',
@@ -277,11 +277,11 @@ if(it.enabledModules.Debugger){
 			version: 1.0,
 			name: 'Debugger',
 			help: 1,
-			description: 'Automatic Debugger to develop with simpaty!.'  
+			description: 'Automatic debugger to help you know everything that happens on your page!. From when user make a click to what ajax calls are executed in background.'  
 		},
 		init: {
 		type: "function",
-		description: "It is very easy to install and configure. It is enough to include the library in the HEAD of the page and a single instruction.",
+		description: "Easy to init. You can init by console or a new window (screen).",
 		example: '// To debug through console\nDebugger.init("console");\n// To debug in an external window\nDebugger.init("window");'
 		},
 		attributesFilter: {
@@ -311,7 +311,7 @@ if(it.enabledModules.Debugger){
 		},
 		enableHistory:{
 			type: "boolean",
-			description: "It is possible to export the event history to a log file. To activate this feature, first, the enableHistory flag must be activated.",
+			description: "It is possible to export the event history to a log file. By default, enableHistory is false.",
 			example: '// Activate the history (normally, established with the init () method)\nDebugger.enableHistory = true;\nDebugger,init();\n// ...\n// ... Actions ...\n// ...\n// Retrieve the history so far in a thread.\nDebugger.getHistory();',
 		},
 		getHistory:{
@@ -321,12 +321,12 @@ if(it.enabledModules.Debugger){
 		},
 		messages: {
 			type: "Object",
-			description: 'You can define personalized messages for each type of event or mutation.',
+			description: 'You can define custom messages for each type of event or mutation.',
 			example: "messages:{\n\tajaxBeforeSend:'Processing request. Method: &lt;method>. Type: &lt;type>. CrossDomain: &lt;crossDomain>.  File: &lt;url>. Content Type: &lt;contentType>',\n\tajaxComplete:'The Ajax processing request FINISHED for the &lt;url> file.',\n\tajaxSuccess:'The Ajax request was completed SUCCESSFULLY for the &lt;url> file.',\n\tajaxError:'An error occurred into Ajax processing request into &lt;url> file.',\n\tbeforeUnloadPage:'Page request unload',\n\tunloadPage:'Unloaded page',\n\terrorPage:'An error occurred into file',\n\tparsedPage:'Page loaded and parsed.',\n\tpageChangedStatus:'Page changed status:',\n\tvalueChanged: 'The &lt;selector> changed the value property to &lt;value>.',\n\tgetsFocus: '&lt;selector> gets focus.',\n\tlosesFocus: '&lt;selector> loses focus.',\n\tclick: 'User clicks into &lt;selector>.',\n\tattributeMutation: 'The &lt;attributeName> attribute has mutated from \"&lt;oldValue>\" to \"&lt;value>\" into &lt;selector> element.',\n\taddedChildren: 'Added children into &lt;selector> element. Total children: &lt;totalChildren>',\n\tremovedChildren: 'Removed children into &lt;selector> element. Total children: &lt;totalChildren>',\n\tmouseOver: 'The mouse pointer is over the &lt;selector> element.',\n\tmouseOut: 'The mouse pointer leaves the &lt;selector> element.',\n\tkeyPress: 'Keyboard event received into &lt;selector> element. Keys Combination: \"&lt;keys>\". Keys Combination Code: \"&lt;keysCode>\".',\n\tseparator: '&lt;div style=\"border: 1px solid #333; border-width: 0px 0px 1px 0px; height:5px; width:100%;margin-bottom: 5px;\">&nbsp;&lt;/div>'\n}"
 		},
 		colors: {
 			type: "Object",
-			description: '',
+			description: 'You can define custom colors for each type of event or mutation.',
 			example: "colors: {\n\t// For elements added in the DOM\n\tadded:\"#709050\",\n\t// For changes in attributes in the DOM\n\tattributeChanged: '#ff00ff',\n\t// Background of the Debugger window\n\tbackground:\"#000000\",\n\t// For events Blur\n\tblur:\"#907080\",\n\t// For Focus events\n\tfocus:\"#9070a0\",\n\t// For events Click\n\tclick:\"#909090\",\n\t// For Mouse Over events\n\tmouseOver:\"#a07090\",\n\t// For Mouse Out events\n\tmouseOut:\"#807090\",\n\t// For Keypress events\n\tkeyPress:\"#80a090\",\n\t// For detected errors\n\terror: '#a02020',\n\t// Header Text\n\theaderForeground:\"#ffffff\",\n\t// Header Background\n\theaderBackground:\"#333\",\n\t// For standard and unregistered changes\n\tnormal:\"#606060\",\n\t// For Ajax in mode Processing\n\tproccessing:\"#8AC007\",\n\t// For state changes of Ajax\n\treadyState:\"#8AC007\",\n\t// For deleted items in the DOM\n\tremoved:\"#a01010\",\n\t// For Ajax in Sending\n\tsending mode:\"#8AC007\",\n\t// For Ajax in Updating mode\n\tupdated:\"#80a0e0\",\n\t// For changes to the value attributes\n\tvalueChanged:\"#FE2466\"\n}"
 		}
 	}
@@ -439,8 +439,8 @@ if(it.enabledModules.HttpRequest){
 			description: "HttpRequest is a client script that provides a simple way to make remote requests or transfer data between a client and a server. This plugin is created entirely in JavaScript and designed to improve the performance of the application.",
 		},
 		ajax: {
-			type: 'string',
-			description: 'Boolean that indicates whether the request should be executed synchronously or not.',
+			type: 'boolean',
+			description: 'Boolean that indicates whether the request should be executed synchronously (false) or asynchronously (true).',
 			example: 'new HttpRequest({url: "index.html", ajax: true})'
 		},
 		callback: {
@@ -559,7 +559,7 @@ if(it.enabledModules.Include){
 		attribute: {
 			type: 'string',
 			description: 'The "attribute" parameter indicates what HTML custom data attribute will be used to recovery URL that will include data inside container layers (usually DIV, SECTION, ARTICLE,...).',
-			example: '// Suppose the next source code with data-includes\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({attribute: "data-include"});'
+			example: '// Suppose the next source code with "data-include"\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({attribute: "data-include"});'
 		},
 		target: {
 			type: 'string',
@@ -1221,6 +1221,8 @@ this.Helper = it.Helper = function (func, cfg) {
 
 			} else if (key == "example" && isCSS) {
 				text += aux;
+			} else {
+				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 			}
 		}
 		return text;
@@ -1341,3 +1343,4 @@ this.showHelper = it.showHelper = function(cs, cfg){
 		return;
 	}
 }
+
