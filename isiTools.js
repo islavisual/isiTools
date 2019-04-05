@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "03/04/2019",
+	lastupdate: "05/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -1877,7 +1877,7 @@ function isiToolsCallback(json){
 
 			SELF.ready = function (callback) {
 				if (typeof callback == "string" && callback == "help" || callback.hasOwnProperty("help")) {
-					if (typeof showHelper != "undefined") showHelper("DOM", cfg);
+					if (typeof showHelper != "undefined") showHelper("DOM", callback);
 					else alert("Helper not available!")
 					return;
 				}
@@ -2623,7 +2623,8 @@ function isiToolsCallback(json){
 			},
 			_windowListener: function(e){
 				var p = e.target;
-				while (p != document && !p.classList.contains("select-picker")){
+				
+				while (p != document && p.getAttribute("class") && !p.classList.contains("select-picker")){
 					p = p.parentNode;
 				}
 				
