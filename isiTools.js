@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "05/04/2019",
+	lastupdate: "03/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -348,6 +348,7 @@ function isiToolsCallback(json){
 				target: document.getElementById(cfg.target),
 				minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
 				showHeaders: !cfg.hasOwnProperty('showHeaders') ? false : cfg.showHeaders,
+				startsWith: !cfg.hasOwnProperty('startsWith') ? false : cfg.startsWith,
 				tableFields: cfg.tableFields
 			}
 
@@ -409,9 +410,34 @@ function isiToolsCallback(json){
 				// Go through the data
 				for (i = 0; i < opt.data.length; i++) {
 					// Check if the item contains the text field value
-					var cval = opt.format == "layer" ? opt.data[i] : JSON.stringify(opt.data[i]);
-
-					if (cval.toUpperCase().indexOf(val.toUpperCase()) != -1) {
+					var cval = '', found;
+					if(opt.format != "layer"){
+						cval = '|';
+						for(var keyVal in opt.data[i]){
+							var valAux = opt.data[i][keyVal];
+							cval += (typeof valAux == "object" ? valAux.join("|") : valAux) + "|";
+						}
+					} else {
+						cval = opt.data[i];
+					}
+					
+					// Check if the entry stars with and if the format is object
+					if(opt.format != "layer"){
+						if(opt.startsWith){
+							found = cval.toUpperCase().indexOf('|' + val.toUpperCase()) != -1;
+						} else {
+							found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+						}
+					} else {
+						if(opt.startsWith){
+							found = cval.toUpperCase().indexOf(val.toUpperCase()) == 0;
+						} else {
+							found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+						}
+					}
+					
+					// If item is found
+					if (found) {
 						b = document.createElement("div");
 						var bc = null;
 
@@ -457,7 +483,12 @@ function isiToolsCallback(json){
 						// If format is cluster, add all sub-items
 						if (opt.format == "cluster") {
 							for (var z = 0; z < opt.data[i].items.length; z++) {
-								if (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) != -1) {
+								if(opt.startsWith){
+									found = cval.toUpperCase().indexOf('|' + val.toUpperCase()) != -1;
+								} else {
+									found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+								}
+								if (opt.startsWith ? (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) == 0) : (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) != -1)) {
 									b = document.createElement("div");
 									b.classList.add("value");
 									b.style.width = "100%";
