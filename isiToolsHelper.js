@@ -5,7 +5,7 @@ var WikiHelper = {}
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2019 Islavisual. 																	
-   @Last update: 05/04/2019																			
+   @Last update: 13/03/2019																			
  **/
 
 if(it.enabledModules.AddCSSRule){
@@ -150,6 +150,11 @@ if(it.enabledModules.Autocomplete){
 			type: 'boolean',
 			description: 'This parameter is only valid for "table" format. Indicates to Autocomplete plugin that the table headers must be shown. By default is false.',
 			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", showHeaders: true, data: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
+		},
+		startsWith: {
+			type: 'boolean',
+			description: 'This parameter indicates whether the search match should start with the entered string or it can be contained in any position. By default is false.',
+			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({\n\ttarget: "transportBox",\n\tformat: "table",\n\tshowHeaders: true,\n\tdata: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
 		},
 		tableFields: {
 			type: 'integer',
@@ -641,7 +646,7 @@ if(it.enabledModules.IntelliForm){
 		},
 		target:{
 			type: "object",
-			description: "Array of selectors of the elements where the the IntelliForm undo will be enabled.",
+			description: "Selector array with the elements where the IntelliForm functionalities will be enabled.",
 			example: 'IntelliForm.setUndo({target: ["#email", "#zipcode"]});',
 		}
 	}
@@ -741,7 +746,7 @@ if(it.enabledModules.Selectpicker){
 		target: {
 			type: 'string',
 			description: 'If init method receives a string, this string will takes as target pattern. If init method receives an object, the target parameter will be the pattern to initialize the dropdowns.',
-			example: '//Through simple way:\nSelectpicker.init(target: ".select-picker");\n\n// Through target parameter:\nSelectpicker.init({ target: ".select-picker" });'
+			example: '//Through simple way:\nSelectpicker.init(".select-picker");\n\n// Through target parameter:\nSelectpicker.init({ target: ".select-picker" });'
 		},
 		liveSearch: {
 			type: 'boolean',
@@ -773,7 +778,7 @@ if(it.enabledModules.SendForm){
 		},
 		params: {
 			type: 'string',
-			description: 'Parameter to send to the remote URI.',
+			description: 'Parameters that will be sent as part of the form.',
 			example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
 		},
 	}
@@ -1343,4 +1348,3 @@ this.showHelper = it.showHelper = function(cs, cfg){
 		return;
 	}
 }
-
