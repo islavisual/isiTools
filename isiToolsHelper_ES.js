@@ -5,7 +5,7 @@ var WikiHelper = {}
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2019 Islavisual. 																	
-   @Last update: 05/04/2019																			
+   @Last update: 04/04/2019																			
  **/
 
 if(it.enabledModules.AddCSSRule){
@@ -149,7 +149,12 @@ if(it.enabledModules.Autocomplete){
 		showHeaders: {
 			type: 'boolean',
 			description: 'Este parámetro solo es válido para el formato de "table". Indica al complemento Autocompletar que se deben mostrar los encabezados de la tabla. Por defecto es false.',
-			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", showHeaders: true, data: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
+			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({\n\ttarget: "transportBox",\n\tformat: "table",\n\tshowHeaders: true,\n\tdata: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
+		},
+		startsWith: {
+			type: 'boolean',
+			description: 'Este parámetro indica si la coincidencia de búsqueda debe comenzar con la cadena ingresada o puede estar contenida en cualquier posición. Por defecto es false.',
+			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({\n\ttarget: "transportBox",\n\tstartsWith: true,\n\tformat: "table",\n\tshowHeaders: true,\n\tdata: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
 		},
 		tableFields: {
 			type: 'integer',
@@ -248,7 +253,7 @@ if(it.enabledModules.Constraint){
 		},
 		type: {
 			type: 'string',
-			description: 'El parámetro "type" define el formato o el tipo de datos que permitirá el control. Los valores aceptados son:\n\t● <b>int</b>: Los valores permitidos son únicamente enteros positivos y negativos.\n\t● <b>uint</b>: Los valores permitidos son únicamente enteros positivos.\n\t● <b>float</b>: Los valores permitidos son enteros y números reales con decimales infinitos.\n\t● <b>decimal</b>: Los valores permitidos son enteros y números reales con dos decimales.\n\t● <b>percent</b>: Los valores permitidos son entre 0 y 100.\n\t● <b>binary</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso 0 y 1.\n\t● <b>hexadecimal</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso de 0 a 9 y de A a F.\n\t● <b >hour</b>: Los valores permitidos son de 00:00 a 23:59.\n\t● <b>custom</b>: Permite definir una función de tipo personalizado. El subtipo "custom" se alimenta del parámetro "function", por lo que si el control se define como "custom", será obligatorio (el parámetro "function").',
+			description: 'El parámetro "type" define el formato o el tipo de datos que permitirá el control. Los valores aceptados son:\n\t● <b>int</b>: Los valores permitidos son únicamente enteros positivos y negativos.\n\t● <b>uint</b>: Los valores permitidos son únicamente enteros positivos.\n\t● <b>float</b>: Los valores permitidos son enteros y números reales con decimales infinitos.\n\t● <b>decimal</b>: Los valores permitidos son enteros y números reales con dos decimales.\n\t● <b>percent</b>: Los valores permitidos son entre 0 y 100.\n\t● <b>binary</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso 0 y 1.\n\t● <b>hexadecimal</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso de 0 a 9 y de A a F.\n\t● <b>hour</b>: Los valores permitidos son de 00:00 a 23:59.\n\t● <b>custom</b>: Permite definir una función de tipo personalizado. El subtipo "custom" se alimenta del parámetro "function", por lo que si el control se define como "custom", será obligatorio (el parámetro "function").',
 			example: '// Example of Integer subtype\nnew Constraint.set({target: "inputTextID", type: "int"});\n\n// Example of Hour subtype\nnew Constraint.set({target: "inputTextID", type: "hour"});\n\n// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
 		},
 		increment: {
@@ -576,66 +581,66 @@ if(it.enabledModules.IntelliForm){
 			version: 1.0,
 			name: 'IntelliForm',
 			help: 1,
-			description: 'IntelliForm is a tool make operations with your forms. You can add form elements, make post request through JSON, automate browser sequences, handle undo/redo actions and so much.'  
+			description: 'IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.'
 		},
 		addElement: {
 			type: "object",
-			description: 'It allows adding elements to a form through JSON object. The valid JSON properties are the typical of HTML except "dataset" and "validate" that have specific format.\n\t● <b>dataset</b>:" is a JSON with name and value attributes.\n\t● <b>validate</b>:" is equal to Validator format without target parameter. For more information see Validator.help().',
-			example: 'IntelliForm.addElements({\n\ttarget: "formID",\n\tdata:[\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "age",\n\t\t\tclass: "form-item",\n\t\t\ttype: "number",\n\t\t\tmin: 18,\n\t\t\tmax: 100,\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\t\t\t\tmessage: "The possibles values are from 18 to 100"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "username",\n\t\t\tclass: "form-item",\n\t\t\ttype: "text",\n\t\t\tdataset: [\n\t\t\t\t{name: "id", value: "0"},\n\t\t\t\t{name: "logged", value: "true"}\n\t\t\t],\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "pwd",\n\t\t\tclass: "form-item",\n\t\t\ttype: "password",\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\trequired: true,\n\t\t\t\tconstraint: "!this.validity.patternMismatch",\n\t\t\t\tmessage: "Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters",\n\t\t\t\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\t\t\t},\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t}\n\t]\n});'
+			description: 'Esta funcionalidad permite agregar elementos a un formulario a través del objeto JSON en tiempo de ejecución. Las propiedades JSON válidas son las típicas de HTML excepto "dataset" y "validate" que tienen un formato específico.\n\t● <b>dataset</b>: Es un JSON con atributos de nombre y valor.\n\t● <b>validate</b>: Es igual al formato Validator sin parámetro de destino. Para obtener más información, se puede consultar la ayuda del Validador de isiTools ejecutando "Validator.help()".',
+			example: 'IntelliForm.addElements({\n\ttarget: "formID",\n\tdata:[\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "age",\n\t\t\tclass: "form-item",\n\t\t\ttype: "number",\n\t\t\tmin: 18,\n\t\t\tmax: 100,\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\t\t\t\tmessage: "Los posibles valores son entre 18 y 100"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "username",\n\t\t\tclass: "form-item",\n\t\t\ttype: "text",\n\t\t\tdataset: [\n\t\t\t\t{name: "id", value: "0"},\n\t\t\t\t{name: "logged", value: "true"}\n\t\t\t],\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "pwd",\n\t\t\tclass: "form-item",\n\t\t\ttype: "password",\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\trequired: true,\n\t\t\t\tconstraint: "!this.validity.patternMismatch",\n\t\t\t\tmessage: "Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres",\n\t\t\t\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\t\t\t},\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t}\n\t]\n});'
 		},
 		autofill: {
 			type: "function",
-			description: 'It allows refilling all the fields with the values than was ​​captured through the functionality "enableUndo".',
+			description: 'Permite rellenar todos los campos con los valores que se capturaron a través de la funcionalidad "enableUndo".',
 			example: 'IntelliForm.autofill();'
 		},
 		setUndo: {
 			type: "function",
-			description: 'Provides the necessary logic to manage all the changes that are made inside input and select fields, even if the page is reloaded.',
-			example: '// Enable Undo for all input text type\nIntelliForm.setUndo({target: ["input[type=text]"]});\n\n// Another way is\nIntelliForm.target = ["name", "surname", "street", "phone", "email"];\nIntelliForm.setUndo();'
+			description: 'Proporciona la lógica necesaria para administrar todos los cambios que se realizan dentro de los input y select, incluso si la página se vuelve a cargar.',
+			example: '// Habilitar Deshacer para todo tipo de inputs.\nIntelliForm.setUndo({target: ["input[type=text]"]});\n\n// Otra forma es:\nIntelliForm.target = ["name", "surname", "street", "phone", "email"];\nIntelliForm.setUndo();'
 		},
 		startSequence: {
 			type: "function",
-			description: 'Provides a way to create one sequence of changes in "real time" about the current page to be played after, even when the page is reload.',
-			example: 'IntelliForm.startSequence();\n// To stop sequence you can reload the page.',
+			description: 'Proporciona una forma de crear una secuencia de cambios en "tiempo real" sobre la página actual para su reproducción posterior, incluso cuando la página se vuelve a cargar.',
+			example: 'IntelliForm.startSequence();\n// Para detener la secuencia se debe ejecutar la función de "stopSequence".',
 		},
 		stopSequence: {
 			type: "function",
-			description: 'Stops and saves the event log. This functionality only work if "startSequence" was enabled before, otherwise, this action it will have no effect any.',
+			description: 'Detiene y guarda el registro de eventos. Esta funcionalidad solo funciona si "startSequence" se habilitó antes, de lo contrario, esta acción no tendrá ningún efecto.',
 			example: 'IntelliForm.stopSequence();',
 		},
 		getSequence: {
 			type: "function",
-			description: 'Return the sequence about the current page.',
+			description: 'Devuelve la secuencia guardada para la página actual.',
 			example: 'IntelliForm.getSequence();\n// This will return something similar to:\n"[\n\t{"ts":0,"id":"_bodyItem58","event":"focusin"},\n\t{"ts":35,"id":"_bodyItem58","event":"click"},\n\t{"ts":37,"id":"_bodyItem58","event":"change","value":""}\n\t...\n]',
 		},
 		setSequence: {
 			type: "function",
-			description: 'Allow to set a new sequence to interact with the current page. This functionality receives a string type parameter with the steps to executing. The posibles properties inside sequence are:\n\t● <b>ts</b>: Indicates the time, in milliseconds, that must be elapsed between before and current change.\n\t● <b>id</b>: Indicates a valid ID name. You can execute the "setIDs" functionality before to assign the "id" property automaticaly.\n\t● <b>event</b>: Indicates the change type. The possibles events are: click, focusin, focusout, scroll, change and keydown.\n\t● <b>left</b>: Indicates the left position target into scroll events.\n\t● <b>key</b>: Indicates the character pressed into keydown events.\n\t● <b>keyCode</b>: Indicates the JavaScript key code pressed into keydown events.\n\t● <b>top</b>: Indicates the top position target into scroll events.\n\t● <b>value</b>: Indicates the value in change events.\n\r\nNote: The best way to create a sequence is use "startSequence" functionality.',
+			description: 'Permite establecer una nueva secuencia para interactuar con la página actual. Esta funcionalidad recibe un parámetro de tipo cadena con los pasos que se desean ejecutar. Las posibles propiedades dentro de la secuencia son:\n\t● <b>ts</b>: indica el tiempo, en milisegundos, que debe transcurrir entre el cambio anterior y actual.\n\t● <b>id</b>: Indica el nombre (de identificación válido) al que se aplicará el cambio. Puede ejecutar la funcionalidad "setIDs()" antes de asignar la propiedad "id" automáticamente.\n\t● <b>event</b>: indica el tipo de cambio. Los eventos posibles son: click, focusin, focusout, scroll, change y keydown.\n\t● <b>left</b>: indican la posición izquierda en eventos de desplazamiento (scroll).\n\t● <b>key</b>: indica el carácter que se presiona en los eventos keydown.\n\t● <b>keyCode</b>: indica el código de la tecla JavaScript presionado en los eventos keydown.\n\t● <b>top</b>: Indica la posición superior en los eventos de desplazamiento (scroll).\n\t● <b>value</b>: indica el valor del elemento en los eventos de tipo change.\n\r\nNota: la mejor manera de crear una secuencia es usar la funcionalidad "startSequence".',
 			example: 'IntelliForm.setSequence(\'[{"ts":0,"id":"_bodyItem58","event":"focusin"},{"ts":35,"id":"_bodyItem58","event":"click"},{"ts":37,"id":"_bodyItem58","event":"focusout"},...]\');',
 		},
 		removeSequence: {
 			type: "function",
-			description: 'Remove the sequence for current page.',
+			description: 'Eliminar la secuencia de la página actual.',
 			example: 'IntelliForm.removeSequence();',
 		},
 		playSequence: {
 			type: "function",
-			description: 'Allow playing a sequence. If the function parameter  is empty, its recover the sequence to current page.',
+			description: 'Permite reproducir una secuencia ya almacenada. Si el parámetro de la función está vacío, se recupera la secuencia a la página actual.',
 			example: 'IntelliForm.playSequence();',
 		},
 		setIDs: {
 			type: "function",
-			description: 'Assign the attribute "id" to all the elements that do not have it set.',
+			description: 'Asigna un atributo "id" secuencial a todos los elementos que no lo tengan establecido.',
 			example: 'IntelliForm.setIDs();',
 		},
 		send: {
 			type: "function",
-			description: 'Allows create and send forms in real time through Ajax with post method. The received parameters are: URL (to make the request) and JSON with list of inputs/elements to send.',
+			description: 'Permite crear y enviar formularios en tiempo real a través de Ajax con método post. Los parámetros recibidos son: URL (para realizar la solicitud) y JSON con los inputs/elementos a enviar.',
 			example: 'IntelliForm.send({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});',
 		},
 		target:{
 			type: "object",
-			description: "Array of selectors of the elements where the the IntelliForm undo will be enabled.",
+			description: "Array de selectores con los elementos donde se habilitarán las funcionalidades de IntelliForm.",
 			example: 'IntelliForm.setUndo({target: ["#email", "#zipcode"]});',
 		}
 	}
@@ -653,11 +658,11 @@ if(it.enabledModules.IsMobile){
 		general: {
 			version: 1.0,
 			name: 'IsMobile',
-			description: "This method indicates if the current device is \"mobile\" or not.",
+			description: "Este método indica si el dispositivo actual es \"mobile\" o no.",
 		},
 		additional: [
 			{
-				description: 'To know if the device is mobile:',
+				description: 'Para saber si el dispositivo es un dispositivo móvil:',
 				example: 'var mobile = new IsMobile();'
 			},
 		]
@@ -677,27 +682,27 @@ if(it.enabledModules.Language){
 			version: 1.0,
 			name: 'Language',
 			help: 1,
-			description: "This script allows you to activate and manage the multilanguage feature on your website.",
+			description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
 		},
 		init: {
 			type: 'function',
-			description: 'Assign and initialize the multilanguage feature.',
+			description: 'Asignar e inicializar la funcionalidad de multilenguaje.',
 			example: 'var availableLangs = [\n\t{id: "en-US", name: "English"},\n\t{id: "es-ES", name: "Spanish"},\n];\nvar translations = {\n\t"es-ES": [\n\t\t{ id: "Loading...", text: "Cargando..." },\n\t\t{ id: "Loaded!", text: "Cargado!" },\n\t\t{ id: "Comments", text: "Observaciones" }\n\t],\n\t"en-US": [\n\t\t{ id: "Loading...", text: "<i class="fa fa-spin"></i>" },\n\t\t{ id: "Loaded!", text: "OK!" }\n\t]\n};\nLanguage.init(availableLangs, translations);'
 		},
 		render: {
 			type: 'function',
-			description: 'Analyzes all the document and replace all pattern matches. This functionality is feeds of "data-tkey", "data-placeholder-tkey" and "data-title-tkey" attributes.',
+			description: 'Analiza todo el documento y reemplaza todas las coincidencias de patrones. Esta funcionalidad se alimenta de los atributos "data-tkey", "data-placeholder-tkey" y "data-title-tkey".',
 			example: '// The availableLangs and translations objects are defined before.\n// For example, supposed the next HTML code:\n//\t&lt;label for="notes" data-tkey="Comments">&lt;/label>\n//\t&lt;input id="notes" name="notes" placeholder="Comments" type="text" maxlength="255" />\nLanguage.init(availableLangs, translations);\nLanguage.render();\n\n// Note that the placeholder is translated and assugn the source text to "data-placeholder-tkey" attribute.'
 		},
 		set: {
 			type: 'function',
-			description: 'Set the current language. By default, the language is the one provided by the browser.\nPrecaución: For support the browser compatibility, is the language code sent would be coded into ISO-639-1.',
+			description: 'Establece el idioma actual. De forma predeterminada, el idioma es el que se proporciona a través del navegador.\nAdvertencia: Para admitir la compatibilidad del navegador, el código de idioma enviado se codificaría en ISO-639-1.',
 			example: '// Supposed that language by default in Chrome is "es-ES" (ISO 639-1 code to Spain)\nLanguage.set("en-US");'
 		},
 		get: {
 			type: 'function',
-			description: 'Returns the translation for received string. If match is not found, it is assumed that don\'t have traduction and returns the same string.',
-			example: 'var tkey = Language.get("Loading...");\n// If you want recover the translation for another language, you can send the language like second parameter:\nvar tkey_ES = Language.get("Loading...", "es-ES");'
+			description: 'Devuelve la traducción para la cadena recibida. Si no se encuentra la coincidencia, se supone que no tiene traducción y devuelve la misma cadena.',
+			example: 'var tkey = Language.get("Loading...");\n// Si se desea recuperar la traducción para un idioma especificado, se puede enviar el identificador de idioma como segundo parámetro:\nvar tkey_ES = Language.get("Loading...", "es-ES");'
 		}
 	}
 }
@@ -715,27 +720,27 @@ if(it.enabledModules.Selectpicker){
 			version: 1.0,
 			help: 1,
 			name: 'Selectpicker',
-			description: "Selectpicker is a form control that allows you to manage a selection as a drop-down list that can be easily customized.",
+			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTRML5 y que proporciona una capa personalización sencilla de modificar.",
 		},
 		additional: [
 			{
-				description: 'Enable search into dropdown:',
+				description: 'Habilita la búsqueda dentro del desplegable:',
 				example: '// Supposed the next code:\n&lt;select id="months" name="months" class="select-picker" data-live-search="true">\n\t&lt;option value="01">January&lt;/option>\n\t...\n&lt;/select>\n\n// Once set data-live-search to true into select, initialize\nSelectpicker.init(".select-picker");'
 			},
 			{
-				description: 'To custom Selectpicker through CSS:',
+				description: 'Personaliza el aspecto del Selectpicker a través de CSS:',
 				example: '.select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}'
 			},
 		],
 		init: {
 			type: 'function',
-			description: 'Set the configure the requested select\'s.',
+			description: 'Crea y establece los componentes de configuración y presentación para los desplegables solicitados.',
 			example: 'Selectpicker.init(".select-picker");'
 		},
 		target: {
 			type: 'string',
-			description: 'If init method receives a string, this string will takes as target pattern. If init method receives an object, the target parameter will be the pattern to initialize the dropdowns.',
-			example: '//Through simple way:\nSelectpicker.init(target: ".select-picker");\n\n// Through target parameter:\nSelectpicker.init({ target: ".select-picker" });'
+			description: 'Si el método "init" recibe una cadena, esta cadena se tomará como patrón de destino. Si el método "init" recibe un objeto, el parámetro objetivo será el patrón para inicializar los desplegables.',
+			example: '//Forma sencilla :\nSelectpicker.init(".select-picker");\n\n// A través del parámetro target:\nSelectpicker.init({ target: ".select-picker" });'
 		},
 		liveSearch: {
 			type: 'boolean',
@@ -758,16 +763,16 @@ if(it.enabledModules.SendForm){
 		general: {
 			version: 1.0,
 			name: 'SendForm',
-			description: "SendForm is a script to create and send forms in real time through Ajax with post method.",
+			description: "SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.",
 		},
 		url: {
 			type: 'string',
-			description: 'URL to make the request.',
+			description: 'URL para realizar la petición.',
 			example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
 		},
 		params: {
 			type: 'string',
-			description: 'Parameter to send to the remote URI.',
+			description: 'Parámetros que se enviarán como parte del formulario.',
 			example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
 		},
 	}
@@ -785,12 +790,12 @@ if(it.enabledModules.StripTags){
 		general: {
 			version: 1.0,
 			name: 'StripTags',
-			description: "Function to clean of HTML a string provided by parameter. The second parameter can be used to specify tags which should not be stripped.",
+			description: "Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.",
 		},
 		additional: [
 			{
-				description: 'Clean of HTML a string',
-				example: 'StripTags("&lt;span>example of text&lt;/span>", "");\n// Result: example of text\n\nStripTags("&lt;span>example &lt;b>of&lt;/b> text&lt;/span>", "&lt;b>");\n// Result: example &lt;b>of&lt;/b> text'
+				description: 'Limpiar de HTML un String',
+				example: 'StripTags("&lt;span>ejemplo de texto&lt;/span>", "");\n// Resultado: ejemplo de texto\n\nStripTags("&lt;span>ejemplo &lt;b>de&lt;/b> texto&lt;/span>", "&lt;b>");\n// Resultado: ejemplo &lt;b>de&lt;/b> texto'
 			},
 		]
 	}
@@ -808,93 +813,93 @@ if(it.enabledModules.Treeview){
 		general: {
 			version: 1.0,
 			name: 'Treeview',
-			description: "Treeview is a graphical user interface component that displays a hierarchical view of information. Each element can have zero, one or more sub-elements or children. Normally it is usually visualized as a tabulated list and each element reveals its sub-elements through a change of state (from expanded to collapsed or vice versa).",
+			description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).",
 		},
 		additional: [
 			{
-				description: 'You can customize the styles through CSS rules. For example:',
+				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 				example: '_CSS_// styles.css (from your site)\nul.treeview li .active { background: lightgray; color: rgb(51, 51, 51); }\nul.treeview li.search-box input { width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); }\nul.treeview li i.icon { margin-right: 8px; }\nul.treeview li span { padding: 2px 5px; display: inline-block; }\nul.treeview li a { color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\nul.treeview li.collapsed ul { max-height: 0px; }\nul.treeview li ul { transition: all 0.3s ease 0s; max-height: 10000px; overflow: hidden; }\nul.treeview li i { cursor: pointer; }\nul.treeview li { color: rgb(0, 0, 0); }\nul.treeview, ul.treeview ul { list-style: none; }\nul.treeview { background: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }_CSS_'
 			}
 		],
 		classLeaf: {
 			type: 'string',
-			description: 'The "classLeaf" parameter indicates the class name to leaf nodes. This class, for example, can be used to provide different styling this nodes type. By default is empty.',
+			description: 'El parámetro "classLeaf" indica el nombre de clase que se aplicará a los nodos hoja (los de último nivel). Esta clase, por ejemplo, puede utilizarse para proporcionar un estilo diferente a este tipo de nodos. Por defecto está vacío.',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview", classLeaf: "leaf-node"});'
 		},
 		collapsedIcon: {
 			type: 'string',
-			description: 'The "collapsedIcon" parameter indicates the character, the vectorial icon or html code that will be displayed instead of "collapse icon" by default and than reflects that the branch is closed. By default is \u25BA.',
+			description: 'El parámetro "collapsedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de colapsado" que refleja que la rama está cerrada de manera predeterminada. Si no se establece, por defecto es contendrá \u25BA.',
 			example: '// Example with Vectorial icons\nnew Treeview({data: treeviewJSON, target: \'treeview\', collapsedIcon: \'&lt;i class=\"plus\">&lt;/i>\'});\n// Example with Unicode icons\nnew Treeview({data: treeviewJSON, target: "treeview", collapsedIcon: "+"});'
 		},
 		expandedIcon: {
 			type: 'string',
-			description: 'The "expandedIcon" parameter indicates the character, the vectorial icon or html code that will be displayed instead of "expand icon" by default and than reflects that the branch is opened. By default is \u25BC.',
+			description: 'El parámetro "expandedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de expandido" que refleja que la rama está abierta de forma predeterminada. Si no se establece, Por defecto es \u25BC.',
 			example: '// Example with Vectorial icons\nnew Treeview({data: treeviewJSON, target: \'treeview\', expandedIcon: \'&lt;i class=\"less\">&lt;/i>\'});\n// Example with Unicode icons\nnew Treeview({data: treeviewJSON, target: "treeview", expandedIcon: "-"});'
 		},
 		leafIcon: {
 			type: 'string',
-			description: 'The "leafIcon" parameter indicates the character, the vectorial icon or html code that will be displayed instead of "leaf icon" by default and than reflects that, this node, don\'t has children. By default is empty.',
+			description: 'El parámetro "leafIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de hoja" que refleja que, este nodo, no tiene más hijos. Si no se establece, por defecto está vacío.',
 			example: '// Example with Vectorial icons\nnew Treeview({data: treeviewJSON, target: \'treeview\', leafIcon: \'&lt;i class=\"leaf\">&lt;/i>\'});\n// Example with Unicode icons\nnew Treeview({data: treeviewJSON, target: "treeview", leafIcon: "\\uD83D\\uDE54"});'
 		},
 		branchIcon: {
 			type: 'string',
-			description: 'The "branchIcon" parameter indicates the character, the vectorial icon or html code that will be displayed instead of "branch icon" by default and than reflects that this node has at least one child. By default is empty.',
+			description: 'El parámetro "branchIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de rama" que refleja que este nodo tiene, al menos, un hijo. Si no se establece, por defecto está vacío.',
 			example: '// Example with Vectorial icons\nnew Treeview({data: treeviewJSON, target: \'treeview\', branchIcon: \'&lt;i class=\"folder\">&lt;/i>\'});\n// Example with Unicode icons\nnew Treeview({data: treeviewJSON, target: "treeview", branchIcon: "\\uD83D\\uDCC2"});'
 		},
 		customCheck: {
 			type: 'string',
-			description: 'HTML string with the new definition of checkbox. By default is empty (disabled).',
+			description: 'Cadena HTML con la nueva definición del checkbox. Por defecto está vacío (deshabilitado).',
 			example: 'new Treeview({\n\tdata: treeviewJSON,\n\ttarget: "treeview",\n\tcustomCheck: "&lt;label>Two&lt;input type=\'checkbox\'>&lt;span class=\'checkmark\'>&lt;/span>&lt;/label>"\n});'
 		},
 		data: {
 			type: 'object',
-			description: 'Object with the elements to manage or treat. This object must be in format JSON.',
+			description: 'Es un objeto con los elementos a tratar. Este objeto debe estar en formato JSON.',
 			example: '//Example JSON to send to Treeview component.\nvar treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\texpanded: true,\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n}\nnew Treeview({data: treeviewJSON, target: "treeview"});'
 		},
 		onSelectNode: {
 			type: 'function',
-			description: 'The "onSelectNode" parameter indicates the function of callback when one node is selected. By default, this functionality is disabled.',
+			description: 'El parámetro "onSelectNode" indica la función de devolución de llamada cuando se selecciona un nodo. Por defecto, esta funcionalidad está deshabilitada.',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview", onSelectNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
 		},
 		onCheckNode: {
 			type: 'function',
-			description: 'The "onCheckNode" parameter indicates the function of callback when one node is checked. By default, this functionality is disabled.',
+			description: 'El parámetro "onCheckNode" indica la función de devolución de llamada cuando se chequea un nodo. Por defecto, esta funcionalidad está deshabilitada.',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview", onCheckNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
 		},
 		selectable: {
 			type: 'boolean',
-			description: 'The "selectable" parameter indicates if the nodes will be selectables. By default is false.',
+			description: 'El parámetro "selectable" indica si los nodos serán seleccionables. Por defecto es false.',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview", selectable: false});'
 		},
 		searchable: {
 			type: 'boolean',
-			description: 'The "searchable" parameter indicates if the nodes will be searchable. By default is false.',
+			description: 'El parámetro "searchable" indica si el árbol permitirá la búsqueda de nodos. Por defecto es false.',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview", searchable: false});'
 		},
 		placeholderText: {
 			type: 'string',
-			description: 'The "placeholderText" parameter indicates the text to display inside of input search when searchable is enabled. By default is "Filter...".',
+			description: 'El parámetro "placeholderText" indica el texto que se muestra dentro de la caja de texto cuando la búsqueda está habilitada (searchable es true). Por defecto es "Filter...".',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview", placeholderText: "Writing to filter inside the tree"});'
 		},
 		styles: {
 			type: 'object',
-			description: 'The "styles" parameter indicates the basic colors that should be displayed in treeview component. This object will allow the next sub-parmeters:\n\t● <b>bgTree</b>: Background of tree. By default is transparent.\n\t● <b>borderTree</b>: Border of tree. By default is rgba(0,0,0,0.15).\n\t● <b>textColor</b>: Text color to nodes. By default is #000000.\n\t● <b>searchColor</b>: Text color to input of search. By default is #000.\n\t● <b>searchBg</b>: Background color to input of search. By default is #f0f0f0.\n\t● <b>activeColor</b>: Text color to selected node. By default is #ffffff.\n\t● <b>activeBg</b>: Background color of selected node. By default is #000000.\n\t● <b>linkColor</b>: Text color to nodes with link. By default is #006699.\n\t● <b>linkBg</b>: Background color to nodes with link. By default is transparent.',
+			description: 'El parámetro "styles" indica los estilos básicos que deben mostrarse en el componente de vista de árbol. Este objeto permitirá los siguientes subparámetros:\n\t● <b>bgTree</b>: fondo del árbol. Por defecto es transparent.\n\t● <b>borderTree </b>: Borde del árbol. Por defecto es rgba (0,0,0,0.15).\n\t● <b>textColor</b>: color del texto de los nodos. Por defecto es #000000.\n\t● <b>searchColor</b>: color de texto para la entrada de la búsqueda. Por defecto es #000000.\n\t● <b>searchBg</b>: color de fondo para la entrada de la búsqueda. Por defecto es #f0f0f0.\n\t● <b>activeColor</b>: color del texto del nodo seleccionado. De forma predeterminada es #ffffff.\n\t● <b>activeBg</b>: color de fondo del nodo seleccionado. Por defecto es #000000.\n\t● <b>linkColor</b>: color de texto para nodos con enlace. Por defecto es #006699.\n\t● <b>linkBg</b>: color de fondo para los nodos con enlace. Por defecto es transparent.',
 			example: 'new Treeview({\n\tdata: treeviewJSON,\n\ttarget: "treeview",\n\tselectable: true,\n\tstyles: {\n\t\tbgTree: "#ffffff",\n\t\tborderTree: "rgba(0,0,0,0.15)",\n\t\ttextColor: "#000",\n\t\tsearchColor: "#000",\n\t\tsearchBg: "#fff",\n\t\tactiveColor: "#333",\n\t\tactiveBg: "lightgray",\n\t\tlinkColor: "#009966",\n\t\tlinkBg: "rgba(0,0,0,0)"\n\t}\n});'
 
 		},
 		target: {
 			type: 'string',
-			description: 'ID of the element where the treeview will be implemented. This ID must be UL tag of HTML.',
+			description: 'ID del elemento donde se implementará el componente Treeview. Este ID debe pertenecer a una etiqueta UL de HTML.',
 			example: 'new Treeview({data: treeviewJSON, target: "treeview"});'
 		},
 		checked: {
 			type: 'boolean',
-			description: 'The "verified" parameter indicates to the Treeview component that a node should change its state. This functionality needs an ID code to select the element to verify.',
+			description: 'El parámetro "verified" indica al componente Treeview que el nodo debería cambiar su estado. Esta funcionalidad necesita un ID para seleccionar el elemento a verificar.',
 			example: '// ULItem is the ID from HTML element where treeview is implemented\nfor(var i = 0; i < 20; i++){\n\tdocument.ULItem.Treeview({id; i, checked: true});\n}'
 		},
 		refresh: {
 			type: 'function',
-			description: 'The "refresh" parameter indicates to the treeview component should be reloaded.',
+			description: 'El parámetro "refresh" indica que el componente de vista de árbol debe volver a cargarse.',
 			example: 'var treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n};\n// ULItem is the ID from HTML element where Treeview is implemented\ndocument.ULItem.Treeview({data: treeviewJSON, refresh: true})'
 		},
 	}
@@ -913,37 +918,37 @@ if(it.enabledModules.Validator){
 			version: 1.0,
 			name: 'Validator',
 			help: 1,
-			description: "This script sets custom validity messages for one form data input element . Remember that, for HTML5 , a validation message empty means that data input is right.",
+			description: "Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.",
 		},
 		additional: [
 			{
-				description: 'You can customize de validator-error and validator-error-msg class through CSS styles.',
-				example: '_CSS_// Custom style to input field\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Custom color validation message\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
+				description: 'Personalizar la clase de validator-error y validator-error-msg a través de estilos CSS.',
+				example: '_CSS_// Personalizar el estilo del input\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Personalizar el color del mensaje de validación\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
 			}
 		],
 		set: {
 			type: 'function',
-			description: 'The "set" method indicates to the Validator component that you want to apply a predefined constraint to a data input field. Usually this constraints are patternMismatch, rangeOverflow, rangeUnderflow, stepMismatch, "=", "!=", "<", ">", ">=" and "<=".',
-			example: '// Allow only numbers and lower or equal to 100\nValidator.set({\n\ttarget: "percent",\n\tconstraint: "<=100",\n\tmessage: "Please, number must be lower or equal than 100",\n\trequired: true\n});\n\n// Allow only "Spain"\nValidator.set({\n\ttarget: "country",\n\tconstraint: "==\'Spain\'",\n\tmessage: "The right word is Spain",\n\tfixed: true,\n\trequired: true\n});\n\n// Allow only a list of values\nvar arraySex = ["man", "woman", "other"];\nValidator.set({\n\ttarget: "sex",\n\tconstraint: "arraySex.indexOf(this.value) != -1",\n\tmessage: "The posibles values are: man, woman, other"\n});\n\n// Allow only a range of values\ndocument.getElementById("range").setAttribute("type", "number");\ndocument.getElementById("range").setAttribute("min", 50);\ndocument.getElementById("range").setAttribute("max", 100);\nValidator.set({\n\ttarget: "range",\n\tfixed: true,\n\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\tmessage: "The possibles values are from 50 to 100"\n});\n\n// Validating of password:At least one upper case letter, at least one lower case letter,\n// at least one digit, at least one special character and with minimum of eight in length.\nValidator.set({\n\ttarget: "pwd",\n\tfixed: true,\n\trequired: true,\n\tconstraint: "!this.validity.patternMismatch",\n\tmessage: "Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters",\n\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n});'
+			description: 'El método "set" indica a Validator que se desea aplicar una restricción predefinida a un input o campo de entrada de datos. Por lo general, estas restricciones son: patternMismatch, rangeOverflow, rangeUnderflow, stepMismatch, "=", "!=", "<", ">", ">=" and "<=".',
+			example: '// Permitir sólo números igual o menores a 100\nValidator.set({\n\ttarget: "percent",\n\tconstraint: "<=100",\n\tmessage: "Por favor, el número debe ser igual o menor a 100",\n\trequired: true\n});\n\n// Permitir sólo "Spain"\nValidator.set({\n\ttarget: "country",\n\tconstraint: "==\'Spain\'",\n\tmessage: "La palabra correcta es Spain",\n\tfixed: true,\n\trequired: true\n});\n\n// Permitir sólo una lista de valores\nvar arraySex = ["man", "woman", "other"];\nValidator.set({\n\ttarget: "sex",\n\tconstraint: "arraySex.indexOf(this.value) != -1",\n\tmessage: "Los posibles valores son: man, woman, other"\n});\n\n// Permitir sólo un rango de valores\ndocument.getElementById("range").setAttribute("type", "number");\ndocument.getElementById("range").setAttribute("min", 50);\ndocument.getElementById("range").setAttribute("max", 100);\nValidator.set({\n\ttarget: "range",\n\tfixed: true,\n\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\tmessage: "Los posibles valores son entre 50 y 100"\n});\n\n// Validación de la contraseña con, al menos, una letra mayúscula, una letra minúscula,\n// un dígito, un carácter especial y con un mínimo de ocho en longitud.\nValidator.set({\n\ttarget: "pwd",\n\tfixed: true,\n\trequired: true,\n\tconstraint: "!this.validity.patternMismatch",\n\tmessage: "La contraseña no coincide con el formato especificado",\n\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n});'
 		},
 		fileset: {
 			type: 'function',
-			description: 'Define the constraints that the file inputs must have. This functionality is fed of a JSON object that supports:\n\t● <b>accept</b>: Is a string that defines, separated by commas, the file types the file input should accept. By default is empty.\n\t● <b>preview</b>: Enable the preview of the file. By default is false.\n\t● <b>size</b>:Limits (in KB) the file size to upload. By default is 0.\n\t● <b>message</b>:Message to show when the file input is invalid.',
-			example: '// Allow only Word file types\nValidator.fileset({\n\ttarget: "file",\n\taccept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",\n\tmessage: "The files allowed are all Word formats!"\n});\n\n// Enable preview inside of thumbnail container\nValidator.fileset({target: "file", preview: true});\n\n// Limit the image files size to 100KB\nValidator.fileset({target: "file", maxsize: 100, accept: "image/*", message: "The file size should be less at 100 KB"});'
+			description: 'Define las restricciones que deben tener las entradas del archivo. Esta funcionalidad se alimenta de un objeto JSON que admite:\n\t ● <b>accept</b>: es una cadena que define, separados por comas, los tipos de archivos que debe aceptar la entrada del archivo. De forma predeterminada, está vacío.\n\t ● <b>preview</b>: Habilita la vista previa del archivo. Por defecto, es false.\n\t ● <b>size</b>: Limitar (en KB) el tamaño del archivo que se va a cargar. De forma predeterminada, es 0, que indica que no tiene límite.\n\t ● <b>message</b>: mensaje que se muestra cuando la entrada del archivo no es válida.',
+			example: '// Permitir solo tipos de archivos de Word\nValidator.fileset({\n\ttarget: "file",\n\taccept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",\n\tmessage: "Los archivos permitidos son todos los formatos de Word!"\n});\n\n// Habilitar la vista previa dentro del contenedor de miniaturas\nValidator.fileset({target: "file", preview: true});\n\n// Limitar el tamaño de los archivos de imagen a 100KB.\nValidator.fileset({target: "file", maxsize: 100, accept: "image/*", message: "El tamaño de la imagen debe ser menor a 100 KB"});'
 		},
 		fixed: {
 			type: "boolean",
-			description: 'This property indicates to Validator that messages must be shown below input field.',
-			example: '// Limit the jpeg files size to 250KB and show message under input file\nValidator.fileset({\n\ttarget: "file",\n\tfixed: true,\n\tmaxsize: 250,\n\taccept: ".jpg,.jpeg",\n\tmessage: "The file size should be less at 250 KB"\n});'
+			description: 'Esta propiedad le indica al Validador que los mensajes deben mostrarse debajo del campo de entrada.',
+			example: '// Limitar el tamaño de los archivos jpeg a 250 KB y mostrar el mensaje bajo el input\nValidator.fileset({\n\ttarget: "file",\n\tfixed: true,\n\tmaxsize: 250,\n\taccept: ".jpg,.jpeg",\n\tmessage: "El tamaño del archivo debería ser menor a 250 KB"\n});'
 		},
 		newValidation: {
 			type: 'function',
-			description: 'Defines custom validations through JavaScript code.',
+			description: 'Definir validaciones personalizadas a través de código JavaScript.',
 			example: 'Validator.target = document.getElementById("checkbox");\nValidator.newValidation("input", "\\\n\tif (!this.checked) {\\\n\t\te.target.setCustomValidity("Must be checked!");\\\n\t\te.target.classList.add("validator-error")\\\n\t\tValidator.addMessage(e.target);\\\n\t} else {\\\n\t\te.target.setCustomValidity("");\\\n\t\te.target.classList.remove("validator-error");\\\n\t\te.target.nextElementSibling.remove();\\\n\t}\\\n");'
 		},
 		onInvalid: {
 			type: "function",
-			description: 'Add the oninvalid event that execute a JavaScript when an input field is invalid.',
+			description: 'Función de devolución de llamada cuando cuando se produzca un error de validación.',
 			example: 'Validator.target = document.getElementById("inputRequired");\nValidator.onInvalid("this.classList.add(\'validator-error\')")'
 		},
 	}
