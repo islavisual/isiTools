@@ -96,7 +96,7 @@ if(it.enabledModules.Alert){
    @version: 1.00
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
-   @Last update: 26/02/2019
+   @Last update: 25/04/2019
  **/
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
@@ -158,8 +158,8 @@ if(it.enabledModules.Autocomplete){
 		},
 		tableFields: {
 			type: 'integer',
-			description: 'Un objeto JSON con el siguiente formato: \n\t● "return_value": Que indica qué campo se devolverá.\n\t● "fields": Que indica los campos que compondrán el objeto "data".\n\t● "headers": Que indica la traducción para mostrar en los encabezados del autocomplete en formato "table".',
-			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
+			description: 'Un objeto JSON con el siguiente formato: \n\t● "return_value": Que indica qué campo se devolverá.\n\t● "highlight": Que indica el campo que activará o desactivará el registro como destacado.\n\t● "fields": Que indica los campos que compondrán el objeto "data".\n\t● "headers": Que indica la traducción para mostrar en los encabezados del autocomplete en formato "table".',
+			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlight: {\n\t\t\t// Nombre del campo con el flag que indica si destacado o no\n\t\t\tfield: "disabled",\n\t\t\t// Background del destacado\n\t\t\tbg: "red",\n\t\t\t// Color del texto del destacado\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});'
 		}
 	};
 }
