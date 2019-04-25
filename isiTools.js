@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "22/04/2019",
+	lastupdate: "25/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -315,7 +315,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 26/02/2019
+		@Last update: 25/04/2019
 	**/
 	if(json.Autocomplete){
 		this.Autocomplete = it.Autocomplete = function (cfg) {
@@ -349,7 +349,8 @@ function isiToolsCallback(json){
 				minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
 				showHeaders: !cfg.hasOwnProperty('showHeaders') ? false : cfg.showHeaders,
 				startsWith: !cfg.hasOwnProperty('startsWith') ? false : cfg.startsWith,
-				tableFields: cfg.tableFields
+				tableFields: cfg.tableFields,
+				tooltip: !cfg.hasOwnProperty('tooltip') ? [] : cfg.tooltip,
 			}
 
 			// If Autocomplete list is visible, is removed
@@ -408,7 +409,7 @@ function isiToolsCallback(json){
 				}
 
 				// Go through the data
-				for (i = 0; i < opt.data.length; i++) {
+				for (var i = 0; i < opt.data.length; i++) {
 					// Check if the item contains the text field value
 					var cval = '', found;
 					if(opt.format != "layer"){
@@ -448,10 +449,6 @@ function isiToolsCallback(json){
 							b.innerHTML = aux.join();
 							b.innerHTML = b.innerHTML.replace(/,/ig, '<b>' + val + '</b>').toLowerCase();
 
-						} else if (opt.format == "table") {
-							b.classList.add("value");
-							b.innerHTML = '<span style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[0]] + "</span>";
-
 						} else if (opt.format == "cluster") {
 							b.innerHTML = '<span id="clustered' + i + '">' + opt.data[i].group + "</span>";
 							b.classList.add("header");
@@ -472,8 +469,37 @@ function isiToolsCallback(json){
 
 						// Add another fields at row
 						if (opt.format == "table") {
-							for (var f = 1; f < opt.tableFields.fields.length; f++) {
-								b.innerHTML += '<span style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[f]] + "</span>";
+							var highlighting = typeof opt.tableFields.highlight != "undefined" ? true : false;
+							var tooltips = opt.tooltip.length != 0 ? true : false;
+
+							for (var f = 0; f < opt.tableFields.fields.length; f++) {
+								if(f == 0) b.classList.add("value");
+
+								var tfld = opt.tableFields.fields[f], tval = opt.data[i][opt.tableFields.fields[f]];
+								var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[f]] + "</span>";
+								
+								// If items is disabled
+								if(highlighting){
+									if(typeof opt.data[i][opt.tableFields.highlight.field] == 'undefined' ||  opt.data[i][opt.tableFields.highlight.field] == 0){
+										faux = faux.replace("__disabled__", "");
+									} else {
+										b.style.background = opt.tableFields.highlight.bg
+										b.style.color 	   = opt.tableFields.highlight.fg;
+									}
+								}
+
+								// If items have tooltips and add items
+								if(tooltips){
+									for (var t = 0; t < opt.tooltip.length; t++) {
+										if(tfld == opt.tooltip[t].field){
+											b.innerHTML += faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltip[t].text] + '"');
+										} else {
+											b.innerHTML += faux.replace("__tp__", '');
+										}
+									}
+								} else {
+									b.innerHTML += faux.replace("__tp__", '');
+								}
 							}
 						}
 
@@ -483,11 +509,6 @@ function isiToolsCallback(json){
 						// If format is cluster, add all sub-items
 						if (opt.format == "cluster") {
 							for (var z = 0; z < opt.data[i].items.length; z++) {
-								if(opt.startsWith){
-									found = cval.toUpperCase().indexOf('|' + val.toUpperCase()) != -1;
-								} else {
-									found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
-								}
 								if (opt.startsWith ? (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) == 0) : (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) != -1)) {
 									b = document.createElement("div");
 									b.classList.add("value");
