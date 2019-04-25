@@ -96,7 +96,7 @@ if(it.enabledModules.Alert){
    @version: 1.00
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
-   @Last update: 26/02/2019
+   @Last update: 25/04/2019
  **/
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
@@ -158,8 +158,8 @@ if(it.enabledModules.Autocomplete){
 		},
 		tableFields: {
 			type: 'integer',
-			description: 'Array of JSON with the next format:\n\t● "return_value" indicates that field will be returned.\n\t● "fields" indicates the fields that composed the object "data".\n\t● "headers" indicates the translate fields to show into table headers.',
-			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
+			description: 'Array of JSON with the next format:\n\t● "return_value" indicates that field will be returned.\n\t● "highlight": Indicates the field that activates or deactivates the record as highlighted.\n\t● "fields" indicates the fields that composed the object "data".\n\t● "headers" indicates the translate fields to show into table headers.',
+			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlight: {\n\t\t\t// Name of the field with the flag that indicates whether highlighted\n\t\t\tfield: "disabled",\n\t\t\t// Background of highlighted record\n\t\t\tbg: "red",\n\t\t\t// Color of highlighted record\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});'
 		}
 	};
 }
