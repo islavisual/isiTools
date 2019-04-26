@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: 1.0,
+	version: 1.0.2,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "22/04/2019",
+	lastupdate: "26/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -315,7 +315,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 25/04/2019
+		@Last update: 26/04/2019
 	**/
 	if(json.Autocomplete){
 		this.Autocomplete = it.Autocomplete = function (cfg) {
@@ -357,193 +357,209 @@ function isiToolsCallback(json){
 			// If Autocomplete list is visible, is removed
 			removeItemsList(true);
 
-			// Set message if minLength is -1
-			if(opt.minLength == -1) opt.target.setAttribute("placeholder", opt.message);
-
-			opt.target.addEventListener("input", function (e) {
-				var a, b, c, i, val = this.value.trim();
-
-				// Only search when length is greater than "minLength" attribute.
-				if (opt.minLength == -1 || val.length < opt.minLength) {
-					removeItemsList(false);
-					return false;
-				} 
-
-				// Close all lists
-				closeAllLists(this);
-
-				// Reset current focus / element selected
-				opt.currentFocus = -1;
-
-				// Reset list
-				removeItemsList(false);
-
-				// Create a DIV element that will contain the values
-				a = document.createElement("div");
-				a.setAttribute("id", opt.target.id + "-" + opt.className + "-list");
-				a.setAttribute("class", opt.className + "-items display");
-				a.classList.add(opt.format);
-
-				// Remove list when click outside
-				a.addEventListener("mouseleave", function () {
-					document.body.onclick = function () {
-						a.remove();
-					}
-				});
-
-				opt.target.addEventListener("mouseleave", function () {
-					document.body.onclick = function () {
-						a.remove();
-					}
-				});
-
-				this.parentNode.appendChild(a);
-
-				// If format is table and headers parameter is enabled, add names
-				if (opt.format == "table" && opt.showHeaders) {
-					var thead = document.createElement("span");
-					thead.setAttribute("class", "header");
-
-					var aux = "";
-					for (var z = 0; z < opt.tableFields.fields.length; z++) {
-						aux += '<span style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.tableFields.headers[z] + "</span>";
-					}
-					thead.innerHTML = aux;
-					a.appendChild(thead);
+			// Set message if minLength is -1 and message and events if minLength not id -1
+			if(opt.minLength == -1) {
+				// Backup of placeholder if exists
+				if(opt.target.getAttribute("placeholder")){
+					opt.target.setAttribute("data-placeholder", opt.target.getAttribute("placeholder"));
+				} else {
+					opt.target.setAttribute("data-placeholder", "");
 				}
+				opt.target.setAttribute("placeholder", opt.message);
 
-				// Go through the data
-				for (var i = 0; i < opt.data.length; i++) {
-					// If val is empty only process the first 100 elements
-					if(val.length == 0 && i > 99) break;
+				opt.target.onkeydown = function(){ return false; }
+				
+			} else {
+				opt.target.setAttribute("placeholder", opt.target.dataset.placeholder);
+				opt.target.onkeydown = null;
+				opt.target.addEventListener("input", function (e) {
+					var a, b, c, i, val = this.value.trim();
 
-					// Check if the item contains the text field value
-					var cval = '', found;
-					if(opt.format != "layer"){
-						cval = '|';
-						for(var keyVal in opt.data[i]){
-							var valAux = opt.data[i][keyVal];
-							cval += (typeof valAux == "object" ? valAux.join("|") : valAux) + "|";
+					// Only search when length is greater than "minLength" attribute.
+					if (opt.minLength == -1) this.value = "";
+					if (opt.minLength == -1 || val.length < opt.minLength) {
+						removeItemsList(false);
+						return false;
+					} 
+
+					// Close all lists
+					closeAllLists(this);
+
+					// Reset current focus / element selected
+					opt.currentFocus = -1;
+
+					// Reset list
+					removeItemsList(false);
+
+					// Create a DIV element that will contain the values
+					a = document.createElement("div");
+					a.setAttribute("id", opt.target.id + "-" + opt.className + "-list");
+					a.setAttribute("class", opt.className + "-items display");
+					a.classList.add(opt.format);
+
+					// Remove list when click outside
+					a.addEventListener("mouseleave", function () {
+						document.body.onclick = function () {
+							a.remove();
 						}
-					} else {
-						cval = opt.data[i];
+					});
+
+					opt.target.addEventListener("mouseleave", function () {
+						document.body.onclick = function () {
+							a.remove();
+						}
+					});
+
+					this.parentNode.appendChild(a);
+
+					// If format is table and headers parameter is enabled, add names
+					if (opt.format == "table" && opt.showHeaders) {
+						var thead = document.createElement("span");
+						thead.setAttribute("class", "header");
+
+						var aux = "";
+						for (var z = 0; z < opt.tableFields.fields.length; z++) {
+							aux += '<span style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.tableFields.headers[z] + "</span>";
+						}
+						thead.innerHTML = aux;
+						a.appendChild(thead);
 					}
-					
-					// Check if the entry stars with and if the format is object
-					if(opt.format != "layer"){
-						if(opt.startsWith){
-							found = cval.toUpperCase().indexOf('|' + val.toUpperCase()) != -1;
+
+					// Go through the data
+					for (var i = 0; i < opt.data.length; i++) {
+						// If val is empty only process the first 100 elements
+						if(val.length == 0 && i > 99) break;
+
+						// Check if the item contains the text field value
+						var cval = '', found;
+						if(opt.format != "layer"){
+							cval = '|';
+							for(var keyVal in opt.data[i]){
+								var valAux = opt.data[i][keyVal];
+								cval += (typeof valAux == "object" ? valAux.join("|") : valAux) + "|";
+							}
 						} else {
-							found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+							cval = opt.data[i];
 						}
-					} else {
-						if(opt.startsWith){
-							found = cval.toUpperCase().indexOf(val.toUpperCase()) == 0;
+						
+						// Check if the entry stars with and if the format is object
+						if(opt.format != "layer"){
+							if(opt.startsWith){
+								found = cval.toUpperCase().indexOf('|' + val.toUpperCase()) != -1;
+							} else {
+								found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+							}
 						} else {
-							found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+							if(opt.startsWith){
+								found = cval.toUpperCase().indexOf(val.toUpperCase()) == 0;
+							} else {
+								found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
+							}
 						}
-					}
-					
-					// If item is found
-					if (found) {
-						b = document.createElement("div");
-						var bc = null;
+						
+						// If item is found
+						if (found) {
+							b = document.createElement("div");
+							var bc = null;
 
-						// Showing the matching coincidences
-						if (opt.format == "layer") {
-							var aux = cval.toUpperCase().split(val.toUpperCase());
-							b.classList.add("value");
-							b.innerHTML = aux.join();
-							b.innerHTML = b.innerHTML.replace(/,/ig, '<b>' + val + '</b>').toLowerCase();
+							// Showing the matching coincidences
+							if (opt.format == "layer") {
+								var aux = cval.toUpperCase().split(val.toUpperCase());
+								b.classList.add("value");
+								b.innerHTML = aux.join();
+								b.innerHTML = b.innerHTML.replace(/,/ig, '<b>' + val + '</b>').toLowerCase();
 
-						} else if (opt.format == "cluster") {
-							b.innerHTML = '<span id="clustered' + i + '">' + opt.data[i].group + "</span>";
-							b.classList.add("header");
-							bc = document.createElement("div");
-							bc.classList.add("values");
-						}
+							} else if (opt.format == "cluster") {
+								b.innerHTML = '<span id="clustered' + i + '">' + opt.data[i].group + "</span>";
+								b.classList.add("header");
+								bc = document.createElement("div");
+								bc.classList.add("values");
+							}
 
-						if (opt.format == "table") cval = opt.data[i][opt.tableFields.return_value];
+							if (opt.format == "table") cval = opt.data[i][opt.tableFields.return_value];
 
-						if (b.classList.contains("value")) {
-							b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
-							b.addEventListener("click", function (e) {
-								opt.target.value = this.getElementsByTagName("input")[0].value;
-								if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
-								closeAllLists(this);
-							});
-						}
+							if (b.classList.contains("value")) {
+								b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
+								b.addEventListener("click", function (e) {
+									opt.target.value = this.getElementsByTagName("input")[0].value;
+									if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+									closeAllLists(this);
+								});
+							}
 
-						// Add another fields at row
-						if (opt.format == "table") {
-							var highlighting = typeof opt.tableFields.highlight != "undefined" ? true : false;
-							var tooltips = opt.tooltip.length != 0 ? true : false;
+							// Add another fields at row
+							if (opt.format == "table") {
+								var highlighting = typeof opt.tableFields.highlight != "undefined" ? true : false;
+								var tooltips = opt.tooltip.length != 0 ? true : false;
 
-							for (var f = 0; f < opt.tableFields.fields.length; f++) {
-								if(f == 0){
-									b.classList.add("value");
-									b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
-									b.addEventListener("click", function (e) {
-										opt.target.value = this.getElementsByTagName("input")[0].value;
-										if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
-										closeAllLists(this);
-									});
-								}
-
-								var tfld = opt.tableFields.fields[f], tval = opt.data[i][opt.tableFields.fields[f]];
-								var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[f]] + "</span>";
-								
-								// If items is disabled
-								if(highlighting){
-									if(typeof opt.data[i][opt.tableFields.highlight.field] == 'undefined' ||  opt.data[i][opt.tableFields.highlight.field] == 0){
-										faux = faux.replace("__disabled__", "");
-									} else {
-										b.style.background = opt.tableFields.highlight.bg
-										b.style.color 	   = opt.tableFields.highlight.fg;
+								for (var f = 0; f < opt.tableFields.fields.length; f++) {
+									if(f == 0){
+										b.classList.add("value");
+										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
+										b.addEventListener("click", function (e) {
+											opt.target.value = this.getElementsByTagName("input")[0].value;
+											if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+											closeAllLists(this);
+										});
 									}
-								}
 
-								// If items have tooltips and add items
-								if(tooltips){
-									for (var t = 0; t < opt.tooltip.length; t++) {
-										if(tfld == opt.tooltip[t].field){
-											b.innerHTML += faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltip[t].text] + '"');
+									var tfld = opt.tableFields.fields[f], tval = opt.data[i][opt.tableFields.fields[f]];
+									var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[f]] + "</span>";
+									
+									// If items is disabled
+									if(highlighting){
+										if(typeof opt.data[i][opt.tableFields.highlight.field] == 'undefined' ||  opt.data[i][opt.tableFields.highlight.field] == 0){
+											faux = faux.replace("__disabled__", "");
 										} else {
-											b.innerHTML += faux.replace("__tp__", '');
+											b.style.background = opt.tableFields.highlight.bg
+											b.style.color 	   = opt.tableFields.highlight.fg;
 										}
 									}
-								} else {
+
+									// If items have tooltips and add items
+
+									if(tooltips){
+										for (var t = 0; t < opt.tooltip.length; t++) {
+											if(tfld == opt.tooltip[t].field){
+												faux= faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltip[t].text] + '"');
+												break
+											} 
+										}
+									} else {
+										faux = faux.replace("__tp__", '');
+									}
 									b.innerHTML += faux.replace("__tp__", '');
 								}
+								
 							}
-						}
 
-						a.appendChild(b);
-						if (bc != null) a.appendChild(bc);
+							a.appendChild(b);
+							if (bc != null) a.appendChild(bc);
 
-						// If format is cluster, add all sub-items
-						if (opt.format == "cluster") {
-							for (var z = 0; z < opt.data[i].items.length; z++) {
-								if (opt.startsWith ? (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) == 0) : (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) != -1)) {
-									b = document.createElement("div");
-									b.classList.add("value");
-									b.style.width = "100%";
-									b.innerHTML += "<span>" + opt.data[i].items[z] + "</span>";
-									b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + opt.data[i].items[z] + "'>";
-									// Add element
-									bc.appendChild(b);
-									// Add event on click
-									b.addEventListener("click", function (e) {
-										opt.target.value = this.getElementsByTagName("input")[0].value;
-										if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
-										closeAllLists(this);
-									});
+							// If format is cluster, add all sub-items
+							if (opt.format == "cluster") {
+								for (var z = 0; z < opt.data[i].items.length; z++) {
+									if (opt.startsWith ? (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) == 0) : (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) != -1)) {
+										b = document.createElement("div");
+										b.classList.add("value");
+										b.style.width = "100%";
+										b.innerHTML += "<span>" + opt.data[i].items[z] + "</span>";
+										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + opt.data[i].items[z] + "'>";
+										// Add element
+										bc.appendChild(b);
+										// Add event on click
+										b.addEventListener("click", function (e) {
+											opt.target.value = this.getElementsByTagName("input")[0].value;
+											if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+											closeAllLists(this);
+										});
+									}
 								}
 							}
 						}
 					}
-				}
-			});
+				});
+			}
 
 			// Get Autocomplete List
 			function getAutocompleteList(e) {
