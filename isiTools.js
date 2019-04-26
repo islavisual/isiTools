@@ -3,7 +3,7 @@ this.it = {
 	version: 1.0,
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "25/04/2019",
+	lastupdate: "22/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -345,25 +345,29 @@ function isiToolsCallback(json){
 				currentFocus: -1,
 				data: cfg.data,
 				format: !cfg.hasOwnProperty('format') ? "layer" : cfg.format,
-				target: document.getElementById(cfg.target),
+				message: !cfg.hasOwnProperty('message') ? "Loading..." : cfg.message,
 				minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
 				showHeaders: !cfg.hasOwnProperty('showHeaders') ? false : cfg.showHeaders,
 				startsWith: !cfg.hasOwnProperty('startsWith') ? false : cfg.startsWith,
 				tableFields: cfg.tableFields,
+				target: document.getElementById(cfg.target),
 				tooltip: !cfg.hasOwnProperty('tooltip') ? [] : cfg.tooltip,
 			}
 
 			// If Autocomplete list is visible, is removed
 			removeItemsList(true);
 
+			// Set message if minLength is -1
+			if(opt.minLength == -1) opt.target.setAttribute("placeholder", opt.message);
+
 			opt.target.addEventListener("input", function (e) {
 				var a, b, c, i, val = this.value.trim();
 
-				// Only search when length is greater than 2.
-				if (val.length < opt.minLength) {
+				// Only search when length is greater than "minLength" attribute.
+				if (opt.minLength == -1 || val.length < opt.minLength) {
 					removeItemsList(false);
 					return false;
-				}
+				} 
 
 				// Close all lists
 				closeAllLists(this);
@@ -410,6 +414,9 @@ function isiToolsCallback(json){
 
 				// Go through the data
 				for (var i = 0; i < opt.data.length; i++) {
+					// If val is empty only process the first 100 elements
+					if(val.length == 0 && i > 99) break;
+
 					// Check if the item contains the text field value
 					var cval = '', found;
 					if(opt.format != "layer"){
@@ -442,7 +449,7 @@ function isiToolsCallback(json){
 						b = document.createElement("div");
 						var bc = null;
 
-						// Highlight the matching coincidences
+						// Showing the matching coincidences
 						if (opt.format == "layer") {
 							var aux = cval.toUpperCase().split(val.toUpperCase());
 							b.classList.add("value");
@@ -473,7 +480,15 @@ function isiToolsCallback(json){
 							var tooltips = opt.tooltip.length != 0 ? true : false;
 
 							for (var f = 0; f < opt.tableFields.fields.length; f++) {
-								if(f == 0) b.classList.add("value");
+								if(f == 0){
+									b.classList.add("value");
+									b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
+									b.addEventListener("click", function (e) {
+										opt.target.value = this.getElementsByTagName("input")[0].value;
+										if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+										closeAllLists(this);
+									});
+								}
 
 								var tfld = opt.tableFields.fields[f], tval = opt.data[i][opt.tableFields.fields[f]];
 								var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[f]] + "</span>";
@@ -574,10 +589,10 @@ function isiToolsCallback(json){
 			opt.target.addEventListener("click", function (e) { closeAllLists(e.target); });
 
 			function addActive(x) {
-				if (!x) return false;
+				if(!x) return false;
 				removeActive(x);
-				if (opt.currentFocus >= x.length) opt.currentFocus = 0;
-				if (opt.currentFocus < 0) opt.currentFocus = (x.length - 1);
+				if(opt.currentFocus >= x.length) opt.currentFocus = 0;
+				if(opt.currentFocus < 0) opt.currentFocus = (x.length - 1);
 				x[opt.currentFocus].classList.add(opt.className + "-active");
 			}
 
