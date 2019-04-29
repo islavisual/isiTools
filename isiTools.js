@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: 1.0.2,
+	version: "1.0.3",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "26/04/2019",
+	lastupdate: "29/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -315,7 +315,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 26/04/2019
+		@Last update: 29/04/2019
 	**/
 	if(json.Autocomplete){
 		this.Autocomplete = it.Autocomplete = function (cfg) {
@@ -345,26 +345,30 @@ function isiToolsCallback(json){
 				currentFocus: -1,
 				data: cfg.data,
 				format: !cfg.hasOwnProperty('format') ? "layer" : cfg.format,
+				highlights: !cfg.hasOwnProperty('highlights') ? null : cfg.highlights,
 				message: !cfg.hasOwnProperty('message') ? "Loading..." : cfg.message,
 				minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
 				showHeaders: !cfg.hasOwnProperty('showHeaders') ? false : cfg.showHeaders,
 				startsWith: !cfg.hasOwnProperty('startsWith') ? false : cfg.startsWith,
 				tableFields: cfg.tableFields,
 				target: document.getElementById(cfg.target),
-				tooltip: !cfg.hasOwnProperty('tooltip') ? [] : cfg.tooltip,
+				tooltips: !cfg.hasOwnProperty('tooltips') ? null : cfg.tooltips,
 			}
 
 			// If Autocomplete list is visible, is removed
 			removeItemsList(true);
 
-			// Set message if minLength is -1 and message and events if minLength not id -1
-			if(opt.minLength == -1) {
-				// Backup of placeholder if exists
+			// Backup of placeholder if exists
+			if(!opt.target.getAttribute("data-placeholder")){
 				if(opt.target.getAttribute("placeholder")){
 					opt.target.setAttribute("data-placeholder", opt.target.getAttribute("placeholder"));
 				} else {
 					opt.target.setAttribute("data-placeholder", "");
 				}
+			}
+
+			// Set message if minLength is -1 and message and events if minLength not id -1
+			if(opt.minLength == -1) {
 				opt.target.setAttribute("placeholder", opt.message);
 
 				opt.target.onkeydown = function(){ return false; }
@@ -425,6 +429,9 @@ function isiToolsCallback(json){
 						a.appendChild(thead);
 					}
 
+					var jsonCluster = false;
+					if(opt.format == "cluster" && typeof opt.data[0].items[0] == "object") jsonCluster = true;
+
 					// Go through the data
 					for (var i = 0; i < opt.data.length; i++) {
 						// If val is empty only process the first 100 elements
@@ -436,25 +443,17 @@ function isiToolsCallback(json){
 							cval = '|';
 							for(var keyVal in opt.data[i]){
 								var valAux = opt.data[i][keyVal];
-								cval += (typeof valAux == "object" ? valAux.join("|") : valAux) + "|";
+								cval += (typeof valAux == "object" ? JSON.stringify(valAux).replace(/"/mg, '|') : valAux);
 							}
 						} else {
 							cval = opt.data[i];
 						}
 						
 						// Check if the entry stars with and if the format is object
-						if(opt.format != "layer"){
-							if(opt.startsWith){
-								found = cval.toUpperCase().indexOf('|' + val.toUpperCase()) != -1;
+						if(opt.startsWith){
+								found = cval.toUpperCase().indexOf("|" + val.toUpperCase()) != -1;
 							} else {
 								found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
-							}
-						} else {
-							if(opt.startsWith){
-								found = cval.toUpperCase().indexOf(val.toUpperCase()) == 0;
-							} else {
-								found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
-							}
 						}
 						
 						// If item is found
@@ -487,10 +486,10 @@ function isiToolsCallback(json){
 								});
 							}
 
-							// Add another fields at row
+							// When format is TABLE
 							if (opt.format == "table") {
-								var highlighting = typeof opt.tableFields.highlight != "undefined" ? true : false;
-								var tooltips = opt.tooltip.length != 0 ? true : false;
+								var highlighting = typeof opt.tableFields.highlights != "undefined" ? true : false;
+								var tooltips = opt.tooltips ? true : false;
 
 								for (var f = 0; f < opt.tableFields.fields.length; f++) {
 									if(f == 0){
@@ -508,11 +507,11 @@ function isiToolsCallback(json){
 									
 									// If items is disabled
 									if(highlighting){
-										if(typeof opt.data[i][opt.tableFields.highlight.field] == 'undefined' ||  opt.data[i][opt.tableFields.highlight.field] == 0){
+										if(typeof opt.data[i][opt.tableFields.highlights.field] == 'undefined' ||  opt.data[i][opt.tableFields.highlights.field] == 0){
 											faux = faux.replace("__disabled__", "");
 										} else {
-											b.style.background = opt.tableFields.highlight.bg
-											b.style.color 	   = opt.tableFields.highlight.fg;
+											b.style.background = opt.tableFields.highlights.bg
+											b.style.color 	   = opt.tableFields.highlights.fg;
 										}
 									}
 
@@ -520,8 +519,8 @@ function isiToolsCallback(json){
 
 									if(tooltips){
 										for (var t = 0; t < opt.tooltip.length; t++) {
-											if(tfld == opt.tooltip[t].field){
-												faux= faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltip[t].text] + '"');
+											if(tfld == opt.tooltips[t].field){
+												faux= faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltips[t].text] + '"');
 												break
 											} 
 										}
@@ -530,21 +529,39 @@ function isiToolsCallback(json){
 									}
 									b.innerHTML += faux.replace("__tp__", '');
 								}
-								
 							}
-
+							
 							a.appendChild(b);
 							if (bc != null) a.appendChild(bc);
 
 							// If format is cluster, add all sub-items
 							if (opt.format == "cluster") {
+								console.log(opt.tooltips)
+								var tooltips = opt.tooltips ? true : false;
+
 								for (var z = 0; z < opt.data[i].items.length; z++) {
-									if (opt.startsWith ? (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) == 0) : (opt.data[i].items[z].toUpperCase().indexOf(val.toUpperCase()) != -1)) {
+									var text = '';
+									
+									if(jsonCluster){ text = opt.data[i].items[z].text; } else { text = opt.data[i].items[z]; }
+									
+									if (opt.startsWith ? (text.toUpperCase().indexOf(val.toUpperCase()) == 0) : (text.toUpperCase().indexOf(val.toUpperCase()) != -1)) {
 										b = document.createElement("div");
 										b.classList.add("value");
 										b.style.width = "100%";
-										b.innerHTML += "<span>" + opt.data[i].items[z] + "</span>";
-										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + opt.data[i].items[z] + "'>";
+										b.innerHTML += "<span>" + text + "</span>";
+										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + text + "'>";
+
+										// Mark highlighted
+										if(opt.highlights && opt.data[i].items[z][opt.highlights.field] != 0) {
+											b.style.background = opt.highlights.bg
+											b.style.color 	   = opt.highlights.fg;
+										}
+
+										// Set tooltip
+										if(tooltips){
+											b.setAttribute("title", opt.data[i].items[z][opt.tooltips.field])
+										}
+
 										// Add element
 										bc.appendChild(b);
 										// Add event on click
