@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: "1.0.3",
+	version: "1.0.4",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "29/04/2019",
+	lastupdate: "30/04/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -315,7 +315,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 29/04/2019
+		@Last update: 30/04/2019
 	**/
 	if(json.Autocomplete){
 		this.Autocomplete = it.Autocomplete = function (cfg) {
@@ -443,7 +443,11 @@ function isiToolsCallback(json){
 							cval = '|';
 							for(var keyVal in opt.data[i]){
 								var valAux = opt.data[i][keyVal];
-								cval += (typeof valAux == "object" ? JSON.stringify(valAux).replace(/"/mg, '|') : valAux);
+								if(opt.format == "cluster"){
+									cval += (typeof valAux == "object" ? JSON.stringify(valAux).replace(/"/mg, '|') : valAux);
+								} else {
+									cval += (typeof valAux == "object" ? valAux.join("|") : valAux) + "|";
+								}
 							}
 						} else {
 							cval = opt.data[i];
@@ -518,9 +522,9 @@ function isiToolsCallback(json){
 									// If items have tooltips and add items
 
 									if(tooltips){
-										for (var t = 0; t < opt.tooltip.length; t++) {
+										for (var t = 0; t < opt.tooltips.length; t++) {
 											if(tfld == opt.tooltips[t].field){
-												faux= faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltips[t].text] + '"');
+												faux= faux.replace("__tp__", 'title="' + (opt.tooltips[0].hasOwnProperty("fieldtext") ? opt.data[i][opt.tooltips[t].fieldtext] : opt.data[i][opt.tooltips[t].text] ) + '"');
 												break
 											} 
 										}
@@ -536,7 +540,6 @@ function isiToolsCallback(json){
 
 							// If format is cluster, add all sub-items
 							if (opt.format == "cluster") {
-								console.log(opt.tooltips)
 								var tooltips = opt.tooltips ? true : false;
 
 								for (var z = 0; z < opt.data[i].items.length; z++) {
@@ -557,7 +560,7 @@ function isiToolsCallback(json){
 											b.style.color 	   = opt.highlights.fg;
 										}
 
-										// Set tooltip
+										// Set tooltips
 										if(tooltips){
 											b.setAttribute("title", opt.data[i].items[z][opt.tooltips.field])
 										}
