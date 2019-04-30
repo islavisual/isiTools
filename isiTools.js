@@ -524,7 +524,7 @@ function isiToolsCallback(json){
 									if(tooltips){
 										for (var t = 0; t < opt.tooltips.length; t++) {
 											if(tfld == opt.tooltips[t].field){
-												faux= faux.replace("__tp__", 'title="' + (opt.tooltips[0].hasOwnProperty("fieldtext") ? opt.data[i][opt.tooltips[t].fieldtext] : opt.data[i][opt.tooltips[t].text] ) + '"');
+												faux= faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltips[t].text] + '"');
 												break
 											} 
 										}
