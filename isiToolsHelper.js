@@ -93,10 +93,10 @@ if(it.enabledModules.Alert){
 
 /**
    Autocomplete Helper
-   @version: 1.00
+   @version: 1.0.4
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
-   @Last update: 25/04/2019
+   @Last update: 30/04/2019
  **/
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
@@ -136,10 +136,15 @@ if(it.enabledModules.Autocomplete){
 			description: 'It is the format in which you want to present the data. Depending on the format in which the data is presented, the "data" object must be defined in one way or another. This parameter is "layer" by default.\nYour possibles values are:\n\t● "layer".\n\t● "table" (It is feeded by the JSON provided by the "tableFields" parameter.)\n\t● "cluster"',
 			example: '// Example with list format\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];\nnew Autocomplete({target: "transportBox", format: "list", data: arrayList});\n\n// Example with table format\nvar countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});\n\n// Example with cluster format\nvar brandsList = [\n\t{ group: "Cars", items: ["Ford", "Seat", "Jaguar"] },\n\t{ group: "Motorcycles", items: ["Suzuki", "Ducati", "Hayley-Davidson"] },\n\t{ ... }\n];\nnew Autocomplete({target: "transportBox", format: "cluster", data: brandsList});'
 		},
-		target: {
+		highlights: {
+			type: 'object',
+			description: 'This parameter is a JSON that indicates which field is used as a flag to highlight fields and their style.',
+			example: 'new Autocomplete({\n\ttarget: "transportBox",\n\tformat: "table",\n\tdata: countriesJSON,\n\t// "tooltip" is a JSON array that can define as many tooltips as columns are displayed\n\ttooltip: [{\n\t\t//Field name where the tooltip will be established\n\t\tfield: "country"\n\t\t//Field name that contains the text used by the tooltip\n\t\ttext: "status"\n\t}],\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlights: {\n\t\t\t// Field name with the flag that indicates if highlighting\n\t\t\tfield: "disabled",\n\t\t\t// Highlighting background\n\t\t\tbg: "red",\n\t\t\t// Highlighting text color\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});\n\nnew Autocomplete({\n\tinput: "inputclustered",\n\tdata: clusterListJSON,\n\tminLength: 1,\n\tstartsWith: true,\n\ttooltips: {\n\t\t// Field name where the tooltip content will be established\n\t\tfield: "tooltip"\n\t},\n\thighlights: {\n\t\t// Field name with the flag that indicates if highlighting.\n\t\t// Only will be enabled when the value is 0\n\t\tfield: "flag",\n\t\t// Highlighting background\n\t\tbg: "#fff",\n\t\t// Highlighting text color\n\t\tfg: "#ccc"\n\t},\n\tformat: "cluster",\n\tcallback: callback\n});'
+		},
+		message: {
 			type: 'string',
-			description: 'ID from Input where Autocomplete will be implemented.',
-			example: 'new Autocomplete({target: "inputTextID", data: arrayList});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
+			description: 'Message to show when minLength property is equal to -1.',
+			example: 'new Autocomplete({target: "inputTextID", data: {}, minLength: -1, message: "Loading..."});'
 		},
 		minLength: {
 			type: 'integer',
@@ -158,8 +163,18 @@ if(it.enabledModules.Autocomplete){
 		},
 		tableFields: {
 			type: 'integer',
-			description: 'Array of JSON with the next format:\n\t● "return_value" indicates that field will be returned.\n\t● "highlight": Indicates the field that activates or deactivates the record as highlighted.\n\t● "fields" indicates the fields that composed the object "data".\n\t● "headers" indicates the translate fields to show into table headers.',
-			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlight: {\n\t\t\t// Name of the field with the flag that indicates whether highlighted\n\t\t\tfield: "disabled",\n\t\t\t// Background of highlighted record\n\t\t\tbg: "red",\n\t\t\t// Color of highlighted record\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});'
+			description: 'Array of JSON with the next format:\n\t● "return_value" indicates that field will be returned.\n\t● "highlights": Indicates the field that activates or deactivates the record as highlighted.\n\t● "fields" indicates the fields that composed the object "data".\n\t● "headers" indicates the translate fields to show into table headers.',
+			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlights: {\n\t\t\t// Name of the field with the flag that indicates whether highlighted\n\t\t\tfield: "disabled",\n\t\t\t// Background of highlighted record\n\t\t\tbg: "red",\n\t\t\t// Color of highlighted record\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});'
+		},
+		target: {
+			type: 'string',
+			description: 'ID from Input where Autocomplete will be implemented.',
+			example: 'new Autocomplete({target: "inputTextID", data: arrayList});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
+		},
+		tooltips: {
+			type: 'object',
+			description: 'This parameter is a JSON that indicates which fields will be used as tooltip source. If the "cluster" mode is used, only the field where the tooltip text is is indicated. If the "table" mode is used, you must indicate the name of the field where the tooltip will be inserted and the tooltip field.',
+			example: 'new Autocomplete({\n\ttarget: "transportBox",\n\tformat: "table",\n\tdata: countriesJSON,\n\t// "tooltip" is a JSON array that can define as many tooltips as columns are displayed\n\ttooltip: [{\n\t\t//Field name where the tooltip will be established\n\t\tfield: "country"\n\t\t//Field name that contains the text used by the tooltip\n\t\ttext: "status"\n\t}],\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlights: {\n\t\t\t// Field name with the flag that indicates if highlighting\n\t\t\tfield: "disabled",\n\t\t\t// Highlighting background\n\t\t\tbg: "red",\n\t\t\t// Highlighting text color\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});\n\nnew Autocomplete({\n\tinput: "inputclustered",\n\tdata: clusterListJSON,\n\tminLength: 1,\n\tstartsWith: true,\n\ttooltips: {\n\t\t// Field name where the tooltip content will be established\n\t\tfield: "tooltip"\n\t},\n\thighlights: {\n\t\t// Field name with the flag that indicates if highlighting.\n\t\t// Only will be enabled when the value is 0\n\t\tfield: "flag",\n\t\t// Highlighting background\n\t\tbg: "#fff",\n\t\t// Highlighting text color\n\t\tfg: "#ccc"\n\t},\n\tformat: "cluster",\n\tcallback: callback\n});'
 		}
 	};
 }
