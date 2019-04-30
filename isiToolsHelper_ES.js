@@ -93,10 +93,10 @@ if(it.enabledModules.Alert){
 
 /**
    Autocomplete Helper
-   @version: 1.00
+   @version: 1.0.4
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
-   @Last update: 25/04/2019
+   @Last update: 30/04/2019
  **/
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
@@ -136,10 +136,15 @@ if(it.enabledModules.Autocomplete){
 			description: 'Es el formato en el que se presentarán los datos. Según el formato en el que se presentan los datos, el objeto "data" debe definirse de una forma u otra. Este parámetro tiene como valor por defecto es "layer".\nLos posibles valores son:\n\t● "layer". \n\t● "table" (alimentado a partir de un JSON proporcionado por el parámetro "tableFields".)\n\t● "cluster"',
 			example: '// Example with list format\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];\nnew Autocomplete({target: "transportBox", format: "list", data: arrayList});\n\n// Example with table format\nvar countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});\n\n// Example with cluster format\nvar brandsList = [\n\t{ group: "Cars", items: ["Ford", "Seat", "Jaguar"] },\n\t{ group: "Motorcycles", items: ["Suzuki", "Ducati", "Hayley-Davidson"] },\n\t{ ... }\n];\nnew Autocomplete({target: "transportBox", format: "cluster", data: brandsList});'
 		},
-		target: {
+		highlights: {
+			type: 'object',
+			description: 'Este parámetro es un JSON que indica qué campo se utilizará como flag para descatar campos y su estilo.',
+			example: 'new Autocomplete({\n\ttarget: "transportBox",\n\tformat: "table",\n\tdata: countriesJSON,\n\t// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\ttooltip: [{\n\t\t//Nombre del campo donde se establecerá el tooltip\n\t\tfield: "country"\n\t\t//Nombre del campo que contiene el texto utilizado por el tooltip\n\t\ttext: "status"\n\t}],\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlight: {\n\t\t\t// Nombre del campo con el flag que indica si destacado o no\n\t\t\tfield: "disabled",\n\t\t\t// Background del destacado\n\t\t\tbg: "red",\n\t\t\t// Color del texto del destacado\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});\n\nnew Autocomplete({\n\tinput: "inputclustered",\n\tdata: clusterListJSON,\n\tminLength: 1,\n\tstartsWith: true,\n\ttooltips: {\n\t\t// Nombre del campo donde se encuentra el texto del tooltip\n\t\tfield: "tooltip"\n\t},\n\thighlights: {\n\t\t// Nombre del campo que servirá como flag para marcar como destacado.\n\t\t// Sólo se activará cuando distinto de 0\n\t\tfield: "flag",\n\t\t// Color de fondo del destacado\n\t\tbg: "#fff",\n\t\t// Color del texto del destacado\n\t\tfg: "#ccc"\n\t},\n\tformat: "cluster",\n\tcallback: callback\n});'
+		},
+		message: {
 			type: 'string',
-			description: 'ID del input (campo de entrada de texto) dónde el Autocomplete será implementado.',
-			example: 'new Autocomplete({target: "inputTextID", data: arrayList});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
+			description: 'Mensaje a mostrar únicamente cuando la propiedad minLength es -1.',
+			example: 'new Autocomplete({target: "inputTextID", data: {}, minLength: -1, message: "Loading..."});'
 		},
 		minLength: {
 			type: 'integer',
@@ -156,10 +161,20 @@ if(it.enabledModules.Autocomplete){
 			description: 'Este parámetro indica si la coincidencia de búsqueda debe comenzar con la cadena ingresada o puede estar contenida en cualquier posición. Por defecto es false.',
 			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({\n\ttarget: "transportBox",\n\tstartsWith: true,\n\tformat: "table",\n\tshowHeaders: true,\n\tdata: countriesJSON,\n\ttableFields: {\n\t\t"return_value": "id",\n\t\t"fields": ["country", "code", "capital"], "headers": ["Country", "Code", "Capital"]\n\t}\n});'
 		},
+		target: {
+			type: 'string',
+			description: 'ID del input (campo de entrada de texto) dónde el Autocomplete será implementado.',
+			example: 'new Autocomplete({target: "inputTextID", data: arrayList});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
+		},
 		tableFields: {
 			type: 'integer',
 			description: 'Un objeto JSON con el siguiente formato: \n\t● "return_value": Que indica qué campo se devolverá.\n\t● "highlight": Que indica el campo que activará o desactivará el registro como destacado.\n\t● "fields": Que indica los campos que compondrán el objeto "data".\n\t● "headers": Que indica la traducción para mostrar en los encabezados del autocomplete en formato "table".',
 			example: 'var countriesJSON = [\n\t{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },\n\t{ id: 2, country: "Albania", code: "ALB", capital: "Tirane" },\n\t{...}\n];\nnew Autocomplete({target: "transportBox", format: "table", data: countriesJSON,\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlight: {\n\t\t\t// Nombre del campo con el flag que indica si destacado o no\n\t\t\tfield: "disabled",\n\t\t\t// Background del destacado\n\t\t\tbg: "red",\n\t\t\t// Color del texto del destacado\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});'
+		},
+		tooltips: {
+			type: 'object',
+			description: 'Este parámetro es un JSON que indica qué campos se utilizarán como fuente del tooltip. Si se utiliza el modo "cluster", sólo se debe indicar el campo dónde está el texto del tooltip. Si se utiliza el modo "table", se debe indicar el nombre del campo dónde se insertará el tooltip y el campo del tooltip.',
+			example: 'new Autocomplete({\n\ttarget: "transportBox",\n\tformat: "table",\n\tdata: countriesJSON,\n\t// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\ttooltip: [{\n\t\t//Nombre del campo donde se establecerá el tooltip\n\t\tfield: "country"\n\t\t//Nombre del campo que contiene el texto utilizado por el tooltip\n\t\ttext: "status"\n\t}],\n\ttableFields: {\n\t\treturn_value: "id",\n\t\thighlight: {\n\t\t\t// Nombre del campo con el flag que indica si destacado o no\n\t\t\tfield: "disabled",\n\t\t\t// Background del destacado\n\t\t\tbg: "red",\n\t\t\t// Color del texto del destacado\n\t\t\tfg: "white"\n\t\t},\n\t\tfields: ["country", "code", "capital"],\n\t\theaders: ["Country", "Code", "Capital"]\n\t}\n});\n\nnew Autocomplete({\n\tinput: "inputclustered",\n\tdata: clusterListJSON,\n\tminLength: 1,\n\tstartsWith: true,\n\ttooltips: {\n\t\t// Nombre del campo donde se encuentra el texto del tooltip\n\t\tfield: "tooltip"\n\t},\n\thighlights: {\n\t\t// Nombre del campo que servirá como flag para marcar como destacado.\n\t\t// Sólo se activará cuando distinto de 0\n\t\tfield: "flag",\n\t\t// Color de fondo del destacado\n\t\tbg: "#fff",\n\t\t// Color del texto del destacado\n\t\tfg: "#ccc"\n\t},\n\tformat: "cluster",\n\tcallback: callback\n});'
 		}
 	};
 }
