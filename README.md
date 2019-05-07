@@ -2,12 +2,14 @@ IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durant
 
 ### Instalación
 Descargar / copiar las librerías en tu carpeta javascript de tu proyecto. Después, inserta el código necesario para activar isiTools. Por ejemplo:
+```javascript
 // Cargar todas las funciones
 <script src="isitools.js" />
 <script src="isitoolsHerlper.js" />
 // Cargar selectivamente algunas características
 <script src="isitools.js?modules=AddCSSRule+Alert+Autocomplete+DOM" />
 <script src="isitoolsHerlper.js" />
+```
 ### ADDCSSRULE
 Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.
 PROPIEDAD SHEET
