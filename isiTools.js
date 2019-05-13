@@ -575,6 +575,11 @@ function isiToolsCallback(json){
 										});
 									}
 								}
+								// Clean empty values
+								if(bc.children.length == 0){
+									bc.previousElementSibling.remove();
+									bc.remove();
+								}
 							}
 						}
 					}
