@@ -380,7 +380,7 @@ function isiToolsCallback(json){
 					var a, b, c, i, val = this.value.trim();
 
 					// Contains wildcard
-					var wildCard = val.indexOf("%") == -1 ? -1 : (val.indexOf("%") == val.length - 1 ? 1 : 0);
+					var wildCard = val.indexOf("*") == -1 ? -1 : (val.indexOf("*") == val.length - 1 ? 1 : 0);
 
 					// Only search when length is greater than "minLength" attribute.
 					if (opt.minLength == -1) this.value = "";
@@ -593,9 +593,15 @@ function isiToolsCallback(json){
 				// w: f the search has wildcard, -1 (not), 0 (to begin), 1 (to end)
 				// p: step of search
 
-				if(v.split("%").length == 3) s = false;
+				// Replace double wildcard
+				v = v.replace("**", '*');
+
+				// Change search mode to contains if the value to search contain two wildcards
+				if(v.split("*").length == 3) s = false;
 				
-				v = v.replace(/%/g, '');
+				// Clean of wildcards the value to search
+				v = v.replace(/\*/g, '');
+				
 				var aux = false;
 				if(!s){
 					v = v.split("+");
