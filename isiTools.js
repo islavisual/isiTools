@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: "1.0.4",
+	version: "1.0.5",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "30/04/2019",
+	lastupdate: "14/05/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -312,10 +312,10 @@ function isiToolsCallback(json){
 
 	/**
 		 Autocomplete functionality
-		@version: 1.00
+		@version: 1.03
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 30/04/2019
+		@Last update: 14/05/2019
 	**/
 	if(json.Autocomplete){
 		this.Autocomplete = it.Autocomplete = function (cfg) {
@@ -378,6 +378,9 @@ function isiToolsCallback(json){
 				opt.target.onkeydown = null;
 				opt.target.addEventListener("input", function (e) {
 					var a, b, c, i, val = this.value.trim();
+
+					// Contains wildcard
+					var wildCard = val.indexOf("%") == -1 ? -1 : (val.indexOf("%") == val.length - 1 ? 1 : 0);
 
 					// Only search when length is greater than "minLength" attribute.
 					if (opt.minLength == -1) this.value = "";
@@ -454,11 +457,7 @@ function isiToolsCallback(json){
 						}
 						
 						// Check if the entry stars with and if the format is object
-						if(opt.startsWith){
-								found = cval.toUpperCase().indexOf("|" + val.toUpperCase()) != -1;
-							} else {
-								found = cval.toUpperCase().indexOf(val.toUpperCase()) != -1;
-						}
+						found = existsCoincidence(val, cval, opt.startsWith, wildCard, 0);
 						
 						// If item is found
 						if (found) {
@@ -547,7 +546,7 @@ function isiToolsCallback(json){
 									
 									if(jsonCluster){ text = opt.data[i].items[z].text; } else { text = opt.data[i].items[z]; }
 									
-									if (opt.startsWith ? (text.toUpperCase().indexOf(val.toUpperCase()) == 0) : (text.toUpperCase().indexOf(val.toUpperCase()) != -1)) {
+									if (existsCoincidence(val, text, opt.startsWith, wildCard, 1)) {
 										b = document.createElement("div");
 										b.classList.add("value");
 										b.style.width = "100%";
@@ -575,6 +574,7 @@ function isiToolsCallback(json){
 										});
 									}
 								}
+
 								// Clean empty values
 								if(bc.children.length == 0){
 									bc.previousElementSibling.remove();
@@ -584,6 +584,43 @@ function isiToolsCallback(json){
 						}
 					}
 				});
+			}
+
+			function existsCoincidence(v, t, s, w, p){
+				// v: pattern to found
+				// t: text where search
+				// s: if starsWith is enabled
+				// w: f the search has wildcard, -1 (not), 0 (to begin), 1 (to end)
+				// p: step of search
+
+				if(v.split("%").length == 3) s = false;
+				
+				v = v.replace(/%/g, '');
+				var aux = false;
+				if(!s){
+					v = v.split("+");
+					var c = 0;
+					for(var x = 0; x < v.length; x++){
+						if(t.toUpperCase().indexOf(v[x].toUpperCase()) != -1) c++;
+					}
+					if(c == v.length) aux = true;
+
+				} else {
+					if(p == 0){
+						if(w == 0){
+							aux = t.toUpperCase().indexOf(v.toUpperCase()+"|") != -1;
+						} else {
+							aux = t.toUpperCase().indexOf("|" + v.toUpperCase()) != -1;
+						}
+					} else {
+						if(w == 0){
+							aux = t.toUpperCase().indexOf(v.toUpperCase()) == t.toUpperCase().length- v.length;
+						} else {
+							aux = t.toUpperCase().indexOf(v.toUpperCase()) == 0;
+						}
+					}
+				}
+				return aux;
 			}
 
 			// Get Autocomplete List
@@ -2093,10 +2130,10 @@ function isiToolsCallback(json){
 
 	/**
 		 Get parameter from url
-		@version: 1.02
+		@version: 1.03
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 05/03/2019
+		@Last update: 07/04/2019
 	**/
 	if(json.GetParam){
 		this.GetParam = it.GetParam = function (cfg) {
@@ -2110,8 +2147,15 @@ function isiToolsCallback(json){
 
 			var vars = {};
 			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
-				vars[key] = value;
+				if(typeof cfg == "string" && cfg == key){
+					vars = value;
+					return vars;
+
+				} else if(typeof cfg == 'object'){
+					vars[key] = value;
+				}
 			});
+
 			return vars;
 		}
 	}
