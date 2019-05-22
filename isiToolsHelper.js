@@ -729,6 +729,58 @@ if(it.enabledModules.Language){
 }
 
 /**
+	Password tools
+	@version: 1.00
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2019 Islavisual.
+	@Last update: 22/05/2019
+**/
+if(it.enabledModules.Selectpicker){
+	WikiHelper.Password = {
+		general: {
+			version: 1.0,
+			help: 1,
+			name: 'Password',
+			description: "The password script is a tool that allows you to manage the creation of passwords and their strengths. It allows to define the length and the minimum number of uppercase, lowercase, numbers and special characters to send/save the password. Further, the Password Script penalties actions like insert several consecutive lowercase, insert several consecutive uppercase, insert several consecutive digits o repeat three o more times the same character.",
+		},
+		additional: [
+			{
+				description: 'Know the complexity of the password entered:',
+				example: 'Password.features.complexity;'
+			},
+			{
+				description: 'Know if the minimum requirements are met to send/save the password:',
+				example: 'Password.allowed;'
+			},
+			{
+				description: 'Default style conguration:',
+				example: '// Password creates these styles automatically, but, you can add them to the main style sheet and modify them however you want.\n.strength{\n\twidth: 100%;\n\theight: 10px;\n\tposition: absolute;\n\tbottom: -2px;\n\tleft: 0;\n\tz-index: 99;\n\tpadding: 2px 1px 1px 1px;\n\tborder: 0 none;\n\tmargin: 0 0 5px 0;\n\tdisplay: none;\n}\n.strength::after{\n\tcontent: attr(data-label);\n\tdisplay: block;\n\tposition: absolute;\n\tleft: 0;\n\ttop: -5px;\n\twidth: 100%;\n\tpadding: 3px 5px 2px;\n\tfont-size: 12px;\n\tline-height: 12px;\n}\n.strength > div{\n\tbackground: rgba(0,0,0,0.1);\n\twidth: calc(16.667% - 4px);\n\tfloat: left;\n\theight: 6px;\n\tpadding: 0;\n\tmargin: 0px 2px;\n\tposition: relative;\n}\n.strength[data-label] > div{\n\tdisplay: none;\n}\n.strength > div.spotlight{\n\tbackground: lightblue;\n}\ninput:focus ~ .strength{\n\tbackground: blue;\n\tdisplay: block;\n}'
+			}
+		],
+		check: {
+			type: 'function',
+			description: 'Allows check the password strength. You can define the minimal length and the minimum number of uppercase, lowercase, numbers and special characters to send/save the password. Also, you can define the used colors to indicate when the password is right y when not.',
+			example: '&lt;script>\n\tfunction check(){\n\t\tPassword.check({\n\t\t\ttarget: this.id,\n\t\t\tcolorok: \'rgba(255,255,255,0.75)\',\n\t\t\tcolornok: \'#A12123\'\n\t\t});\n\t}\n&lt;/script>\n\n&lt;input\tid="pwd"\n\tname="pwd"\n\ttype="password"\n\tvalue=""\n\tplaceholder="Contraseña"\n\tonkeyup="check();" />'
+		},
+		setMinimals: {
+			type: 'function',
+			description: 'It allows to establish the minimum security requirements of passwords. The result of this evaluation will be returned in Password.allowed. Only if this variable is equal to "true", the form can be sent/saved.',
+			example: 'Password.setMinimals({\n\tlength: 8,\n\tuppers:1,\n\tlowers: 1,\n\tnumbers: 0,\n\tspecial: 0\n})'
+		},
+		autoDraw: {
+			type: 'Boolean',
+			description: 'Allows you to define whether the password strength graphic should be painted or not.',
+			example: 'Password.autoDraw = false;'
+		},
+		draw: {
+			type: 'function',
+			description: 'It allows to call the function to draw the strength graph to show it at a certain moment.',
+			example: 'Password.draw(Password.features.complexity);'
+		}
+	}
+}
+
+/**
 	 Create and send forms in real time.
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
@@ -1126,7 +1178,7 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
 		AddCSSRule('', "#h31p3r", 'font-family: arial; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + ';padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -10px;border-bottom: 1px solid rgba(255,255,255,.1);')
-		AddCSSRule('', "#h31p3r h3", 'text-transform: uppercase; margin: 32px 0 10px; font-size:1.0rem; padding:5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
+		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 32px 0 10px; font-size:1.0rem; padding:5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
 		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', "#h31p3r field.des, #h31p3r field.exa", "display: block; width: 100%;");
