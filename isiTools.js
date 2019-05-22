@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: "1.0.5",
+	version: "1.1.0",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "14/05/2019",
+	lastupdate: "22/05/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -2487,6 +2487,197 @@ function isiToolsCallback(json){
 		Date.prototype.currentDate = (function () { var local = new Date(this); local.setMinutes(this.getMinutes() - this.getTimezoneOffset()); return local.toJSON().slice(0, 10); });
 		this.now = it.now = function () {
 			return new Date().currentDate();
+		}
+	}
+
+	/**
+		Password tools
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 22/05/2019
+	**/
+	if(json.Password){
+		this.Password = it.Password = {
+			version: '1.0',
+			allowed: false,
+			autoDraw: true,
+			setTarget: function(e){
+				this.target = document.getElementById(e);
+			},
+			minFeatures:{
+				length: 6,
+				uppers:1,
+				lowers: 1,
+				numbers: 1,
+				special: 1,
+				extra: 10
+			},
+			features: {
+				complexity: 0,
+				length: 0,
+				uppers: 0,
+				lowers: 0,
+				numbers: 0,
+				special: 0,
+				extra: 0
+			},
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("Password", cfg);
+				else alert("Helper not available!")
+				return;
+			},
+			check: function(cfg){
+				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
+
+				// Configure execution
+				this.autoDraw = cfg.hasOwnProperty('autoDraw') ? cfg.autoDraw : true;
+				this.colorok = cfg.hasOwnProperty('colorok') ? cfg.colorok : 'rgba(255,255,255,0.75)';
+				this.colornok = cfg.hasOwnProperty('colornok') ? cfg.colornok : '#e0e0e0';
+
+				// Get target
+				this.setTarget(cfg.target);
+				var val = this.target.value;
+
+				// If length lower than three, update values and return false
+				if(val.length < this.minFeatures.length){
+					this.features.complexity = 0;
+					this.allowed = false;
+
+				} else {
+					// Get features
+					this.features.length  = val ? val.length : 0;
+					this.features.uppers  = val.match(/[A-Z]/g) ? val.match(/[A-Z]/g).length : 0;
+					this.features.lowers  = val.match(/[a-z]/g) ? val.match(/[a-z]/g).length : 0;
+					this.features.numbers = val.match(/[0-9]/g) ? val.match(/[0-9]/g).length : 0;
+					this.features.special = this.features.length - this.features.uppers - this.features.lowers - this.features.numbers
+					this.features.extra   = this.features.length >= this.minFeatures.extra ? 1 : 0;
+
+					// Get initial complexity
+					this.features.complexity = (this.features.length >= this.minFeatures.length ? 1 : 0) + (this.features.numbers >= this.minFeatures.numbers ? 1 : 0) + (this.features.uppers >= this.minFeatures.uppers ? 1 : 0) + (this.features.lowers >= this.minFeatures.lowers ? 1 : 0) + (this.features.special >= this.minFeatures.special ? 1 : 0) + this.features.extra;
+
+					// Penalties by consecutive types
+					var consecutive = this._consecutive('uppers', val.length < this.minFeatures.length ? 2 : 4);
+					this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
+					
+					var consecutive = this._consecutive('lowers', val.length < this.minFeatures.length ? 2 : 4);
+					this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
+					
+					var consecutive = this._consecutive('numbers', val.length < this.minFeatures.length ? 2 : 4);
+					this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
+
+					// Penalties by repeated characters
+					var repeated = this._repeated(val.length < this.minFeatures.length ? 2 : 3);
+					console.log(repeated)
+					this.features.complexity = repeated ? (this.features.complexity - 1) : this.features.complexity;
+					
+					// Update allowed flag and form
+					this.allowed = (this.features.length >= this.minFeatures.length ? true : false) && (this.features.numbers >= this.minFeatures.numbers ? true : false) && (this.features.uppers >= this.minFeatures.uppers ? true : false) && (this.features.lowers >= this.minFeatures.lowers ? true : false) && (this.features.special >= this.minFeatures.special ? true : false);
+				}
+				
+				if(!this.allowed){
+					if(!this.target.form.getAttribute("data-updated")){
+						if(this.target.form.getAttribute("onsubmit")){
+							this.target.form.setAttribute("data-onsubmit", this.target.form.getAttribute("onsubmit"));
+							this.target.form.setAttribute("data-updated", "true");
+						} 
+
+						this.target.form.setAttribute("onsubmit", "return false;");
+						this.target.form.setAttribute("data-updated", "true");
+					}
+
+				} else {
+					if(this.target.form.getAttribute("data-updated")){
+						if(this.target.form.getAttribute("data-onsubmit")){
+							this.target.form.setAttribute("onsubmit", this.target.form.getAttribute("data-onsubmit"))
+							this.target.form.removeAttribute("data-onsubmit");
+
+						} else {
+							this.target.form.removeAttribute("onsubmit");
+						}
+						this.target.form.removeAttribute("data-updated");
+					}
+				}
+
+				// Auto draw strength chart
+				if(this.autoDraw) this.draw(this.features.complexity);
+			}, 
+			draw: function(c){
+				// Add CSS Rules
+				if(typeof it.AddCSSRule != "undefined"){
+					it.AddCSSRule('', ".strength", "width: 100%; height: 10px; position: absolute; bottom: -2px; left: 0; z-index: 99; padding: 2px 1px 1px 1px; border: 0 none; margin: 0 0 5px 0; display: none");
+					it.AddCSSRule('', ".strength::after", "content: attr(data-label); display: block; position: absolute; left: 0; top: -5px; width: 100%; padding: 3px 5px 2px; font-size: 12px; line-height: 12px;");
+					it.AddCSSRule('', ".strength > div", "background: rgba(0,0,0,0.1); width: calc(16.667% - 4px); float: left; height: 6px; padding: 0; margin: 0px 2px; position: relative;");
+					it.AddCSSRule('', ".strength[data-label] > div", "display: none;");
+					it.AddCSSRule('', ".strength > div.spotlight", "background: " + this.colorok + ";");
+					it.AddCSSRule('', "input:focus ~ .strength", "background: " + this.colornok + "; display: block;");
+				}
+
+				// Define layers
+				var cont = document.createElement("div");
+					cont.classList.add("strength");
+				
+				var str = '';
+				for(var x = 0; x < 6; x++){
+					if(x <= c - 1){
+						str += '<div class="spotlight"></div>';
+					} else {
+						str += '<div></div>';
+					}
+				}
+
+				cont.innerHTML = str;
+
+				// Add/Remove layers
+				var child = this.target.parentElement.children;
+					child = child[child.length - 1];
+
+				if(child && child.classList.contains("strength")) child.remove();
+				this.target.parentNode.insertBefore(cont, this.target.previousElementSibling);
+			},
+			setMinimals: function(cfg){
+				for(var aux in cfg){
+					this.minFeatures[aux] = cfg[aux];
+				}
+			},
+			_consecutive: function(pattern, len){
+				var s = this.target.value.split(''), total = 0;
+
+				// If the value length is greater, ignore validation
+				if(s.length >= 15) len = (len-1) * 2;
+
+				// Check consecutive characters
+				for(var x = 0; x < s.length; x++){
+					var code = s[x].charCodeAt(0);
+
+					if(pattern == "uppers"){
+						if(code >= 65 && code <= 90) total++; else total = 0;
+					} else if(pattern == "lowers"){
+						if(code >= 97 && code <= 122) total++; else total = 0;
+					} else if(pattern == "numbers"){
+						if(code >= 48 && code <= 57) total++; else total = 0;
+					}
+
+					if(total == len) return true;
+				}
+
+				return false;
+			},
+			_repeated: function(len){
+				var s = this.target.value, total = 1, charAnt = '';
+
+				for(var x = 0; x < s.length; x++){
+					var char = s[x];
+
+					if(charAnt == char) total++; else charAnt = char;
+					if(total == len) return true;
+				}
+
+				return false;
+			}
 		}
 	}
 
