@@ -2,7 +2,7 @@ var WikiHelper = {}
 
 /**
    AddCSSRule Helper																		
-   @version: 1.00																					
+   @version: 1.10																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2019 Islavisual. 																	
    @Last update: 04/04/2019																			
@@ -729,7 +729,7 @@ if(it.enabledModules.Language){
 	@Copyright 2017-2019 Islavisual.
 	@Last update: 22/05/2019
 **/
-if(it.enabledModules.Selectpicker){
+if(it.enabledModules.Password){
 	WikiHelper.Password = {
 		general: {
 			version: 1.0,
@@ -756,6 +756,11 @@ if(it.enabledModules.Selectpicker){
 			description: 'Permite comprobar la seguridad de la contraseña. Puede definir la longitud mínima y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, puede definir los colores utilizados para indicar cuándo la contraseña es correcta y cuándo no.',
 			example: '&lt;script>\n\tfunction check(){\n\t\tPassword.check({\n\t\t\ttarget: this.id,\n\t\t\tcolorok: \'rgba(255,255,255,0.75)\',\n\t\t\tcolornok: \'#A12123\'\n\t\t});\n\t}\n&lt;/script>\n\n&lt;input\tid="pwd"\n\tname="pwd"\n\ttype="password"\n\tvalue=""\n\tplaceholder="Contraseña"\n\tonkeyup="check();" />'
 		},
+		draw: {
+			type: 'function',
+			description: 'Permite llamar a la función de dibujar el gráfico de fortaleza para mostrarlo en un momento determinado.',
+			example: 'Password.draw(Password.features.complexity);'
+		},
 		setMinimals: {
 			type: 'function',
 			description: 'Permite establecer los requerimientos mínimos de seguridad de las contraseñas. Es resultado de esta evaluación se devolverá en Password.allowed. Sólo si esta variable es igual a "true", el formulario se podrá enviar/guardar.',
@@ -765,11 +770,6 @@ if(it.enabledModules.Selectpicker){
 			type: 'Boolean',
 			description: 'Permite definir si se debe pintar el gráfico de fortaleza de la contraseña o no.',
 			example: 'Password.autoDraw = false;'
-		},
-		draw: {
-			type: 'function',
-			description: 'Permite llamar a la función de dibujar el gráfico de fortaleza para mostrarlo en un momento determinado.',
-			example: 'Password.draw(Password.features.complexity);'
 		}
 	}
 }
@@ -1150,6 +1150,12 @@ this.Helper = it.Helper = function (func, cfg) {
 
 	if (general.name.toLowerCase() == "index") {
 		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
+		<nav>\
+			<a href="#"><i class="btn-bars" onclick="this.parentElement.classList.toggle(\'on\')"></i></a>\
+			<ul>\
+				__ITEMS_HELP__\
+			</ul>\
+		</nav>\
 		<h2>Tabla de contenidos de isiTools ' +  general.version.toFixed(2) + '</h2>\
 		<div style="margin-top: 64px">\
 		IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
@@ -1172,11 +1178,10 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
 		AddCSSRule('', "#h31p3r", 'font-family: arial; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + ';padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -10px;border-bottom: 1px solid rgba(255,255,255,.1);')
-		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 32px 0 10px; font-size:1.0rem; padding:5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
+		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0rem; padding: 64px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
 		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', "#h31p3r field.des, #h31p3r field.exa", "display: block; width: 100%;");
-		AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
 		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
 		AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
 		AddCSSRule('', '#h31p3r > a', 'position: fixed;left: 10px;top: 10px; border: 1px solid ' + opt.highlight + '; padding: 3px 10px; line-height:26px;z-index:9; color: ' + opt.background + ';');
@@ -1190,13 +1195,29 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
 		AddCSSRule('', '#h31p3r code, #h31p3r pre code', 'color: ' + opt.exampleColor + '; padding-left: 32px; display: block; ');
 		AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
-		AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 32px; top: 15px; width: 24px; height: 24px; opacity: 0.3; z-index:9; cursor: pointer;');
+		AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 32px; top: 11px; width: 32px; height: 32px;  background: ' + opt.buttons + '; z-index:9; cursor: pointer;');
 		AddCSSRule('', '#h31p3r .btn-times:hover', 'opacity: 1;');
-		AddCSSRule('', '#h31p3r .btn-times::before, #h31p3r .btn-times::after', 'position: absolute; left: 15px; content: " "; height: 24px; width: 2px; background-color: ' + opt.background + ';');
+		AddCSSRule('', '#h31p3r .btn-times::before, #h31p3r .btn-times::after', 'position: absolute; left: 15px; top: 5px; content: " "; height: 24px; width: 2px; background-color: ' + opt.background + ';');
 		AddCSSRule('', '#h31p3r .btn-times::before', 'transform: rotate(45deg);');
 		AddCSSRule('', '#h31p3r .btn-times::after', 'transform: rotate(-45deg);');
+		AddCSSRule('', '#h31p3r nav', 'position: fixed; right: 70px; top: 15px; width: 22px; height: 24px; z-index: 9; cursor: pointer; text-align: center;');
+		AddCSSRule('', '#h31p3r nav .btn-bars', 'display: block; width: 24px; height: 20px; font-size: 25px; visibility: initial; float: right; border-bottom: 1px solid ' + opt.background + ';');
+		AddCSSRule('', '#h31p3r nav .btn-bars:before', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 4px');
+		AddCSSRule('', '#h31p3r nav .btn-bars:after', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; height: 12px;');
+		AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px;');
+		AddCSSRule('', '#h31p3r nav > a + ul', 'display: none; background: ' + opt.color + '; width: 150px; height: 150px; color: ' + opt.background + '; position: absolute; top: 38px; right: -15px; list-style: none; padding: 0; text-align: left;');
+		AddCSSRule('', '#h31p3r nav > a.on + ul', 'display:block; overflow-x: hidden; overflow-y: auto');
+		AddCSSRule('', '#h31p3r nav > a + ul li', 'padding: 5px 10px;');
+		AddCSSRule('', '#h31p3r nav > a + ul li:hover', 'background: ' + opt.highlight + '; padding: 5px 10px;');
+		AddCSSRule('', '#h31p3r nav > a + ul li a', ' color: ' + opt.background + '; ');
 
-		var text = '', additional = '';
+		if(GetParam("f") == '.me'){
+			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
+		} else {
+			AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
+		}
+
+		var text = '', additional = '', items_help = '';
 		var idx = 0;
 		for (var prop in help) {
 			if (prop != "additional" && general.name.toLowerCase() != "index") {
@@ -1205,7 +1226,8 @@ this.Helper = it.Helper = function (func, cfg) {
 			} else if (general.name.toLowerCase() == "index") {
 				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop;
 				
-				text += '<h3 onclick="' + WikiHelper[wprop].general.help.split("\n")[1] + '">' + wprop + '</h3>';
+				text += '<h3 id="' + wprop + '" onclick="' + WikiHelper[wprop].general.help.split("\n")[1] + '">' + wprop + '</h3>';
+				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
 			}
 
 			if (typeof help[prop] == "undefined") {
@@ -1239,6 +1261,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			.replace(/__COLOR__/ig, opt.color)
 			.replace(/__TEXT__/ig, text)
 			.replace(/__ADDITIONAL__/ig, additional)
+			.replace(/__ITEMS_HELP__/ig, items_help)
 			.replace(/__HELPEROPTIONS__/ig, typeof WikiHelper['index'][func] != "undefined" ? ("<code>" + WikiHelper['index'][func].example + '</code>') : '')
 			.replace(/\\"/ig, '"')
 			.replace(/\\n/ig, '<br/>');
@@ -1251,6 +1274,17 @@ this.Helper = it.Helper = function (func, cfg) {
 
 		if (additional.trim() != "") document.getElementById("additionalH31p3r").style.display = '';
 		document.body.style.position = "fixed";
+
+		document.getElementById("h31p3r").onclick = function(e){
+			var aux = e.target.parentElement.tagName.toLowerCase()
+			var auxp = e.target.parentElement.parentElement ? e.target.parentElement.parentElement.tagName.toLowerCase() : '';
+
+			if(aux == "pre" || auxp == "pre" || aux == "code" || auxp == "code"){
+				
+				try { document.getElementById("h31p3r").querySelector("nav > a").classList.remove("on"); } catch(e) {}
+			}
+		};
+
 	} else {
 		printIntoConsole(help);
 	}
