@@ -2500,28 +2500,9 @@ function isiToolsCallback(json){
 	if(json.Password){
 		this.Password = it.Password = {
 			version: '1.0',
-			allowed: false,
-			autoDraw: true,
-			setTarget: function(e){
-				this.target = document.getElementById(e);
-			},
-			minFeatures:{
-				length: 6,
-				uppers:1,
-				lowers: 1,
-				numbers: 1,
-				special: 1,
-				extra: 10
-			},
-			features: {
-				complexity: 0,
-				length: 0,
-				uppers: 0,
-				lowers: 0,
-				numbers: 0,
-				special: 0,
-				extra: 0
-			},
+			config: { autoDraw: true, colorok : 'rgba(255,255,255,0.75)', colornok : '#e0e0e0', onerror: null },
+			minFeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },
+			features: { allowed: false, complexity: 0, extra: 0, length: 0, lowers: 0, numbers: 0, special: 0, uppers: 0 },
 			help: function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
 				if(!cfg.hasOwnProperty("help")) cfg.help = '';
@@ -2534,9 +2515,10 @@ function isiToolsCallback(json){
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 
 				// Configure execution
-				this.autoDraw = cfg.hasOwnProperty('autoDraw') ? cfg.autoDraw : true;
-				this.colorok = cfg.hasOwnProperty('colorok') ? cfg.colorok : 'rgba(255,255,255,0.75)';
-				this.colornok = cfg.hasOwnProperty('colornok') ? cfg.colornok : '#e0e0e0';
+				if(cfg.hasOwnProperty('autoDraw')) this.config.autoDraw = cfg.autoDraw;
+				if(cfg.hasOwnProperty('colorok')) this.config.colorok = cfg.colorok;
+				if(cfg.hasOwnProperty('colornok')) this.config.colornok = cfg.colornok;
+				if(cfg.hasOwnProperty('onerror')) this.config.onerror = cfg.onerror;
 
 				// Get target
 				this.setTarget(cfg.target);
@@ -2545,47 +2527,24 @@ function isiToolsCallback(json){
 				// If length lower than three, update values and return false
 				if(val.length < this.minFeatures.length){
 					this.features.complexity = 0;
-					this.allowed = false;
+					this.features.allowed = false;
 
 				} else {
-					// Get features
-					this.features.length  = val ? val.length : 0;
-					this.features.uppers  = val.match(/[A-Z]/g) ? val.match(/[A-Z]/g).length : 0;
-					this.features.lowers  = val.match(/[a-z]/g) ? val.match(/[a-z]/g).length : 0;
-					this.features.numbers = val.match(/[0-9]/g) ? val.match(/[0-9]/g).length : 0;
-					this.features.special = this.features.length - this.features.uppers - this.features.lowers - this.features.numbers
-					this.features.extra   = this.features.length >= this.minFeatures.extra ? 1 : 0;
-
-					// Get initial complexity
-					this.features.complexity = (this.features.length >= this.minFeatures.length ? 1 : 0) + (this.features.numbers >= this.minFeatures.numbers ? 1 : 0) + (this.features.uppers >= this.minFeatures.uppers ? 1 : 0) + (this.features.lowers >= this.minFeatures.lowers ? 1 : 0) + (this.features.special >= this.minFeatures.special ? 1 : 0) + this.features.extra;
-
-					// Penalties by consecutive types
-					var consecutive = this._consecutive('uppers', val.length < this.minFeatures.length ? 2 : 4);
-					this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
-					
-					var consecutive = this._consecutive('lowers', val.length < this.minFeatures.length ? 2 : 4);
-					this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
-					
-					var consecutive = this._consecutive('numbers', val.length < this.minFeatures.length ? 2 : 4);
-					this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
-
-					// Penalties by repeated characters
-					var repeated = this._repeated(val.length < this.minFeatures.length ? 2 : 3);
-					console.log(repeated)
-					this.features.complexity = repeated ? (this.features.complexity - 1) : this.features.complexity;
-					
-					// Update allowed flag and form
-					this.allowed = (this.features.length >= this.minFeatures.length ? true : false) && (this.features.numbers >= this.minFeatures.numbers ? true : false) && (this.features.uppers >= this.minFeatures.uppers ? true : false) && (this.features.lowers >= this.minFeatures.lowers ? true : false) && (this.features.special >= this.minFeatures.special ? true : false);
+					this._checkComplexity(val);
 				}
 				
-				if(!this.allowed){
+				if(!this.features.allowed){
 					if(!this.target.form.getAttribute("data-updated")){
 						if(this.target.form.getAttribute("onsubmit")){
 							this.target.form.setAttribute("data-onsubmit", this.target.form.getAttribute("onsubmit"));
 							this.target.form.setAttribute("data-updated", "true");
 						} 
 
-						this.target.form.setAttribute("onsubmit", "return false;");
+						var str = '';
+						if(this.config.onerror){
+							str += 'Password.getError(); ';
+						}
+						this.target.form.setAttribute("onsubmit", str + "return false;");
 						this.target.form.setAttribute("data-updated", "true");
 					}
 
@@ -2603,8 +2562,35 @@ function isiToolsCallback(json){
 				}
 
 				// Auto draw strength chart
-				if(this.autoDraw) this.draw(this.features.complexity);
-			}, 
+				if(this.config.autoDraw) this.draw(this.features.complexity);
+			},
+			sameLike: function(e){
+				if(this.target.value.trim() != e.trim()) return false; else return true;
+			},
+			isEmpty: function(e){
+				if(e.trim() != "") return false; else return true;
+			},
+			generate: function(length){
+				if(typeof length == "undefined") length = this.minFeatures.length;
+				if(length < this.minFeatures.length) return false;
+
+				var val, charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!·$%&()*+_-";
+
+				this.features.allowed = false;
+				while(!this.features.allowed){
+					this.features.complexity = 0;
+					this.features.length = 0;
+					val = '';
+					for (var i = 0, n = charset.length; i < length; ++i) {
+						val += charset.charAt(Math.floor(Math.random() * n));
+					}
+					
+					this._checkComplexity(val);
+					if(this.features.length != length) this.features.allowed = false;
+				}
+				
+				return val;
+			},
 			draw: function(c){
 				// Add CSS Rules
 				if(typeof it.AddCSSRule != "undefined"){
@@ -2612,8 +2598,8 @@ function isiToolsCallback(json){
 					it.AddCSSRule('', ".strength::after", "content: attr(data-label); display: block; position: absolute; left: 0; top: -5px; width: 100%; padding: 3px 5px 2px; font-size: 12px; line-height: 12px;");
 					it.AddCSSRule('', ".strength > div", "background: rgba(0,0,0,0.1); width: calc(16.667% - 4px); float: left; height: 6px; padding: 0; margin: 0px 2px; position: relative;");
 					it.AddCSSRule('', ".strength[data-label] > div", "display: none;");
-					it.AddCSSRule('', ".strength > div.spotlight", "background: " + this.colorok + ";");
-					it.AddCSSRule('', "input:focus ~ .strength", "background: " + this.colornok + "; display: block;");
+					it.AddCSSRule('', ".strength > div.spotlight", "background: " + this.config.colorok + ";");
+					it.AddCSSRule('', "input:focus ~ .strength", "background: " + this.config.colornok + "; display: block;");
 				}
 
 				// Define layers
@@ -2638,20 +2624,82 @@ function isiToolsCallback(json){
 				if(child && child.classList.contains("strength")) child.remove();
 				this.target.parentNode.insertBefore(cont, this.target.previousElementSibling);
 			},
+			getError: function(e){
+				if(this.config.onerror){
+					var msg = '';
+
+					if(this.target.value.trim() == "") msg = "empty";
+					else if(!this.features.allowed) msg = "not_allowed";
+
+					eval(this.config.onerror.name + '("' + msg + '")');
+				}
+			},
+			setError: function(e){
+				this.config.onerror = e;
+			},
+			setAutodraw: function(e){
+				this.config.autoDraw = e;
+			},
+			setAutocheck: function(cfg){
+				for(var aux in cfg){ this[aux] = cfg[aux]; }
+				
+				this.target.addEventListener("keyup", function(e){
+
+					Password.check({target: Password.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
+				});
+
+				this.target.form.setAttribute("onsubmit", "return " + Password.config.onerror.name + "('')");
+			},
+			setColors: function(ok, nok){
+				this.config.colorok = ok;
+				this.config.colornok = nok;
+			},
 			setMinimals: function(cfg){
 				for(var aux in cfg){
 					this.minFeatures[aux] = cfg[aux];
 				}
 			},
-			_consecutive: function(pattern, len){
-				var s = this.target.value.split(''), total = 0;
+			setTarget: function(e){
+				this.target = document.getElementById(e);
+			},
+			_checkComplexity: function(val){
+				// Get features
+				this.features.length  = val ? val.length : 0;
+				this.features.uppers  = val.match(/[A-Z]/g) ? val.match(/[A-Z]/g).length : 0;
+				this.features.lowers  = val.match(/[a-z]/g) ? val.match(/[a-z]/g).length : 0;
+				this.features.numbers = val.match(/[0-9]/g) ? val.match(/[0-9]/g).length : 0;
+				this.features.special = this.features.length - this.features.uppers - this.features.lowers - this.features.numbers
+				this.features.extra   = this.features.length >= this.minFeatures.extra ? 1 : 0;
+
+				// Get initial complexity
+				this.features.complexity = (this.features.length >= this.minFeatures.length ? 1 : 0) + (this.features.numbers >= this.minFeatures.numbers ? 1 : 0) + (this.features.uppers >= this.minFeatures.uppers ? 1 : 0) + (this.features.lowers >= this.minFeatures.lowers ? 1 : 0) + (this.features.special >= this.minFeatures.special ? 1 : 0) + this.features.extra;
+
+				// Penalties by consecutive types
+				var consecutive = this._consecutive(val, 'uppers', val.length < this.minFeatures.length ? 2 : 4);
+				this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
+				
+				var consecutive = this._consecutive(val, 'lowers', val.length < this.minFeatures.length ? 2 : 4);
+				this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
+				
+				var consecutive = this._consecutive(val, 'numbers', val.length < this.minFeatures.length ? 2 : 4);
+				this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
+
+				// Penalties by repeated characters
+				var repeated = this._repeated(val, val.length < this.minFeatures.length ? 2 : 3);
+				this.features.complexity = repeated ? (this.features.complexity - 1) : this.features.complexity;
+				
+				// Update allowed flag and form
+				this.features.allowed = (this.features.length >= this.minFeatures.length ? true : false) && (this.features.numbers >= this.minFeatures.numbers ? true : false) && (this.features.uppers >= this.minFeatures.uppers ? true : false) && (this.features.lowers >= this.minFeatures.lowers ? true : false) && (this.features.special >= this.minFeatures.special ? true : false);
+			},
+			_consecutive: function(value, pattern, len){
+				var value = value.split(''), total = 0;
 
 				// If the value length is greater, ignore validation
-				if(s.length >= 15) len = (len-1) * 2;
+				if(value.length >= 15) len = (len-1) * 2;
 
 				// Check consecutive characters
-				for(var x = 0; x < s.length; x++){
-					var code = s[x].charCodeAt(0);
+				for(var x = 0; x < value.length; x++){
+					var code = value[x].charCodeAt(0);
 
 					if(pattern == "uppers"){
 						if(code >= 65 && code <= 90) total++; else total = 0;
@@ -2666,11 +2714,11 @@ function isiToolsCallback(json){
 
 				return false;
 			},
-			_repeated: function(len){
-				var s = this.target.value, total = 1, charAnt = '';
+			_repeated: function(value, len){
+				var total = 1, charAnt = '';
 
-				for(var x = 0; x < s.length; x++){
-					var char = s[x];
+				for(var x = 0; x < value.length; x++){
+					var char = value[x];
 
 					if(charAnt == char) total++; else charAnt = char;
 					if(total == len) return true;
