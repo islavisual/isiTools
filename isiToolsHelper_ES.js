@@ -727,7 +727,7 @@ if(it.enabledModules.Language){
 	@version: 1.00
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2019 Islavisual.
-	@Last update: 22/05/2019
+	@Last update: 27/05/2019
 **/
 if(it.enabledModules.Password){
 	WikiHelper.Password = {
@@ -761,15 +761,55 @@ if(it.enabledModules.Password){
 			description: 'Permite llamar a la función de dibujar el gráfico de fortaleza para mostrarlo en un momento determinado.',
 			example: 'Password.draw(Password.features.complexity);'
 		},
+		generate: {
+			type: 'function',
+			description: 'Permite crear una contraseña aleatoria de una longitud concreta que cumpla los requisitos mínimos.',
+			example: 'Password.generate(8);'
+		},
+		getError: {
+			type: 'function',
+			description: 'Permite comprobar si se ha producido algún error de validación en el campo de texto asociado a la contraseña. Si la función setError está establecida, se enviará el resultado de la evaluación a la función asociada.',
+			example: '// Establecemos la configuración básica\nPassword.setError(showMessage);\nPassword.setTarget("pwd");\nPassword.setAutocheck();\n\n// Definimos la función de callback para el Password\n// Cada vez que pulsemos una tecla o se pulse el botón de "submit" se evaluará\nfunction showMessage(e){\n\tif(e == "not_allowed"){\n\t\tconsole.log("La contraseña no es válida!");\n\t} else if(e == "empty"){\n\t\tconsole.log("El campo password está vacío!");\n\t} else if(!Password.sameLike(document.getElementById("confirm_password").value)){\n\t\tconsole.log("Las contraseñas son distintas!");\n\t}\n});'
+		},
+		isEmpty: {
+			type: 'function',
+			description: 'Permite verificar si el valor introducido es una cadena vacía.',
+			example: 'if(Password.isEmpty(document.getElementById("password").value)){\n\tconsole.log("La contraseña está vacía!");\n}'
+		},
+		sameLike: {
+			type: 'function',
+			description: 'Permite verificar si la contraseña es igual que el valor enviado por parámetro.',
+			example: 'if(Password.sameLike(document.getElementById("confirm_password").value)){\n\tconsole.log("Contraseñas identicas!");\n}'
+		},
+		setAutocheck: {
+			type: 'function',
+			description: 'Permite establecer el control de los eventos de teclado y submit para poder gestionar la contraseña. Este método añade el evento keyup para el campo de texto asociado a la contraseña y el evento submit al formulario.',
+			example: 'Password.setAutocheck();'
+		},
+		setAutoDraw: {
+			type: 'function',
+			description: 'Permite definir si se debe pintar el gráfico de fortaleza de la contraseña o no.',
+			example: 'Password.setAutoDraw(false);'
+		},
+		setColors: {
+			type: 'function',
+			description: 'Permite definir los colores para personalizar el CSS asociado a la fortaleza de la contraseña.',
+			example: 'Password.setColors("rgba(255,255,255,0.51)", "#00a55a");'
+		},
+		setError: {
+			type: 'function',
+			description: 'Permite añadir una función de error personalizada.',
+			example: 'Password.setError(showMessage);\n\nfunction showMessage(e){\n\tif(e == "not_allowed"){\n\t\tconsole.log("La contraseña no es válida!");\n\t} else if(e == "empty"){\n\t\tconsole.log("El campo password está vacío!");\n\t} else if(!Password.sameLike(document.getElementById("confirm_password").value)){\n\t\tconsole.log("Las contraseñas son distintas!");\n\t}\n});'
+		},
 		setMinimals: {
 			type: 'function',
 			description: 'Permite establecer los requerimientos mínimos de seguridad de las contraseñas. Es resultado de esta evaluación se devolverá en Password.allowed. Sólo si esta variable es igual a "true", el formulario se podrá enviar/guardar.',
 			example: 'Password.setMinimals({\n\tlength: 8,\n\tuppers:1,\n\tlowers: 1,\n\tnumbers: 0,\n\tspecial: 0\n});'
 		},
-		autoDraw: {
-			type: 'Boolean',
-			description: 'Permite definir si se debe pintar el gráfico de fortaleza de la contraseña o no.',
-			example: 'Password.autoDraw = false;'
+		setTarget: {
+			type: 'function',
+			description: 'Permite establecer elemento dónde inicializar la funcionalidad "Password" a través de su ID.',
+			example: 'Password.setTarget("INPUT_ID");'
 		}
 	}
 }
