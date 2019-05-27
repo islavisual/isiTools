@@ -35,8 +35,10 @@ AddCSSRule(document.styleSheets[0], "input", "background-color: lightgray; color
 #### PROPIEDAD SELECTOR
 **Tipo**
 string
+
 **Descripción**
 Este parámetro se utiliza para definir el nombre de la regla. Se puede usar cualquier selector válido por CSS3.
+
 **Ejemplos**
 ```javascript
 AddCSSRule("", ".buttonIcon", "background-color: lightgray; color: #333");
