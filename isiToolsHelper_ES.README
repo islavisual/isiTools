@@ -1,9 +1,9 @@
 /**
    ReadmeHelper functionality
-   @version: 1.10																					
+   @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2019 Islavisual.
-   @Last update: 01/03/2019
+   @Last update: 27/05/2019
  **/
 
 this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
@@ -157,7 +157,7 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
 		AddCSSRule('', "#h31p3r", 'font-family: arial; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + ';padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -10px;border-bottom: 1px solid rgba(255,255,255,.1);')
-		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0rem; padding: 64px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
+		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 32px 0 10px; font-size:1.0rem; padding: 5px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
 		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', "#h31p3r field.des, #h31p3r field.exa", "display: block; width: 100%;");
