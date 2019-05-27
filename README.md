@@ -1,28 +1,25 @@
 IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.	
 
-### Instalación
-Descargar / copiar las librerías en tu carpeta javascript de tu proyecto. Después, inserta el código necesario para activar isiTools. Por ejemplo:
-```javascript
+ # Instalación
+ Descargar / copiar las librerías en tu carpeta javascript de tu proyecto. Después, inserta el código necesario para activar isiTools. Por ejemplo:
 // Cargar todas las funciones
 <script src="isitools.js" />
 <script src="isitoolsHerlper.js" />
 // Cargar selectivamente algunas características
 <script src="isitools.js?modules=AddCSSRule+Alert+Autocomplete+DOM" />
 <script src="isitoolsHerlper.js" />
-```
-### ADDCSSRULE
-Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.
-PROPIEDAD SHEET
--------------------------
 
-### Tipo
+## AddCSSRule
+Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.
+### PROPIEDAD SHEET
+#### Tipo
 string
-### Descripción
+#### Descripción
 Este parámetro indica la hoja de estilo donde se insertará la regla. Puede tomar 3 valores:
 	● "": indica que se debe crear una nueva hoja de estilo (creada al principio del encabezado de la página).
 	● Integer: indica el número de índice o posición dentro del encabezado de página donde se insertó la hoja de estilo.
 	● Object: indica un objeto CSSStyleSheet de JavaScript.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Insertar una regla en una nueva hoja de estilo
 AddCSSRule("", ".input", "background-color: lightgray; color: #333");
@@ -33,84 +30,69 @@ AddCSSRule(0, "#name", "background-color: lightgray; color: #333");
 // Insertar una nueva regla en la hoja de estilo extraida del objeto CSSStyleSheet e identificada por el índice 0
 AddCSSRule(document.styleSheets[0], "input", "background-color: lightgray; color: #333");
 ```
-PROPIEDAD SELECTOR
--------------------------
-
-### Tipo
+### PROPIEDAD SELECTOR
+#### Tipo
 string
-### Descripción
+#### Descripción
 Este parámetro se utiliza para definir el nombre de la regla. Se puede usar cualquier selector válido por CSS3.
-### Ejemplos
+#### Ejemplos
 ```javascript
 AddCSSRule("", ".buttonIcon", "background-color: lightgray; color: #333");
 ```
-PROPIEDAD STYLES
--------------------------
-
-### Tipo
+### PROPIEDAD STYLES
+#### Tipo
 string
-### Descripción
+#### Descripción
 Este parámetro se utiliza para definir el contenido / estilos de la regla.
-### Ejemplos
+#### Ejemplos
 ```javascript
 AddCSSRule("", "#name", "background-color: lightgray; color: #333");
 ```
-PROPIEDAD INDEX
--------------------------
-
-### Tipo
+### PROPIEDAD INDEX
+#### Tipo
 string
-### Descripción
+#### Descripción
 Este parámetro indica la posición donde se insertará. Si este valor es 0, la regla se insertará al principio de la hoja de estilo, de lo contrario, se insertará al final de la hoja de estilo.
 Este parámetro es opcional.
-### Ejemplos
+#### Ejemplos
 ```javascript
 AddCSSRule("", ".buttonIcon::after", "content:''; background-color: lightgray; color: #333", 0);
 ```
-ALERT
-###
+## Alert
 Script para crear alertas con múltiples personalizaciones similares a las de javaScript de forma sencilla.
-PROPIEDAD THEME
--------------------------
-
-### Tipo
+### PROPIEDAD THEME
+#### Tipo
 string
-### Descripción
+#### Descripción
 Tema por defecto a utilizar.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", theme: "dark"});
 ```
-PROPIEDAD CLASS
--------------------------
-
-### Tipo
+### PROPIEDAD CLASS
+#### Tipo
 string
-### Descripción
+#### Descripción
 Agregar una regla de CSS a la alerta. Esto es útil si se desean definir alertas personalizadas a través de selectores CSS, por ejemplo.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", class: "warning"});
 ```
-PROPIEDAD TITLE
--------------------------
-
-### Tipo
+### PROPIEDAD TITLE
+#### Tipo
 string
-### Descripción
+#### Descripción
 Título de la alerta.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});
 ```
-PROPIEDAD BODY
--------------------------
-
-### Tipo
+### PROPIEDAD BODY
+#### Tipo
 string
-### Descripción
+#### Descripción
 Mensaje de la alerta.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Simply Alert
 Alert("El campo se encuentra vacío.");
@@ -119,15 +101,13 @@ new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});
 // HTML Alert
 new Alert({title: "Precaución!", body:"<span>Esto es una prueba</span> of <b style='color: red'>Alerta!</b>."});
 ```
-PROPIEDAD ACTIONS
--------------------------
-
-### Tipo
+### PROPIEDAD ACTIONS
+#### Tipo
 object
-### Descripción
+#### Descripción
 Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".
 Los campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Alert({
 	title: "Precaución!",
@@ -154,15 +134,13 @@ new Alert({
 	}
 });
 ```
-PROPIEDAD STYLES
--------------------------
-
-### Tipo
+### PROPIEDAD STYLES
+#### Tipo
 object
-### Descripción
+#### Descripción
 Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".
 Todos los campos pueden estar compuestos por los atributos "background", "color" y "extra".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Alert({
 	title: "Precaución!",
@@ -193,12 +171,10 @@ new Alert({
 	}
 });
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Personalizar los estilos a través de las reglas CSS. Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // styles.css (de tu sitio web)
 .Alert .btn-cancel  { 
@@ -288,72 +264,59 @@ body.fixedOY  {
 	overflow-y: scroll; 
 }
 ```
-AUTOCOMPLETE
-###
+## Autocomplete
 Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado. Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Es simple, fácil de personalizar y hace que el rendimiento de la página se vea poco afectado.
-PROPIEDAD AUTOFOCUS
--------------------------
-
-### Tipo
+### PROPIEDAD AUTOFOCUS
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Cuando el elemento toma el control, se dispara automáticamente un evento de autofoco. Por defecto es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "productID", data: arrayList, format: "list"})
 ```
-MÉTODO CALLBACK
--------------------------
-
-### Tipo
+### MÉTODO CALLBACK
+#### Tipo
 function
-PROPIEDAD CALLBACK
--------------------------
-
-### Descripción
+### PROPIEDAD CALLBACK
+#### Descripción
 Función que se llamará cuando se seleccione un elemento de la lista de autocompletado.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "productID", data: arrayList, format: "list", callback: callback});
 function callback(event){
 	console.log("Some action!", event);
 }
 ```
-PROPIEDAD CLASSNAME
--------------------------
-
-### Tipo
+### PROPIEDAD CLASSNAME
+#### Tipo
 string
-### Descripción
+#### Descripción
 Clase CSS que se agregará a los elementos del complemento Autocompletar. Por defecto, el nombre de la clase de control es "autocomplete".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "catalogBox", data: arrayList, className: "auto-complete"});
 ```
-PROPIEDAD DATA
--------------------------
-
-### Tipo
+### PROPIEDAD DATA
+#### Tipo
 object
-### Descripción
+#### Descripción
 Objeto con los elementos para manejar o tratar. Este objeto puede estar en formato "JSON" o estar en formato "Array".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "transportBox", data: arrayList});
 var arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];
 ```
-PROPIEDAD FORMAT
--------------------------
-
-### Tipo
+### PROPIEDAD FORMAT
+#### Tipo
 string
-### Descripción
+#### Descripción
 Es el formato en el que se presentarán los datos. Según el formato en el que se presentan los datos, el objeto "data" debe definirse de una forma u otra. Este parámetro tiene como valor por defecto es "layer".
 Los posibles valores son:
 	● "layer". 
 	● "table" (alimentado a partir de un JSON proporcionado por el parámetro "tableFields".)
 	● "cluster"
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Example with list format
 var arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];
@@ -380,14 +343,12 @@ var brandsList = [
 ];
 new Autocomplete({target: "transportBox", format: "cluster", data: brandsList});
 ```
-PROPIEDAD HIGHLIGHTS
--------------------------
-
-### Tipo
+### PROPIEDAD HIGHLIGHTS
+#### Tipo
 object
-### Descripción
+#### Descripción
 Este parámetro es un JSON que indica qué campo se utilizará como flag para destacar campos y su estilo.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({
 	target: "transportBox",
@@ -437,37 +398,31 @@ new Autocomplete({
 	callback: callback
 });
 ```
-PROPIEDAD MESSAGE
--------------------------
-
-### Tipo
+### PROPIEDAD MESSAGE
+#### Tipo
 string
-### Descripción
+#### Descripción
 Mensaje a mostrar únicamente cuando la propiedad minLength es -1.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "inputTextID", data: {}, minLength: -1, message: "Loading..."});
 ```
-PROPIEDAD MINLENGTH
--------------------------
-
-### Tipo
+### PROPIEDAD MINLENGTH
+#### Tipo
 integer
-### Descripción
+#### Descripción
 Longitud mínima para comenzar a buscar dentro del objeto "data". Por defecto es 3.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "inputTextID", data: arrayList, minLength: 4});
 var arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];
 ```
-PROPIEDAD SHOWHEADERS
--------------------------
-
-### Tipo
+### PROPIEDAD SHOWHEADERS
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Este parámetro solo es válido para el formato de "table". Indica al complemento Autocompletar que se deben mostrar los encabezados de la tabla. Por defecto es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 var countriesJSON = [
 	{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },
@@ -485,14 +440,12 @@ new Autocomplete({
 	}
 });
 ```
-PROPIEDAD STARTSWITH
--------------------------
-
-### Tipo
+### PROPIEDAD STARTSWITH
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Este parámetro indica si la coincidencia de búsqueda debe comenzar con la cadena ingresada o puede estar contenida en cualquier posición. Por defecto es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 var countriesJSON = [
 	{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },
@@ -511,30 +464,26 @@ new Autocomplete({
 	}
 });
 ```
-PROPIEDAD TARGET
--------------------------
-
-### Tipo
+### PROPIEDAD TARGET
+#### Tipo
 string
-### Descripción
+#### Descripción
 ID del input (campo de entrada de texto) dónde el Autocomplete será implementado.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({target: "inputTextID", data: arrayList});
 var arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];
 ```
-PROPIEDAD TABLEFIELDS
--------------------------
-
-### Tipo
+### PROPIEDAD TABLEFIELDS
+#### Tipo
 integer
-### Descripción
+#### Descripción
 Un objeto JSON con el siguiente formato: 
 	● "return_value": Que indica qué campo se devolverá.
 	● "highlights": Que indica el campo que activará o desactivará el registro como destacado.
 	● "fields": Que indica los campos que compondrán el objeto "data".
 	● "headers": Que indica la traducción para mostrar en los encabezados del autocomplete en formato "table".
-### Ejemplos
+#### Ejemplos
 ```javascript
 var countriesJSON = [
 	{ id: 1, country: "Afghanistan", code: "AFG", capital: "Kabul" },
@@ -557,14 +506,12 @@ new Autocomplete({target: "transportBox", format: "table", data: countriesJSON,
 	}
 });
 ```
-PROPIEDAD TOOLTIPS
--------------------------
-
-### Tipo
+### PROPIEDAD TOOLTIPS
+#### Tipo
 object
-### Descripción
+#### Descripción
 Este parámetro es un JSON que indica qué campos se utilizarán como fuente del tooltip. Si se utiliza el modo "cluster", sólo se debe indicar el campo dónde está el texto del tooltip. Si se utiliza el modo "table", se debe indicar el nombre del campo dónde se insertará el tooltip y el campo del tooltip.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Autocomplete({
 	target: "transportBox",
@@ -614,12 +561,10 @@ new Autocomplete({
 	callback: callback
 });
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Puedes obtener toda la información del elemento seleccionado desde una función de devolución de llamada (callback). Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Ejemplo
 new Autocomplete({target: "catalogBox", data: arrayList, callback: callback});
@@ -638,20 +583,15 @@ function callback(input){
 	var itemName  = clusterList[idxGroup].items[idxItem];
 }
 ```
-BENCHMARK
-###
+## Benchmark
 Este plugin permite comprobar la calidad y el rendimiento de un código pasado a través de una función.
-MÉTODO TEST
--------------------------
-
-### Tipo
+### MÉTODO TEST
+#### Tipo
 function
-PROPIEDAD TEST
--------------------------
-
-### Descripción
+### PROPIEDAD TEST
+#### Descripción
 Realiza y muestra un informe con el resultado del análisis.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Diferencia entre for y forEach
 var bigArray = new Array(1000);
@@ -693,56 +633,46 @@ Benchmark.test({name: "forEach", fn: function () {
 	}
 ]
 ```
-PROPIEDAD TESTTIME
--------------------------
-
-### Tipo
+### PROPIEDAD TESTTIME
+#### Tipo
 Integer
-### Descripción
+#### Descripción
 Establece la duración máxima del test en milisegundos. Por defecto es 3000.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Benchmark.testTime = 10000;
 ```
-PROPIEDAD MAXITERATIONS
--------------------------
-
-### Tipo
+### PROPIEDAD MAXITERATIONS
+#### Tipo
 Integer
-### Descripción
+#### Descripción
 Establecer el número máximo operaciones por test. Por defecto es "0x3FFFFFFF" (1 Tera)
-### Ejemplos
+#### Ejemplos
 ```javascript
 Benchmark.maxIterations = 2500000;
 ```
-PROPIEDAD SHOWLOG
--------------------------
-
-### Tipo
+### PROPIEDAD SHOWLOG
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Muestra un mensaje de resumen en la consola cada vez que finaliza una operación. Por defecto es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Benchmark.showLog = true;
 ```
-PROPIEDAD RESULTS
--------------------------
-
-### Tipo
+### PROPIEDAD RESULTS
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Mostrar los resultados de todos los test realizados anteriormente.
-### Ejemplos
+#### Ejemplos
 ```javascript
 console.log(Benchmark.results);
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Puedes obtener toda la información del elemento seleccionado desde una función de devolución de llamada (callback). Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Ejemplo
 new Autocomplete({target: "catalogBox", data: arrayList, callback: callback});
@@ -761,45 +691,36 @@ function callback(input){
 	var itemName  = clusterList[idxGroup].items[idxItem];
 }
 ```
-CONSTRAINT
-###
+## Constraint
 Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.
 Una vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.
-PROPIEDAD BASE
--------------------------
-
-### Tipo
+### PROPIEDAD BASE
+#### Tipo
 integer
-### Descripción
+#### Descripción
 El parámetro "base" establece una base numérica diferente a 10, la establecida por defecto. El tipo binario establece automáticamente la base a 2. El tipo hexadecimal establece automáticamente la base a 16.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Constraint.set({target: "inputTextID", type: "decimal", base: 2});
 // A través del tipo binario
 new Constraint.set({target: "inputTextID", type: "binary"});
 ```
-PROPIEDAD DECIMALPOINT
--------------------------
-
-### Tipo
+### PROPIEDAD DECIMALPOINT
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "decimalpoint" indica el carácter que separará la parte entera de la parte decimal. Sólo será válido en los tipos numéricos con decimales. Por defecto el valor es "." (punto).
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Constraint.set({target: "inputTextID", type: "decimal", decimalpoint: ","});
 ```
-MÉTODO FUNCTION
--------------------------
-
-### Tipo
+### MÉTODO FUNCTION
+#### Tipo
 function
-PROPIEDAD FUNCTION
--------------------------
-
-### Descripción
+### PROPIEDAD FUNCTION
+#### Descripción
 El parámetro "function" define la función de validación que controlará el formato de entrada y los valores admitidos. La validación realizada por esta función se puede definir a través de expresiones regulares (en el caso del subtipo "binario", la función podría ser "return /^(0|1)*$/.test(value);") aunque no es obligatorio. Si se define este parámetro a través de una función, el parámetro "type" debe establecerse a "custom".
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Ejemplo de subtipo personalizado (Número en formato octal).
 new Constraint.set({
@@ -811,47 +732,39 @@ new Constraint.set({
 	base: 8,
 });
 ```
-PROPIEDAD INDICATORS
--------------------------
-
-### Tipo
+### PROPIEDAD INDICATORS
+#### Tipo
 object
-### Descripción
+#### Descripción
 El parámetro "indicators" indica si se deben mostrar los iconos de flecha hacia arriba, flecha hacia abajo y el color. Estos iconos a menudo se asocian con los controles de tipo numérico en HTML5, por lo que generalmente es una buena idea mostrarlos. Por defecto, el valor está establecido a true.
 El parámetro "indicators" se compone de atributos "enabled" y "color".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Constraint.set({target: "inputTextID", type: "decimal", indicators: {enabled: true, color: "rgba(0,0,0,0.25)"}});
 new Constraint.set({target: "inputTextID", type: "decimal", indicators: {color: "red"}});
 ```
-PROPIEDAD TARGET
--------------------------
-
-### Tipo
+### PROPIEDAD TARGET
+#### Tipo
 string
-### Descripción
+#### Descripción
 ID del control dónde será implementado el constraint
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Constraint.set({target: "inputTextID", type: "int"});
 ```
-PROPIEDAD STEP
--------------------------
-
-### Tipo
+### PROPIEDAD STEP
+#### Tipo
 float
-### Descripción
+#### Descripción
 El parámetro "step" indica el incremento o decremento cuando el usuario presiona las teclas de cursor o uno de los botones asignados como "indicadores". Por defecto es 1.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Constraint.set({target: "inputTextID", type: "decimal", step: 0.01});
 ```
-PROPIEDAD TYPE
--------------------------
-
-### Tipo
+### PROPIEDAD TYPE
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "type" define el formato o el tipo de datos que permitirá el control. Los valores aceptados son:
 	● int: Los valores permitidos son únicamente enteros positivos y negativos.
 	● uint: Los valores permitidos son únicamente enteros positivos.
@@ -862,7 +775,7 @@ El parámetro "type" define el formato o el tipo de datos que permitirá el cont
 	● hexadecimal: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso de 0 a 9 y de A a F.
 	● hour: Los valores permitidos son de 00:00 a 23:59.
 	● custom: Permite definir una función de tipo personalizado. El subtipo "custom" se alimenta del parámetro "function", por lo que si el control se define como "custom", será obligatorio (el parámetro "function").
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Example of Integer subtype
 new Constraint.set({target: "inputTextID", type: "int"});
@@ -880,34 +793,28 @@ new Constraint.set({
 	base: 8,
 });
 ```
-PROPIEDAD INCREMENT
--------------------------
-
-### Tipo
+### PROPIEDAD INCREMENT
+#### Tipo
 string
-### Descripción
+#### Descripción
 Aumenta el valor de la entrada asociada al valor establecido en "step". Por defecto, "step" es 1.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Constraint.increment("inputTextID");
 ```
-PROPIEDAD DECREMENT
--------------------------
-
-### Tipo
+### PROPIEDAD DECREMENT
+#### Tipo
 string
-### Descripción
+#### Descripción
 Disminuye el valor de la entrada asociada al valor establecido en "step". Por defecto, "step" es 1.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Constraint.decrement("inputTextID");
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Puedes obtener toda la información del elemento seleccionado desde una función de devolución de llamada (callback). Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Ejemplo
 new Autocomplete({target: "catalogBox", data: arrayList, callback: callback});
@@ -926,34 +833,27 @@ function callback(input){
 	var itemName  = clusterList[idxGroup].items[idxItem];
 }
 ```
-DEBUGGER
-###
+## Debugger
 Depurador automático para ayudarte a saber todo lo que sucede en tu página. Desde cuando un usuario hace un clic hasta conocer qué llamadas ajax se ejecutan en segundo plano.
-MÉTODO INIT
--------------------------
-
-### Tipo
+### MÉTODO INIT
+#### Tipo
 function
-PROPIEDAD INIT
--------------------------
-
-### Descripción
+### PROPIEDAD INIT
+#### Descripción
 Fácil de inicializar. Se puede inicializar en modo consola o en una ventana a parte (screen).
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Depurar a través de la consola
 Debugger.init("console");
 // Depurar a través de una ventana externa
 Debugger.init("window");
 ```
-PROPIEDAD ATTRIBUTESFILTER
--------------------------
-
-### Tipo
+### PROPIEDAD ATTRIBUTESFILTER
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger permite depurar selectivamente los atributos de forma independiente o de forma combinada. La forma de especificar qué observar es a través de una matriz de valores que indica qué es lo que se debe depurar. Por defecto, attributesFilter está definido a vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Depurar todos los atributos
 Debugger.attributesFilter = [];
@@ -963,27 +863,23 @@ Debugger.init();
 Debugger.attributesFilter = ["cellspacing", "cellspadding"];
 Debugger.init();
 ```
-PROPIEDAD EXCLUDEDATTRIBUTESFILTER
--------------------------
-
-### Tipo
+### PROPIEDAD EXCLUDEDATTRIBUTESFILTER
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger también permite deshabilitar selectivamente los atributos que no se desean depurar. La manera de especificar lo que no se debe observar es a través de una matriz de valores que indica lo que no se debe depurar. Por defecto, excludedAttributesFilter tiene establecido únicamente el atributo "style".
-### Ejemplos
+#### Ejemplos
 ```javascript
 // No depurar las propiedades de style, class, id y src. Lo demás sí
 Debugger.excludedAttributesFilter = ["style", "class", "id", "src"];
 Debugger.init();
 ```
-PROPIEDAD SELECTORSFILTER
--------------------------
-
-### Tipo
+### PROPIEDAD SELECTORSFILTER
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger permite depurar selectivamente las etiquetas de forma independiente o de forma combinada. La forma de especificar qué etiquetas se deben observar es a través de una matriz de valores que indica qué se debe depurar. Por defecto, selectorsFilter está definido a vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Depurar todas las etiquetas
 Debugger.selectorsFilter = [];
@@ -993,25 +889,21 @@ Debugger.init();
 Debugger.selectorsFilter = ["INPUT", "SELECT", "BUTTON"];
 Debugger.init();
 ```
-PROPIEDAD EXCLUDEDSELECTORSFILTER
--------------------------
-
-### Tipo
+### PROPIEDAD EXCLUDEDSELECTORSFILTER
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger también permite desactivar selectivamente las etiquetas que no se desean depurar. La manera de especificar qué no se debe observar es a través de una matriz de valores que indica lo que no se debe depurar. Por defecto, excludedSelectorsFilter está definindo a vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // No depurar los DIV, SPAN, NAV y LEGEND. Los demás sí
 Debugger.excludedSelectorsFilter = ["DIV", "SPAN", "NAV", "LEGEND"];
 Debugger.init();
 ```
-PROPIEDAD EVENTSFILTER
--------------------------
-
-### Tipo
+### PROPIEDAD EVENTSFILTER
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger permite depurar eventos de forma selectiva de forma independiente o de forma combinada. La forma de especificar qué eventos observar es a través de una matriz de valores que indica qué se debe depurar.
 
 La lista de eventos permitidos son todos los de JavaScript, véase clic, mouseover, mouseout, mouseenter, mouseleave, keydown, keyup, Presionar teclas, cambiar, enfocar, enfocar, enfocar, difuminar,...
@@ -1019,7 +911,7 @@ La lista de eventos permitidos son todos los de JavaScript, véase clic, mouseov
 Por defecto, si el parámetro eventFilter se deja vacío, se observarán los eventos básicos de interacción, es decir, change, clic, focusin (tomar el foco), focusout (perder el foco) y keydown ya que, este, permite controlar las teclas Ctrl, Alt y Shift (mayúsculas).
 
 De forma predeterminada, eventsFilter se define como vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Depurar los predefinidos
 Debugger.eventsFilter = [];
@@ -1029,14 +921,12 @@ Debugger.init();
 Debugger.eventsFilter = ["change"];
 Debugger.init();
 ```
-PROPIEDAD ENABLEHISTORY
--------------------------
-
-### Tipo
+### PROPIEDAD ENABLEHISTORY
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Debugger permite exportar el historial de cambios a un archivo. Por defecto, enableHistory es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Activar el historial
 Debugger.enableHistory = true;
@@ -1047,17 +937,13 @@ Debugger.init();
 // Recuperar el historial.
 Debugger.getHistory();
 ```
-MÉTODO GETHISTORY
--------------------------
-
-### Tipo
+### MÉTODO GETHISTORY
+#### Tipo
 function
-PROPIEDAD GETHISTORY
--------------------------
-
-### Descripción
+### PROPIEDAD GETHISTORY
+#### Descripción
 Para exportar el historial de eventos a un archivo, se puede usar la función de guardar del navegador si está en una ventana a parte (modo screen). Sin embargo, el depurador tiene una manera más sencilla de lograr este requisito. Para extraer el historial de cambios, se puede ejecutar la función getHistory() que devuelve el historial en formato de texto plano.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Activar el historial
 Debugger.enableHistory = true;
@@ -1068,14 +954,12 @@ Debugger.init();
 // Recuperar el historial.
 Debugger.getHistory();
 ```
-PROPIEDAD MESSAGES
--------------------------
-
-### Tipo
+### PROPIEDAD MESSAGES
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger permite definir mensajes personalizados para cada tipo de cambio o mutación.
-### Ejemplos
+#### Ejemplos
 ```javascript
 messages:{
 	ajaxBeforeSend:'Processing request. Method: <method>. Type: <type>. CrossDomain: <crossDomain>.  File: <url>. Content Type: <contentType>',
@@ -1100,14 +984,12 @@ messages:{
 	separator: '<div style="border: 1px solid #333; border-width: 0px 0px 1px 0px; height:5px; width:100%;margin-bottom: 5px;"> </div>'
 }
 ```
-PROPIEDAD COLORS
--------------------------
-
-### Tipo
+### PROPIEDAD COLORS
+#### Tipo
 Object
-### Descripción
+#### Descripción
 Debugger permite definir los colores personalizados para cada tipo de cambio o mutación.
-### Ejemplos
+#### Ejemplos
 ```javascript
 colors: {
 	// For elements added in the DOM
@@ -1150,12 +1032,10 @@ colors: {
 	valueChanged:"#FE2466"
 }
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Puedes obtener toda la información del elemento seleccionado desde una función de devolución de llamada (callback). Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Ejemplo
 new Autocomplete({target: "catalogBox", data: arrayList, callback: callback});
@@ -1174,13 +1054,11 @@ function callback(input){
 	var itemName  = clusterList[idxGroup].items[idxItem];
 }
 ```
-DOM
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+## DOM
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Puedes obtener toda la información del elemento seleccionado desde una función de devolución de llamada (callback). Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Ejemplo
 new Autocomplete({target: "catalogBox", data: arrayList, callback: callback});
@@ -1199,106 +1077,89 @@ function callback(input){
 	var itemName  = clusterList[idxGroup].items[idxItem];
 }
 ```
-GETBROWSER
-###
+## GetBrowser
 Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para recuperar el nombre del navegador::
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), browserName = browser.name;
 ```
-### Descripción
+#### Descripción
 Para saber si el navegador es Chrome:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), if(browser.chrome){ console.log("Tu navegador es is Chrome!")}
 ```
-### Descripción
+#### Descripción
 Para saber si el navegador es Firefox:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), if(browser.firefox){ console.log("Tu navegador es is Firefox!")}
 ```
-### Descripción
+#### Descripción
 Para saber si el navegador es Internet Explorer:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), if(browser.msie){ console.log("Tu navegador es Internet Explorer!")}
 ```
-### Descripción
+#### Descripción
 Para saber si el navegador es Opera:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), if(browser.opera){ console.log("Tu navegador es Opera!")}
 ```
-### Descripción
+#### Descripción
 Obtener la versión del navegador:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), console.log(browser.version);
 ```
-### Descripción
+#### Descripción
 Obtener el prefijo de CSS utilizado por el navegador:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var browser = new GetBrowser(), console.log(browser.prefix);
 ```
-GETPARAM
-###
+## GetParam
 Función para obtener todos los valores de los parámetros recibidos en la URL.
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para obtener el valor del parámetro "h":
-### Ejemplos
+#### Ejemplos
 ```javascript
 var h = GetParam()["h"];
 ```
-HTTPREQUEST
-###
+## HttpRequest
 HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.
-PROPIEDAD AJAX
--------------------------
-
-### Tipo
+### PROPIEDAD AJAX
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Booleano que indica si la solicitud o petición debe ejecutarse de forma síncrona (false) o asíncrina (true).
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "index.html", ajax: true})
 ```
-MÉTODO CALLBACK
--------------------------
-
-### Tipo
+### MÉTODO CALLBACK
+#### Tipo
 function
-PROPIEDAD CALLBACK
--------------------------
-
-### Descripción
+### PROPIEDAD CALLBACK
+#### Descripción
 Función que se debe llamar cuando se reciba la respuesta..
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({callback: callback});
 function callback(e){
 	console.log(e);
 }
 ```
-MÉTODO CONTENTTYPE
--------------------------
-
-### Tipo
+### MÉTODO CONTENTTYPE
+#### Tipo
 function
-PROPIEDAD CONTENTTYPE
--------------------------
-
-### Descripción
+### PROPIEDAD CONTENTTYPE
+#### Descripción
 Tipo de contenido de los datos recibidos. Por defecto, este attributo es application/x-www-form-urlencoded.
 Los valores más comunes son:
 	● application/x-www-form-urlencoded (responsiveType debe ser "text")
@@ -1306,236 +1167,189 @@ Los valores más comunes son:
 	● application/json; charset=utf-8 (responsiveType debe ser "json")
 	● application/octet-stream (responsiveType debe ser "blob")
 	● application/pdf (responsiveType debería ser "blob")
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "getData.json", contentType: "application/json; charset=utf-8"})
 ```
-MÉTODO ONABORT
--------------------------
-
-### Tipo
+### MÉTODO ONABORT
+#### Tipo
 function
-PROPIEDAD ONABORT
--------------------------
-
-### Descripción
+### PROPIEDAD ONABORT
+#### Descripción
 Función de llamada cuando la solicitud es abortada.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "index.html", onAbort: HttpRequestOnAbort});
 function HttpRequestOnAbort(event){
 	console.log("The request was aborted", event);
 }
 ```
-MÉTODO ONERROR
--------------------------
-
-### Tipo
+### MÉTODO ONERROR
+#### Tipo
 function
-PROPIEDAD ONERROR
--------------------------
-
-### Descripción
+### PROPIEDAD ONERROR
+#### Descripción
 Función de llamada cuando la solicitud ha tenido algún tipo de error.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "http://remoteaddress.com/data.php", onError: HttpRequestOnError});
 function HttpRequestOnError(event){
 	console.log("An error occurred during the request", event);
 }
 ```
-MÉTODO ONLOAD
--------------------------
-
-### Tipo
+### MÉTODO ONLOAD
+#### Tipo
 function
-PROPIEDAD ONLOAD
--------------------------
-
-### Descripción
+### PROPIEDAD ONLOAD
+#### Descripción
 Función de llamada cuando la solicitud ha sido ejecutada de forma satisfactoria.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "document.pdf", onLoad: HttpRequestOnLoad});
 function HttpRequestOnLoad(event){
 	console.log("Request completes successfully", event);
 }
 ```
-MÉTODO ONLOADEND
--------------------------
-
-### Tipo
+### MÉTODO ONLOADEND
+#### Tipo
 function
-PROPIEDAD ONLOADEND
--------------------------
-
-### Descripción
+### PROPIEDAD ONLOADEND
+#### Descripción
 Es la función llamada cuando la solicitud se completa por cualquier motivo, sea satisfactoriamente o no.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "document.pdf", onLoadEnd: HttpRequestOnLoadEnd});
 function HttpRequestOnLoadEnd(event){
 	console.log("Request was completed but it may not have been successful", event);
 }
 ```
-MÉTODO ONLOADSTART
--------------------------
-
-### Tipo
+### MÉTODO ONLOADSTART
+#### Tipo
 function
-PROPIEDAD ONLOADSTART
--------------------------
-
-### Descripción
+### PROPIEDAD ONLOADSTART
+#### Descripción
 Es la función llamada cuando la solicitud comienza a transferir datos.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "document.pdf", onLoadStart: HttpRequestOnLoadStart});
 function HttpRequestOnLoadStart(event){
 	console.log("Starting to download", event);
 }
 ```
-MÉTODO ONPROGRESS
--------------------------
-
-### Tipo
+### MÉTODO ONPROGRESS
+#### Tipo
 function
-PROPIEDAD ONPROGRESS
--------------------------
-
-### Descripción
+### PROPIEDAD ONPROGRESS
+#### Descripción
 Se llama a la función mientras la solicitud se ejecuta.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "document.pdf", onProgress: HttpRequestOnProgress});
 function HttpRequestOnProgress(event){
 	console.log("Download underway", event);
 }
 ```
-MÉTODO ONTIMEOUT
--------------------------
-
-### Tipo
+### MÉTODO ONTIMEOUT
+#### Tipo
 function
-PROPIEDAD ONTIMEOUT
--------------------------
-
-### Descripción
+### PROPIEDAD ONTIMEOUT
+#### Descripción
 Es la función llamada cuando se supera el tiempo de máximo de espera. Mira también la propiedad "timeout".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "index.html", onTimeout: HttpRequestOnTimeout});
 function HttpRequestOnTimeout(event){
 	console.log("Request exceeded the waiting time allowed", event);
 }
 ```
-PROPIEDAD METHOD
--------------------------
-
-### Tipo
+### PROPIEDAD METHOD
+#### Tipo
 string
-### Descripción
+#### Descripción
 Sus valores posibles son POST, GET, HEAD, PUT o DELETE. Por defecto el atributo "method" es POST. Dependiendo del método y la configuración del servidor, podrían suceder errores 404 ó 405.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "index.html", method: "GET"});
 ```
-PROPIEDAD PARAMETERS
--------------------------
-
-### Tipo
+### PROPIEDAD PARAMETERS
+#### Tipo
 string
-### Descripción
+#### Descripción
 JSON con los parámetros en formato:
 {
 	parameterName1: parametersValue1,
 	parameterName2: parametersValue2,
 	...
 }
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "getDataFromServer.asp", method: "POST", parameters: { idProduct: 3 }});
 ```
-PROPIEDAD RESPONSETYPE
--------------------------
-
-### Tipo
+### PROPIEDAD RESPONSETYPE
+#### Tipo
 string
-### Descripción
+#### Descripción
 Los valores permitidos pueden ser:
 	● json,
 	●  texto ,
 	● blob
 	● arrayBuffer.
 Nota: para HTML y JSON, no es obligatorio definir este parámetro.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "getListProducts.json", responseType: "json", parameters: { idCategory: 3 }});
 ```
-PROPIEDAD RETURNFULLRESPONSE
--------------------------
-
-### Tipo
+### PROPIEDAD RETURNFULLRESPONSE
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Indica si sólo deben devolverse los datos o el objeto completo que devolvió la llamada.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "getDataFromServer.asp", returnFullResponse: true});
 ```
-PROPIEDAD TIMEOUT
--------------------------
-
-### Tipo
+### PROPIEDAD TIMEOUT
+#### Tipo
 integer
-### Descripción
+#### Descripción
 Es la cantidad de milisegundos que puede tomar una solicitud antes de que se finalice automáticamente. Por defecto es 0.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "http://stack.overflow.com/data", timeout: 300 });
 ```
-PROPIEDAD URL
--------------------------
-
-### Tipo
+### PROPIEDAD URL
+#### Tipo
 string
-### Descripción
+#### Descripción
 URL de la solicitud.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "getDataFromServer.xml",});
 ```
-PROPIEDAD WITHCREDENTIALS
--------------------------
-
-### Tipo
+### PROPIEDAD WITHCREDENTIALS
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Indica si las solicitudes de "Access-Control" entre sitios deben realizarse utilizando credenciales como cookies, encabezados de autorización o certificados de cliente TLS. La configuración con las credenciales no tiene ningún efecto en las solicitudes del mismo sitio.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new HttpRequest({url: "getDataFromServer.asp", withCredentials: true});
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para obtener el valor del parámetro "h":
-### Ejemplos
+#### Ejemplos
 ```javascript
 var h = GetParam()["h"];
 ```
-INCLUDE
-###
+## Include
 Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.
-PROPIEDAD DATA
--------------------------
-
-### Tipo
+### PROPIEDAD DATA
+#### Tipo
 string
-### Descripción
+#### Descripción
 El código HTML/texto a insertar.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Include({
 	target: "targetID",
@@ -1546,25 +1360,21 @@ Include({
 	</section>'
 });
 ```
-PROPIEDAD FILE
--------------------------
-
-### Tipo
+### PROPIEDAD FILE
+#### Tipo
 string
-### Descripción
+#### Descripción
 URL del archivo a insertar en el elemento contenedor.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Include({target: "targetID", file: "./customers/profile.html"});
 ```
-PROPIEDAD ATTRIBUTE
--------------------------
-
-### Tipo
+### PROPIEDAD ATTRIBUTE
+#### Tipo
 string
-### Descripción
+#### Descripción
 Indica qué atributo de datos personalizado HTML se utilizará para recuperar la URL que incluirá datos dentro de capas de contenedor (generalmente DIV, SECCIÓN, ARTÍCULO,...).
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Supongamos que el siguiente código fuente con "data-include"
 <div>
@@ -1574,39 +1384,32 @@ Indica qué atributo de datos personalizado HTML se utilizará para recuperar la
 
  Include({attribute: "data-include"});
 ```
-PROPIEDAD TARGET
--------------------------
-
-### Tipo
+### PROPIEDAD TARGET
+#### Tipo
 string
-### Descripción
+#### Descripción
 ID del elemento contenedor donde se insertará el código.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Include({target: "targetID", file: "./customers/profile.html"});
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para obtener el valor del parámetro "h":
-### Ejemplos
+#### Ejemplos
 ```javascript
 var h = GetParam()["h"];
 ```
-INTELLIFORM
-###
+## IntelliForm
 IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.
-PROPIEDAD ADDELEMENT
--------------------------
-
-### Tipo
+### PROPIEDAD ADDELEMENT
+#### Tipo
 object
-### Descripción
+#### Descripción
 Esta funcionalidad permite agregar elementos a un formulario a través del objeto JSON en tiempo de ejecución. Las propiedades JSON válidas son las típicas de HTML excepto "dataset" y "validate" que tienen un formato específico.
 	● dataset: Es un JSON con atributos de nombre y valor.
 	● validate: Es igual al formato Validator sin parámetro de destino. Para obtener más información, se puede consultar la ayuda del Validador de isiTools ejecutando "Validator.help()".
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.addElements({
 	target: "formID",
@@ -1662,31 +1465,23 @@ IntelliForm.addElements({
 	]
 });
 ```
-MÉTODO AUTOFILL
--------------------------
-
-### Tipo
+### MÉTODO AUTOFILL
+#### Tipo
 function
-PROPIEDAD AUTOFILL
--------------------------
-
-### Descripción
+### PROPIEDAD AUTOFILL
+#### Descripción
 Permite rellenar todos los campos con los valores que se capturaron a través de la funcionalidad "enableUndo".
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.autofill();
 ```
-MÉTODO SETUNDO
--------------------------
-
-### Tipo
+### MÉTODO SETUNDO
+#### Tipo
 function
-PROPIEDAD SETUNDO
--------------------------
-
-### Descripción
+### PROPIEDAD SETUNDO
+#### Descripción
 Proporciona la lógica necesaria para administrar todos los cambios que se realizan dentro de los input y select, incluso si la página se vuelve a cargar.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Habilitar Deshacer para todo tipo de inputs.
 IntelliForm.setUndo({target: ["input[type=text]"]});
@@ -1695,46 +1490,34 @@ IntelliForm.setUndo({target: ["input[type=text]"]});
 IntelliForm.target = ["name", "surname", "street", "phone", "email"];
 IntelliForm.setUndo();
 ```
-MÉTODO STARTSEQUENCE
--------------------------
-
-### Tipo
+### MÉTODO STARTSEQUENCE
+#### Tipo
 function
-PROPIEDAD STARTSEQUENCE
--------------------------
-
-### Descripción
+### PROPIEDAD STARTSEQUENCE
+#### Descripción
 Proporciona una forma de crear una secuencia de cambios en "tiempo real" sobre la página actual para su reproducción posterior, incluso cuando la página se vuelve a cargar.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.startSequence();
 // Para detener la secuencia se debe ejecutar la función de "stopSequence".
 ```
-MÉTODO STOPSEQUENCE
--------------------------
-
-### Tipo
+### MÉTODO STOPSEQUENCE
+#### Tipo
 function
-PROPIEDAD STOPSEQUENCE
--------------------------
-
-### Descripción
+### PROPIEDAD STOPSEQUENCE
+#### Descripción
 Detiene y guarda el registro de eventos. Esta funcionalidad solo funciona si "startSequence" se habilitó antes, de lo contrario, esta acción no tendrá ningún efecto.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.stopSequence();
 ```
-MÉTODO GETSEQUENCE
--------------------------
-
-### Tipo
+### MÉTODO GETSEQUENCE
+#### Tipo
 function
-PROPIEDAD GETSEQUENCE
--------------------------
-
-### Descripción
+### PROPIEDAD GETSEQUENCE
+#### Descripción
 Devuelve la secuencia guardada para la página actual.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.getSequence();
 // This will return something similar to:
@@ -1745,15 +1528,11 @@ IntelliForm.getSequence();
 	...
 ]
 ```
-MÉTODO SETSEQUENCE
--------------------------
-
-### Tipo
+### MÉTODO SETSEQUENCE
+#### Tipo
 function
-PROPIEDAD SETSEQUENCE
--------------------------
-
-### Descripción
+### PROPIEDAD SETSEQUENCE
+#### Descripción
 Permite establecer una nueva secuencia para interactuar con la página actual. Esta funcionalidad recibe un parámetro de tipo cadena con los pasos que se desean ejecutar. Las posibles propiedades dentro de la secuencia son:
 	● ts: indica el tiempo, en milisegundos, que debe transcurrir entre el cambio anterior y actual.
 	● id: Indica el nombre (de identificación válido) al que se aplicará el cambio. Puede ejecutar la funcionalidad "setIDs()" antes de asignar la propiedad "id" automáticamente.
@@ -1765,63 +1544,47 @@ Permite establecer una nueva secuencia para interactuar con la página actual. E
 	● value: indica el valor del elemento en los eventos de tipo change.
 
 Nota: la mejor manera de crear una secuencia es usar la funcionalidad "startSequence".
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.setSequence('[{"ts":0,"id":"_bodyItem58","event":"focusin"},{"ts":35,"id":"_bodyItem58","event":"click"},{"ts":37,"id":"_bodyItem58","event":"focusout"},...]');
 ```
-MÉTODO REMOVESEQUENCE
--------------------------
-
-### Tipo
+### MÉTODO REMOVESEQUENCE
+#### Tipo
 function
-PROPIEDAD REMOVESEQUENCE
--------------------------
-
-### Descripción
+### PROPIEDAD REMOVESEQUENCE
+#### Descripción
 Eliminar la secuencia de la página actual.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.removeSequence();
 ```
-MÉTODO PLAYSEQUENCE
--------------------------
-
-### Tipo
+### MÉTODO PLAYSEQUENCE
+#### Tipo
 function
-PROPIEDAD PLAYSEQUENCE
--------------------------
-
-### Descripción
+### PROPIEDAD PLAYSEQUENCE
+#### Descripción
 Permite reproducir una secuencia ya almacenada. Si el parámetro de la función está vacío, se recupera la secuencia a la página actual.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.playSequence();
 ```
-MÉTODO SETIDS
--------------------------
-
-### Tipo
+### MÉTODO SETIDS
+#### Tipo
 function
-PROPIEDAD SETIDS
--------------------------
-
-### Descripción
+### PROPIEDAD SETIDS
+#### Descripción
 Asigna un atributo "id" secuencial a todos los elementos que no lo tengan establecido.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.setIDs();
 ```
-MÉTODO SEND
--------------------------
-
-### Tipo
+### MÉTODO SEND
+#### Tipo
 function
-PROPIEDAD SEND
--------------------------
-
-### Descripción
+### PROPIEDAD SEND
+#### Descripción
 Permite crear y enviar formularios en tiempo real a través de Ajax con método post. Los parámetros recibidos son: URL (para realizar la solicitud) y JSON con los inputs/elementos a enviar.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.send({
 	url: "../pages/setProduct",
@@ -1832,52 +1595,40 @@ IntelliForm.send({
 	}]
 });
 ```
-PROPIEDAD TARGET
--------------------------
-
-### Tipo
+### PROPIEDAD TARGET
+#### Tipo
 object
-### Descripción
+#### Descripción
 Array de selectores con los elementos donde se habilitarán las funcionalidades de IntelliForm.
-### Ejemplos
+#### Ejemplos
 ```javascript
 IntelliForm.setUndo({target: ["#email", "#zipcode"]});
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para obtener el valor del parámetro "h":
-### Ejemplos
+#### Ejemplos
 ```javascript
 var h = GetParam()["h"];
 ```
-ISMOBILE
-###
+## IsMobile
 Este método indica si el dispositivo actual es "mobile" o no.
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para saber si el dispositivo es un dispositivo móvil:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var mobile = new IsMobile();
 ```
-LANGUAGE
-###
+## Language
 Este script le permite activar y administrar la función de multilenguaje en su sitio web.
-MÉTODO INIT
--------------------------
-
-### Tipo
+### MÉTODO INIT
+#### Tipo
 function
-PROPIEDAD INIT
--------------------------
-
-### Descripción
+### PROPIEDAD INIT
+#### Descripción
 Asignar e inicializar la funcionalidad de multilenguaje.
-### Ejemplos
+#### Ejemplos
 ```javascript
 var availableLangs = [
 	{id: "en-US", name: "English"},
@@ -1896,17 +1647,13 @@ var translations = {
 };
 Language.init(availableLangs, translations);
 ```
-MÉTODO RENDER
--------------------------
-
-### Tipo
+### MÉTODO RENDER
+#### Tipo
 function
-PROPIEDAD RENDER
--------------------------
-
-### Descripción
+### PROPIEDAD RENDER
+#### Descripción
 Analiza todo el documento y reemplaza todas las coincidencias de patrones. Esta funcionalidad se alimenta de los atributos "data-tkey", "data-placeholder-tkey" y "data-title-tkey".
-### Ejemplos
+#### Ejemplos
 ```javascript
 // The availableLangs and translations objects are defined before.
 // For example, supposed the next HTML code:
@@ -1917,72 +1664,288 @@ Language.render();
 
 // Note that the placeholder is translated and assugn the source text to "data-placeholder-tkey" attribute.
 ```
-MÉTODO SET
--------------------------
-
-### Tipo
+### MÉTODO SET
+#### Tipo
 function
-PROPIEDAD SET
--------------------------
-
-### Descripción
+### PROPIEDAD SET
+#### Descripción
 Establece el idioma actual. De forma predeterminada, el idioma es el que se proporciona a través del navegador.
 Advertencia: Para admitir la compatibilidad del navegador, el código de idioma enviado se codificaría en ISO-639-1.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Supposed that language by default in Chrome is "es-ES" (ISO 639-1 code to Spain)
 Language.set("en-US");
 ```
-MÉTODO GET
--------------------------
-
-### Tipo
+### MÉTODO GET
+#### Tipo
 function
-PROPIEDAD GET
--------------------------
-
-### Descripción
+### PROPIEDAD GET
+#### Descripción
 Devuelve la traducción para la cadena recibida. Si no se encuentra la coincidencia, se supone que no tiene traducción y devuelve la misma cadena.
-### Ejemplos
+#### Ejemplos
 ```javascript
 var tkey = Language.get("Loading...");
 // Si se desea recuperar la traducción para un idioma especificado, se puede enviar el identificador de idioma como segundo parámetro:
 var tkey_ES = Language.get("Loading...", "es-ES");
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Para saber si el dispositivo es un dispositivo móvil:
-### Ejemplos
+#### Ejemplos
 ```javascript
 var mobile = new IsMobile();
 ```
-SELECTPICKER
-###
-Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTRML5 y que proporciona una capa personalización sencilla de modificar.
-MÉTODO INIT
--------------------------
-
-### Tipo
+## Password
+El script de contraseña es una herramienta que le permite administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, el script de contraseña penaliza las acciones como insertar varias minúsculas consecutivas, insertar varias mayúsculas consecutivas, insertar varios dígitos consecutivos o repetir tres o más veces el mismo carácter.
+### MÉTODO CHECK
+#### Tipo
 function
-PROPIEDAD INIT
--------------------------
+### PROPIEDAD CHECK
+#### Descripción
+Permite comprobar la seguridad de la contraseña. Puede definir la longitud mínima y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, puede definir los colores utilizados para indicar cuándo la contraseña es correcta y cuándo no.
+#### Ejemplos
+```javascript
+<script>
+	function check(){
+		Password.check({
+			target: this.id,
+			colorok: 'rgba(255,255,255,0.75)',
+			colornok: '#A12123'
+		});
+	}
+</script>
 
-### Descripción
+<input	id="pwd"
+	name="pwd"
+	type="password"
+	value=""
+	placeholder="Contraseña"
+	onkeyup="check();" />
+```
+### MÉTODO DRAW
+#### Tipo
+function
+### PROPIEDAD DRAW
+#### Descripción
+Permite llamar a la función de dibujar el gráfico de fortaleza para mostrarlo en un momento determinado.
+#### Ejemplos
+```javascript
+Password.draw(Password.features.complexity);
+```
+### MÉTODO GENERATE
+#### Tipo
+function
+### PROPIEDAD GENERATE
+#### Descripción
+Permite crear una contraseña aleatoria de una longitud concreta que cumpla los requisitos mínimos.
+#### Ejemplos
+```javascript
+Password.generate(8);
+```
+### MÉTODO GETERROR
+#### Tipo
+function
+### PROPIEDAD GETERROR
+#### Descripción
+Permite comprobar si se ha producido algún error de validación en el campo de texto asociado a la contraseña. Si la función setError está establecida, se enviará el resultado de la evaluación a la función asociada.
+#### Ejemplos
+```javascript
+// Establecemos la configuración básica
+Password.setError(showMessage);
+Password.setTarget("pwd");
+Password.setAutocheck();
+
+// Definimos la función de callback para el Password
+// Cada vez que pulsemos una tecla o se pulse el botón de "submit" se evaluará
+function showMessage(e){
+	if(e == "not_allowed"){
+		console.log("La contraseña no es válida!");
+	} else if(e == "empty"){
+		console.log("El campo password está vacío!");
+	} else if(!Password.sameLike(document.getElementById("confirm_password").value)){
+		console.log("Las contraseñas son distintas!");
+	}
+});
+```
+### MÉTODO ISEMPTY
+#### Tipo
+function
+### PROPIEDAD ISEMPTY
+#### Descripción
+Permite verificar si el valor introducido es una cadena vacía.
+#### Ejemplos
+```javascript
+if(Password.isEmpty(document.getElementById("password").value)){
+	console.log("La contraseña está vacía!");
+}
+```
+### MÉTODO SAMELIKE
+#### Tipo
+function
+### PROPIEDAD SAMELIKE
+#### Descripción
+Permite verificar si la contraseña es igual que el valor enviado por parámetro.
+#### Ejemplos
+```javascript
+if(Password.sameLike(document.getElementById("confirm_password").value)){
+	console.log("Contraseñas identicas!");
+}
+```
+### MÉTODO SETAUTOCHECK
+#### Tipo
+function
+### PROPIEDAD SETAUTOCHECK
+#### Descripción
+Permite establecer el control de los eventos de teclado y submit para poder gestionar la contraseña. Este método añade el evento keyup para el campo de texto asociado a la contraseña y el evento submit al formulario.
+#### Ejemplos
+```javascript
+Password.setAutocheck();
+```
+### MÉTODO SETAUTODRAW
+#### Tipo
+function
+### PROPIEDAD SETAUTODRAW
+#### Descripción
+Permite definir si se debe pintar el gráfico de fortaleza de la contraseña o no.
+#### Ejemplos
+```javascript
+Password.setAutoDraw(false);
+```
+### MÉTODO SETCOLORS
+#### Tipo
+function
+### PROPIEDAD SETCOLORS
+#### Descripción
+Permite definir los colores para personalizar el CSS asociado a la fortaleza de la contraseña.
+#### Ejemplos
+```javascript
+Password.setColors("rgba(255,255,255,0.51)", "#00a55a");
+```
+### MÉTODO SETERROR
+#### Tipo
+function
+### PROPIEDAD SETERROR
+#### Descripción
+Permite añadir una función de error personalizada.
+#### Ejemplos
+```javascript
+Password.setError(showMessage);
+
+function showMessage(e){
+	if(e == "not_allowed"){
+		console.log("La contraseña no es válida!");
+	} else if(e == "empty"){
+		console.log("El campo password está vacío!");
+	} else if(!Password.sameLike(document.getElementById("confirm_password").value)){
+		console.log("Las contraseñas son distintas!");
+	}
+});
+```
+### MÉTODO SETMINIMALS
+#### Tipo
+function
+### PROPIEDAD SETMINIMALS
+#### Descripción
+Permite establecer los requerimientos mínimos de seguridad de las contraseñas. Es resultado de esta evaluación se devolverá en Password.allowed. Sólo si esta variable es igual a "true", el formulario se podrá enviar/guardar.
+#### Ejemplos
+```javascript
+Password.setMinimals({
+	length: 8,
+	uppers:1,
+	lowers: 1,
+	numbers: 0,
+	special: 0
+});
+```
+### MÉTODO SETTARGET
+#### Tipo
+function
+### PROPIEDAD SETTARGET
+#### Descripción
+Permite establecer elemento dónde inicializar la funcionalidad "Password" a través de su ID.
+#### Ejemplos
+```javascript
+Password.setTarget("INPUT_ID");
+```
+### INFORMACIÓN ADICIONAL
+#### Descripción
+Conocer la complejidad de la contraseña introducida:
+#### Ejemplos
+```javascript
+Password.features.complexity;
+```
+#### Descripción
+Saber si se cumplen los requisitos mínimos para poder enviar/guardar la contraseña:
+#### Ejemplos
+```javascript
+Password.allowed;
+```
+#### Descripción
+Conguración de estilos por defecto:
+#### Ejemplos
+```javascript
+// Password crea estos estilos de manera automática, pero, se puede añadir a la hoja de estilos principal y modificarlos como se quieran.
+.strength{
+	width: 100%;
+	height: 10px;
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	z-index: 99;
+	padding: 2px 1px 1px 1px;
+	border: 0 none;
+	margin: 0 0 5px 0;
+	display: none;
+}
+.strength::after{
+	content: attr(data-label);
+	display: block;
+	position: absolute;
+	left: 0;
+	top: -5px;
+	width: 100%;
+	padding: 3px 5px 2px;
+	font-size: 12px;
+	line-height: 12px;
+}
+.strength > div{
+	background: rgba(0,0,0,0.1);
+	width: calc(16.667% - 4px);
+	float: left;
+	height: 6px;
+	padding: 0;
+	margin: 0px 2px;
+	position: relative;
+}
+.strength[data-label] > div{
+	display: none;
+}
+.strength > div.spotlight{
+	background: lightblue;
+}
+input:focus ~ .strength{
+	background: blue;
+	display: block;
+}
+```
+## Selectpicker
+Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTRML5 y que proporciona una capa personalización sencilla de modificar.
+### MÉTODO INIT
+#### Tipo
+function
+### PROPIEDAD INIT
+#### Descripción
 Crea y establece los componentes de configuración y presentación para los desplegables solicitados.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Selectpicker.init(".select-picker");
 ```
-PROPIEDAD TARGET
--------------------------
-
-### Tipo
+### PROPIEDAD TARGET
+#### Tipo
 string
-### Descripción
+#### Descripción
 Si el método "init" recibe una cadena, esta cadena se tomará como patrón de destino. Si el método "init" recibe un objeto, el parámetro objetivo será el patrón para inicializar los desplegables.
-### Ejemplos
+#### Ejemplos
 ```javascript
 //Forma sencilla :
 Selectpicker.init(".select-picker");
@@ -1990,23 +1953,19 @@ Selectpicker.init(".select-picker");
 // A través del parámetro target:
 Selectpicker.init({ target: ".select-picker" });
 ```
-PROPIEDAD LIVESEARCH
--------------------------
-
-### Tipo
+### PROPIEDAD LIVESEARCH
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Enable search into dropdown.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Selectpicker.init({ target: ".select-picker", liveSearch: true });
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Habilita la búsqueda dentro del desplegable:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Supposed the next code:
 <select id="months" name="months" class="select-picker" data-live-search="true">
@@ -2017,23 +1976,20 @@ Habilita la búsqueda dentro del desplegable:
 // Once set data-live-search to true into select, initialize
 Selectpicker.init(".select-picker");
 ```
-### Descripción
+#### Descripción
 Personaliza el aspecto del Selectpicker a través de CSS:
-### Ejemplos
+#### Ejemplos
 ```javascript
 .select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}
 ```
-SENDFORM
-###
+## SendForm
 SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.
-PROPIEDAD URL
--------------------------
-
-### Tipo
+### PROPIEDAD URL
+#### Tipo
 string
-### Descripción
+#### Descripción
 URL para realizar la petición.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new SendForm({
 	url: "../pages/setProduct",
@@ -2044,14 +2000,12 @@ new SendForm({
 	}]
 });
 ```
-PROPIEDAD PARAMS
--------------------------
-
-### Tipo
+### PROPIEDAD PARAMS
+#### Tipo
 string
-### Descripción
+#### Descripción
 Parámetros que se enviarán como parte del formulario.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new SendForm({
 	url: "../pages/setProduct",
@@ -2062,12 +2016,10 @@ new SendForm({
 	}]
 });
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Habilita la búsqueda dentro del desplegable:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Supposed the next code:
 <select id="months" name="months" class="select-picker" data-live-search="true">
@@ -2078,21 +2030,18 @@ Habilita la búsqueda dentro del desplegable:
 // Once set data-live-search to true into select, initialize
 Selectpicker.init(".select-picker");
 ```
-### Descripción
+#### Descripción
 Personaliza el aspecto del Selectpicker a través de CSS:
-### Ejemplos
+#### Ejemplos
 ```javascript
 .select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}
 ```
-STRIPTAGS
-###
+## StripTags
 Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Limpiar de HTML un String
-### Ejemplos
+#### Ejemplos
 ```javascript
 StripTags("<span>ejemplo de texto</span>", "");
 // Resultado: ejemplo de texto
@@ -2100,84 +2049,71 @@ StripTags("<span>ejemplo de texto</span>", "");
 StripTags("<span>ejemplo <b>de</b> texto</span>", "<b>");
 // Resultado: ejemplo <b>de</b> texto
 ```
-TREEVIEW
-###
+## Treeview
 Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).
-PROPIEDAD CLASSLEAF
--------------------------
-
-### Tipo
+### PROPIEDAD CLASSLEAF
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "classLeaf" indica el nombre de clase que se aplicará a los nodos hoja (los de último nivel). Esta clase, por ejemplo, puede utilizarse para proporcionar un estilo diferente a este tipo de nodos. Por defecto está vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview", classLeaf: "leaf-node"});
 ```
-PROPIEDAD COLLAPSEDICON
--------------------------
-
-### Tipo
+### PROPIEDAD COLLAPSEDICON
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "collapsedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de colapsado" que refleja que la rama está cerrada de manera predeterminada. Si no se establece, por defecto es contendrá ►.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Example with Vectorial icons
 new Treeview({data: treeviewJSON, target: 'treeview', collapsedIcon: '<i class="plus"></i>'});
 // Example with Unicode icons
 new Treeview({data: treeviewJSON, target: "treeview", collapsedIcon: "+"});
 ```
-PROPIEDAD EXPANDEDICON
--------------------------
-
-### Tipo
+### PROPIEDAD EXPANDEDICON
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "expandedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de expandido" que refleja que la rama está abierta de forma predeterminada. Si no se establece, Por defecto es ▼.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Example with Vectorial icons
 new Treeview({data: treeviewJSON, target: 'treeview', expandedIcon: '<i class="less"></i>'});
 // Example with Unicode icons
 new Treeview({data: treeviewJSON, target: "treeview", expandedIcon: "-"});
 ```
-PROPIEDAD LEAFICON
--------------------------
-
-### Tipo
+### PROPIEDAD LEAFICON
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "leafIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de hoja" que refleja que, este nodo, no tiene más hijos. Si no se establece, por defecto está vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Example with Vectorial icons
 new Treeview({data: treeviewJSON, target: 'treeview', leafIcon: '<i class="leaf"></i>'});
 // Example with Unicode icons
 new Treeview({data: treeviewJSON, target: "treeview", leafIcon: "\uD83D\uDE54"});
 ```
-PROPIEDAD BRANCHICON
--------------------------
-
-### Tipo
+### PROPIEDAD BRANCHICON
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "branchIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de rama" que refleja que este nodo tiene, al menos, un hijo. Si no se establece, por defecto está vacío.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Example with Vectorial icons
 new Treeview({data: treeviewJSON, target: 'treeview', branchIcon: '<i class="folder"></i>'});
 // Example with Unicode icons
 new Treeview({data: treeviewJSON, target: "treeview", branchIcon: "\uD83D\uDCC2"});
 ```
-PROPIEDAD CUSTOMCHECK
--------------------------
-
-### Tipo
+### PROPIEDAD CUSTOMCHECK
+#### Tipo
 string
-### Descripción
+#### Descripción
 Cadena HTML con la nueva definición del checkbox. Por defecto está vacío (deshabilitado).
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({
 	data: treeviewJSON,
@@ -2185,14 +2121,12 @@ new Treeview({
 	customCheck: "<label>Two<input type='checkbox'><span class='checkmark'></span></label>"
 });
 ```
-PROPIEDAD DATA
--------------------------
-
-### Tipo
+### PROPIEDAD DATA
+#### Tipo
 object
-### Descripción
+#### Descripción
 Es un objeto con los elementos a tratar. Este objeto debe estar en formato JSON.
-### Ejemplos
+#### Ejemplos
 ```javascript
 //Example JSON to send to Treeview component.
 var treeviewJSON = {
@@ -2220,79 +2154,63 @@ var treeviewJSON = {
 }
 new Treeview({data: treeviewJSON, target: "treeview"});
 ```
-MÉTODO ONSELECTNODE
--------------------------
-
-### Tipo
+### MÉTODO ONSELECTNODE
+#### Tipo
 function
-PROPIEDAD ONSELECTNODE
--------------------------
-
-### Descripción
+### PROPIEDAD ONSELECTNODE
+#### Descripción
 El parámetro "onSelectNode" indica la función de devolución de llamada cuando se selecciona un nodo. Por defecto, esta funcionalidad está deshabilitada.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview", onSelectNode: callback});
 function callback(e){
 	console.log(e);
 }
 ```
-MÉTODO ONCHECKNODE
--------------------------
-
-### Tipo
+### MÉTODO ONCHECKNODE
+#### Tipo
 function
-PROPIEDAD ONCHECKNODE
--------------------------
-
-### Descripción
+### PROPIEDAD ONCHECKNODE
+#### Descripción
 El parámetro "onCheckNode" indica la función de devolución de llamada cuando se chequea un nodo. Por defecto, esta funcionalidad está deshabilitada.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview", onCheckNode: callback});
 function callback(e){
 	console.log(e);
 }
 ```
-PROPIEDAD SELECTABLE
--------------------------
-
-### Tipo
+### PROPIEDAD SELECTABLE
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 El parámetro "selectable" indica si los nodos serán seleccionables. Por defecto es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview", selectable: false});
 ```
-PROPIEDAD SEARCHABLE
--------------------------
-
-### Tipo
+### PROPIEDAD SEARCHABLE
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 El parámetro "searchable" indica si el árbol permitirá la búsqueda de nodos. Por defecto es false.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview", searchable: false});
 ```
-PROPIEDAD PLACEHOLDERTEXT
--------------------------
-
-### Tipo
+### PROPIEDAD PLACEHOLDERTEXT
+#### Tipo
 string
-### Descripción
+#### Descripción
 El parámetro "placeholderText" indica el texto que se muestra dentro de la caja de texto cuando la búsqueda está habilitada (searchable es true). Por defecto es "Filter...".
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview", placeholderText: "Writing to filter inside the tree"});
 ```
-PROPIEDAD STYLES
--------------------------
-
-### Tipo
+### PROPIEDAD STYLES
+#### Tipo
 object
-### Descripción
+#### Descripción
 El parámetro "styles" indica los estilos básicos que deben mostrarse en el componente de vista de árbol. Este objeto permitirá los siguientes subparámetros:
 	● bgTree: fondo del árbol. Por defecto es transparent.
 	● borderTree : Borde del árbol. Por defecto es rgba (0,0,0,0.15).
@@ -2303,7 +2221,7 @@ El parámetro "styles" indica los estilos básicos que deben mostrarse en el com
 	● activeBg: color de fondo del nodo seleccionado. Por defecto es #000000.
 	● linkColor: color de texto para nodos con enlace. Por defecto es #006699.
 	● linkBg: color de fondo para los nodos con enlace. Por defecto es transparent.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({
 	data: treeviewJSON,
@@ -2322,42 +2240,34 @@ new Treeview({
 	}
 });
 ```
-PROPIEDAD TARGET
--------------------------
-
-### Tipo
+### PROPIEDAD TARGET
+#### Tipo
 string
-### Descripción
+#### Descripción
 ID del elemento donde se implementará el componente Treeview. Este ID debe pertenecer a una etiqueta UL de HTML.
-### Ejemplos
+#### Ejemplos
 ```javascript
 new Treeview({data: treeviewJSON, target: "treeview"});
 ```
-PROPIEDAD CHECKED
--------------------------
-
-### Tipo
+### PROPIEDAD CHECKED
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 El parámetro "verified" indica al componente Treeview que el nodo debería cambiar su estado. Esta funcionalidad necesita un ID para seleccionar el elemento a verificar.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // ULItem is the ID from HTML element where treeview is implemented
 for(var i = 0; i < 20; i++){
 	document.ULItem.Treeview({id; i, checked: true});
 }
 ```
-MÉTODO REFRESH
--------------------------
-
-### Tipo
+### MÉTODO REFRESH
+#### Tipo
 function
-PROPIEDAD REFRESH
--------------------------
-
-### Descripción
+### PROPIEDAD REFRESH
+#### Descripción
 El parámetro "refresh" indica que el componente de vista de árbol debe volver a cargarse.
-### Ejemplos
+#### Ejemplos
 ```javascript
 var treeviewJSON = {
 	items: [{
@@ -2384,12 +2294,10 @@ var treeviewJSON = {
 // ULItem is the ID from HTML element where Treeview is implemented
 document.ULItem.Treeview({data: treeviewJSON, refresh: true})
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Personalizar los estilos a través de las reglas CSS. Por ejemplo:
-### Ejemplos
+#### Ejemplos
 ```javascript
 // styles.css (from your site)
 ul.treeview li .active  { 
@@ -2447,20 +2355,15 @@ ul.treeview  {
 	padding: 5px; 
 }
 ```
-VALIDATOR
-###
+## Validator
 Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.
-MÉTODO SET
--------------------------
-
-### Tipo
+### MÉTODO SET
+#### Tipo
 function
-PROPIEDAD SET
--------------------------
-
-### Descripción
+### PROPIEDAD SET
+#### Descripción
 El método "set" indica a Validator que se desea aplicar una restricción predefinida a un input o campo de entrada de datos. Por lo general, estas restricciones son: patternMismatch, rangeOverflow, rangeUnderflow, stepMismatch, "=", "!=", "<", ">", ">=" and "<=".
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Permitir sólo números igual o menores a 100
 Validator.set({
@@ -2509,21 +2412,17 @@ Validator.set({
 	pattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
 });
 ```
-MÉTODO FILESET
--------------------------
-
-### Tipo
+### MÉTODO FILESET
+#### Tipo
 function
-PROPIEDAD FILESET
--------------------------
-
-### Descripción
+### PROPIEDAD FILESET
+#### Descripción
 Define las restricciones que deben tener las entradas del archivo. Esta funcionalidad se alimenta de un objeto JSON que admite:
 	 ● accept: es una cadena que define, separados por comas, los tipos de archivos que debe aceptar la entrada del archivo. De forma predeterminada, está vacío.
 	 ● preview: Habilita la vista previa del archivo. Por defecto, es false.
 	 ● size: Limitar (en KB) el tamaño del archivo que se va a cargar. De forma predeterminada, es 0, que indica que no tiene límite.
 	 ● message: mensaje que se muestra cuando la entrada del archivo no es válida.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Permitir solo tipos de archivos de Word
 Validator.fileset({
@@ -2538,14 +2437,12 @@ Validator.fileset({target: "file", preview: true});
 // Limitar el tamaño de los archivos de imagen a 100KB.
 Validator.fileset({target: "file", maxsize: 100, accept: "image/*", message: "El tamaño de la imagen debe ser menor a 100 KB"});
 ```
-PROPIEDAD FIXED
--------------------------
-
-### Tipo
+### PROPIEDAD FIXED
+#### Tipo
 boolean
-### Descripción
+#### Descripción
 Esta propiedad le indica al Validador que los mensajes deben mostrarse debajo del campo de entrada.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Limitar el tamaño de los archivos jpeg a 250 KB y mostrar el mensaje bajo el input
 Validator.fileset({
@@ -2556,17 +2453,13 @@ Validator.fileset({
 	message: "El tamaño del archivo debería ser menor a 250 KB"
 });
 ```
-MÉTODO NEWVALIDATION
--------------------------
-
-### Tipo
+### MÉTODO NEWVALIDATION
+#### Tipo
 function
-PROPIEDAD NEWVALIDATION
--------------------------
-
-### Descripción
+### PROPIEDAD NEWVALIDATION
+#### Descripción
 Definir validaciones personalizadas a través de código JavaScript.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Validator.target = document.getElementById("checkbox");
 Validator.newValidation("input", "\
@@ -2581,27 +2474,21 @@ Validator.newValidation("input", "\
 	}\
 ");
 ```
-MÉTODO ONINVALID
--------------------------
-
-### Tipo
+### MÉTODO ONINVALID
+#### Tipo
 function
-PROPIEDAD ONINVALID
--------------------------
-
-### Descripción
+### PROPIEDAD ONINVALID
+#### Descripción
 Función de devolución de llamada cuando cuando se produzca un error de validación.
-### Ejemplos
+#### Ejemplos
 ```javascript
 Validator.target = document.getElementById("inputRequired");
 Validator.onInvalid("this.classList.add('validator-error')")
 ```
-INFORMACIÓN ADICIONAL
--------------------------
-
-### Descripción
+### INFORMACIÓN ADICIONAL
+#### Descripción
 Personalizar la clase de validator-error y validator-error-msg a través de estilos CSS.
-### Ejemplos
+#### Ejemplos
 ```javascript
 // Personalizar el estilo del input
 .validator-error { 
