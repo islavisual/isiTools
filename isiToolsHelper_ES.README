@@ -140,14 +140,14 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 		IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
 		<br/>\
 		<br/>\
-		Instalación<br/>\
+		# Instalación<br/>\
 		Descargar / copiar las librerías en tu carpeta javascript de tu proyecto. Después, inserta el código necesario para activar isiTools. Por ejemplo:\
-		<code><comm>// Cargar todas las funciones</comm><br/>\
+		<code><comm>```javascript<br/>// Cargar todas las funciones</comm><br/>\
 &lt;script src="isitools.js" /><br/>\
 &lt;script src="isitoolsHerlper.js" /><br/>\
 <comm>// Cargar selectivamente algunas características</comm><br/>\
 &lt;script src="isitools.js<int>?modules=AddCSSRule+Alert+Autocomplete+DOM</int>" /><br/>\
-&lt;script src="isitoolsHerlper.js" /><br/></code>\
+&lt;script src="isitoolsHerlper.js" /><br/>```<br/></code>\
 			__TEXT__\
 		</div>\
 		';
@@ -157,10 +157,10 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
 		AddCSSRule('', "#h31p3r", 'font-family: arial; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + ';padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -10px;border-bottom: 1px solid rgba(255,255,255,.1);')
-		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 32px 0 10px; font-size:1.0rem; padding: 5px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
+		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 32px 0 0px; font-size:1.0rem; padding: 5px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
-		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
-		AddCSSRule('', "#h31p3r field.des, #h31p3r field.exa", "display: block; width: 100%;");
+		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; color: ' + opt.fieldColor + ';display: block; width: 100%;');
+		//AddCSSRule('', "#h31p3r field.type, #h31p3r field.des, #h31p3r field.exa", "");
 		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
 		AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
 		AddCSSRule('', '#h31p3r > a', 'position: fixed;left: 10px;top: 10px; border: 1px solid ' + opt.highlight + '; padding: 3px 10px; line-height:26px;z-index:9; color: ' + opt.background + ';');
@@ -189,13 +189,10 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r nav > a + ul li', 'padding: 5px 10px;');
 		AddCSSRule('', '#h31p3r nav > a + ul li:hover', 'background: ' + opt.highlight + '; padding: 5px 10px;');
 		AddCSSRule('', '#h31p3r nav > a + ul li a', ' color: ' + opt.background + '; ');
+		AddCSSRule('', '#h31p3r span[id]', 'background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 100%; display: block; text-align: left; padding: 0 5px;');
 
-		if(GetParam("f") == '.me'){
-			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
-		} else {
-			AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
-		}
-
+		AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
+		
 		var text = '', additional = '', items_help = '';
 		var idx = 0;
 		for (var prop in help) {
@@ -205,7 +202,7 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 			} else if (prop != "additional" && general.name.toLowerCase() == "index") {
 				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop;
 				
-				text += '<h3 id="' + wprop + '" style="font-size: 1.2rem; background: rgba(255,255,255,0.15); color: #fff; text-align: center; border: 1px solid rgba(255,255,255,0.2);" onclick="' + WikiHelper[wprop].general.help.split("\n")[1] + '">' + wprop + '</h3>';
+				text += '<br/><span id="' + wprop + '" onclick="' + WikiHelper[wprop].general.help.split("\n")[1] + '">## ' + wprop + '</span>';
 				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
 			}
 
@@ -223,11 +220,8 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 
 							} else if(key == "additional") {
 								var addInf = '';
-								if(text.indexOf('<h3 class="fnc ' + prop + '">Información Adicional</h3>') == -1){
-									addInf += '<h3 class="fnc ' + prop + '">Información Adicional</h3>';
-									if(GetParam("f") == ".me"){ 
-										addInf += "<p>-------------------------</p>"
-									}
+								if(text.indexOf('<h3 class="fnc ' + prop + '">### Información Adicional</h3>') == -1){
+									addInf += '<h3 class="fnc ' + prop + '">#### Información Adicional</h3>';
 								}
 
 								for(var adc = 0; adc < WikiHelper[prop][key].length; adc++){
@@ -237,11 +231,8 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 									}
 								}
 							} else {
-								if(key != "general" && text.indexOf('<h3 class="fnc ' + prop + '">' + ((WikiHelper[prop][key][atr] == "function" ? 'Método ' : 'Propiedad ') + key) + '</h3>') == -1){
-									text += '<h3 class="fnc ' + prop + '">' + ((WikiHelper[prop][key][atr] == "function" ? 'Método ' : 'Propiedad ') + key) + '</h3>';
-									if(GetParam("f") == ".me"){ 
-										text += "<p>-------------------------</p>"
-									}
+								if(key != "general" && text.indexOf('<h3 class="fnc ' + prop + '">#### ' + ((WikiHelper[prop][key][atr] == "function" ? 'MÉTODO ' : 'PROPIEDAD ') + key.toUpperCase()) + '</h3>') == -1){
+									text += '<h3 class="fnc ' + prop + '">#### ' + ((WikiHelper[prop][key][atr] == "function" ? 'MÉTODO ' : 'PROPIEDAD ') + key.toUpperCase()) + '</h3>';
 								}
 
 								text += setText2Helper(key, atr, WikiHelper[prop][key][atr]);
@@ -303,15 +294,16 @@ this.ReadmeHelper = it.ReadmeHelper = function (func, cfg) {
 	}
 
 	function setText2Helper(key, atr, val){
-		var txt = '', trl = atr.replace(/type/ig, 'Tipo').replace(/example/ig, 'Ejemplos').replace(/description/ig, 'Descripción');
+		var txt = '', prefix = '', trl = atr.replace(/type/ig, 'Tipo').replace(/example/ig, 'Ejemplos').replace(/description/ig, 'Descripción');
 
 		if(key == "general") trl = '';
-		var prefix = '';
-		if(GetParam('f') == '.me') prefix = '### ';
+		else prefix = '**';
 
-		txt += '<field class="' + atr.substr(0, 3) + '">' + prefix + trl + '</field>' + (atr == "type" ? '' : '');
-		var items = typeof val == "string" ? val.split("\n") : val;
-		txt += atr == 'example' ? ('```javascript<code>' + styleItems(atr, items) + '</code>```') : styleItems(atr, items);
+		txt += "\n" + '<field class="' + atr.substr(0, 3) + '">' + prefix + trl + prefix + "\n" + '</field>';
+		var items = typeof val == "string" ? val.split("\n") : val, auxV = styleItems(atr, items); 
+
+		if(atr != "example") auxV = "\n"+ auxV.replace(/	● /gm, '* ');
+		txt += atr == 'example' ? ('```javascript<code>' + auxV + '</code>```') : auxV;
 
 		return txt;
 	}
