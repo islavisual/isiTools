@@ -767,15 +767,55 @@ if(it.enabledModules.Password){
 			description: 'It allows to call the function to draw the strength graph to show it at a certain moment.',
 			example: 'Password.draw(Password.features.complexity);'
 		},
+		generate: {
+			type: 'function',
+			description: 'Allows you to create a random password of a specific length that meets the minimum requirements.',
+			example: 'Password.generate(8);'
+		},
+		getError: {
+			type: 'function',
+			description: 'It allows to check if a validation error has occurred in the text field associated to the password. If the "setError" function is set, the result of the evaluation will be sent to the associated function to "setError".',
+			example: '// Set the basic configuration\nPassword.setError(showMessage);\nPassword.setTarget("pwd");\nPassword.setAutocheck();\n\n// Define the callback function for the Password\n// Every once that we press a key or press the "submit" button, "setError" will evaluated\nfunction showMessage(e){\n\tif(e == "not_allowed"){\n\t\tconsole.log("The password is invalid!");\n\t} else if(e == "empty"){\n\t\tconsole.log("The password is empty!");\n\t} else if(!Password.sameLike(document.getElementById("confirm_password").value)){\n\t\tconsole.log("The passwords are different!");\n\t}\n});'
+		},
+		isEmpty: {
+			type: 'function',
+			description: 'Allows you to verify if the entered value is an empty string.',
+			example: 'if(Password.isEmpty(document.getElementById("password").value)){\n\tconsole.log("The password is empty!");\n}'
+		},
+		sameLike: {
+			type: 'function',
+			description: 'It allows to verify if the password is the same as the value sent by the parameter.',
+			example: 'if(Password.sameLike(document.getElementById("confirm_password").value)){\n\tconsole.log("passwords are identicals!");\n}'
+		},
+		setAutocheck: {
+			type: 'function',
+			description: 'It allows to establish the control of keyboard and submit events in order to manage the password. This method adds the "keyup" event for the text field associated with the password and the "submit" event to the form.',
+			example: 'Password.setAutocheck();'
+		},
+		setAutoDraw: {
+			type: 'function',
+			description: 'Allows you to define whether the password strength graphic should be painted or not.',
+			example: 'Password.setAutoDraw(false);'
+		},
+		setColors: {
+			type: 'function',
+			description: 'Allows you to define the colors to customize the CSS associated with the "strength" of the password.',
+			example: 'Password.setColors("rgba(255,255,255,0.51)", "#00a55a");'
+		},
+		setError: {
+			type: 'function',
+			description: 'Allows you to add a custom error function.',
+			example: 'Password.setError(showMessage);\n\nfunction showMessage(e){\n\tif(e == "not_allowed"){\n\t\tconsole.log("The password is invalid!");\n\t} else if(e == "empty"){\n\t\tconsole.log("The password is empty!");\n\t} else if(!Password.sameLike(document.getElementById("confirm_password").value)){\n\t\tconsole.log("The passwords are different!");\n\t}\n});'
+		},
 		setMinimals: {
 			type: 'function',
 			description: 'It allows to establish the minimum security requirements of passwords. The result of this evaluation will be returned in Password.allowed. Only if this variable is equal to "true", the form can be sent/saved.',
 			example: 'Password.setMinimals({\n\tlength: 8,\n\tuppers:1,\n\tlowers: 1,\n\tnumbers: 0,\n\tspecial: 0\n})'
 		},
-		autoDraw: {
-			type: 'Boolean',
-			description: 'Allows you to define whether the password strength graphic should be painted or not.',
-			example: 'Password.autoDraw = false;'
+		setTarget: {
+			type: 'function',
+			description: 'It allows to establish element where to initialize the functionality "Password" through its ID.',
+			example: 'Password.setTarget("INPUT_ID");'
 		}
 	}
 }
