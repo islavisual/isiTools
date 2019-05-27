@@ -12,6 +12,7 @@ IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durant
 ```
 
 ## AddCSSRule
+
 Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.
 #### PROPIEDAD SHEET
 **Tipo**
@@ -35,10 +36,8 @@ AddCSSRule(document.styleSheets[0], "input", "background-color: lightgray; color
 #### PROPIEDAD SELECTOR
 **Tipo**
 string
-
 **Descripción**
 Este parámetro se utiliza para definir el nombre de la regla. Se puede usar cualquier selector válido por CSS3.
-
 **Ejemplos**
 ```javascript
 AddCSSRule("", ".buttonIcon", "background-color: lightgray; color: #333");
@@ -63,6 +62,7 @@ Este parámetro es opcional.
 AddCSSRule("", ".buttonIcon::after", "content:''; background-color: lightgray; color: #333", 0);
 ```
 ## Alert
+
 Script para crear alertas con múltiples personalizaciones similares a las de javaScript de forma sencilla.
 #### PROPIEDAD THEME
 **Tipo**
@@ -269,6 +269,7 @@ body.fixedOY  {
 }
 ```
 ## Autocomplete
+
 Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado. Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Es simple, fácil de personalizar y hace que el rendimiento de la página se vea poco afectado.
 #### PROPIEDAD AUTOFOCUS
 **Tipo**
@@ -588,6 +589,7 @@ function callback(input){
 }
 ```
 ## Benchmark
+
 Este plugin permite comprobar la calidad y el rendimiento de un código pasado a través de una función.
 #### MÉTODO TEST
 **Tipo**
@@ -696,6 +698,7 @@ function callback(input){
 }
 ```
 ## Constraint
+
 Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.
 Una vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.
 #### PROPIEDAD BASE
@@ -838,6 +841,7 @@ function callback(input){
 }
 ```
 ## Debugger
+
 Depurador automático para ayudarte a saber todo lo que sucede en tu página. Desde cuando un usuario hace un clic hasta conocer qué llamadas ajax se ejecutan en segundo plano.
 #### MÉTODO INIT
 **Tipo**
@@ -1082,6 +1086,7 @@ function callback(input){
 }
 ```
 ## GetBrowser
+
 Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.
 #### INFORMACIÓN ADICIONAL
 **Descripción**
@@ -1127,6 +1132,7 @@ Obtener el prefijo de CSS utilizado por el navegador:
 var browser = new GetBrowser(), console.log(browser.prefix);
 ```
 ## GetParam
+
 Función para obtener todos los valores de los parámetros recibidos en la URL.
 #### INFORMACIÓN ADICIONAL
 **Descripción**
@@ -1136,6 +1142,7 @@ Para obtener el valor del parámetro "h":
 var h = GetParam()["h"];
 ```
 ## HttpRequest
+
 HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.
 #### PROPIEDAD AJAX
 **Tipo**
@@ -1347,6 +1354,7 @@ Para obtener el valor del parámetro "h":
 var h = GetParam()["h"];
 ```
 ## Include
+
 Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.
 #### PROPIEDAD DATA
 **Tipo**
@@ -1405,6 +1413,7 @@ Para obtener el valor del parámetro "h":
 var h = GetParam()["h"];
 ```
 ## IntelliForm
+
 IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.
 #### PROPIEDAD ADDELEMENT
 **Tipo**
@@ -1616,6 +1625,7 @@ Para obtener el valor del parámetro "h":
 var h = GetParam()["h"];
 ```
 ## IsMobile
+
 Este método indica si el dispositivo actual es "mobile" o no.
 #### INFORMACIÓN ADICIONAL
 **Descripción**
@@ -1625,6 +1635,7 @@ Para saber si el dispositivo es un dispositivo móvil:
 var mobile = new IsMobile();
 ```
 ## Language
+
 Este script le permite activar y administrar la función de multilenguaje en su sitio web.
 #### MÉTODO INIT
 **Tipo**
@@ -1700,6 +1711,7 @@ Para saber si el dispositivo es un dispositivo móvil:
 var mobile = new IsMobile();
 ```
 ## Password
+
 El script de contraseña es una herramienta que le permite administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, el script de contraseña penaliza las acciones como insertar varias minúsculas consecutivas, insertar varias mayúsculas consecutivas, insertar varios dígitos consecutivos o repetir tres o más veces el mismo carácter.
 #### MÉTODO CHECK
 **Tipo**
@@ -1933,6 +1945,7 @@ input:focus ~ .strength{
 }
 ```
 ## Selectpicker
+
 Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTRML5 y que proporciona una capa personalización sencilla de modificar.
 #### MÉTODO INIT
 **Tipo**
@@ -1987,6 +2000,7 @@ Personaliza el aspecto del Selectpicker a través de CSS:
 .select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}
 ```
 ## SendForm
+
 SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.
 #### PROPIEDAD URL
 **Tipo**
@@ -2041,6 +2055,7 @@ Personaliza el aspecto del Selectpicker a través de CSS:
 .select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}
 ```
 ## StripTags
+
 Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.
 #### INFORMACIÓN ADICIONAL
 **Descripción**
@@ -2054,6 +2069,7 @@ StripTags("<span>ejemplo <b>de</b> texto</span>", "<b>");
 // Resultado: ejemplo <b>de</b> texto
 ```
 ## Treeview
+
 Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).
 #### PROPIEDAD CLASSLEAF
 **Tipo**
@@ -2360,6 +2376,7 @@ ul.treeview  {
 }
 ```
 ## Validator
+
 Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.
 #### MÉTODO SET
 **Tipo**
