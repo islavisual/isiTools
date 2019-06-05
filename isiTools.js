@@ -311,13 +311,14 @@ function isiToolsCallback(json){
 	}
 
 	/**
-		 Autocomplete functionality
-		@version: 1.03
+		Autocomplete functionality
+		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 14/05/2019
+		@Last update: 05/06/2019
 	**/
 	if(json.Autocomplete){
+		window._timeoutAC = null, window._continueAC = false;
 		this.Autocomplete = it.Autocomplete = function (cfg) {
 			if(typeof cfg == "undefined") cfg = {};
 
@@ -344,6 +345,7 @@ function isiToolsCallback(json){
 				className: !cfg.hasOwnProperty('className') ? "autocomplete" : cfg.className,
 				currentFocus: -1,
 				data: cfg.data,
+				delay: !cfg.hasOwnProperty('delay') ? 300 : cfg.delay,
 				format: !cfg.hasOwnProperty('format') ? "layer" : cfg.format,
 				highlights: !cfg.hasOwnProperty('highlights') ? null : cfg.highlights,
 				message: !cfg.hasOwnProperty('message') ? "Loading..." : cfg.message,
@@ -376,7 +378,26 @@ function isiToolsCallback(json){
 			} else {
 				opt.target.setAttribute("placeholder", opt.target.dataset.placeholder);
 				opt.target.onkeydown = null;
-				opt.target.addEventListener("input", function (e) {
+
+				function triggerAfterKey(t){
+					var event = new Event('inputAfter');
+					t.dispatchEvent(event);
+				}
+
+				opt.target.addEventListener("keydown",  function (e) { 
+					var kc = e.keyCode, t = e.target;
+					if(kc == 9){ removeItemsList(false); return false; }
+					else if((kc >= 37 && kc <= 40) || e.ctrlKey || e.shiftKey || e.altKey){ return false; }; 
+
+					var goon = (t.value.trim().length == 1 && (kc == 8 || kc == 46)) ? false : true;
+
+					clearTimeout(_timeoutAC); 
+					_timeoutAC = setTimeout(triggerAfterKey, goon ? opt.delay : 1, t); 
+				});
+
+				opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
+
+				opt.target.addEventListener("inputAfter", function (e) {
 					var a, b, c, i, val = this.value.trim();
 
 					// Contains wildcard
@@ -583,6 +604,8 @@ function isiToolsCallback(json){
 							}
 						}
 					}
+
+					window._continueAC = false;
 				});
 			}
 
