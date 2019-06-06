@@ -93,7 +93,7 @@ if(it.enabledModules.Alert){
 
 /**
    Autocomplete Helper
-   @version: 1.0.4
+   @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
    @Last update: 30/04/2019
@@ -130,6 +130,11 @@ if(it.enabledModules.Autocomplete){
 			type: 'object',
 			description: 'Object with the elements to manage or treat. This object can be in format JSON or Array.',
 			example: 'new Autocomplete({target: "transportBox", data: arrayList});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
+		},
+		delay: {
+			type: 'integer',
+			description: 'The Autocomplete component of IsiTools waits for the user to stop typing to perform the search. With this parameter you can customize this waiting time. By default it is set to 300 milliseconds.',
+			example: 'new Autocomplete({target: "transportBox", data: arrayList, delay: 1000});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
 		},
 		format: {
 			type: 'string',
