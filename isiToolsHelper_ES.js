@@ -93,7 +93,7 @@ if(it.enabledModules.Alert){
 
 /**
    Autocomplete Helper
-   @version: 1.0.4
+   @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
    @Last update: 30/04/2019
@@ -130,6 +130,11 @@ if(it.enabledModules.Autocomplete){
 			type: 'object',
 			description: 'Objeto con los elementos para manejar o tratar. Este objeto puede estar en formato "JSON" o estar en formato "Array".',
 			example: 'new Autocomplete({target: "transportBox", data: arrayList});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
+		},
+		delay: {
+			type: 'integer',
+			description: 'El componente Autocomplete de IsiTools espera a que el usuario deje de escribir para realizar la búsqueda. Con este parámetro se puede personalizar este tiempode espera. Por defecto está establecido a 300 milisegundos.',
+			example: 'new Autocomplete({target: "transportBox", data: arrayList, delay: 1000});\nvar arrayList = ["Car", "Motorcycle", "Airplane", "Train", "Bicicle"];'
 		},
 		format: {
 			type: 'string',
@@ -727,7 +732,7 @@ if(it.enabledModules.Language){
 	@version: 1.00
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2019 Islavisual.
-	@Last update: 27/05/2019
+	@Last update: 22/05/2019
 **/
 if(it.enabledModules.Password){
 	WikiHelper.Password = {
