@@ -62,7 +62,7 @@ function isiToolsCallback(json){
 	**/
 	if(json.AddCSSRule){
 		this.AddCSSRule = it.AddCSSRule = function (cfg, selector, styles, index) {
-			var s, r;
+			var s, r, itS = document.getElementById("isiToolsStyles");
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("AddCSSRule", cfg);
@@ -74,19 +74,16 @@ function isiToolsCallback(json){
 
 			// Get style sheet
 			if (sheet == null || sheet == "") {
-				if (document.querySelector("style[title=isiTools]") == null) {
+				if (itS == null) {
 					var style = document.createElement("style");
-					style.setAttribute("title", "isiTools");
+					style.setAttribute("id", "isiToolsStyles");
 					style.setAttribute("media", "screen");
-					style.appendChild(document.createTextNode(""));
-
+					
 					// Add style tag to head
 					document.head.insertBefore(style, document.head.firstChild);
-					s = document.styleSheets[0];
+					s = style;
 				} else {
-					for (var x = 0; x < document.styleSheets.length; x++) {
-						if (document.styleSheets[x].title == "isiTools") { s = document.styleSheets[x]; break; }
-					}
+					s  = itS;
 				}
 			} else {
 				if (typeof sheet == "number") s = document.styleSheets[sheet];
@@ -94,23 +91,30 @@ function isiToolsCallback(json){
 				else console.log("sheet not avilable!")
 			}
 
-			// Get rule
-			try { var rText = s.cssRules || s.rules; } catch (ex) { }
+			if(typeof sheet == "number" || typeof sheet == "object"){
+				// Get rule
+				try { 
+					var rText = s.cssRules || s.rules; 
+					if(typeof index == "undefined") index = rText.length;
+				} catch (ex) { }
 
-			for (var i = rText.length - 1; i >= 0; i--) {
-				r = rText[i];
-				if (r.selectorText.trim() == selector.trim()) {
-					s.deleteRule(i);
-					break;
+				for (var i = rText.length - 1; i >= 0; i--) {
+					r = rText[i];
+					if (typeof r.selectorText != "undefined" && r.selectorText.trim() == selector.trim()) {
+						s.deleteRule(i);
+						break;
+					}
 				}
-			}
 
-			// Insert rule
-			if ("insertRule" in s) {
-				s.insertRule(selector + "{" + styles + "}", index);
-			}
-			else if ("addRule" in s) {
-				s.addRule(selector, styles, index);
+				// Insert rule
+				if ("insertRule" in s) {
+					s.insertRule(selector + " { " + styles + " } ", index);
+					
+				} else if ("addRule" in s) {
+					s.addRule(selector, styles, index);
+				}
+			} else {
+				s.innerHTML += selector + " { " + styles + " }\n";
 			}
 		}
 	}
@@ -2510,6 +2514,204 @@ function isiToolsCallback(json){
 		Date.prototype.currentDate = (function () { var local = new Date(this); local.setMinutes(this.getMinutes() - this.getTimezoneOffset()); return local.toJSON().slice(0, 10); });
 		this.now = it.now = function () {
 			return new Date().currentDate();
+		}
+	}
+
+	/**
+		N-State
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 22/05/2019
+	**/
+	if(json.Nstate){
+		this.Nstate = it.Nstate = {
+			version: '1.0',
+			config: { type: 'switch', style: '', id: '' },
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("Nstate", cfg);
+				else alert("Helper not available!")
+				return;
+			},
+			addRules: function(type, cfg){
+				if(typeof type == "undefined") type = "switch";
+
+				this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
+
+				if(type == "switch"){
+					it.AddCSSRule('', "nstate[type=switch]", "border-radius: 5px; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
+					it.AddCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: 50%; right: 0; opacity: 0; position: absolute; top: 0; height: 20px !important; z-index: 1; ");
+					it.AddCSSRule('', "nstate[type=switch] input:checked", 'left: 0;');
+					it.AddCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+					it.AddCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+					it.AddCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
+					it.AddCSSRule('', "nstate[type=switch] label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
+					it.AddCSSRule('', "nstate[type=switch] input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 5px;");
+					it.AddCSSRule('', "nstate[type=switch] input:checked ~ label::before", "opacity: 0;");
+					it.AddCSSRule('', "nstate[type=switch] input:checked ~ label::after", "opacity: 1;");
+					it.AddCSSRule('', "nstate[type=switch] handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 5px;");
+					it.AddCSSRule('', "nstate[type=switch] handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
+					it.AddCSSRule('', "nstate[type=switch] input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 5px);");
+
+				} else if(type == "multiple") {
+					it.AddCSSRule('', "nstate[type=multiple] values", "width: 100%; display: table; height: auto;");
+					it.AddCSSRule('', "nstate[type=multiple] values span", "color: " + this.config.colors.textColor + "; width: 33.3333%; text-align: left; float: left; margin-top: 5px; cursor: pointer;");
+					it.AddCSSRule('', "nstate[type=multiple] values span:nth-child(2)", "text-align: center;");
+					it.AddCSSRule('', "nstate[type=multiple] values span:nth-child(3)", "text-align: right;");
+					it.AddCSSRule('', "nstate[type=multiple] values span.selected", "font-weight: 600;");
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus", 'border: 0 none !important; outline: none; background: ' + this.config.colors.trackColor + ' !important;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-track", 'width: 100%; height: 0px; cursor: pointer; background: transparent; border-color: ' + this.config.colors.trackColor + '; border-width: 4px 0; color: transparent; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-tooltip", 'display: none;');
+				}
+			},
+			set: function(cfg){
+				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
+
+				// Configure execution
+				this.target       = document.getElementById(cfg.target);
+				this.config.type  = cfg.hasOwnProperty('type') ? cfg.type : 'switch';
+				this.config.style = cfg.hasOwnProperty('style') ? cfg.style.trim() : '';
+				this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
+				
+				// Calculate background color to gradient
+				var bg2 = (parseInt(this.config.colors.background.replace("#", '0x')) - 0x101010).toString(16);
+				if(bg2 <= 0) {
+					bg2 = (parseInt(this.config.colors.background.replace("#", '0x')) + 0x151515).toString(16);
+					this.config.colors.background2 = this.config.colors.background;
+					this.config.colors.background = "#"+bg2;
+				} else {
+					this.config.colors.background2 = "#"+bg2;
+				}
+
+				// Calculate track color to gradient and border
+				var tc2 = (parseInt(this.config.colors.trackColor.replace("#", '0x')) - 0x101010).toString(16);
+				if(tc2 <= 0) {
+					tc2 = (parseInt(this.config.colors.trackColor.replace("#", '0x')) + 0x151515).toString(16);
+					this.config.colors.trackColor2 = this.config.colors.trackColor;
+					this.config.colors.trackColor = "#"+tc2;
+				} else {
+					this.config.colors.trackColor2 = "#"+tc2;
+				}
+				
+				// Create main element container
+				var cont = document.createElement('nstate');
+					cont.setAttribute("type", this.config.type);
+
+				// Add rules
+				this.addRules(this.config.type, this.config);
+				
+				// Add rule styles
+				if(this.config.type == "switch"){
+					var input = document.createElement("input");
+						input.id = this.target.id;
+						input.name = this.target.id;
+						input.checked = false;
+						input.type = "checkbox";
+					var label = document.createElement("label");
+						label.setAttribute("data-on", cfg.labelOn);
+						label.setAttribute("data-off", cfg.labelOff);
+					var handle = document.createElement("handle");
+					
+					cont.appendChild(input);
+					cont.appendChild(label);
+					cont.appendChild(handle);
+					
+					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
+					this.target.remove();
+					this.target = cont;
+
+				} else if(this.config.type == "multiple") {
+					var input = document.createElement("input");
+						input.id = this.target.id;
+						input.name = this.target.id;
+						input.type = "range";
+						input.setAttribute("min", 0);
+						input.setAttribute("max", cfg.values.length - 1);
+						input.setAttribute("value", cfg.selected);
+					var labels = document.createElement("values");
+
+					for(var x = 0; x < cfg.values.length; x++){
+						var label = document.createElement("span");
+							label.setAttribute("data-value", cfg.values[x].value)
+							label.innerHTML = cfg.values[x].label;
+						
+							if(cfg.hasOwnProperty("selected") && cfg.selected == cfg.values[x].value){
+								label.classList.add("selected")
+							}
+
+						labels.appendChild(label);
+					}
+
+					cont.appendChild(input);
+					cont.appendChild(labels);
+					
+					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
+					this.target.remove();
+					this.target = cont;
+
+					// Declare events
+					input.addEventListener("change", function(e){
+						var items = e.target.parentElement.querySelectorAll("span");
+						for(var x = 0; x < items.length; x++){
+							items[x].classList.remove("selected");
+						}
+			
+						e.target.nextElementSibling.querySelectorAll("span")[e.target.value].classList.add("selected");
+					});
+
+					var items = labels.querySelectorAll("span");
+					for(var x = 0; x < items.length; x++){
+						var item = items[x];
+						item.addEventListener("click", function(e){
+							e.target.parentElement.previousElementSibling.value = e.target.dataset.value;
+							var EV = new Event('change', {'bubbles': true, 'cancelable': true});
+							e.target.parentElement.previousElementSibling.dispatchEvent(EV);
+						});
+					}
+				}
+
+				if(this.config.style != "") this.target.style = this.config.style;
+			},
+			autoDraw: function(){
+				var items = document.querySelectorAll("nstate");
+				for(var x = 0; x < items.length; x++){
+					var item = items[x], arr = {}, colors = {};
+					for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
+						var key = atts[i].nodeName, value = atts[i].value;
+						if(key == "id"){
+							key = 'target';
+						} else if(key == "values"){
+							var aux = [], values = value.split(",");
+							for(var y=0; y < values.length; y++){
+								var v = values[y].split(":");
+								aux.push({label: v[0], value: v[1]});
+							}
+							value = aux;
+						} else if(key == "background" || key.toLowerCase().indexOf("color") != -1 ){
+							colors[key.replace(/\-[a-z]/, function(v) { return v.toUpperCase(); }).replace("-", '')] = value;
+							continue;
+						}
+
+						arr[key] = value;
+					}
+					arr.colors = colors;
+				}
+				Nstate.set(arr);
+			}
 		}
 	}
 
