@@ -19,6 +19,7 @@
 		"IsMobile": true,
 		"Language": true,
 		"Now": true,
+		"Nstate": true,
 		"Password": true,
 		"Selectpicker": true,
 		"SendForm": true,
