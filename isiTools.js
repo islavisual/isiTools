@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: "1.1.0",
+	version: "1.2",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "22/05/2019",
+	lastupdate: "11/06/2019",
 	enabledModules: {},
 	autoload: function(cfg){
 		if(typeof cfg != "undefined" || cfg == null){
@@ -2522,7 +2522,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 22/05/2019
+		@Last update: 11/06/2019
 	**/
 	if(json.Nstate){
 		this.Nstate = it.Nstate = {
@@ -2720,6 +2720,8 @@ function isiToolsCallback(json){
 				}
 			}
 		}
+
+		this.Nstate.autoDraw();
 	}
 
 	/**
