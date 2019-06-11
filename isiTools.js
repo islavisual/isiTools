@@ -61,8 +61,6 @@ it.autoload();
 function isiToolsCallback(json){
 	it.enabledModules = json;
 
-	console.log(json)
-
 	/**
 		 AddCSSRule functionality																		
 		@version: 1.00																					
