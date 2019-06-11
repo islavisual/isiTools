@@ -728,11 +728,11 @@ if(it.enabledModules.Language){
 }
 
 /**
-   Language Helper																		
+   Nstate Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2019 Islavisual. 																	
-   @Last update: 31/03/2019																			
+   @Last update: 11/06/2019																			
  **/
 if(it.enabledModules.Nstate){
 	WikiHelper.Nstate = {
@@ -740,18 +740,19 @@ if(it.enabledModules.Nstate){
 			version: 1.0,
 			name: 'Nstate',
 			help: 1,
-			description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
+			description: "Este script le permite crear componentes de tipo Switch para selección de valores binarios y/o de tipo multi selección de más de dos valores.",
 		},
 		set: {
 			type: 'function',
 			description: 'Permite crear nuevos componentes de Nstate a través de un ID en el HTML y una llamada JavaScript. Los tipos admitidos son "switch" que se comporta como un checkbox de HTML y "multiple" que se comporta como un range de HTML.',
-			exampleSwitch: '// Definición básica de un switch\nNstate.set({\n\ttarget: "sw1",\n\tlabelOn: "On",\n\tlabelOff: "Off"});\n\n//Definición de un switch con estilos y colores personalizados\nNstate.set({\n\ttarget: "sw2",\n\tlabelOn: "On",\n\tlabelOff: "Off",\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});',
+			exampleSwitch: '// Definición básica de un switch\nNstate.set({\n\ttarget: "sw1",\n\tlabelOn: "On",\n\tlabelOff: "Off"});\n\n// Definición de un switch con estilos y colores personalizados\nNstate.set({\n\ttarget: "sw2",\n\tlabelOn: "On",\n\tlabelOff: "Off",\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});',
 			exampleMultple: '// Definición básica de un selector múltiple\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Bajo", value: 0},\n\t\t{label: "Medio", value: 1},\n\t\t{label: "Alto", value: 2}\n\t],\n\tselected: 1\n});\n\n// Definición con estilos y colores personalizados\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Bajo", value: 0},\n\t\t{label: "Medio", value: 1},\n\t\t{label: "Alto", value: 2}\n\t],\n\tselected: 1,\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});'
 		},
 		autoDraw: {
 			type: 'function',
-			description: 'Asignar e inicializar la funcionalidad de multilenguaje.',
-			example: 'var availableLangs = [\n\t{id: "en-US", name: "English"},\n\t{id: "es-ES", name: "Spanish"},\n];\nvar translations = {\n\t"es-ES": [\n\t\t{ id: "Loading...", text: "Cargando..." },\n\t\t{ id: "Loaded!", text: "Cargado!" },\n\t\t{ id: "Comments", text: "Observaciones" }\n\t],\n\t"en-US": [\n\t\t{ id: "Loading...", text: "<i class="fa fa-spin"></i>" },\n\t\t{ id: "Loaded!", text: "OK!" }\n\t]\n};\nLanguage.init(availableLangs, translations);'
+			description: 'Permite que los componentes se definan a través de HTML5 y, más tarde, con este método generarlos.',
+			exampleSwitch: '// HTML Code\n&lt;nstate\tid="switch1"\n\ttype="switch"\n\tlabel-on="On"\n\tlabel-off="Off"\n\tselected="0"\n\tbackground="#ffffff" text-color="#000000" track-color="#f0f0f0"\n\tstyle="width: 200px;">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>',
+			exampleMultiple: '// HTML Code\n&lt;nstate\tid="subtype"\n\ttype="multiple"\n\tvalues="Moto:0, Coche:1, Quad:2"\n\tselected="2"\n\tbackground="#226699" text-color="#000000" track-color="#f0f0f0"\n\tstyle="display: inline-block; width: calc(100% - 128px);">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>'
 		},
 	}
 }
