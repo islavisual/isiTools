@@ -734,6 +734,36 @@ if(it.enabledModules.Language){
 }
 
 /**
+   Nstate Helper																		
+   @version: 1.00																					
+   @author: Pablo E. Fernández (islavisual@gmail.com).												
+   @Copyright 2017-2019 Islavisual. 																	
+   @Last update: 11/06/2019																			
+ **/
+if(it.enabledModules.Nstate){
+	WikiHelper.Nstate = {
+		general: {
+			version: 1.0,
+			name: 'Nstate',
+			help: 1,
+			description: "This script allows you to create components of switch type selection of binary and / or multiple selection type of more than two values.",
+		},
+		set: {
+			type: 'function',
+			description: 'It allows creating new Nstate components through an ID in the HTML and a JavaScript call. The supported types are "switch" that behaves like an HTML checkbox and "multiple" that behaves like a range of HTML.',
+			exampleSwitch: '// Basic definition of a switch\nNstate.set({\n\ttarget: "sw1",\n\tlabelOn: "On",\n\tlabelOff: "Off"});\n\n// Defining a switch with custom colors and styles\nNstate.set({\n\ttarget: "sw2",\n\tlabelOn: "On",\n\tlabelOff: "Off",\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});',
+			exampleMultple: '// Basic definition of a multiple selector\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Low", value: 0},\n\t\t{label: "Medium", value: 1},\n\t\t{label: "High", value: 2}\n\t],\n\tselected: 1\n});\n\n// Definition with custom styles and colors\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Low", value: 0},\n\t\t{label: "Medium", value: 1},\n\t\t{label: "High", value: 2}\n\t],\n\tselected: 1,\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});'
+		},
+		autoDraw: {
+			type: 'function',
+			description: 'Allows the components to be defined through HTML5 and, later, with this method generate them.',
+			exampleSwitch: '// HTML Code\n&lt;nstate\tid="switch1"\n\ttype="switch"\n\tlabel-on="On"\n\tlabel-off="Off"\n\tselected="0"\n\tbackground="#ffffff" text-color="#000000" track-color="#f0f0f0"\n\tstyle="width: 200px;">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>',
+			exampleMultiple: '// HTML Code\n&lt;nstate\tid="subtype"\n\ttype="multiple"\n\tvalues="Motocyle:0, Car:1, Quad:2"\n\tselected="2"\n\tbackground="#226699" text-color="#000000" track-color="#f0f0f0"\n\tstyle="display: inline-block; width: calc(100% - 128px);">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>'
+		},
+	}
+}
+
+/**
 	Password tools
 	@version: 1.00
 	@author: Pablo E. Fernández (islavisual@gmail.com).
