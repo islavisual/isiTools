@@ -1290,7 +1290,7 @@ this.Helper = it.Helper = function (func, cfg) {
 				if (help[prop].hasOwnProperty("type") || general.name.toLowerCase() == "index") {
 					text += '<field class="' + key.substr(0, 3) + '">' + key + '</field>' + (key == "type" ? '' : '');
 					items = help[prop][key].split("\n");
-					text += key == 'example' ? ('<code>' + styleItems(key, items) + '</code>') : styleItems(key, items);
+					text += key.indexOf('example') == 0 ? ('<code>' + styleItems(key, items) + '</code>') : styleItems(key, items);
 
 				} 
 			}
@@ -1299,7 +1299,7 @@ this.Helper = it.Helper = function (func, cfg) {
 				for (var subkey in help[prop][k]) {
 					items = help[prop][k][subkey].split("\n");
 					additional += '<field class="' + key.substr(0, 3) + '">' + subkey + '</field>' + (subkey == "type" ? '' : '');
-					additional += subkey == 'example' ? ('<code>' + styleItems(subkey, items) + '</code>') : styleItems(subkey, items);
+					additional += subkey.indexOf('example') == 0 ? ('<code>' + styleItems(subkey, items) + '</code>') : styleItems(subkey, items);
 				}
 			}
 			idx++;
@@ -1357,7 +1357,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			}
 
 			// Set color and content to example lines
-			if (key == "example" && !isCSS) {
+			if (key.indexOf('example') == 0 && !isCSS) {
 				aux = aux.replace(/[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+|px|em|rem|%|s)?/ig, function (s) { return '<int>' + s + '</int>' });
 				aux = aux.replace(/"(.*?)"/g, function (s) { return '<str>' + s + '</str>' });
 				aux = aux.replace(/'(.*?)'/g, function (s) { return '<str>' + s + '</str>' });
@@ -1368,12 +1368,12 @@ this.Helper = it.Helper = function (func, cfg) {
 				aux = aux.replace(new RegExp(func + "(\\.|\\()", "ig"), function($0, $1){ return "<name>" + $0.substr(0, $0.length-1) + "</name>" + $1})
 				aux += '<br/>';
 
-				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 
-			} else if (key == "example" && isCSS) {
+			} else if (key.indexOf('example') == 0 && isCSS) {
 				text += aux;
 			} else {
-				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 			}
 		}
 		return text;
