@@ -2613,7 +2613,7 @@ function isiToolsCallback(json){
 
 				// Add rules
 				this.addRules(this.config.type, this.config);
-				
+
 				// Add rule styles
 				if(this.config.type == "switch"){
 					var input = document.createElement("input");
@@ -2690,10 +2690,14 @@ function isiToolsCallback(json){
 				var items = document.querySelectorAll("nstate");
 				for(var x = 0; x < items.length; x++){
 					var item = items[x], arr = {}, colors = {};
+
 					for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
 						var key = atts[i].nodeName, value = atts[i].value;
+							key = key.replace(/\-[a-z]/, function(v) { return v.toUpperCase(); }).replace("-", '');
+						
 						if(key == "id"){
 							key = 'target';
+
 						} else if(key == "values"){
 							var aux = [], values = value.split(",");
 							for(var y=0; y < values.length; y++){
@@ -2701,16 +2705,19 @@ function isiToolsCallback(json){
 								aux.push({label: v[0], value: v[1]});
 							}
 							value = aux;
+
 						} else if(key == "background" || key.toLowerCase().indexOf("color") != -1 ){
-							colors[key.replace(/\-[a-z]/, function(v) { return v.toUpperCase(); }).replace("-", '')] = value;
+							colors[key] = value;
 							continue;
 						}
 
 						arr[key] = value;
 					}
 					arr.colors = colors;
+
+					// Generate new component
+					this.set(arr);
 				}
-				Nstate.set(arr);
 			}
 		}
 	}
