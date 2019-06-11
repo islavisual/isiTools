@@ -5,27 +5,53 @@ this.it = {
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "11/06/2019",
 	enabledModules: {},
-	autoload: function(cfg){
-		if(typeof cfg != "undefined" || cfg == null){
-			var http = new XMLHttpRequest();
+	autoload: function(){
+		var http = new XMLHttpRequest();
 
-			// When request is ready...
-			http.onreadystatechange = function () {
-				if (http.readyState == 4 && http.status == 200) {
-					isiToolsCallback(JSON.parse(http.response).modules);
-				}
+		// When request is ready...
+		http.onreadystatechange = function () {
+			if (http.readyState == 4 && http.status == 200) {
+				isiToolsCallback(JSON.parse(http.response).modules);
 			}
+		}
 
-			// Get current path
-			var curs = document.querySelectorAll("script");
-				curs = curs[curs.length - 1].src;
-			var dirn = curs.substring(curs.lastIndexOf('/') + 1); 
-				dirn = curs.replace(dirn, '')
+		// Get current path
+		var scripts = document.querySelectorAll("script"), isiToolsSrc = '';
+		for(var x = 0; x < scripts.length; x++){
+			var src = scripts[x].getAttribute("src");
+
+			if(!src) continue;
 			
-			http.open('GET', dirn+'config.json', false);
-			http.send();
-		} else {
-			isiToolsCallback(cfg);
+			if(src.toLowerCase().indexOf("isitools.js") != -1){
+				isiToolsSrc = src;
+			}
+		}
+
+		if(isiToolsSrc != ""){
+			var dirn = isiToolsSrc.substring(isiToolsSrc.lastIndexOf('/') + 1); 
+				dirn = isiToolsSrc.replace(dirn, '')
+
+			// Load by module
+			if(isiToolsSrc.indexOf("?modules=") != -1){
+				var json = {};
+				isiToolsSrc = isiToolsSrc.split("?modules=")[1].split("+");
+				
+				// Set all plugins to false
+				for(var key in json){ json[key] = false; }
+		
+				// Enable only sent by url
+				for(var i = 0; i < isiToolsSrc.length; i++){
+					var item = isiToolsSrc[i];
+			
+					json[item] = true;
+				}
+
+				isiToolsCallback(json);
+
+			} else {
+				http.open('GET', dirn+'config.json', false);
+				http.send();
+			}
 		}
 	},
 }
@@ -33,25 +59,9 @@ this.it = {
 it.autoload();
 
 function isiToolsCallback(json){
-	var lstScript = document.querySelectorAll("script");
-	lstScript = lstScript[lstScript.length - 1].src;
-
-	// Load by module
-	if(lstScript.indexOf("?modules=") != -1){
-		lstScript = lstScript.split("?modules=")[1].split("+");
-		
-		// Set all plugins to false
-		for(var key in json){ json[key] = false; }
-
-		// Enable only sent by url
-		for(var i = 0; i < lstScript.length; i++){
-			var item = lstScript[i];
-	
-			json[item] = true;
-		}
-	}
-
 	it.enabledModules = json;
+
+	console.log(json)
 
 	/**
 		 AddCSSRule functionality																		
