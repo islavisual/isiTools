@@ -728,6 +728,35 @@ if(it.enabledModules.Language){
 }
 
 /**
+   Language Helper																		
+   @version: 1.00																					
+   @author: Pablo E. Fernández (islavisual@gmail.com).												
+   @Copyright 2017-2019 Islavisual. 																	
+   @Last update: 31/03/2019																			
+ **/
+if(it.enabledModules.Nstate){
+	WikiHelper.Nstate = {
+		general: {
+			version: 1.0,
+			name: 'Nstate',
+			help: 1,
+			description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
+		},
+		set: {
+			type: 'function',
+			description: 'Permite crear nuevos componentes de Nstate a través de un ID en el HTML y una llamada JavaScript. Los tipos admitidos son "switch" que se comporta como un checkbox de HTML y "multiple" que se comporta como un range de HTML.',
+			exampleSwitch: '// Definición básica de un switch\nNstate.set({\n\ttarget: "sw1",\n\tlabelOn: "On",\n\tlabelOff: "Off"});\n\n//Definición de un switch con estilos y colores personalizados\nNstate.set({\n\ttarget: "sw2",\n\tlabelOn: "On",\n\tlabelOff: "Off",\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});',
+			exampleMultple: '// Definición básica de un selector múltiple\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Bajo", value: 0},\n\t\t{label: "Medio", value: 1},\n\t\t{label: "Alto", value: 2}\n\t],\n\tselected: 1\n});\n\n// Definición con estilos y colores personalizados\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Bajo", value: 0},\n\t\t{label: "Medio", value: 1},\n\t\t{label: "Alto", value: 2}\n\t],\n\tselected: 1,\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});'
+		},
+		autoDraw: {
+			type: 'function',
+			description: 'Asignar e inicializar la funcionalidad de multilenguaje.',
+			example: 'var availableLangs = [\n\t{id: "en-US", name: "English"},\n\t{id: "es-ES", name: "Spanish"},\n];\nvar translations = {\n\t"es-ES": [\n\t\t{ id: "Loading...", text: "Cargando..." },\n\t\t{ id: "Loaded!", text: "Cargado!" },\n\t\t{ id: "Comments", text: "Observaciones" }\n\t],\n\t"en-US": [\n\t\t{ id: "Loading...", text: "<i class="fa fa-spin"></i>" },\n\t\t{ id: "Loaded!", text: "OK!" }\n\t]\n};\nLanguage.init(availableLangs, translations);'
+		},
+	}
+}
+
+/**
 	Password tools
 	@version: 1.00
 	@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -1282,10 +1311,10 @@ this.Helper = it.Helper = function (func, cfg) {
 
 			for (var key in help[prop]) {
 				if (help[prop].hasOwnProperty("type") || general.name.toLowerCase() == "index") {
-					var keyTranslated = key.replace(/type/ig, 'Tipo').replace(/example/ig, 'Ejemplos').replace(/description/ig, 'Descripción');
+					var keyTranslated = key.replace(/type/ig, 'Tipo').replace(/example/ig, 'Ejemplos ').replace(/description/ig, 'Descripción');
 					text += '<field class="' + key.substr(0, 3) + '">' + keyTranslated + '</field>' + (key == "type" ? '' : '');
 					items = help[prop][key].split("\n");
-					text += key == 'example' ? ('<code>' + styleItems(key, items) + '</code>') : styleItems(key, items);
+					text += key.indexOf('example') == 0 ? ('<code>' + styleItems(key, items) + '</code>') : styleItems(key, items);
 
 				} 
 			}
@@ -1293,9 +1322,9 @@ this.Helper = it.Helper = function (func, cfg) {
 			for (var k = 0; k < help[prop].length; k++) {
 				for (var subkey in help[prop][k]) {
 					items = help[prop][k][subkey].split("\n");
-					var subkeyTranslated = subkey.replace(/example/ig, 'Ejemplos').replace(/description/ig, 'Descripción');
+					var subkeyTranslated = subkey.replace(/example/ig, 'Ejemplos ').replace(/description/ig, 'Descripción');
 					additional += '<field class="' + key.substr(0, 3) + '">' + subkeyTranslated + '</field>' + (subkey == "type" ? '' : '');
-					additional += subkey == 'example' ? ('<code>' + styleItems(subkey, items) + '</code>') : styleItems(subkey, items);
+					additional += subkey.indexOf('example') == 0 ? ('<code>' + styleItems(subkey, items) + '</code>') : styleItems(subkey, items);
 				}
 			}
 			idx++;
@@ -1353,7 +1382,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			}
 
 			// Set color and content to example lines
-			if (key == "example" && !isCSS) {
+			if (key.indexOf('example') == 0 && !isCSS) {
 				aux = aux.replace(/[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+|px|em|rem|%|s)?/ig, function (s) { return '<int>' + s + '</int>' });
 				aux = aux.replace(/"(.*?)"/g, function (s) { return '<str>' + s + '</str>' });
 				aux = aux.replace(/'(.*?)'/g, function (s) { return '<str>' + s + '</str>' });
@@ -1364,12 +1393,12 @@ this.Helper = it.Helper = function (func, cfg) {
 				aux = aux.replace(new RegExp(func + "(\\.|\\()", "ig"), function($0, $1){ return "<name>" + $0.substr(0, $0.length-1) + "</name>" + $1})
 				aux += '<br/>';
 
-				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 
-			} else if (key == "example" && isCSS) {
+			} else if (key.indexOf('example') == 0 && isCSS) {
 				text += aux;
 			} else {
-				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key == 'example' ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 			}
 		}
 
