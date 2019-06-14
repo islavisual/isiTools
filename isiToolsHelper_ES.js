@@ -732,7 +732,7 @@ if(it.enabledModules.Language){
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2019 Islavisual. 																	
-   @Last update: 11/06/2019																			
+   @Last update: 14/06/2019																			
  **/
 if(it.enabledModules.Nstate){
 	WikiHelper.Nstate = {
@@ -751,7 +751,7 @@ if(it.enabledModules.Nstate){
 		autoDraw: {
 			type: 'function',
 			description: 'Permite que los componentes se definan a través de HTML5 y, más tarde, con este método generarlos.',
-			exampleSwitch: '// HTML Code\n&lt;nstate\tid="switch1"\n\ttype="switch"\n\tlabel-on="On"\n\tlabel-off="Off"\n\tselected="0"\n\tbackground="#ffffff" text-color="#000000" track-color="#f0f0f0"\n\tstyle="width: 200px;">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>',
+			exampleSwitch: '// HTML Code\n&lt;nstate\tid="switch1"\n\ttype="switch"\n\tlabel-on="On"\n\tlabel-off="Off"\n\tselected="0"\n\tbackground="#ffffff" text-color="#000000" track-color="#f0f0f0"\n\tstyle="width: 200px;"\n\tonclick="console.log(\'cambiado!\')">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>',
 			exampleMultiple: '// HTML Code\n&lt;nstate\tid="subtype"\n\ttype="multiple"\n\tvalues="Moto:0, Coche:1, Quad:2"\n\tselected="2"\n\tbackground="#226699" text-color="#000000" track-color="#f0f0f0"\n\tstyle="display: inline-block; width: calc(100% - 128px);">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>'
 		},
 	}
