@@ -3,7 +3,7 @@ this.it = {
 	version: "1.2",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "11/06/2019",
+	lastupdate: "14/06/2019",
 	enabledModules: {},
 	autoload: function(){
 		var http = new XMLHttpRequest();
@@ -2551,8 +2551,7 @@ function isiToolsCallback(json){
 
 				if(type == "switch"){
 					it.AddCSSRule('', "nstate[type=switch]", "border-radius: 5px; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
-					it.AddCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: 50%; right: 0; opacity: 0; position: absolute; top: 0; height: 20px !important; z-index: 1; ");
-					it.AddCSSRule('', "nstate[type=switch] input:checked", 'left: 0;');
+					it.AddCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: 100%; left: 0; opacity: 0; position: absolute; top: 0; height: 20px !important; z-index: 1; ");
 					it.AddCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
 					it.AddCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
 					it.AddCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
@@ -2577,13 +2576,14 @@ function isiToolsCallback(json){
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-track", 'width: 100%; height: 0px; cursor: pointer; background: transparent; border-color: ' + this.config.colors.trackColor + '; border-width: 4px 0; color: transparent; border-radius: 0;');
+					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
 					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-tooltip", 'display: none;');
+					it.AddCSSRule('', "@media all and (-ms-high-contrast:none)", 'nstate[type=multiple] { position:relative; top: 6px; } nstate[type=multiple] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=multiple] input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
 				}
 			},
 			set: function(cfg){
@@ -2618,7 +2618,17 @@ function isiToolsCallback(json){
 				// Create main element container
 				var cont = document.createElement('nstate');
 					cont.setAttribute("type", this.config.type);
-
+				
+				// Add styles
+				if(cfg.hasOwnProperty('style')) cont.setAttribute('style', cfg.style);
+				
+				["onblur", "onfocus", "onfocusin", "onfocusout", 
+				 "onmousedown", "onmouseup", "onmouseover", "onmouseout",  
+				 "oninput", "onclick", "onchange", 
+				 "ontouchcancel", "ontouchend", "ontouchmove", "ontouchstart"].forEach(function (event) {
+					if(cfg.hasOwnProperty(event)) cont.setAttribute(event, cfg[event]);
+				});
+				
 				// Add rules
 				this.addRules(this.config.type, this.config);
 
@@ -2627,7 +2637,7 @@ function isiToolsCallback(json){
 					var input = document.createElement("input");
 						input.id = this.target.id;
 						input.name = this.target.id;
-						input.checked = false;
+						input.checked = cfg.selected=="0" || cfg.checked == "true" || cfg.checked == true ? true : false;
 						input.type = "checkbox";
 					var label = document.createElement("label");
 						label.setAttribute("data-on", cfg.labelOn);
@@ -2639,7 +2649,8 @@ function isiToolsCallback(json){
 					cont.appendChild(handle);
 					
 					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
-					this.target.remove();
+					this.target.parentNode.removeChild(this.target);
+
 					this.target = cont;
 
 				} else if(this.config.type == "multiple") {
@@ -2668,7 +2679,7 @@ function isiToolsCallback(json){
 					cont.appendChild(labels);
 					
 					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
-					this.target.remove();
+					this.target.parentNode.removeChild(this.target);
 					this.target = cont;
 
 					// Declare events
@@ -2686,7 +2697,13 @@ function isiToolsCallback(json){
 						var item = items[x];
 						item.addEventListener("click", function(e){
 							e.target.parentElement.previousElementSibling.value = e.target.dataset.value;
-							var EV = new Event('change', {'bubbles': true, 'cancelable': true});
+							var EV;
+							if(typeof(Event) === 'function') {
+								EV = new Event('change', {'bubbles': true, 'cancelable': true});
+							} else {
+								EV = document.createEvent('Event');
+    							EV.initEvent('change', true, true);
+							}
 							e.target.parentElement.previousElementSibling.dispatchEvent(EV);
 						});
 					}
