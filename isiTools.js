@@ -1,56 +1,74 @@
 this.it = {
 	name: "isiTools",
-	version: "1.2",
+	version: "1.2.1",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "14/06/2019",
 	enabledModules: {},
 	autoload: function(){
-		var http = new XMLHttpRequest();
+		if(typeof itEnabledModules != "undefined"){
+			isiToolsCallback(itEnabledModules);
 
-		// When request is ready...
-		http.onreadystatechange = function () {
-			if (http.readyState == 4 && http.status == 200) {
-				isiToolsCallback(JSON.parse(http.response).modules);
+		} else {
+			function UrlExists(url){
+				var uri = new XMLHttpRequest();
+				uri.open('HEAD', url, false);
+				uri.send();
+				return uri.status!=404;
 			}
-		}
 
-		// Get current path
-		var scripts = document.querySelectorAll("script"), isiToolsSrc = '';
-		for(var x = 0; x < scripts.length; x++){
-			var src = scripts[x].getAttribute("src");
-
-			if(!src) continue;
-			
-			if(src.toLowerCase().indexOf("isitools.js") != -1){
-				isiToolsSrc = src;
+			function baseName(str){
+				var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+				if(base.lastIndexOf(".") != -1)       
+					base = base.substring(0, base.lastIndexOf("."));
+				return base;
 			}
-		}
 
-		if(isiToolsSrc != ""){
-			var dirn = isiToolsSrc.substring(isiToolsSrc.lastIndexOf('/') + 1); 
-				dirn = isiToolsSrc.replace(dirn, '')
+			var http = new XMLHttpRequest();
 
-			// Load by module
-			if(isiToolsSrc.indexOf("?modules=") != -1){
-				var json = {};
-				isiToolsSrc = isiToolsSrc.split("?modules=")[1].split("+");
-				
-				// Set all plugins to false
-				for(var key in json){ json[key] = false; }
-		
-				// Enable only sent by url
-				for(var i = 0; i < isiToolsSrc.length; i++){
-					var item = isiToolsSrc[i];
-			
-					json[item] = true;
+			// When request is ready...
+			http.onreadystatechange = function () {
+				if (http.readyState == 4 && http.status == 200) {
+					isiToolsCallback(JSON.parse(http.response).modules);
 				}
+			}
 
-				isiToolsCallback(json);
+			// Get current path
+			var scripts = document.querySelectorAll("script"), isiToolsSrc = '';
+			for(var x = 0; x < scripts.length; x++){
+				var src = scripts[x].getAttribute("src");
 
-			} else {
-				http.open('GET', dirn+'config.json', false);
-				http.send();
+				if(!src) continue;
+				var path = src.split(baseName(src))[0];
+				
+				if(UrlExists(path + "config.json")){
+					isiToolsSrc = src;
+					break;
+				}
+			}
+
+			if(isiToolsSrc != ""){
+				// Load by module
+				if(isiToolsSrc.indexOf("?modules=") != -1){
+					var json = {};
+					isiToolsSrc = isiToolsSrc.split("?modules=")[1].split("+");
+					
+					// Set all plugins to false
+					for(var key in json){ json[key] = false; }
+			
+					// Enable only sent by url
+					for(var i = 0; i < isiToolsSrc.length; i++){
+						var item = isiToolsSrc[i];
+				
+						json[item] = true;
+					}
+
+					isiToolsCallback(json);
+
+				} else {
+					http.open('GET', path+'config.json', false);
+					http.send();
+				}
 			}
 		}
 	},
@@ -324,7 +342,7 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.1
+		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 05/06/2019
@@ -399,7 +417,7 @@ function isiToolsCallback(json){
 				opt.target.addEventListener("keydown",  function (e) { 
 					var kc = e.keyCode, t = e.target;
 					if(kc == 9){ removeItemsList(false); return false; }
-					else if((kc >= 37 && kc <= 40) || e.ctrlKey || e.shiftKey || e.altKey){ return false; }; 
+					else if((kc >= 37 && kc <= 39) || e.ctrlKey || e.altKey){ return false; }; 
 
 					var goon = (t.value.trim().length == 1 && (kc == 8 || kc == 46)) ? false : true;
 
@@ -490,8 +508,13 @@ function isiToolsCallback(json){
 						}
 						
 						// Check if the entry stars with and if the format is object
-						found = existsCoincidence(val, cval, opt.startsWith, wildCard, 0);
-						
+						if(opt.format == "cluster"){
+							// The search will be executed after 
+							found = true
+						} else {
+							found = existsCoincidence(val, cval, opt.startsWith, wildCard, 0);
+						}
+
 						// If item is found
 						if (found) {
 							b = document.createElement("div");
@@ -636,31 +659,57 @@ function isiToolsCallback(json){
 				
 				// Clean of wildcards the value to search
 				v = v.replace(/\*/g, '');
-				
-				var aux = false;
-				if(!s){
-					v = v.split("+");
-					var c = 0;
-					for(var x = 0; x < v.length; x++){
-						if(t.toUpperCase().indexOf(v[x].toUpperCase()) != -1) c++;
-					}
-					if(c == v.length) aux = true;
 
-				} else {
-					if(p == 0){
-						if(w == 0){
-							aux = t.toUpperCase().indexOf(v.toUpperCase()+"|") != -1;
-						} else {
-							aux = t.toUpperCase().indexOf("|" + v.toUpperCase()) != -1;
-						}
+				// transform to lower case all
+				t = t.toLowerCase();
+
+				// Remove empty elements
+				var v = v.toLowerCase().split("+"), ws = typeof v == "object" ? true : false, sc = 0, aux, v1, v1l;
+				for(var x = 0; x < v.length; x++){
+					if(v[x].trim() == "") delete v[x];
+				}
+
+				// Search partial coincidences
+				for(var x = 0; x < v.length; x++){
+					aux = false, v1 = v[x], v1l = v1.length;
+
+					if(!s){
+						if(t.indexOf(v1) != -1) aux = true;
+						if(aux) sc++;
+						
 					} else {
-						if(w == 0){
-							aux = t.toUpperCase().indexOf(v.toUpperCase()) == t.toUpperCase().length- v.length;
+						if(p == 0){
+							if(w == 0){
+								aux = t.indexOf(v1+"|") != -1;
+							} else {
+								aux = t.indexOf("|" + v1) != -1;
+							}
+							if(aux) sc++;
+
 						} else {
-							aux = t.toUpperCase().indexOf(v.toUpperCase()) == 0;
+							if(w == 0){
+								aux = t.indexOf(v1) == t.length - v1l && t.length - v1l != -1;
+								if(aux) sc++;
+
+							} else {
+								if(t.indexOf(" ") != -1){
+									var taux = t.split(" "), tl = taux.length;
+									for(var i = 0; i < tl; i++){
+										var t1 = taux[i];
+										aux = t1.indexOf(v1) == 0;
+
+										if(aux) sc++;
+									}
+								} else {
+									aux = t.indexOf(v1) == 0;
+									if(aux) sc++;
+								}
+							}
 						}
 					}
 				}
+				aux = sc >= v.length ? true : false;
+				
 				return aux;
 			}
 
