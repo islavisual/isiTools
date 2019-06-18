@@ -1,6 +1,6 @@
 this.it = {
 	name: "isiTools",
-	version: "1.2.2",
+	version: "1.2.3",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "14/06/2019",
@@ -342,7 +342,7 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.2
+		@version: 1.2.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 05/06/2019
@@ -664,11 +664,13 @@ function isiToolsCallback(json){
 				t = t.toLowerCase();
 
 				// Remove empty elements
-				var v = v.toLowerCase().split("+"), ws = typeof v == "object" ? true : false, sc = 0, aux, v1, v1l;
+				var  vp = v.indexOf("+") != -1 ? true : false, v = v.toLowerCase().split("+"), sc = 0, aux, v1, v1l;
 				for(var x = 0; x < v.length; x++){
 					if(v[x].trim() == "") delete v[x];
 				}
 
+				//console.log("Búsqueda", vp?"compleja":"simple",  "en modo", s? "comienza con":"contiene", w==1?"con comodines al final":(w==0?'con comodines al principio':'sin comodines'), "y PASO = ", p )
+				
 				// Search partial coincidences
 				for(var x = 0; x < v.length; x++){
 					aux = false, v1 = v[x], v1l = v1.length;
@@ -692,7 +694,7 @@ function isiToolsCallback(json){
 								if(aux) sc++;
 
 							} else {
-								if(t.indexOf(" ") != -1){
+								if(vp && t.indexOf(" ") != -1){
 									var taux = t.split(" "), tl = taux.length;
 									for(var i = 0; i < tl; i++){
 										var t1 = taux[i];
@@ -914,7 +916,7 @@ function isiToolsCallback(json){
 	**/
 	if(json.Constraint){
 		this.Constraint = it.Constraint = {
-			version: '1.01',
+			version: '1.1',
 			options: {},
 			help: function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
