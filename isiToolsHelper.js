@@ -228,7 +228,7 @@ if(it.enabledModules.Benchmark){
 
 /**
    Constraint to input Helper
-   @version: 1.00
+   @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2019 Islavisual.
    @Last update: 04/03/2019
@@ -274,7 +274,7 @@ if(it.enabledModules.Constraint){
 		type: {
 			type: 'string',
 			description: 'The "type" parameter defines the format or type of data that control will allow. The accepted values are:\n\t● <b>int</b>: The allowed values are positive and negative integers.\n\t● <b>uint</b>: The allowed values are only positive integers.\n\t● <b>float</b>: The allowed values are integers and real numbers with infinite decimals.\n\t● <b>decimal</b>: The allowed values are integers and real numbers with two decimals.\n\t● <b>percent</b>: The allowed values are between 0 and 100.\n\t● <b>binary</b>: The allowed values are those defined by their base, in this case 0 and 1.\n\t● <b>hexadecimal</b>: The allowed values are those defined by their base, in this case from 0 to 9 and from A to F.\n\t● <b>hour</b>: The allowed values are from 00:00 to 23:59.\n\t● <b>custom</b>: Allows you to define a custom function/type. The subtype "custom" is fed from the function parameter, so if the control is defined as "custom", the function parameter will be mandatory.',
-			example: '// Example of Integer subtype\nnew Constraint.set({target: "inputTextID", type: "int"});\n\n// Example of Hour subtype\nnew Constraint.set({target: "inputTextID", type: "hour"});\n\n// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
+			example: '// Example of Integer subtype\nnew Constraint.set({target: "inputTextID", type: "int"});\n\n// Example of Hour subtype\nnew Constraint.set({target: "inputTextID", type: "hour"});\n\n// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});\n\n// Only letters with latin extended characaters\n// \\u00C0-\\u00FF Latin-1 Supplement\n// \\u0100-\\u017F Latin Extended-A\n// \\u0180-\\u024F Latin Extended-b\n// \\u1E00-\\u1EFF Latin Extended Adicional\nnew Constraint.set({\n\ttarget: "name",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[a-zA-Z\s\\u00C0-\\u024F\\u1E00-\\u1EFF]*$/.test(value);\n\t}\n});'
 		},
 		increment: {
 			type: 'string',
