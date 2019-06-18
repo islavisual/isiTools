@@ -1,6 +1,6 @@
 this.it = {
 	name: "isiTools",
-	version: "1.2.1",
+	version: "1.2.2",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "14/06/2019",
@@ -907,7 +907,7 @@ function isiToolsCallback(json){
 
 	/**
 		 Constraint to input functionality
-		@version: 1.00
+		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 04/03/2019
@@ -963,15 +963,28 @@ function isiToolsCallback(json){
 				// Update input type assigned
 				document.getElementById(opt.target).setAttribute("type", "text");
 				
-				if (opt.custom && opt.function == null) alert("You must define a function. Please, see the help with the Constraint('help');");
+				// Set custom function
+				if (opt.custom && !opt.function) alert("You must define a function. Please, see the help with the Constraint('help');");
+				else if (opt.custom && opt.function) Constraint._types[cfg.target] = opt.function;
 
 				// Set events to input
 				function assignEvents(textbox, type, ds) {
 					["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function (event) {
 						textbox.addEventListener(event, function () {
 							var valid;
-							if(type == "decimal" || type == "float"){ valid = Constraint._types[type](this.value, ds); } 
-							else { valid = Constraint._types[type](this.value); }
+							
+							// Is a number with separator
+							if(type == "decimal" || type == "float"){ 
+								valid = Constraint._types[type](this.value, ds); 
+
+							// Is customized
+							} else if(type == "custom"){
+								valid = Constraint._types[this.id](this.value, ds); 
+
+							// Any other case
+							} else { 
+								valid = Constraint._types[type](this.value); 
+							}
 
 							if(valid){ this.oldValue = this.value; } 
 							else if (this.hasOwnProperty("oldValue")) { this.value = this.oldValue; }
