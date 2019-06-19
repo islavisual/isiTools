@@ -1,9 +1,9 @@
 this.it = {
 	name: "isiTools",
-	version: "1.2.3",
+	version: "1.2.4",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
-	lastupdate: "14/06/2019",
+	lastupdate: "19/06/2019",
 	enabledModules: {},
 	autoload: function(){
 		if(typeof itEnabledModules != "undefined"){
@@ -342,11 +342,12 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.2.1
+		@version: 1.2.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 05/06/2019
+		@Last update: 19/06/2019
 	**/
+	
 	if(json.Autocomplete){
 		window._timeoutAC = null, window._continueAC = false;
 		this.Autocomplete = it.Autocomplete = function (cfg) {
@@ -417,7 +418,8 @@ function isiToolsCallback(json){
 				opt.target.addEventListener("keydown",  function (e) { 
 					var kc = e.keyCode, t = e.target;
 					if(kc == 9){ removeItemsList(false); return false; }
-					else if((kc >= 37 && kc <= 39) || e.ctrlKey || e.altKey){ return false; }; 
+					else if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
+					else if(kc == 40 && document.getElementById(e.target.id + "-" + opt.className + "-list")) return false;
 
 					var goon = (t.value.trim().length == 1 && (kc == 8 || kc == 46)) ? false : true;
 
@@ -428,6 +430,7 @@ function isiToolsCallback(json){
 				opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
 
 				opt.target.addEventListener("inputAfter", function (e) {
+					//var ast = new Date().getTime()/1000; console.log("START: ", ast, "con " + this.value.trim());
 					var a, b, c, i, val = this.value.trim();
 
 					// Contains wildcard
@@ -492,11 +495,11 @@ function isiToolsCallback(json){
 						if(val.length == 0 && i > 99) break;
 
 						// Check if the item contains the text field value
-						var cval = '', found;
+						var cval = '', found, optData = opt.data[i];
 						if(opt.format != "layer"){
 							cval = '|';
-							for(var keyVal in opt.data[i]){
-								var valAux = opt.data[i][keyVal];
+							for(var keyVal in optData){
+								var valAux = optData[keyVal];
 								if(opt.format == "cluster"){
 									cval += (typeof valAux == "object" ? JSON.stringify(valAux).replace(/"/mg, '|') : valAux);
 								} else {
@@ -504,7 +507,7 @@ function isiToolsCallback(json){
 								}
 							}
 						} else {
-							cval = opt.data[i];
+							cval = optData;
 						}
 						
 						// Check if the entry stars with and if the format is object
@@ -528,13 +531,13 @@ function isiToolsCallback(json){
 								b.innerHTML = b.innerHTML.replace(/,/ig, '<b>' + val + '</b>').toLowerCase();
 
 							} else if (opt.format == "cluster") {
-								b.innerHTML = '<span id="clustered' + i + '">' + opt.data[i].group + "</span>";
+								b.innerHTML = '<span id="clustered' + i + '">' + optData.group + "</span>";
 								b.classList.add("header");
 								bc = document.createElement("div");
 								bc.classList.add("values");
 							}
 
-							if (opt.format == "table") cval = opt.data[i][opt.tableFields.return_value];
+							if (opt.format == "table") cval = optData[opt.tableFields.return_value];
 
 							if (b.classList.contains("value")) {
 								b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
@@ -561,12 +564,12 @@ function isiToolsCallback(json){
 										});
 									}
 
-									var tfld = opt.tableFields.fields[f], tval = opt.data[i][opt.tableFields.fields[f]];
-									var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.data[i][opt.tableFields.fields[f]] + "</span>";
+									var tfld = opt.tableFields.fields[f], tval = optData[opt.tableFields.fields[f]];
+									var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + optData[opt.tableFields.fields[f]] + "</span>";
 									
 									// If items is disabled
 									if(highlighting){
-										if(typeof opt.data[i][opt.tableFields.highlights.field] == 'undefined' ||  opt.data[i][opt.tableFields.highlights.field] == 0){
+										if(typeof optData[opt.tableFields.highlights.field] == 'undefined' ||  optData[opt.tableFields.highlights.field] == 0){
 											faux = faux.replace("__disabled__", "");
 										} else {
 											b.style.background = opt.tableFields.highlights.bg
@@ -579,7 +582,7 @@ function isiToolsCallback(json){
 									if(tooltips){
 										for (var t = 0; t < opt.tooltips.length; t++) {
 											if(tfld == opt.tooltips[t].field){
-												faux= faux.replace("__tp__", 'title="' + opt.data[i][opt.tooltips[t].text] + '"');
+												faux= faux.replace("__tp__", 'title="' + optData[opt.tooltips[t].text] + '"');
 												break
 											} 
 										}
@@ -597,10 +600,10 @@ function isiToolsCallback(json){
 							if (opt.format == "cluster") {
 								var tooltips = opt.tooltips ? true : false;
 
-								for (var z = 0; z < opt.data[i].items.length; z++) {
+								for (var z = 0; z < optData.items.length; z++) {
 									var text = '';
 									
-									if(jsonCluster){ text = opt.data[i].items[z].text; } else { text = opt.data[i].items[z]; }
+									if(jsonCluster){ text = optData.items[z].text; } else { text = optData.items[z]; }
 									
 									if (existsCoincidence(val, text, opt.startsWith, wildCard, 1)) {
 										b = document.createElement("div");
@@ -610,14 +613,14 @@ function isiToolsCallback(json){
 										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + text + "'>";
 
 										// Mark highlighted
-										if(opt.highlights && opt.data[i].items[z][opt.highlights.field] != 0) {
+										if(opt.highlights && optData.items[z][opt.highlights.field] != 0) {
 											b.style.background = opt.highlights.bg
 											b.style.color 	   = opt.highlights.fg;
 										}
 
 										// Set tooltips
 										if(tooltips){
-											b.setAttribute("title", opt.data[i].items[z][opt.tooltips.field])
+											b.setAttribute("title", optData.items[z][opt.tooltips.field])
 										}
 
 										// Add element
@@ -641,6 +644,7 @@ function isiToolsCallback(json){
 					}
 
 					window._continueAC = false;
+					//console.log("END: ", ast - (new Date().getTime()/1000))
 				});
 			}
 
@@ -664,7 +668,7 @@ function isiToolsCallback(json){
 				t = t.toLowerCase();
 
 				// Remove empty elements
-				var  vp = v.indexOf("+") != -1 ? true : false, v = v.toLowerCase().split("+"), sc = 0, aux, v1, v1l;
+				var  vp = v.indexOf("+") != -1 ? true : false, v = v.toLowerCase().split("+"), sc = '', aux, v1, v1l;
 				for(var x = 0; x < v.length; x++){
 					if(v[x].trim() == "") delete v[x];
 				}
@@ -673,11 +677,11 @@ function isiToolsCallback(json){
 				
 				// Search partial coincidences
 				for(var x = 0; x < v.length; x++){
-					aux = false, v1 = v[x], v1l = v1.length;
+					aux = false, v1 = v[x], v1l = v1 ? v1.length : 0;
 
 					if(!s){
 						if(t.indexOf(v1) != -1) aux = true;
-						if(aux) sc++;
+						if(aux) sc += v1 + "|";
 						
 					} else {
 						if(p == 0){
@@ -686,12 +690,12 @@ function isiToolsCallback(json){
 							} else {
 								aux = t.indexOf("|" + v1) != -1;
 							}
-							if(aux) sc++;
+							if(aux) sc += v1 + "|";
 
 						} else {
 							if(w == 0){
 								aux = t.indexOf(v1) == t.length - v1l && t.length - v1l != -1;
-								if(aux) sc++;
+								if(aux) sc += v1 + "|";
 
 							} else {
 								if(vp && t.indexOf(" ") != -1){
@@ -700,20 +704,27 @@ function isiToolsCallback(json){
 										var t1 = taux[i];
 										aux = t1.indexOf(v1) == 0;
 
-										if(aux) sc++;
+										if(aux) sc += v1 + "|";
 									}
 								} else {
 									aux = t.indexOf(v1) == 0;
-									if(aux) sc++;
+									if(aux) sc += v1 + "|";
 								}
 							}
 						}
 					}
 				}
-				aux = sc >= v.length ? true : false;
-				
+				if(sc == ""){
+					return false;
+				} else {
+					sc = sc.replace(/(^\||\|+$)/mg, '').split("|");
+					sc = sc.filter(distinct);
+					aux = sc.length >= v.length ? true : false;
+				}
 				return aux;
 			}
+
+			const distinct = (valor, indice, self) => {	return self.indexOf(valor) === indice; }
 
 			// Get Autocomplete List
 			function getAutocompleteList(e) {
@@ -763,7 +774,7 @@ function isiToolsCallback(json){
 				removeActive(x);
 				if(opt.currentFocus >= x.length) opt.currentFocus = 0;
 				if(opt.currentFocus < 0) opt.currentFocus = (x.length - 1);
-				x[opt.currentFocus].classList.add(opt.className + "-active");
+				if(x[opt.currentFocus]) x[opt.currentFocus].classList.add(opt.className + "-active");
 			}
 
 			function setScrollTop(dir) {
@@ -794,14 +805,9 @@ function isiToolsCallback(json){
 			}
 
 			function removeItemsList(reset) {
-				var items = opt.target.parentElement.querySelectorAll("." + opt.className + "-items");
-				for (var i = 0; i < items.length; ++i) {
-					var item = items[i];
-
-					item.remove();
-				}
+				var item = opt.target.parentElement.querySelector("." + opt.className + "-items");
+				if(item) item.remove();
 				if (reset) opt.target.value = "";
-
 			}
 		}
 	}
