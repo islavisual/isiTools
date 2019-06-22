@@ -2582,6 +2582,220 @@ function isiToolsCallback(json){
 	}
 
 	/**
+		Masking inputs functionality
+		@version: 1.00																					
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2019 Islavisual.
+		@Last update: 14/03/2019
+	**/
+	if(json.Mask){
+		this.Mask = it.Mask = {
+			version: '1.0',
+			config: { type: 'switch', style: '', id: '' },
+			opt: { target: null, mask: '' },
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("Mask", cfg);
+				else alert("Helper not available!")
+				return;
+			},
+			_event: null,
+			set: function(cfg){
+				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
+				if (cfg.hasOwnProperty("mask") == null) { alert("Mask not defined to '" + cfg.target + "'"); return false; }
+
+				this.opt = cfg;
+				this.opt.target = document.getElementById(cfg.target);
+
+				// Set attributes
+				this.opt.target.setAttribute("placeholder", cfg.mask);
+				this.opt.target.setAttribute("maxlength", cfg.mask.length);
+
+				// Set paste event
+				this.opt.target.addEventListener('paste', function (e){
+					setTimeout(function(){ Mask._format(e); }, 150);
+				});
+
+				// Set keyborad events
+				this.opt.target.addEventListener('keydown', function (e){
+					var kc = e.keyCode, opt = Mask.opt, passed = true;
+					var _allowedKeys = [8,9,17,18,33,34,35,36,45,46];
+
+					// Allowed types [digit, letter, any]
+					var _types = [/\d/, /[a-zA-Z]/, /./];
+
+					if(e.ctrlKey || e.altKey){ Mask._format(e); return; }
+
+					// Check if char coincidence with mask
+					var m = opt.mask.charAt(opt.target.value.length);
+					passed = (m == '9' ? _types[0] : (m == 'A' ? _types[1] : _types[2])).test(e.key);
+
+					// Check allowed chars
+					if(_allowedKeys.indexOf(kc) != -1){ return ;}
+
+					// Check dates
+					var p = Mask.opt.mask.indexOf('YYYY');
+					if(passed && p != -1 && e.target.value.length == Mask.opt.mask.length-1){
+						var yy = e.target.value.substr(p, 4) + e.key
+
+						var dd = (e.target.value + e.key).substr(Mask.opt.mask.indexOf('DD'), 2);
+						var mm = (e.target.value + e.key).substr(Mask.opt.mask.indexOf('MM'), 2);
+						
+						if (mm == 2 && (dd > 29 || (mm == 2 && dd == 29 && !((yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0))))) passed = false;
+					}
+					passed = Mask._check('DD', /([0-2][0-9]|(3)[0-1])/, e);
+					passed = Mask._check('MM', /(((0)[0-9])|((1)[0-2]))/, e);
+
+					// Check times
+					passed = Mask._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e);
+					passed = Mask._check('II', /[0-5]{1}[0-9]{0,1}/, e);
+
+					// Check format/mask
+					if (passed) {
+						Mask._format(e);
+					} else {
+						return Mask._rollbackEvent(e);
+					}
+				});
+			},
+			_check: function(f, reg, e){
+				var p = Mask.opt.mask.indexOf(f), b = false;
+				if(p != -1 && e.target.value.length >= p && e.target.value.length <= p+1){
+					var v  = parseInt(e.target.value.substr(p, f.length) + e.key)
+						v = v < 10 ? ("0" + v) : (v + "");
+			
+					b = new RegExp(reg).test(v);
+					console.log(f+":", v, b, p)
+				}
+			
+				return b;
+			},
+			_format: function(e){
+				var t = '';
+                var c, m, i, x, ma = "", ca = "";
+
+				for (i = 0, x = 1; x && i < this.opt.mask.length; ++i) {
+                    c = e.target.value.charAt(i);
+					m = this.opt.mask.charAt(i);
+
+					// If mask is digit type
+					if(m == "9" || m == "Y"){
+						if (/\d/.test(c)) {
+							t += c;
+						} else {
+							x = 0;
+						} 
+
+					// If mask is day type
+					} else if(m == "D"){
+						if(ma == ""){
+							if (/[0-3]/.test(c)) {
+								t += c;
+							} else {
+								x = 0;
+							} 
+
+						} else {
+							if(ca == "3"){
+								if (/[0-1]/.test(c)) {
+									t += c;
+								} else {
+									x = 0;
+								} 
+
+							} else {
+								if (/[0-9]/.test(c)) {
+									t += c;
+								} else {
+									x = 0;
+								} 
+							}
+						}
+
+					// If mask is month type
+					} else if(m == "M"){
+						if(ma == ""){
+							if (/[0-1]/.test(c)) {
+								t += c;
+							} else {
+								x = 0;
+							} 
+
+						} else {
+							if(ca == "1"){
+								if (/[0-2]/.test(c)) {
+									t += c;
+								} else {
+									x = 0;
+								} 
+
+							} else {
+								if (/[0-9]/.test(c)) {
+									t += c;
+								} else {
+									x = 0;
+								} 
+							}
+						}
+					// If mask is hour type
+					} else if(m == "H"){
+						if(ma == ""){
+							if (/[0-2]/.test(c)) {
+								t += c;
+							} else {
+								x = 0;
+							} 
+
+						} else {
+							if(ca == "2"){
+								if (/[0-3]/.test(c)) {
+									t += c;
+								} else {
+									x = 0;
+								} 
+
+							} else {
+								if (/[0-9]/.test(c)) {
+									t += c;
+								} else {
+									x = 0;
+								} 
+							}
+						}
+
+					// If mask is letter type
+					} else if(m == "A"){
+						if (/[a-zA-Z]/.test(c)) {
+							t += c;
+						} else {
+							x = 0;
+						} 
+
+					// If mask is any type
+					} else if(m == "X"){
+						t += c;
+						
+					} else {
+						t += m;
+					}
+
+					ma = m;
+					ca = c;
+				}
+
+				this.opt.target.value = t;
+			},
+			_rollbackEvent: function(e){
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				return false;
+			}
+		}
+	}
+
+	/**
 		Now functionality
 		@version: 1.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
