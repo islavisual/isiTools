@@ -2591,7 +2591,6 @@ function isiToolsCallback(json){
 	if(json.Mask){
 		this.Mask = it.Mask = {
 			version: '1.0',
-			config: { type: 'switch', style: '', id: '' },
 			opt: { target: null, mask: '' },
 			help: function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
@@ -2601,12 +2600,6 @@ function isiToolsCallback(json){
 				else alert("Helper not available!")
 				return;
 			},
-			_formats: {
-				numeric: '[9DMYHIS]',
-				alphanumeric: '[A]',
-				all: '[9ADMYHIS]'
-			},
-			_event: null,
 			set: function(cfg){
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 				if (cfg.hasOwnProperty("mask") == null) { alert("Mask not defined to '" + cfg.target + "'"); return false; }
@@ -2621,36 +2614,34 @@ function isiToolsCallback(json){
 				// Set paste event
 				this.opt.target.addEventListener('paste', function (e){
 					//setTimeout(function(){ Mask._frmat(e); }, 150);
+					var EV;
+					if(typeof(Event) === 'function') {
+						EV = new Event('keydown', {'bubbles': true, 'cancelable': true});
+					} else {
+						EV = document.createEvent('Event');
+						EV.initEvent('keydown', true, true);
+					}
+					e.target.dispatchEvent(EV);
 				});
 
 				// Set keyborad events
 				this.opt.target.addEventListener('keydown', function (e){
-					var kc = e.keyCode, opt = Mask.opt, aok;
-					var _allowedKeys = [8,9,17,18,33,34,35,36,45,46];
+					var kc = e.keyCode, k = e.key[0], opt = Mask.opt, aok;
 
-					// Allowed types [digit, letter, any]
-					var _types = [/\d/, /[a-zA-Z]/, /./];
+					// Check allowed special chars
+					var _ignoreKeys = [8,9,17,18,33,34,35,36,37,38,39,40,45,46];
+					if(_ignoreKeys.indexOf(kc) != -1){ return ; }
 
 					// Check if char coincidence with mask
 					var m = opt.mask.charAt(opt.target.value.length);
-					aok = (Mask._formats.numeric.indexOf(m) != -1 ? _types[0] : (m == 'A' ? _types[1] : _types[2])).test(e.key);
-
-					// Check allowed special chars
-					if(_allowedKeys.indexOf(kc) != -1){ return ;}
-
-					// Check separators
-					aok = Mask.opt.mask.replace(RegExp(Mask._formats.all, 'g'), '').indexOf(e.key) == -1 
+					if(!/[9ADMYHIS]/g.test(m)){ 
+						e.target.value += m; 
+						m = opt.mask.charAt(opt.target.value.length);
+					}
+					aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
 
 					// Check dates
-					var p = Mask.opt.mask.indexOf('YYYY');
-					if(aok && p != -1 && e.target.value.length == Mask.opt.mask.length-1){
-						var yy = e.target.value.substr(p, 4) + e.key
-
-						var dd = (e.target.value + e.key).substr(Mask.opt.mask.indexOf('DD'), 2);
-						var mm = (e.target.value + e.key).substr(Mask.opt.mask.indexOf('MM'), 2);
-						
-						if (mm == 2 && (dd > 29 || (mm == 2 && dd == 29 && !((yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0))))) aok = false;
-					}
+					aok = aok ? Mask._check('YYYY', /\d{4}/, e) : false;
 					aok = aok ? Mask._check('DD', /([0-2][0-9]|(3)[0-1])/, e) : false;
 					aok = aok ? Mask._check('MM', /(((0)[0-9])|((1)[0-2]))/, e) : false;
 
@@ -2658,21 +2649,31 @@ function isiToolsCallback(json){
 					aok = aok ? Mask._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e) : false;
 					aok = aok ? Mask._check('II', /(0[0-9]|[1-5][0-9])/, e) : false;
 					aok = aok ? Mask._check('SS', /(0[0-9]|[1-5][0-9])/, e) : false;
-
-					// Add separators
-					if(!RegExp(Mask._formats.all, 'g').test(m)){ e.target.value += m; }
-
+					
 					// Check format/mask
 					if (!aok) return Mask._rollbackEvent(e);
 				});
 			},
 			_check: function(f, reg, e){
 				var p = Mask.opt.mask.indexOf(f), b = true;
-				if(p != -1 && e.target.value.length >= p && e.target.value.length <= p+1){
-					var v  = parseInt(e.target.value.substr(p, f.length) + e.key)
-						v = v < 10 ? ("0" + v) : (v + "");
-			
-					b = new RegExp(reg).test(v);
+				var v = e.target.value, k = e.key[0];
+				if(f == 'YYYY'){
+					if(p != -1 && v.length == this.opt.mask.length-1){
+						var yy = v.substr(p, 4) + k
+
+						var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
+						var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
+						
+						var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
+						if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
+					}
+				} else {
+					if(p != -1 && v.length >= p && v.length <= p+1){
+						var v  = parseInt(v.substr(p, f.length) + k)
+							v = v < 10 ? ("0" + v) : (v + "");
+				
+						b = new RegExp(reg).test(v);
+					}
 				}
 			
 				return b;
