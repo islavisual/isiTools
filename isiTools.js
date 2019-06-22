@@ -2601,6 +2601,11 @@ function isiToolsCallback(json){
 				else alert("Helper not available!")
 				return;
 			},
+			_formats: {
+				numeric: '[9DMYHIS]',
+				alphanumeric: '[A]',
+				all: '[9ADMYHIS]'
+			},
 			_event: null,
 			set: function(cfg){
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
@@ -2615,177 +2620,62 @@ function isiToolsCallback(json){
 
 				// Set paste event
 				this.opt.target.addEventListener('paste', function (e){
-					setTimeout(function(){ Mask._format(e); }, 150);
+					//setTimeout(function(){ Mask._frmat(e); }, 150);
 				});
 
 				// Set keyborad events
 				this.opt.target.addEventListener('keydown', function (e){
-					var kc = e.keyCode, opt = Mask.opt, passed = true;
+					var kc = e.keyCode, opt = Mask.opt, aok;
 					var _allowedKeys = [8,9,17,18,33,34,35,36,45,46];
 
 					// Allowed types [digit, letter, any]
 					var _types = [/\d/, /[a-zA-Z]/, /./];
 
-					if(e.ctrlKey || e.altKey){ Mask._format(e); return; }
-
 					// Check if char coincidence with mask
 					var m = opt.mask.charAt(opt.target.value.length);
-					passed = (m == '9' ? _types[0] : (m == 'A' ? _types[1] : _types[2])).test(e.key);
+					aok = (Mask._formats.numeric.indexOf(m) != -1 ? _types[0] : (m == 'A' ? _types[1] : _types[2])).test(e.key);
 
-					// Check allowed chars
+					// Check allowed special chars
 					if(_allowedKeys.indexOf(kc) != -1){ return ;}
+
+					// Check separators
+					aok = Mask.opt.mask.replace(RegExp(Mask._formats.all, 'g'), '').indexOf(e.key) == -1 
 
 					// Check dates
 					var p = Mask.opt.mask.indexOf('YYYY');
-					if(passed && p != -1 && e.target.value.length == Mask.opt.mask.length-1){
+					if(aok && p != -1 && e.target.value.length == Mask.opt.mask.length-1){
 						var yy = e.target.value.substr(p, 4) + e.key
 
 						var dd = (e.target.value + e.key).substr(Mask.opt.mask.indexOf('DD'), 2);
 						var mm = (e.target.value + e.key).substr(Mask.opt.mask.indexOf('MM'), 2);
 						
-						if (mm == 2 && (dd > 29 || (mm == 2 && dd == 29 && !((yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0))))) passed = false;
+						if (mm == 2 && (dd > 29 || (mm == 2 && dd == 29 && !((yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0))))) aok = false;
 					}
-					passed = Mask._check('DD', /([0-2][0-9]|(3)[0-1])/, e);
-					passed = Mask._check('MM', /(((0)[0-9])|((1)[0-2]))/, e);
+					aok = aok ? Mask._check('DD', /([0-2][0-9]|(3)[0-1])/, e) : false;
+					aok = aok ? Mask._check('MM', /(((0)[0-9])|((1)[0-2]))/, e) : false;
 
 					// Check times
-					passed = Mask._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e);
-					passed = Mask._check('II', /[0-5]{1}[0-9]{0,1}/, e);
+					aok = aok ? Mask._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e) : false;
+					aok = aok ? Mask._check('II', /(0[0-9]|[1-5][0-9])/, e) : false;
+					aok = aok ? Mask._check('SS', /(0[0-9]|[1-5][0-9])/, e) : false;
+
+					// Add separators
+					if(!RegExp(Mask._formats.all, 'g').test(m)){ e.target.value += m; }
 
 					// Check format/mask
-					if (passed) {
-						Mask._format(e);
-					} else {
-						return Mask._rollbackEvent(e);
-					}
+					if (!aok) return Mask._rollbackEvent(e);
 				});
 			},
 			_check: function(f, reg, e){
-				var p = Mask.opt.mask.indexOf(f), b = false;
+				var p = Mask.opt.mask.indexOf(f), b = true;
 				if(p != -1 && e.target.value.length >= p && e.target.value.length <= p+1){
 					var v  = parseInt(e.target.value.substr(p, f.length) + e.key)
 						v = v < 10 ? ("0" + v) : (v + "");
 			
 					b = new RegExp(reg).test(v);
-					console.log(f+":", v, b, p)
 				}
 			
 				return b;
-			},
-			_format: function(e){
-				var t = '';
-                var c, m, i, x, ma = "", ca = "";
-
-				for (i = 0, x = 1; x && i < this.opt.mask.length; ++i) {
-                    c = e.target.value.charAt(i);
-					m = this.opt.mask.charAt(i);
-
-					// If mask is digit type
-					if(m == "9" || m == "Y"){
-						if (/\d/.test(c)) {
-							t += c;
-						} else {
-							x = 0;
-						} 
-
-					// If mask is day type
-					} else if(m == "D"){
-						if(ma == ""){
-							if (/[0-3]/.test(c)) {
-								t += c;
-							} else {
-								x = 0;
-							} 
-
-						} else {
-							if(ca == "3"){
-								if (/[0-1]/.test(c)) {
-									t += c;
-								} else {
-									x = 0;
-								} 
-
-							} else {
-								if (/[0-9]/.test(c)) {
-									t += c;
-								} else {
-									x = 0;
-								} 
-							}
-						}
-
-					// If mask is month type
-					} else if(m == "M"){
-						if(ma == ""){
-							if (/[0-1]/.test(c)) {
-								t += c;
-							} else {
-								x = 0;
-							} 
-
-						} else {
-							if(ca == "1"){
-								if (/[0-2]/.test(c)) {
-									t += c;
-								} else {
-									x = 0;
-								} 
-
-							} else {
-								if (/[0-9]/.test(c)) {
-									t += c;
-								} else {
-									x = 0;
-								} 
-							}
-						}
-					// If mask is hour type
-					} else if(m == "H"){
-						if(ma == ""){
-							if (/[0-2]/.test(c)) {
-								t += c;
-							} else {
-								x = 0;
-							} 
-
-						} else {
-							if(ca == "2"){
-								if (/[0-3]/.test(c)) {
-									t += c;
-								} else {
-									x = 0;
-								} 
-
-							} else {
-								if (/[0-9]/.test(c)) {
-									t += c;
-								} else {
-									x = 0;
-								} 
-							}
-						}
-
-					// If mask is letter type
-					} else if(m == "A"){
-						if (/[a-zA-Z]/.test(c)) {
-							t += c;
-						} else {
-							x = 0;
-						} 
-
-					// If mask is any type
-					} else if(m == "X"){
-						t += c;
-						
-					} else {
-						t += m;
-					}
-
-					ma = m;
-					ca = c;
-				}
-
-				this.opt.target.value = t;
 			},
 			_rollbackEvent: function(e){
 				e.preventDefault();
