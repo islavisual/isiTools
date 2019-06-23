@@ -2613,49 +2613,85 @@ function isiToolsCallback(json){
 
 				// Set paste event
 				this.opt.target.addEventListener('paste', function (e){
-					//setTimeout(function(){ Mask._frmat(e); }, 150);
-					var EV;
-					if(typeof(Event) === 'function') {
-						EV = new Event('keydown', {'bubbles': true, 'cancelable': true});
-					} else {
-						EV = document.createEvent('Event');
-						EV.initEvent('keydown', true, true);
-					}
-					e.target.dispatchEvent(EV);
+					var _EV = e;
+					setTimeout(function(){
+						var v = _EV.target.value;
+
+						_EV.target.value = "";
+
+						for(var x = 0; x < v.length; x++){
+							if(Mask.opt.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
+
+							// Modify event
+							var e = _EV;
+								e.keyCode = v[x].charCodeAt(0); e.which = v[x].charCodeAt(0); e.key = v[x];
+								e.ctrlKey = false; e.altKey = false; e.shiftKey = false;
+							
+							// Trigger custom event
+							var st = Mask._customEvent(e, Mask.opt);
+							if(!st) break;
+						}
+					}, 150);
 				});
 
 				// Set keyborad events
 				this.opt.target.addEventListener('keydown', function (e){
-					var kc = e.keyCode, k = e.key[0], opt = Mask.opt, aok;
-
-					// Check allowed special chars
-					var _ignoreKeys = [8,9,17,18,33,34,35,36,37,38,39,40,45,46];
-					if(_ignoreKeys.indexOf(kc) != -1){ return ; }
-
-					// Check if char coincidence with mask
-					var m = opt.mask.charAt(opt.target.value.length);
-					if(!/[9ADMYHIS]/g.test(m)){ 
-						e.target.value += m; 
-						m = opt.mask.charAt(opt.target.value.length);
-					}
-					aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
-
-					// Check dates
-					aok = aok ? Mask._check('YYYY', /\d{4}/, e) : false;
-					aok = aok ? Mask._check('DD', /([0-2][0-9]|(3)[0-1])/, e) : false;
-					aok = aok ? Mask._check('MM', /(((0)[0-9])|((1)[0-2]))/, e) : false;
-
-					// Check times
-					aok = aok ? Mask._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e) : false;
-					aok = aok ? Mask._check('II', /(0[0-9]|[1-5][0-9])/, e) : false;
-					aok = aok ? Mask._check('SS', /(0[0-9]|[1-5][0-9])/, e) : false;
-					
-					// Check format/mask
-					if (!aok) return Mask._rollbackEvent(e);
+					return Mask._customEvent(e, Mask.opt);
 				});
 			},
+			getPositionCursor: function() {
+				var iCaretPos = 0, trg = this.opt.target;
+			  
+				if (document.selection) {
+					trg.focus();
+
+					var oSel = document.selection.createRange();
+						oSel.moveStart('character', -trg.value.length);
+
+					iCaretPos = oSel.text.length;
+
+				} else if (trg.selectionStart || trg.selectionStart == '0'){
+					iCaretPos = trg.selectionDirection=='backward' ? trg.selectionStart : trg.selectionEnd;
+				}
+
+				return iCaretPos;
+			  },
+			_customEvent: function(e, opt){
+				var kc = e.keyCode, k = e.key[0], aok, optv = opt.target.value;
+
+				// Check if ignore keys
+				var _ignoreKeys = [8,9,17,18,33,34,35,36,37,38,39,40,45,46];
+				if(_ignoreKeys.indexOf(kc) != -1){ return false; }
+				if(e.ctrlKey) return true;
+
+				// Check if char coincidence with mask
+				var m = opt.mask.charAt(optv.length);
+				if(!/[9ADMYHIS]/g.test(m)){ 
+					e.target.value += m; 
+					m = opt.mask.charAt(optv.length);
+				}
+				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
+
+				// Check dates
+				aok = aok ? this._check('YYYY', /\d{4}/, e) : false;
+				aok = aok ? this._check('DD', /([0-2][0-9]|(3)[0-1])/, e) : false;
+				aok = aok ? this._check('MM', /(((0)[0-9])|((1)[0-2]))/, e) : false;
+
+				// Check times
+				aok = aok ? this._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e) : false;
+				aok = aok ? this._check('II', /(0[0-9]|[1-5][0-9])/, e) : false;
+				aok = aok ? this._check('SS', /(0[0-9]|[1-5][0-9])/, e) : false;
+				
+				if (aok){
+					if(e.type == "paste") {e.target.value += k;}
+				} else {
+					return this._rollbackEvent(e);
+				}
+
+				return aok;
+			},
 			_check: function(f, reg, e){
-				var p = Mask.opt.mask.indexOf(f), b = true;
+				var p = this.opt.mask.indexOf(f), b = true;
 				var v = e.target.value, k = e.key[0];
 				if(f == 'YYYY'){
 					if(p != -1 && v.length == this.opt.mask.length-1){
@@ -2669,7 +2705,10 @@ function isiToolsCallback(json){
 					}
 				} else {
 					if(p != -1 && v.length >= p && v.length <= p+1){
-						var v  = parseInt(v.substr(p, f.length) + k)
+						var v = parseInt(v.substr(p, this.getPositionCursor()) + k + v.substr(this.getPositionCursor(), v.length))
+						//var v = parseInt(Mask.opt.mask.indexOf(f) == Mask.getPositionCursor() ? ('0' + Mask.opt.target.value.substr(Mask.opt.mask.indexOf(f),1)) : (Mask.opt.target.value.substr(Mask.opt.mask.indexOf(f),1) + '0'))
+						console.log(f,v, k);
+						//var v  = parseInt(v.substr(p, f.length) + k)
 							v = v < 10 ? ("0" + v) : (v + "");
 				
 						b = new RegExp(reg).test(v);
@@ -2679,6 +2718,7 @@ function isiToolsCallback(json){
 				return b;
 			},
 			_rollbackEvent: function(e){
+				console.log("Rollback")
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				return false;
