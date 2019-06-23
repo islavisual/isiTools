@@ -2613,25 +2613,8 @@ function isiToolsCallback(json){
 
 				// Set paste event
 				this.opt.target.addEventListener('paste', function (e){
-					var _EV = e;
-					setTimeout(function(){
-						var v = _EV.target.value;
-
-						_EV.target.value = "";
-
-						for(var x = 0; x < v.length; x++){
-							if(Mask.opt.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
-
-							// Modify event
-							var e = _EV;
-								e.keyCode = v[x].charCodeAt(0); e.which = v[x].charCodeAt(0); e.key = v[x];
-								e.ctrlKey = false; e.altKey = false; e.shiftKey = false;
-							
-							// Trigger custom event
-							var st = Mask._customEvent(e, Mask.opt);
-							if(!st) break;
-						}
-					}, 150);
+					var EV = e;
+					setTimeout(function(){ Mask.fullFormat(EV)} , 150);
 				});
 
 				// Set keyborad events
@@ -2640,21 +2623,21 @@ function isiToolsCallback(json){
 				});
 			},
 			getPositionCursor: function() {
-				var iCaretPos = 0, trg = this.opt.target;
+				var p = 0, trg = this.opt.target;
 			  
 				if (document.selection) {
 					trg.focus();
 
-					var oSel = document.selection.createRange();
-						oSel.moveStart('character', -trg.value.length);
+					var s = document.selection.createRange();
+						s.moveStart('character', -trg.value.length);
 
-					iCaretPos = oSel.text.length;
+					p = s.text.length;
 
 				} else if (trg.selectionStart || trg.selectionStart == '0'){
-					iCaretPos = trg.selectionDirection=='backward' ? trg.selectionStart : trg.selectionEnd;
+					p = trg.selectionDirection=='backward' ? trg.selectionStart : trg.selectionEnd;
 				}
 
-				return iCaretPos;
+				return p;
 			  },
 			_customEvent: function(e, opt){
 				var kc = e.keyCode, k = e.key[0], aok, optv = opt.target.value;
@@ -2690,9 +2673,27 @@ function isiToolsCallback(json){
 
 				return aok;
 			},
+			fullFormat: function(e){
+				var v = this.opt.target.value;
+				this.opt.target.value = "";
+
+				for(var x = 0; x < v.length; x++){
+					if(this.opt.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
+
+					// Modify event
+					var e1 = e;
+						e1.keyCode = v[x].charCodeAt(0); e1.which = v[x].charCodeAt(0); e1.key = v[x];
+						e1.ctrlKey = false; e1.altKey = false; e1.shiftKey = false;
+					
+					// Trigger custom event
+					var st = this._customEvent(e1, this.opt);
+					if(!st) break;
+				}
+			},
 			_check: function(f, reg, e){
 				var p = this.opt.mask.indexOf(f), b = true;
 				var v = e.target.value, k = e.key[0];
+				var c = this.getPositionCursor();
 				if(f == 'YYYY'){
 					if(p != -1 && v.length == this.opt.mask.length-1){
 						var yy = v.substr(p, 4) + k
@@ -2705,20 +2706,22 @@ function isiToolsCallback(json){
 					}
 				} else {
 					if(p != -1 && v.length >= p && v.length <= p+1){
-						var v = parseInt(v.substr(p, this.getPositionCursor()) + k + v.substr(this.getPositionCursor(), v.length))
-						//var v = parseInt(Mask.opt.mask.indexOf(f) == Mask.getPositionCursor() ? ('0' + Mask.opt.target.value.substr(Mask.opt.mask.indexOf(f),1)) : (Mask.opt.target.value.substr(Mask.opt.mask.indexOf(f),1) + '0'))
-						console.log(f,v, k);
-						//var v  = parseInt(v.substr(p, f.length) + k)
-							v = v < 10 ? ("0" + v) : (v + "");
+						if(v.length == c){
+							v  = parseInt(v.substr(p, f.length) + k)
+						} else {
+							v = parseInt(p <= c ? (k + v.substr(p,1)) : (v.substr(p,1) + k));
+						}
+						v = v < 10 ? ("0" + v) : (v + "");
 				
 						b = new RegExp(reg).test(v);
+
+						console.log(f, "P:", p, "V:",v, "C:",c, v.substr(p,1), k)
 					}
 				}
-			
+
 				return b;
 			},
 			_rollbackEvent: function(e){
-				console.log("Rollback")
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				return false;
