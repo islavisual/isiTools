@@ -2640,30 +2640,59 @@ function isiToolsCallback(json){
 				return p;
 			  },
 			_customEvent: function(e, opt){
-				var kc = e.keyCode, k = e.key[0], aok, optv = opt.target.value;
+				var kc = e.keyCode, k = e.key[0], aok, optv = this.opt.target.value;
 
 				// Check if ignore keys
-				var _ignoreKeys = [8,9,17,18,33,34,35,36,37,38,39,40,45,46];
+				var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46];
 				if(_ignoreKeys.indexOf(kc) != -1){ return false; }
 				if(e.ctrlKey) return true;
 
 				// Check if char coincidence with mask
-				var m = opt.mask.charAt(optv.length);
-				if(!/[9ADMYHIS]/g.test(m)){ 
+				var m = this.opt.mask.charAt(this.getPositionCursor());
+				if(opt.target.selectionEnd - opt.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
 					e.target.value += m; 
-					m = opt.mask.charAt(optv.length);
+					m = this.opt.mask.charAt(this.getPositionCursor());
 				}
+
+				// If separator pressed add 0 before last value
+				if(this.opt.mask.replace(/[9ADMYHIS#]/g, '').indexOf(k) != -1){
+					this.opt.target.value = optv.substr(0, optv.length-1)+"0"+optv.substr(optv.length-1);
+					optv = this.opt.target.value;
+				}
+
 				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
 
-				// Check dates
-				aok = aok ? this._check('YYYY', /\d{4}/, e) : false;
-				aok = aok ? this._check('DD', /([0-2][0-9]|(3)[0-1])/, e) : false;
-				aok = aok ? this._check('MM', /(((0)[0-9])|((1)[0-2]))/, e) : false;
-
-				// Check times
-				aok = aok ? this._check('HH', /(0[0-9]|1[0-9]|2[0-3])/, e) : false;
-				aok = aok ? this._check('II', /(0[0-9]|[1-5][0-9])/, e) : false;
-				aok = aok ? this._check('SS', /(0[0-9]|[1-5][0-9])/, e) : false;
+				var reg, tmp = m, mg = true;
+				switch (m) {
+					case "D":
+						reg = /(0[1-9]|1[0-9]|2[0-9]|3[0-1])/;
+						break;
+					case "M":
+						reg = /(0[1-9]|1[0-2])/;
+						break;
+					case "Y":
+						reg = /\d{4}/;
+						break;
+					case "H":
+						reg = /(0[0-9]|1[0-9]|2[0-3])/;
+						break;
+					case "I":
+						reg = /(0[0-9]|[1-5][0-9])/;
+						break;
+					case "S":
+						reg = /(0[0-9]|[1-5][0-9])/;
+						break;
+					case "#":
+						reg = /./;
+						break;
+					default:
+						mg = false;
+				}
+				
+				if(mg){
+					if('DMYHIS'.indexOf(m) != -1) tmp = m+m; 
+					aok = aok ? this._check(tmp, reg, e) : false;
+				}
 				
 				if (aok){
 					if(e.type == "paste") {e.target.value += k;}
@@ -2694,7 +2723,7 @@ function isiToolsCallback(json){
 				var p = this.opt.mask.indexOf(f), b = true;
 				var v = e.target.value, k = e.key[0];
 				var c = this.getPositionCursor();
-				if(f == 'YYYY'){
+				if(f == 'YY'){
 					if(p != -1 && v.length == this.opt.mask.length-1){
 						var yy = v.substr(p, 4) + k
 
@@ -2705,18 +2734,29 @@ function isiToolsCallback(json){
 						if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
 					}
 				} else {
-					if(p != -1 && v.length >= p && v.length <= p+1){
-						if(v.length == c){
-							v  = parseInt(v.substr(p, f.length) + k)
-						} else {
-							v = parseInt(p <= c ? (k + v.substr(p,1)) : (v.substr(p,1) + k));
-						}
-						v = v < 10 ? ("0" + v) : (v + "");
-				
-						b = new RegExp(reg).test(v);
-
-						console.log(f, "P:", p, "V:",v, "C:",c, v.substr(p,1), k)
+					// If selected text
+					var ss = e.target.selectionStart, se = e.target.selectionEnd;
+					if(se - ss > 0){
+						e.target.value = v.substring(0, ss) + v.substring(se, v.length);
+						v = e.target.value;
+						e.target.selectionStart = ss;
+						e.target.selectionEnd = ss;
 					}
+
+					// rebuild new input value
+					v = v.substr(0, ss) + k + v.substr(ss, v.length);
+					v = parseInt(v.substr(this.opt.mask.indexOf(f), f.length))
+
+					// Truncate 00 to 01 in day type
+					if(f == "DD" && ss == Mask.opt.mask.indexOf(f) && v == 0) v = 1;
+
+					// Truncate 00 to 01 in day month
+					if(f == "MM" && ss == Mask.opt.mask.indexOf(f) && v == 0) v = 1;
+
+					v = v < 10 ? ("0" + v) : (v + "");
+
+					b = new RegExp(reg).test(v);
+					//console.log("F:", f, "SS:",ss, "SE:", se, "V:",v)
 				}
 
 				return b;
