@@ -724,7 +724,7 @@ function isiToolsCallback(json){
 				return aux;
 			}
 
-			const distinct = (valor, indice, self) => {	return self.indexOf(valor) === indice; }
+			function distinct(valor, indice, self){	return self.indexOf(valor) === indice; }
 
 			// Get Autocomplete List
 			function getAutocompleteList(e) {
@@ -2327,8 +2327,10 @@ function isiToolsCallback(json){
 
 			// Make request
 			var http = new XMLHttpRequest();
-			http.responseType = opt.responseType;
-			http.timeout = opt.timeout
+			try{
+				http.responseType = opt.responseType;
+				http.timeout = opt.timeout
+			} catch(e) {}
 
 			http.onloadstart = function (e) { opt.onLoadStart ? opt.onLoadStart(e) : (opt.debug ? console.log("onLoadStart", e) : null); }
 			http.onload = function (e) { opt.onLoad ? opt.onLoad(e) : (opt.debug ? console.log("onLoad", e) : null); }
@@ -2340,11 +2342,14 @@ function isiToolsCallback(json){
 
 			// When request is ready...
 			http.onreadystatechange = function () {
-				if (http.readyState == 4 && http.status == 200) {
-					if (opt.returnFullResponse)
-						opt.callback(http);
-					else
-						opt.callback(http.response);
+				if (http.readyState == 4) {
+					if(http.status == 200){
+						if (opt.returnFullResponse)
+							opt.callback(http);
+						else
+							if(it.browser == "IE" && opt.responseType == "json") setTimeout(function(){ opt.callback(JSON.parse(http.response)); }, 150);
+							else opt.callback(http.response);
+					}
 				}
 			}
 
@@ -4100,4 +4105,21 @@ function isiToolsCallback(json){
 			}
 		}
 	}
+}
+
+// If ie, override some functions and methods
+var e, r = navigator.userAgent;
+it.browser = r.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; /trident/i.test(it.browser[1]) && (e = /\brv[ :]+(\d+)/g.exec(r) || [], it.browser[1] = "Internet Explorer", it.browser[2] = e[1])
+it.browser = it.browser[1] == "Internet Explorer" ? "IE" : "W3C";
+if(it.browser == "IE"){
+	// Redefine Event Object
+	function Event(type, json){
+		if(!json) json = {bubbles: true, cancelable: true};
+		var EV = document.createEvent('Event');
+		EV.initEvent(type, json.hasOwnProperty("bubbles") ? json.bubbles : true, json.hasOwnProperty("cancelable") ? json.cancelable : true);
+		return EV;
+	}
+
+	// Redefine remove method
+	HTMLElement.prototype.remove=function(){try{ this.parentElement.removeChild(this);} catch(e){}} 
 }
