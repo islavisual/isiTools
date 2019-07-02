@@ -1,6 +1,6 @@
 this.it = {
 	name: "isiTools",
-	version: "1.2.4",
+	version: "1.3",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "19/06/2019",
@@ -737,11 +737,7 @@ function isiToolsCallback(json){
 			opt.target.addEventListener("keydown", function (e) {
 				if (e.keyCode == 40) { 			// down
 					if (document.querySelectorAll("." + opt.className + "-items").length == 0) {
-						var event = new Event('input', {
-							'bubbles': true,
-							'cancelable': true
-						});
-
+						var event = new Event('input', { 'bubbles': true, 'cancelable': true });
 						e.target.dispatchEvent(event);
 					}
 
@@ -2960,13 +2956,8 @@ function isiToolsCallback(json){
 						var item = items[x];
 						item.addEventListener("click", function(e){
 							e.target.parentElement.previousElementSibling.value = e.target.dataset.value;
-							var EV;
-							if(typeof(Event) === 'function') {
-								EV = new Event('change', {'bubbles': true, 'cancelable': true});
-							} else {
-								EV = document.createEvent('Event');
-    							EV.initEvent('change', true, true);
-							}
+
+							var EV = new Event('change', {'bubbles': true, 'cancelable': true});
 							e.target.parentElement.previousElementSibling.dispatchEvent(EV);
 						});
 					}
@@ -4118,6 +4109,21 @@ if(it.browser == "IE"){
 		var EV = document.createEvent('Event');
 		EV.initEvent(type, json.hasOwnProperty("bubbles") ? json.bubbles : true, json.hasOwnProperty("cancelable") ? json.cancelable : true);
 		return EV;
+	}
+
+	// Override KeyborarEvent
+	function KeyboardEvent(type, json){
+		if(!json.hasOwnProperty("bubbles")) json.bubbles = true;
+		if(!json.hasOwnProperty("cancelable")) json.cancelable = true;
+		if(!json.hasOwnProperty("ctrlKey"))  json.ctrlKey = false;
+		if(!json.hasOwnProperty("altKey"))   json.altKey = false;
+		if(!json.hasOwnProperty("shiftKey")) json.shiftKey = false;
+		if(!json.hasOwnProperty("metaKey")) json.metaKey = false;
+		
+		var keyboardEvent = document.createEvent("KeyboardEvent");
+		var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
+		keyboardEvent[initMethod](type, json.bubbles, json.cancelable, window, json.ctrlKey, json.altKey, json.shiftKey, json.metaKey, json.keyCode, 0);
+		document.getElementById('medicine').dispatchEvent(keyboardEvent);
 	}
 
 	// Redefine remove method
