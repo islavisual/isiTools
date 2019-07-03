@@ -1,6 +1,6 @@
 this.it = {
 	name: "isiTools",
-	version: "1.3",
+	version: "1.3.0",
 	author: "Pablo E. Fernández (islavisual@gmail.com)",
 	copyright: "2017-2019 Islavisual",
 	lastupdate: "19/06/2019",
@@ -2662,7 +2662,7 @@ function isiToolsCallback(json){
 				}
 
 				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
-
+console.log("M:", m)
 				var reg, tmp = m, mg = true;
 				switch (m) {
 					case "D":
@@ -2692,6 +2692,8 @@ function isiToolsCallback(json){
 				
 				if(mg){
 					if('DMYHIS'.indexOf(m) != -1) tmp = m+m; 
+					// Get mask if year
+					//...
 					aok = aok ? this._check(tmp, reg, e) : false;
 				}
 				
@@ -2724,7 +2726,7 @@ function isiToolsCallback(json){
 				var p = this.opt.mask.indexOf(f), b = true;
 				var v = e.target.value, k = e.key[0];
 				var c = this.getPositionCursor();
-				if(f == 'YY'){
+				if(f == 'YYYY'){
 					if(p != -1 && v.length == this.opt.mask.length-1){
 						var yy = v.substr(p, 4) + k
 
@@ -2733,10 +2735,17 @@ function isiToolsCallback(json){
 						
 						var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
 						if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
+
+						console.log(f, yy, dd, mm, isleap)
 					}
+				} else if(f == 'YY'){ 
+					f = '99';
+					reg = /\d/;
+					
 				} else {
 					// If selected text
 					var ss = e.target.selectionStart, se = e.target.selectionEnd;
+
 					if(se - ss > 0){
 						e.target.value = v.substring(0, ss) + v.substring(se, v.length);
 						v = e.target.value;
@@ -2748,16 +2757,24 @@ function isiToolsCallback(json){
 					v = v.substr(0, ss) + k + v.substr(ss, v.length);
 					v = parseInt(v.substr(this.opt.mask.indexOf(f), f.length))
 
+					// Show log
+					console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
+
 					// Truncate 00 to 01 in day type
-					if(f == "DD" && ss == Mask.opt.mask.indexOf(f) && v == 0) v = 1;
+					if(f == "HH" && ss == p) return /[0-2]/.test(k);
+					else if(f == "II" && ss == p) return /[0-5]/.test(k);
+					else if(f == "SS" && ss == p) return /[0-5]/.test(k);
+
+					// Truncate 00 to 01 in day type
+					if(f == "DD" && ss == p && v == 0) v = 1;
 
 					// Truncate 00 to 01 in day month
-					if(f == "MM" && ss == Mask.opt.mask.indexOf(f) && v == 0) v = 1;
+					if(f == "MM" && ss == p && v == 0) v = 1;
 
+					// Add zero before if lower than 10
 					v = v < 10 ? ("0" + v) : (v + "");
 
 					b = new RegExp(reg).test(v);
-					//console.log("F:", f, "SS:",ss, "SE:", se, "V:",v)
 				}
 
 				return b;
