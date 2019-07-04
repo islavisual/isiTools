@@ -2644,7 +2644,7 @@ function isiToolsCallback(json){
 				var kc = e.keyCode, k = e.key[0], aok, optv = this.opt.target.value;
 
 				// Check if ignore keys
-				var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46];
+				var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
 				if(_ignoreKeys.indexOf(kc) != -1){ return false; }
 				if(e.ctrlKey) return true;
 
@@ -2662,7 +2662,7 @@ function isiToolsCallback(json){
 				}
 
 				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
-console.log("M:", m)
+
 				var reg, tmp = m, mg = true;
 				switch (m) {
 					case "D":
@@ -2692,8 +2692,8 @@ console.log("M:", m)
 				
 				if(mg){
 					if('DMYHIS'.indexOf(m) != -1) tmp = m+m; 
-					// Get mask if year
-					//...
+					if(Mask.opt.mask.substr(Mask.opt.mask.indexOf(m)+2,1) == "Y") tmp = "YYYY";
+
 					aok = aok ? this._check(tmp, reg, e) : false;
 				}
 				
@@ -2723,29 +2723,37 @@ console.log("M:", m)
 				}
 			},
 			_check: function(f, reg, e){
-				var p = this.opt.mask.indexOf(f), b = true;
-				var v = e.target.value, k = e.key[0];
-				var c = this.getPositionCursor();
-				if(f == 'YYYY'){
-					if(p != -1 && v.length == this.opt.mask.length-1){
-						var yy = v.substr(p, 4) + k
+				var p    = this.opt.mask.indexOf(f)
+				var pmax = Mask.opt.mask.indexOf(f) + Mask.opt.mask.substr(Mask.opt.mask.indexOf(f),4).length;
+				var b    = true;
+				var v    = e.target.value, k = e.key[0];
+				var ss   = e.target.selectionStart, se = e.target.selectionEnd;
 
+				if(f == 'YYYY' && ss == pmax - 1){
+					var yy = v.substr(p, 4) + k
+					var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
+					var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
+					
+					var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
+					if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
+
+				} else if(f == 'YY' && ss == pmax - 1){
+						var yy = 20 + v.substr(p, 2) + k
 						var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
 						var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
 						
 						var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
 						if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
 
-						console.log(f, yy, dd, mm, isleap)
-					}
-				} else if(f == 'YY'){ 
-					f = '99';
-					reg = /\d/;
+				} else if(f == 'MM' && ss == p + 1){
+					var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
+					var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
+					var monthdays=[31,29,31,30,31,30,31,31,30,31,30,31];
+					var max = monthdays[parseInt(mm) - 1];
 					
-				} else {
-					// If selected text
-					var ss = e.target.selectionStart, se = e.target.selectionEnd;
+					b = dd <= max;
 
+				} else {
 					if(se - ss > 0){
 						e.target.value = v.substring(0, ss) + v.substring(se, v.length);
 						v = e.target.value;
@@ -2758,18 +2766,15 @@ console.log("M:", m)
 					v = parseInt(v.substr(this.opt.mask.indexOf(f), f.length))
 
 					// Show log
-					console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
+					 console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
 
 					// Truncate 00 to 01 in day type
 					if(f == "HH" && ss == p) return /[0-2]/.test(k);
 					else if(f == "II" && ss == p) return /[0-5]/.test(k);
 					else if(f == "SS" && ss == p) return /[0-5]/.test(k);
-
-					// Truncate 00 to 01 in day type
-					if(f == "DD" && ss == p && v == 0) v = 1;
-
-					// Truncate 00 to 01 in day month
-					if(f == "MM" && ss == p && v == 0) v = 1;
+					else if(f == "DD" && ss == p) return /[0-3]/.test(k);
+					else if(f == "MM" && ss == p) return /[0-1]/.test(k);
+					else if(f[0] == "Y" && ss < pmax) return /[0-9]/.test(k);
 
 					// Add zero before if lower than 10
 					v = v < 10 ? ("0" + v) : (v + "");
