@@ -1777,11 +1777,12 @@ function isiToolsCallback(json){
 				for(var x = 0; x < items.length; x++){ items[x].click(); }
 
 				// Get current values
-				cfg.curDate = new Date();
-				cfg.curDate = new Date(cfg.curDate.getFullYear() + '/' + (cfg.curDate.getMonth() + 1) + '/' + cfg.curDate.getDate());
-				cfg.curYear = cfg.curDate.getFullYear();
-				cfg.curMonth = cfg.curDate.getMonth() + 1 < 10 ? ('0' + (cfg.curDate.getMonth() + 1)) : (cfg.curDate.getMonth() + 1);
-				cfg.curDay = cfg.curDate.getDate() < 10 ? ('0' + cfg.curDate.getDate()) : (cfg.curDate.getDate());
+				cfg.curDate = new Date(); 
+				cfg.curDate.setMinutes(new Date().getMinutes() - new Date().getTimezoneOffset()); 
+				cfg.curDate = cfg.curDate.toJSON().slice(0, 10);
+				cfg.curYear = cfg.curDate.split("-")[0];
+				cfg.curMonth = cfg.curDate.split("-")[1];
+				cfg.curDay = cfg.curDate.split("-")[2];
 
 				// Get requested values
 				if(this.target.value.trim() == ""){
