@@ -1,78 +1,94 @@
-this.it = {
-	name: "isiTools",
-	version: "1.3.0",
-	author: "Pablo E. Fernández (islavisual@gmail.com)",
-	copyright: "2017-2019 Islavisual",
-	lastupdate: "19/06/2019",
-	enabledModules: {},
-	autoload: function(){
-		if(typeof itEnabledModules != "undefined"){
-			isiToolsCallback(itEnabledModules);
+var it = function(t){
+	//if(!/^[\.#]/.test(t)) t = '#' + t;
+	it.target = document.querySelector(t);
+	return it;
+};
 
-		} else {
-			function UrlExists(url){
-				var uri = new XMLHttpRequest();
-				uri.open('HEAD', url, false);
-				uri.send();
-				return uri.status!=404;
-			}
+it.name = "isiTools";
+it.version = "1.4.0",
+it.author = "Pablo E. Fernández (islavisual@gmail.com)",
+it.copyright = "2017-2019 Islavisual",
+it.lastupdate = "10/07/2019",
+it.enabledModules = {},
+it.target = null,
+it.getAll = function(t){
+	return document.querySelectorAll(t);
+};
+it.help = function(plugin, cfg){
+	if(typeof cfg == "undefined") cfg = {help: ''};
+	if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-			function baseName(str){
-				var base = new String(str).substring(str.lastIndexOf('/') + 1); 
-				if(base.lastIndexOf(".") != -1)       
-					base = base.substring(0, base.lastIndexOf("."));
-				return base;
-			}
+	if (typeof showHelper != "undefined") showHelper("Datepicker", cfg);
+	else alert("Helper not available!")
+	return;
+}
+it.autoload = function(){
+	if(typeof itEnabledModules != "undefined"){
+		isiToolsCallback(itEnabledModules);
 
-			var http = new XMLHttpRequest();
+	} else {
+		function UrlExists(url){
+			var uri = new XMLHttpRequest();
+			uri.open('HEAD', url, false);
+			uri.send();
+			return uri.status!=404;
+		}
 
-			// When request is ready...
-			http.onreadystatechange = function () {
-				if (http.readyState == 4 && http.status == 200) {
-					isiToolsCallback(JSON.parse(http.response).modules);
-				}
-			}
+		function baseName(str){
+			var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+			if(base.lastIndexOf(".") != -1)       
+				base = base.substring(0, base.lastIndexOf("."));
+			return base;
+		}
 
-			// Get current path
-			var scripts = document.querySelectorAll("script"), isiToolsSrc = '';
-			for(var x = 0; x < scripts.length; x++){
-				var src = scripts[x].getAttribute("src");
+		var http = new XMLHttpRequest();
 
-				if(!src) continue;
-				var path = src.split(baseName(src))[0];
-				
-				if(UrlExists(path + "config.json")){
-					isiToolsSrc = src;
-					break;
-				}
-			}
-
-			if(isiToolsSrc != ""){
-				// Load by module
-				if(isiToolsSrc.indexOf("?modules=") != -1){
-					var json = {};
-					isiToolsSrc = isiToolsSrc.split("?modules=")[1].split("+");
-					
-					// Set all plugins to false
-					for(var key in json){ json[key] = false; }
-			
-					// Enable only sent by url
-					for(var i = 0; i < isiToolsSrc.length; i++){
-						var item = isiToolsSrc[i];
-				
-						json[item] = true;
-					}
-
-					isiToolsCallback(json);
-
-				} else {
-					http.open('GET', path+'config.json', false);
-					http.send();
-				}
+		// When request is ready...
+		http.onreadystatechange = function () {
+			if (http.readyState == 4 && http.status == 200) {
+				isiToolsCallback(JSON.parse(http.response).modules);
 			}
 		}
-	},
-}
+
+		// Get current path
+		var scripts = document.querySelectorAll("script"), isiToolsSrc = '';
+		for(var x = 0; x < scripts.length; x++){
+			var src = scripts[x].getAttribute("src");
+
+			if(!src) continue;
+			var path = src.split(baseName(src))[0];
+			
+			if(UrlExists(path + "config.json")){
+				isiToolsSrc = src;
+				break;
+			}
+		}
+
+		if(isiToolsSrc != ""){
+			// Load by module
+			if(isiToolsSrc.indexOf("?modules=") != -1){
+				var json = {};
+				isiToolsSrc = isiToolsSrc.split("?modules=")[1].split("+");
+				
+				// Set all plugins to false
+				for(var key in json){ json[key] = false; }
+		
+				// Enable only sent by url
+				for(var i = 0; i < isiToolsSrc.length; i++){
+					var item = isiToolsSrc[i];
+			
+					json[item] = true;
+				}
+
+				isiToolsCallback(json);
+
+			} else {
+				http.open('GET', path+'config.json', false);
+				http.send();
+			}
+		}
+	}
+};
 
 it.autoload();
 
@@ -603,7 +619,15 @@ function isiToolsCallback(json){
 								for (var z = 0; z < optData.items.length; z++) {
 									var text = '';
 									
-									if(jsonCluster){ text = optData.items[z].text; } else { text = optData.items[z]; }
+									if(jsonCluster){ 
+										for(var zkey in optData.items[z]){
+											if(typeof optData.items[z][zkey] == 'string') text += optData.items[z][zkey]+"|"; 
+										}
+									} else { 
+										text = optData.items[z]; 
+									}
+
+									text = text.replace(/\|/mg, ' ').trim();
 									
 									if (existsCoincidence(val, text, opt.startsWith, wildCard, 1)) {
 										b = document.createElement("div");
@@ -1671,6 +1695,362 @@ function isiToolsCallback(json){
 	}
 
 	/**
+		Datepicker functionality
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 10/07/2019
+	**/
+	if(json.Datepicker){
+		this.Datepicker = it.Datepicker = function(){
+			var id = this.target.id;
+			var cfg = this.Datepicker.config; 
+			
+			try{ cfg.custom[id].md = { b: [], c: [], a: [] }; } catch(e){}
+			
+			// Check if next element sibling of input is button
+			if(this.target.nextElementSibling.tagName.toLowerCase() != "button"){
+				alert("The input element '" + cfg.target + "' must be associated one button after!"); 
+				return false;
+			}
+
+			// If the process is in create/assign mode
+			var loading = false;
+			if(!this.target.classList.contains("has-datepicker")){
+				// Assign arguments
+				var m, y, opt;
+				for(var x = 0; x < arguments.length; x++){
+					var param = arguments[x];
+					if(typeof param == "number" && param <= 12) m = param;
+					else if(typeof param == "object") opt = param;
+					else y = param;
+				}
+				
+				if(arguments.length == 0) opt = {};
+
+				// Set parameters
+				var found = false;
+				for(var x = 0; x < cfg.custom.length; x++){
+					if(typeof cfg.custom[x][id] == 'object'){
+						found = true;
+						break;
+					}
+				}
+
+				if(!found){
+					cfg.custom[id] = {};
+
+					// Set default properties
+					for(var k in cfg){
+						if(k == 'custom') continue;
+						cfg.custom[id][k] = cfg[k];
+					}
+
+					if(!cfg.hasOwnProperty("background")) cfg.custom[id].background = '#0066a8';
+					if(!cfg.hasOwnProperty("color")) cfg.custom[id].foreground = '#fff';
+					
+					// Set sent properties
+					for(var k in opt){
+						if(k == 'custom') continue;
+						cfg.custom[id][k] = opt[k];
+					}
+				}
+
+				// Add Styles
+				it.Datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
+
+				// Add class to target input
+				this.target.classList.add("has-datepicker");
+				this.target.nextElementSibling.addEventListener("click", function(e){
+					it('#' + e.target.previousElementSibling.id).Datepicker();
+				});
+
+				loading = true;
+			}
+
+			// Get config
+			cfg = cfg.custom[id];
+
+			if(!loading){
+				// Close all previous datepickers
+				var items = document.querySelectorAll(".datepicker-close");
+				for(var x = 0; x < items.length; x++){ items[x].click(); }
+
+				// Get current values
+				cfg.curDate = new Date();
+				cfg.curDate = new Date(cfg.curDate.getFullYear() + '/' + (cfg.curDate.getMonth() + 1) + '/' + cfg.curDate.getDate());
+				cfg.curYear = cfg.curDate.getFullYear();
+				cfg.curMonth = cfg.curDate.getMonth() + 1 < 10 ? ('0' + (cfg.curDate.getMonth() + 1)) : (cfg.curDate.getMonth() + 1);
+				cfg.curDay = cfg.curDate.getDate() < 10 ? ('0' + cfg.curDate.getDate()) : (cfg.curDate.getDate());
+
+				// Get requested values
+				if(this.target.value.trim() == ""){
+					cfg.selYear = cfg.curYear;
+					cfg.selMonth = cfg.curMonth;
+					cfg.selDay = cfg.curDay;
+					
+					this.target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+				
+				} else {
+					cfg.selYear = this.target.value.substr(cfg.format.indexOf("YYYY"), 4);
+					cfg.selMonth = this.target.value.substr(cfg.format.indexOf("MM"), 2);
+					cfg.selDay = this.target.value.substr(cfg.format.indexOf("DD"), 2);
+				}
+				cfg.selMName = cfg.longmonths[parseInt(cfg.selMonth-1)];
+				cfg.selDName = cfg.longdays[new Date(cfg.selYear + "-" + cfg.selMonth + "-" + cfg.selDay).getUTCDay()];
+
+				// Get all days from requested month
+				var curMonth = [], x = 1, c = true, firstdate = '', lastdate = '';
+				while(c){
+					var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x));
+
+					c = dt.getMonth() + 1 == cfg.selMonth;
+
+					if(x == 1) firstdate = cfg.selYear + '-' + cfg.selMonth + '-01';
+
+					if(c){
+						cfg.md.c[x-1] = (x < 10 ? ('0' + x) : x) + '-' + cfg.selMonth + '-' + cfg.selYear;
+						lastdate = cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
+					}
+					x++;
+				}
+				
+				// Get before days from requested month
+				var aux = new Date(firstdate).getUTCDay() - cfg.weekstart, dt = 0;
+					aux = (aux < 0 ? 6: aux);
+				for(var x = 0; x < aux; x++){
+					dt = new Date(new Date(firstdate).getTime() - (86400000 * (x+1)));
+					var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+					
+					cfg.md.b[aux - x - 1] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
+				}
+
+				// Fill after days to complete 42
+				var aux = new Date(lastdate).getUTCDay(), dt = 0, cc = cfg.md.c.length + cfg.md.b.length;
+				for(var x = cc; x < 42; x++){
+					dt = new Date(new Date(lastdate).getTime() + (86400000 * (x - cc + 1)));
+					var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+					
+					cfg.md.a[x - cc] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
+				}
+
+				// Define picker object
+				var cal = document.createElement("section");
+					cal.classList.add("datepicker-date");
+					cal.id = "datepicker-layer-" + this.target.id
+					cal.setAttribute("data-id", this.target.id);
+					
+				var cclose = document.createElement("i");
+					cclose.classList.add("datepicker-close");
+					cclose.innerHTML = "Cerrar";
+
+				var lcal = document.createElement("div");
+					lcal.classList.add("l-cal");
+					var aux = '<span>' + cfg.selDay + '</span>';
+						aux += '<span>' + cfg.selDName + '</span>';
+						aux += '<span>' + cfg.selMName + '</span>';
+						aux += '<span>' + cfg.selYear + '</span>';
+						aux += '<div class="datepicker-buttons">';
+						aux += ' <button id="datepicker-layer-' + this.target.id + '-today">' + cfg.setText + '</button>';
+						aux += ' <button id="datepicker-layer-' + this.target.id + '-remove">' + cfg.removeText + '</button>';
+						aux += '</div>';
+
+					lcal.innerHTML = aux;
+
+				// Create right layer
+				var rcal = document.createElement("div");
+					rcal.classList.add("r-cal");
+				
+				// Fill years select 
+				var aux = "";
+				for(var x = 1900; x < parseInt(cfg.selYear) + 10; x++){
+					var active = x == cfg.selYear ? 'selected' : '';
+					aux += '<option value="' + x + '"' + active + '>' + x + '</option>'
+				}
+				rcal.innerHTML  = '<div class="datepicker-years"><select id="datepicker-year">' + aux + '</select></div>';
+
+				// Fill months buttons
+				var aux = "";
+				for(var x = 0; x < cfg.shortmonths.length; x++){
+					var active = x == cfg.selMonth-1 ? ' active' : '';
+					aux += '<span data-id="' + x + '" class="month' + active + '">' + cfg.shortmonths[x]  + '</span>';
+				}
+				rcal.innerHTML += '<div class="datepicker-months">' + aux + '</div>';
+				
+				// Now create template
+				var all = cfg.md.b.concat(cfg.md.c).concat(cfg.md.a);
+				var vday = parseInt(this.target.value.split('-')[0]), vmon = parseInt(this.target.value.split('-')[1]);
+				
+				// Fill day names
+				var dm = '<div class="datepicker-week-names"><div class="datepicker-week">';
+				for(var k = cfg.weekstart; k < cfg.shortdays.length; k++){
+					dm += '<span class="dayname">' + cfg.shortdays[k]  + '</span>';
+				}
+				for(var k = 0; k < cfg.weekstart; k++){
+					dm += '<span class="dayname">' + cfg.shortdays[k]  + '</span>';
+				}
+				dm += '</div></div>';
+				rcal.innerHTML += dm;
+				
+				// Fill day values
+				var tmpl =  '<div class="datepicker-week-data">', x = 0, antday = 0;
+				for(var k in all){
+					var y =  all[k].split('-')[2], m =  all[k].split('-')[1], d =  all[k].split('-')[0];
+					var day = parseInt(d), mon = parseInt(m);
+					
+					if(x == 0){ tmpl += '<div class="datepicker-week">'; }
+					else if(x % 7 == 0){ tmpl += '</div><div class="datepicker-week">'; }
+
+					var mode = '';
+					if(mon == parseInt(cfg.selMonth) && day == vday) mode += ' active';
+					if(mon != parseInt(cfg.selMonth)) mode += " disabled";
+
+					antday = day;
+					
+					tmpl += '<span class="day' + mode + '">' + d + '</span>';
+					x++;
+				}
+				tmpl += '</div>';
+
+				rcal.innerHTML += tmpl;
+
+				cal.appendChild(cclose);
+				cal.appendChild(lcal);
+				cal.appendChild(rcal);
+
+				document.body.appendChild(cal);
+
+				// Add close event
+				cclose.addEventListener("click", function(e){ e.target.parentElement.remove(); });
+
+				// Add day event
+				var items = rcal.querySelectorAll(".day");
+				for(var x = 0; x < items.length; x++){
+					var item = items[x];
+					item.addEventListener("click", function(e){
+						if(e.target.classList.contains("disabled")) return;
+						
+						var aux = e.target.parentElement.parentElement.parentElement.previousElementSibling.previousElementSibling;
+							aux.click();
+						
+						var prt = aux.parentElement.dataset.id;
+						var cfg = it.Datepicker.config.custom[prt];
+
+						document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+
+						it('#' + prt).Datepicker();
+					});
+				}
+
+				// Add month event
+				var m = rcal.querySelectorAll(".month");
+				for(var x = 0; x < m.length; x++){
+					var item = m[x];
+
+					item.addEventListener("click", function(e){
+						var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+							aux.click();
+						var prt = aux.parentElement.dataset.id;
+						var cfg = it.Datepicker.config.custom[prt];
+						var mm  = parseInt(e.target.dataset.id)+1;
+							mm  = mm < 10 ? ('0' + mm) : mm;
+						
+						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
+							
+
+						it('#' + prt).Datepicker();
+					});
+				}
+
+				// Add year event
+				var s = rcal.querySelector("select");
+				s.addEventListener("change", function(e){
+					var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+						aux.click();
+
+					var prt = aux.parentElement.dataset.id;
+					var cfg = it.Datepicker.config.custom[prt];
+					
+					document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
+
+					it('#' + prt).Datepicker();
+				});
+
+				// Add set today event
+				var b = document.getElementById("datepicker-layer-" + this.target.id + "-today");
+				b.addEventListener("click", function(e){
+					var aux = e.target.parentElement.parentElement.parentElement;
+					var cfg = it.Datepicker.config.custom[aux.dataset.id];
+				
+					document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
+
+					it('#' + aux.dataset.id).Datepicker();
+				});
+
+				// Add remove data event
+				var b = document.getElementById("datepicker-layer-" + this.target.id + "-remove");
+				b.addEventListener("click", function(e){
+					var aux = e.target.parentElement.parentElement.parentElement;
+				
+					document.getElementById(aux.dataset.id).value = '';
+				});
+			}
+		}
+		
+		it.Datepicker.version = '1.0';
+
+		it.Datepicker.addStyles = function(id, bg, fg){
+			it.AddCSSRule('', "#datepicker-layer-" + id, 'width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + "::before", 'content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + "::after ", 'content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:' + fg + '; z-index: -1;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-close", ' cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: ' + bg + '; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::before, #datepicker-layer-" + id +" .datepicker-close::after", 'content: ""; border-top: 2px solid ' + bg + '; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::after", 'transform: rotate(-45deg);');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal", 'position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: ' + bg + '; color: ' + fg + '; float: left; text-align: center; padding: 37px 3px 5px 3px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span", 'opacity: 0.5;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span:first-child", 'font-size: 38px; width: 100%; display: block; margin-top: 5px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(2)", 'font-size: 18px; width: 100%; display: block; margin-bottom: 18px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(4)", 'line-height: 32px; display: block;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .r-cal", 'width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-years select", 'cursor: pointer; height: 24px; width: 25%; background: ' + fg + '; color: #000; border: 0 navajowhite; margin-left: 75%;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id +" .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week", 'padding: 0 5px; display: table;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .r-cal .datepicker-week-names .datepicker-week", 'padding: 5px; background: ' + bg + '; color: ' + fg + ';');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id +" .datepicker-week .day", 'cursor: pointer; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.disabled", 'opacity: 0.5;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id +" .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding-top: 5px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'background: transparent; border: 1px solid transparent; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin-bottom: 2px; padding-top: 1px;');
+			it.AddCSSRule('', "input.has-datepicker + button", 'background: rgba(0,0,0,0); border: 0 none; position: absolute; right: 20px; bottom: 5px;');
+		};
+
+		it.Datepicker.config = { 
+			buttonicon: 'fa fa-calendar',
+			shortdays: ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+			longdays: ['Domingo', 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+			shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+			longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			weekstart: 1,
+			setText: 'Hoy',
+			removeText: 'Eliminar',
+			curDate: null,
+			selMonth: null,
+			selYear: null,
+			selDay: null,
+			format: 'DD-MM-YYYY',
+			md: {},
+			custom: []
+		}
+
+		it.Datepicker.help = function(cfg){
+			it.help('Datepicker', cfg);
+		}
+	}
+
+	/**
 		 Debugger functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -2653,12 +3033,6 @@ function isiToolsCallback(json){
 				if(opt.target.selectionEnd - opt.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
 					e.target.value += m; 
 					m = this.opt.mask.charAt(this.getPositionCursor());
-				}
-
-				// If separator pressed add 0 before last value
-				if(this.opt.mask.replace(/[9ADMYHIS#]/g, '').indexOf(k) != -1){
-					this.opt.target.value = optv.substr(0, optv.length-1)+"0"+optv.substr(optv.length-1);
-					optv = this.opt.target.value;
 				}
 
 				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
