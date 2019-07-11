@@ -8,7 +8,7 @@ it.name = "isiTools";
 it.version = "1.4.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "10/07/2019",
+it.lastupdate = "11/07/2019",
 it.enabledModules = {},
 it.target = null,
 it.getAll = function(t){
@@ -2968,12 +2968,12 @@ function isiToolsCallback(json){
 		@version: 1.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
-		@Last update: 14/03/2019
+		@Last update: 11/07/2019
 	**/
 	if(json.Mask){
 		this.Mask = it.Mask = {
 			version: '1.0',
-			opt: { target: null, mask: '' },
+			config: [],
 			help: function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
 				if(!cfg.hasOwnProperty("help")) cfg.help = '';
@@ -2986,26 +2986,30 @@ function isiToolsCallback(json){
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 				if (cfg.hasOwnProperty("mask") == null) { alert("Mask not defined to '" + cfg.target + "'"); return false; }
 
-				this.opt = cfg;
-				this.opt.target = document.getElementById(cfg.target);
+				if(arguments.length == 0) opt = {};
+
+				// Assign arguments
+				this.config[cfg.target] = cfg;
+				
+				cfg.target = document.getElementById(cfg.target);
 
 				// Set attributes
-				this.opt.target.setAttribute("placeholder", cfg.mask);
-				this.opt.target.setAttribute("maxlength", cfg.mask.length);
+				cfg.target.setAttribute("placeholder", cfg.mask);
+				cfg.target.setAttribute("maxlength", cfg.mask.length);
 
 				// Set paste event
-				this.opt.target.addEventListener('paste', function (e){
+				cfg.target.addEventListener('paste', function (e){
 					var EV = e;
 					setTimeout(function(){ Mask.fullFormat(EV)} , 150);
 				});
 
 				// Set keyborad events
-				this.opt.target.addEventListener('keydown', function (e){
-					return Mask._customEvent(e, Mask.opt);
+				cfg.target.addEventListener('keydown', function (e){
+					return Mask._customEvent(e, Mask.config[e.target.id]);
 				});
 			},
-			getPositionCursor: function() {
-				var p = 0, trg = this.opt.target;
+			getPositionCursor: function(e) {
+				var p = 0, trg = e.target;
 			  
 				if (document.selection) {
 					trg.focus();
@@ -3021,8 +3025,8 @@ function isiToolsCallback(json){
 
 				return p;
 			  },
-			_customEvent: function(e, opt){
-				var kc = e.keyCode, k = e.key[0], aok, optv = this.opt.target.value;
+			_customEvent: function(e, config){
+				var kc = e.keyCode, k = e.key[0], aok;
 
 				// Check if ignore keys
 				var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
@@ -3030,10 +3034,15 @@ function isiToolsCallback(json){
 				if(e.ctrlKey) return true;
 
 				// Check if char coincidence with mask
-				var m = this.opt.mask.charAt(this.getPositionCursor());
-				if(opt.target.selectionEnd - opt.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
+				var m = config.mask.charAt(this.getPositionCursor(e));
+				if(config.target.selectionEnd - config.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
 					e.target.value += m; 
-					m = this.opt.mask.charAt(this.getPositionCursor());
+					m = config.mask.charAt(this.getPositionCursor(e));
+				}
+
+				var isSep = config.mask.replace(/[9ADMYHIS#]/mg, '').indexOf(k) != -1;
+				if(isSep){
+					
 				}
 
 				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
@@ -3067,7 +3076,7 @@ function isiToolsCallback(json){
 				
 				if(mg){
 					if('DMYHIS'.indexOf(m) != -1) tmp = m+m; 
-					if(Mask.opt.mask.substr(Mask.opt.mask.indexOf(m)+2,1) == "Y") tmp = "YYYY";
+					if(config.mask.substr(config.mask.indexOf(m)+2,1) == "Y") tmp = "YYYY";
 
 					aok = aok ? this._check(tmp, reg, e) : false;
 				}
@@ -3081,11 +3090,12 @@ function isiToolsCallback(json){
 				return aok;
 			},
 			fullFormat: function(e){
-				var v = this.opt.target.value;
-				this.opt.target.value = "";
+				var cfg  = this.config[e.target.id];
+				var v = e.target.value;
+				e.target.value = "";
 
 				for(var x = 0; x < v.length; x++){
-					if(this.opt.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
+					if(cfg.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
 
 					// Modify event
 					var e1 = e;
@@ -3093,36 +3103,37 @@ function isiToolsCallback(json){
 						e1.ctrlKey = false; e1.altKey = false; e1.shiftKey = false;
 					
 					// Trigger custom event
-					var st = this._customEvent(e1, this.opt);
+					var st = this._customEvent(e1, cfg);
 					if(!st) break;
 				}
 			},
 			_check: function(f, reg, e){
-				var p    = this.opt.mask.indexOf(f)
-				var pmax = Mask.opt.mask.indexOf(f) + Mask.opt.mask.substr(Mask.opt.mask.indexOf(f),4).length;
+				var cfg  = this.config[e.target.id];
+				var p    = cfg.mask.indexOf(f)
+				var pmax = cfg.mask.indexOf(f) + cfg.mask.substr(cfg.mask.indexOf(f),4).length;
 				var b    = true;
 				var v    = e.target.value, k = e.key[0];
 				var ss   = e.target.selectionStart, se = e.target.selectionEnd;
 
 				if(f == 'YYYY' && ss == pmax - 1){
 					var yy = v.substr(p, 4) + k
-					var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
-					var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
+					var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
+					var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
 					
 					var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
 					if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
 
 				} else if(f == 'YY' && ss == pmax - 1){
 						var yy = 20 + v.substr(p, 2) + k
-						var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
-						var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
+						var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
+						var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
 						
 						var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
 						if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
 
 				} else if(f == 'MM' && ss == p + 1){
-					var dd = (v + k).substr(this.opt.mask.indexOf('DD'), 2);
-					var mm = (v + k).substr(this.opt.mask.indexOf('MM'), 2);
+					var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
+					var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
 					var monthdays=[31,29,31,30,31,30,31,31,30,31,30,31];
 					var max = monthdays[parseInt(mm) - 1];
 					
@@ -3138,19 +3149,24 @@ function isiToolsCallback(json){
 
 					// rebuild new input value
 					v = v.substr(0, ss) + k + v.substr(ss, v.length);
-					v = parseInt(v.substr(this.opt.mask.indexOf(f), f.length))
+					v = parseInt(v.substr(cfg.mask.indexOf(f), f.length))
 
 					// Show log
-					 console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
+					console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
 
 					// Truncate 00 to 01 in day type
-					if(f == "HH" && ss == p) return /[0-2]/.test(k);
-					else if(f == "II" && ss == p) return /[0-5]/.test(k);
-					else if(f == "SS" && ss == p) return /[0-5]/.test(k);
-					else if(f == "DD" && ss == p) return /[0-3]/.test(k);
-					else if(f == "MM" && ss == p) return /[0-1]/.test(k);
+					var fb = false;
+					if(f == "HH" && ss == p && k != 0) fb = /[0-2]/.test(k);
+					else if(f == "II" && ss == p && k != 0) fb = /[0-5]/.test(k);
+					else if(f == "SS" && ss == p && k != 0) fb = /[0-5]/.test(k);
+					else if(f == "DD" && ss == p && k != 0) fb = /[0-3]/.test(k);
+					else if(f == "MM" && ss == p && k != 0) fb = /[0-1]/.test(k);
 					else if(f[0] == "Y" && ss < pmax) return /[0-9]/.test(k);
 
+					if(!fb && ss == p && ((f == "DD" || f == "MM") || (k != 0 && (f == "HH" || f == "II" || f == "SS")))){
+						e.target.value = e.target.value.substr(0, ss) + '0' + e.target.value.substr(se);
+					}
+				
 					// Add zero before if lower than 10
 					v = v < 10 ? ("0" + v) : (v + "");
 
