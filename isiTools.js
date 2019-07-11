@@ -1801,7 +1801,7 @@ function isiToolsCallback(json){
 				cfg.selDName = cfg.longdays[new Date(cfg.selYear + "-" + cfg.selMonth + "-" + cfg.selDay).getUTCDay()];
 
 				// Get all days from requested month
-				var curMonth = [], x = 1, c = true, firstdate = '', lastdate = '';
+				var x = 1, c = true, firstdate = '', lastdate = '';
 				while(c){
 					var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x));
 
@@ -1852,8 +1852,8 @@ function isiToolsCallback(json){
 						aux += '<span>' + cfg.selMName + '</span>';
 						aux += '<span>' + cfg.selYear + '</span>';
 						aux += '<div class="datepicker-buttons">';
-						aux += ' <button id="datepicker-layer-' + this.target.id + '-today">' + cfg.setText + '</button>';
-						aux += ' <button id="datepicker-layer-' + this.target.id + '-remove">' + cfg.removeText + '</button>';
+						aux += ' <button id="datepicker-layer-' + this.target.id + '-today">' + cfg.textToday + '</button>';
+						aux += ' <button id="datepicker-layer-' + this.target.id + '-remove">' + cfg.textRemove + '</button>';
 						aux += '</div>';
 
 					lcal.innerHTML = aux;
@@ -1864,7 +1864,7 @@ function isiToolsCallback(json){
 				
 				// Fill years select 
 				var aux = "";
-				for(var x = 1900; x < parseInt(cfg.selYear) + 10; x++){
+				for(var x = 1900; x < parseInt(cfg.curYear) + 10; x++){
 					var active = x == cfg.selYear ? 'selected' : '';
 					aux += '<option value="' + x + '"' + active + '>' + x + '</option>'
 				}
@@ -2035,8 +2035,8 @@ function isiToolsCallback(json){
 			shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
 			longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 			weekstart: 1,
-			setText: 'Hoy',
-			removeText: 'Eliminar',
+			textToday: 'Today',
+			textRemove: 'Clean',
 			curDate: null,
 			selMonth: null,
 			selYear: null,
