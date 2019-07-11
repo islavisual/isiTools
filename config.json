@@ -1,6 +1,6 @@
 {
 	"name": "isiTools",
-	"version": 1.1,
+	"version": 1.4,
 	"author": "Pablo E. Fernández (islavisual@gmail.com)",
 	"copyright": "2017-2019 Islavisual",
 	"modules":{
@@ -11,6 +11,7 @@
 		"Constraint": true,
 		"DOM": true,
 		"Debugger": true,
+		"Datepicker": true,
 		"GetBrowser": true,
 		"GetParam": true,
 		"HttpRequest": true,
@@ -18,6 +19,7 @@
 		"IntelliForm": true,
 		"IsMobile": true,
 		"Language": true,
+		"Mask": true,
 		"Now": true,
 		"Nstate": true,
 		"Password": true,
