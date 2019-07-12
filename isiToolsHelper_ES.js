@@ -786,6 +786,29 @@ if(it.enabledModules.Language){
 }
 
 /**
+	 Masking functionality
+	 @version: 1.00
+	 @author: Pablo E. Fernández (islavisual@gmail.com).
+	 @Copyright 2017-2019 Islavisual.
+	 @Last update: 12/07/2019
+ **/
+if(it.enabledModules.Mask){
+	WikiHelper.Mask = {
+		general: {
+			version: 1.0,
+			name: 'Mask',
+			help: 1,
+			description: 'Herramienta para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.'
+		},
+		Mask: {
+			type: 'Object',
+			description: 'Indica el formato para la introducción del campo. Las posibles máscaras son:\n\t● <b>9</b>: Para indicar que sólo se aceptarán números del 0-9.\n\t● <b>A</b>: Para indicar que sólo se aceptarán caracteres alfanuméricos de la A-Z.\n\t● <b>#</b>: Para indicar que sólo se aceptará cualquier caracter.\n\t● <b>DD, MM e YYYY</b>: Para indicar formatos de tipo fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)\n\t● <b>HH, II e SS</b>: Para indicar formatos de tipo hora.',
+			example: 'Mask.set({target: "date", mask: "YYYY-MM-DD"});\nMask.set({target: "time", mask: "HH:II"});\nMask.set({target: "phone", mask: "(+99)-999-999-999"});\nMask.set({target: "code", mask: "99A-99#A-####-999A"});'
+		},
+	}
+}
+
+/**
    Nstate Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
