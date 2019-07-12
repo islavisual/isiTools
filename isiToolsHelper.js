@@ -236,7 +236,7 @@ if(it.enabledModules.Benchmark){
 if(it.enabledModules.Constraint){
 	WikiHelper.Constraint = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'Constraint',
 			help: 1,
 			description: "Constraint is a client script that provides a simple way to avoid introducing values ​​that are known, in advance, to be invalid. Its operation is based on regular expressions and is easily integrated with other JavaScript or HTML5 components.\nOnce the control is defined, its methods can be accessed through document.inputTextID.Constraint.",
@@ -285,6 +285,64 @@ if(it.enabledModules.Constraint){
 			type: 'string',
 			description: 'Decrements the value of the associated input the value set by "step". By default "step" is 1.',
 			example: 'Constraint.decrement("inputTextID");'
+		},
+	}
+}
+
+/**
+	 Datepicker functionality
+	 @version: 1.00
+	 @author: Pablo E. Fernández (islavisual@gmail.com).
+	 @Copyright 2017-2019 Islavisual.
+	 @Last update: 12/07/2019
+ **/
+if(it.enabledModules.Datepicker){
+	WikiHelper.Datepicker = {
+		general: {
+			version: 1.0,
+			name: 'Datepicker',
+			help: 1,
+			description: 'Datepicker is a control that allows the user to select a specific date from a list with a few clicks.'
+		},
+		shortdays: {
+			type: 'Object',
+			description: 'The attribute "shortdays" sets the abbreviation of the days of the week. Can be used to change the language.',
+			example: 'it("#birth-date").Datepicker({shortdays: ["L", "M", "X", "J", "V", "S", "D"]});'
+		},
+		longdays: {
+			type: 'Object',
+			description: 'The "long days" attribute sets the complete identifiers of the days of the week. It can be used to change the language.',
+			example: 'it("#birth-date").Datepicker({shortdays: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]});'
+		},
+		shortmonths: {
+			type: 'Object',
+			description: 'The attribute "shortmonths" sets the abbreviation of the months of the year. It can be used to change the language.',
+			example: 'it("#birth-date").Datepicker({shortmonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]});'
+		},
+		longmonths: {
+			type: 'Object',
+			description: 'The attribute "long months" sets the complete identifiers of the months of the year. It can be used to change the language.',
+			example: 'it("#birth-date").Datepicker({longmonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]});'
+		},
+		weekstart: {
+			type: 'Integer',
+			description: 'The attribute "weekstart" sets whether the week should start at 0 (Sunday) or 1 (Monday). By default it is 1.',
+			example: 'it("#birth-date").Datepicker({weekstart: 0});'
+		},
+		textToday: {
+			type: 'String',
+			description: 'Indicates the text of the button that sets today\'s date.',
+			example: 'it("#birth-date").Datepicker({textToday: "Today"});'
+		},
+		textRemove: {
+			type: 'Integer',
+			description: 'Indicates the text of the button that deletes the date from the target text field.',
+			example: 'it("#birth-date").Datepicker({textToday: "Remove"});'
+		},
+		format: {
+			type: 'String',
+			description: 'Indicates the format for entering the date. In general, the formats DD-MM-YYYY (Little Endian), MM-DD-YYYY (Median Endian) and YYYY-MM-DD (Big Endian) are used.',
+			example: 'it("#birth-date").Datepicker({format: "DD-MM-YYYY", background: "#0066a8", foreground: "#fff"});'
 		},
 	}
 }
@@ -730,6 +788,29 @@ if(it.enabledModules.Language){
 			description: 'Returns the translation for received string. If match is not found, it is assumed that don\'t have traduction and returns the same string.',
 			example: 'var tkey = Language.get("Loading...");\n// If you want recover the translation for another language, you can send the language like second parameter:\nvar tkey_ES = Language.get("Loading...", "es-ES");'
 		}
+	}
+}
+
+/**
+	 Masking functionality
+	 @version: 1.00
+	 @author: Pablo E. Fernández (islavisual@gmail.com).
+	 @Copyright 2017-2019 Islavisual.
+	 @Last update: 12/07/2019
+ **/
+if(it.enabledModules.Mask){
+	WikiHelper.Mask = {
+		general: {
+			version: 1.0,
+			name: 'Mask',
+			help: 1,
+			description: 'Script to generate input masks in text fields that helps users to enter correct values.'
+		},
+		Mask: {
+			type: 'Object',
+			description: 'Indicates the format for the introduction of the field. The possible masks are:\n\t●<b>9</b>: To indicate that only numbers from 0-9 will be accepted.\n\t●<b>A</b>: To indicate that only will accept alphanumeric characters from the AZ.\n\t●<b>#</b>: To indicate that only any character will be accepted.\n\t●<b>DD, MM and YYYY</b>: To indicate Date type formats. In general, the formats DD-MM-YYYY (Little Endian), MM-DD-YYYY (Median Endian) and YYYY-MM-DD (Big Endian) are used.\n\t●<b>HH, II e SS</b>: To indicate hour type formats.',
+			example: 'Mask.set({target: "date", mask: "YYYY-MM-DD"});\nMask.set({target: "time", mask: "HH:II"});\nMask.set({target: "phone", mask: "(+99)-999-999-999"});\nMask.set({target: "code", mask: "99A-99#A-####-999A"});'
+		},
 	}
 }
 
