@@ -627,13 +627,13 @@ function isiToolsCallback(json){
 										text = optData.items[z]; 
 									}
 
-									text = text.replace(/\|/mg, ' ').trim();
+									text = text.substr(0, text.length-1);
 									
 									if (existsCoincidence(val, text, opt.startsWith, wildCard, 1)) {
 										b = document.createElement("div");
 										b.classList.add("value");
 										b.style.width = "100%";
-										b.innerHTML += "<span>" + text + "</span>";
+										b.innerHTML += "<span>" + text.substr(0, text.indexOf("|")) + "</span>";
 										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + text + "'>";
 
 										// Mark highlighted
@@ -697,7 +697,7 @@ function isiToolsCallback(json){
 					if(v[x].trim() == "") delete v[x];
 				}
 
-				//console.log("Búsqueda", vp?"compleja":"simple",  "en modo", s? "comienza con":"contiene", w==1?"con comodines al final":(w==0?'con comodines al principio':'sin comodines'), "y PASO = ", p )
+				//console.log("Búsqueda", vp?"compleja":"simple",  "en modo", s? "comienza ":"contiene", w==1?"con comodines al final":(w==0?'con comodines al principio':'sin comodines'), "y PASO = ", p )
 				
 				// Search partial coincidences
 				for(var x = 0; x < v.length; x++){
