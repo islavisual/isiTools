@@ -369,6 +369,9 @@ function isiToolsCallback(json){
 		this.Autocomplete = it.Autocomplete = function (cfg) {
 			if(typeof cfg == "undefined") cfg = {};
 
+			// If it.target has value, set to cfg object
+			if(!cfg.hasOwnProperty('input') && it.target) cfg.input = it.target.id;
+
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("Autocomplete", cfg);
 				else alert("Helper not available!")
@@ -996,6 +999,9 @@ function isiToolsCallback(json){
 				}
 			},
 			set: function (cfg){
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an input ID into 'target' parameter!. Please, see the help with the Constraint.help();"); return false; }
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
@@ -1239,6 +1245,9 @@ function isiToolsCallback(json){
 			setUndo: function(cfg){
 				// Assign configuration obteins from parameter
 				for(var key in cfg){ this[key] = cfg[key]; }
+
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
 
 				// If targets, enable undo functionality.
 				if(this.hasOwnProperty("target")){
@@ -2799,6 +2808,9 @@ function isiToolsCallback(json){
 				return;
 			}
 
+			// If it.target has value, set to cfg object
+			if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+
 			// If configuration object is invalid
 			if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a string 'data' or 'file' parameter!. Please, see the help with the Include('help');"); return false; }
 			if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to execute the include!. Please, see the help with the Include('help');"); return false; }
@@ -3010,6 +3022,9 @@ function isiToolsCallback(json){
 				return;
 			},
 			set: function(cfg){
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 				if (cfg.hasOwnProperty("mask") == null) { alert("Mask not defined to '" + cfg.target + "'"); return false; }
 
@@ -3286,6 +3301,9 @@ function isiToolsCallback(json){
 				}
 			},
 			set: function(cfg){
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 
 				// Configure execution
@@ -3465,6 +3483,9 @@ function isiToolsCallback(json){
 				return;
 			},
 			check: function(cfg){
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 
 				// Configure execution
@@ -3594,11 +3615,15 @@ function isiToolsCallback(json){
 				this.config.autoDraw = e;
 			},
 			setAutocheck: function(cfg){
+				if(typeof cfg == "undefined") cfg = {};
+				
 				for(var aux in cfg){ this[aux] = cfg[aux]; }
 				
-				this.target.addEventListener("keyup", function(e){
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
 
-					Password.check({target: Password.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
+				this.target.addEventListener("keyup", function(e){
+					Password.check({target: cfg.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
 				});
 
 				this.target.form.setAttribute("onsubmit", "return " + Password.config.onerror.name + "('')");
@@ -3614,6 +3639,7 @@ function isiToolsCallback(json){
 			},
 			setTarget: function(e){
 				this.target = document.getElementById(e);
+				if(!this.target.getAttribute("name")) this.target.setAttribute("name", this.target.id);
 			},
 			_checkComplexity: function(val){
 				// Get features
@@ -3705,6 +3731,7 @@ function isiToolsCallback(json){
 
 				// Get options
 				if(typeof cfg == "string") cfg = { target: cfg };
+				
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create Selectpicker!. Please, see the help with the Selectpicker.help();"); return false; }
 				if(!cfg.hasOwnProperty('liveSearch')) cfg.liveSearch = false;
 
@@ -4090,6 +4117,9 @@ function isiToolsCallback(json){
 				return;
 			}
 
+			// If it.target has value, set to cfg object
+			if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+
 			// If configuration object is invalid
 			if (!cfg.hasOwnProperty('data')) { alert("You need set an object 'data' parameter!. Please, see the help with the Treeview('help');"); return false; }
 			if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create the Treeview!. Please, see the help with the Treeview('help');"); return false; }
@@ -4371,6 +4401,12 @@ function isiToolsCallback(json){
 				// Assign options and mandatories
 				var msg = this._assignOptions(cfg);
 				if(msg != "") return this._showErrorMessage(msg);
+
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+
+				// If configuration object is invalid
+				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create the Treeview!. Please, see the help with the Treeview('help');"); return false; }
 
 				// Get constraints and values
 				if(cfg.hasOwnProperty("constraint")){
