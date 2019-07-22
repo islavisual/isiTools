@@ -621,7 +621,11 @@ function isiToolsCallback(json){
 									
 									if(jsonCluster){ 
 										for(var zkey in optData.items[z]){
-											if(typeof optData.items[z][zkey] == 'string') text += optData.items[z][zkey]+"|"; 
+											var zval = optData.items[z][zkey];
+											
+											if(zval == null) continue;
+
+											if(typeof zval == 'string') text += zval+"|"; 
 										}
 									} else { 
 										text = optData.items[z]; 
@@ -672,78 +676,101 @@ function isiToolsCallback(json){
 				});
 			}
 
-			function existsCoincidence(v, t, s, w, p){
-				// v: pattern to found
-				// t: text where search
-				// s: if starsWith is enabled
-				// w: f the search has wildcard, -1 (not), 0 (to begin), 1 (to end)
-				// p: step of search
-
+			function existsCoincidence(value, text, mode, wildCards, pass){
 				// Replace double wildcard
-				v = v.replace("**", '*');
+				value = value.replace("**", '*');
 
 				// Change search mode to contains if the value to search contain two wildcards
-				if(v.split("*").length == 3) s = false;
-				
+				if(value.split("*").length == 3) mode = false;
+
 				// Clean of wildcards the value to search
-				v = v.replace(/\*/g, '');
+				value = value.replace(/\*/g, '');
 
 				// transform to lower case all
-				t = t.toLowerCase();
+				text = text.toLowerCase();
 
 				// Remove empty elements
-				var  vp = v.indexOf("+") != -1 ? true : false, v = v.toLowerCase().split("+"), sc = '', aux, v1, v1l;
-				for(var x = 0; x < v.length; x++){
-					if(v[x].trim() == "") delete v[x];
+				var complexSearch = value.indexOf("+") != -1 ? true : false, value = value.toLowerCase().split("+");
+				for(var v of value){
+					if(v.trim() == "") delete v;
 				}
 
-				//console.log("Búsqueda", vp?"compleja":"simple",  "en modo", s? "comienza ":"contiene", w==1?"con comodines al final":(w==0?'con comodines al principio':'sin comodines'), "y PASO = ", p )
-				
-				// Search partial coincidences
-				for(var x = 0; x < v.length; x++){
-					aux = false, v1 = v[x], v1l = v1 ? v1.length : 0;
+				var arraySearch = {};
+					arraySearch.complexSearch = {value: complexSearch, text: (complexSearch ? "compleja" : "simple")};
+					arraySearch.mode = {value: mode, text: (mode ? "comienza" : "contiene")};
+					arraySearch.wildCards = {value: wildCards, text: (wildCards == 1 ? "Al final" : ( wildCards == 0 ? 'Al principio' : 'No'))};
+					arraySearch.pass = pass;
+					arraySearch.searchedValue = value;
+					arraySearch.text = text;
 
-					if(!s){
-						if(t.indexOf(v1) != -1) aux = true;
+				// Search partial coincidences
+				var sc = '', aux, v1, v1l;
+				for(var x = 0; x < value.length; x++){
+					aux = false, v1 = value[x], v1l = v1 ? v1.length : 0;
+
+					if (v1.length > text.length) continue;
+
+					if(!mode){
+						// Starts with mode
+						if(text.indexOf(v1) != -1) aux = true;
 						if(aux) sc += v1 + "|";
 						
 					} else {
-						if(p == 0){
-							if(w == 0){
-								aux = t.indexOf(v1+"|") != -1;
+						// Contains mode
+						if(pass == 0){
+							if(wildCards == 0){
+								aux = text.indexOf(v1+"|") != -1;
 							} else {
-								aux = t.indexOf("|" + v1) != -1;
+								aux = text.indexOf("|" + v1) != -1;
 							}
+
 							if(aux) sc += v1 + "|";
 
 						} else {
-							if(w == 0){
-								aux = t.indexOf(v1) == t.length - v1l && t.length - v1l != -1;
-								if(aux) sc += v1 + "|";
+							// Pass 1
+							if(wildCards != -1){
+								// There are Wildards (to begin or to end)
+								var taux = text.split("|"), tl = taux.length;
+								for(var i = 0; i < tl; i++){
+									var t1 = taux[i];
+
+									if (v1.length > t1.length) continue;
+
+									aux = t1.indexOf(v1) == (wildCards == 0 ? (t1.length - v1.length) : 0);
+
+									if(aux) sc += v1 + "|";
+								}
 
 							} else {
-								if(vp && t.indexOf(" ") != -1){
-									var taux = t.split(" "), tl = taux.length;
+								// Without wildcards
+								if(complexSearch && text.indexOf(" ") != -1){
+									var taux = text.split(" "), tl = taux.length;
 									for(var i = 0; i < tl; i++){
 										var t1 = taux[i];
+										
+										if (v1.length > t1.length) continue;
+
 										aux = t1.indexOf(v1) == 0;
 
 										if(aux) sc += v1 + "|";
 									}
 								} else {
-									aux = t.indexOf(v1) == 0;
+									aux = text.indexOf(v1) == 0;
 									if(aux) sc += v1 + "|";
 								}
 							}
 						}
 					}
+
+					arraySearch.sc = sc;
+					//console.log(arraySearch.text, arraySearch);
 				}
 				if(sc == ""){
 					return false;
 				} else {
 					sc = sc.replace(/(^\||\|+$)/mg, '').split("|");
 					sc = sc.filter(distinct);
-					aux = sc.length >= v.length ? true : false;
+					aux = sc.length >= value.length ? true : false;
 				}
 				return aux;
 			}
