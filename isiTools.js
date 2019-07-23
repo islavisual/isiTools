@@ -1,6 +1,12 @@
 var it = function(t){
 	//if(!/^[\.#]/.test(t)) t = '#' + t;
-	it.target = document.querySelector(t);
+	var items = document.querySelectorAll(t);
+
+    if(items.length > 1)
+        it.targets = items;
+	else
+		it.target = items[0];
+
 	return it;
 };
 
@@ -11,6 +17,7 @@ it.copyright = "2017-2019 Islavisual",
 it.lastupdate = "11/07/2019",
 it.enabledModules = {},
 it.target = null,
+it.targets = null,
 it.getAll = function(t){
 	return document.querySelectorAll(t);
 };
@@ -694,8 +701,8 @@ function isiToolsCallback(json){
 
 				// Remove empty elements
 				var complexSearch = value.indexOf("+") != -1 ? true : false, value = value.toLowerCase().split("+");
-				for(var v of value){
-					if(v.trim() == "") delete v;
+				for(var v in value){
+					if(value[v].trim() == "") delete value[v];
 				}
 
 				var arraySearch = {};
@@ -2071,8 +2078,8 @@ function isiToolsCallback(json){
 			shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
 			longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 			weekstart: 1,
-			textToday: 'Today',
-			textRemove: 'Clean',
+			textToday: 'Hoy',
+			textRemove: 'Eliminar',
 			curDate: null,
 			selMonth: null,
 			selYear: null,
@@ -3194,7 +3201,7 @@ function isiToolsCallback(json){
 					v = parseInt(v.substr(cfg.mask.indexOf(f), f.length))
 
 					// Show log
-					console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
+					//console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
 
 					// Truncate 00 to 01 in day type
 					var fb = false;
@@ -4402,9 +4409,6 @@ function isiToolsCallback(json){
 				var msg = this._assignOptions(cfg);
 				if(msg != "") return this._showErrorMessage(msg);
 
-				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
-
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create the Treeview!. Please, see the help with the Treeview('help');"); return false; }
 
@@ -4529,6 +4533,9 @@ function isiToolsCallback(json){
 			},
 			_assignOptions: function(cfg){
 				var msg = "";
+
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
 
 				cfg.target = document.getElementById(cfg.target);
 				this.opt = cfg; 
