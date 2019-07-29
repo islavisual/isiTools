@@ -642,8 +642,10 @@ function isiToolsCallback(json){
 									}
 
 									text = text.substr(0, text.length-1);
+									text += (text.indexOf("|") == -1) ? "|" : "";
 									
 									if (existsCoincidence(val, text, opt.startsWith, wildCard, 1)) {
+										console.log(text)
 										b = document.createElement("div");
 										b.classList.add("value");
 										b.style.width = "100%";
@@ -4595,7 +4597,16 @@ if(it.browser == "IE"){
 	}
 
 	// Override KeyborarEvent
-	function KeyboardEvent(type, json){
+	function KeyboardEvent2(type, json){
+		// Creamos el evento de teclado
+		var keyboardEvent = document.createEvent("KeyboardEvent");
+	
+		// Comprobamos el método de inicialización
+		var initMethod = typeof keyboardEvent.initKeyboardEvent 
+			!== 'undefined' 
+			? "initKeyboardEvent" 
+			: "initKeyEvent";
+	
 		if(!json.hasOwnProperty("bubbles")) json.bubbles = true;
 		if(!json.hasOwnProperty("cancelable")) json.cancelable = true;
 		if(!json.hasOwnProperty("ctrlKey"))  json.ctrlKey = false;
@@ -4603,12 +4614,23 @@ if(it.browser == "IE"){
 		if(!json.hasOwnProperty("shiftKey")) json.shiftKey = false;
 		if(!json.hasOwnProperty("metaKey")) json.metaKey = false;
 		
-		var keyboardEvent = document.createEvent("KeyboardEvent");
-		var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-		keyboardEvent[initMethod](type, json.bubbles, json.cancelable, window, json.ctrlKey, json.altKey, json.shiftKey, json.metaKey, json.keyCode, 0);
-		document.getElementById('medicine').dispatchEvent(keyboardEvent);
+		keyboardEvent[initMethod](type,
+			json.bubbles,
+			json.cancelable,
+			window,
+			json.ctrlKey,
+			json.altKey,
+			json.shiftKey,
+			json.metaKey,
+			json.keyCode, 0);
+		
+		return keyboardEvent;
 	}
 
 	// Redefine remove method
-	HTMLElement.prototype.remove=function(){try{ this.parentElement.removeChild(this);} catch(e){}} 
+	HTMLElement.prototype.remove=function(){
+		try{
+			this.parentElement.removeChild(this);
+		} catch(e){}
+	} 
 }
