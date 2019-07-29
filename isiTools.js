@@ -4597,7 +4597,7 @@ if(it.browser == "IE"){
 	}
 
 	// Override KeyborarEvent
-	function KeyboardEvent2(type, json){
+	function KeyboardEvent(type, json){
 		// Creamos el evento de teclado
 		var keyboardEvent = document.createEvent("KeyboardEvent");
 	
