@@ -11,10 +11,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.4.0",
+it.version = "1.4.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "11/07/2019",
+it.lastupdate = "30/07/2019",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -2888,7 +2888,7 @@ function isiToolsCallback(json){
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 11/03/2019
+		@Last update: 30/07/2019
 	**/
 	if(json.IsMobile){
 		this.IsMobile = it.IsMobile = function (cfg) {
