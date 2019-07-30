@@ -1748,41 +1748,26 @@ function isiToolsCallback(json){
 	**/
 	if(json.Datepicker){
 		this.Datepicker = it.Datepicker = function(){
-			var id = this.target.id;
-			var cfg = this.Datepicker.config; 
-			
-			try{ cfg.custom[id].md = { b: [], c: [], a: [] }; } catch(e){}
-			
-			// Check if next element sibling of input is button
-			if(this.target.nextElementSibling.tagName.toLowerCase() != "button"){
-				alert("The input element '" + cfg.target + "' must be associated one button after!"); 
-				return false;
+			// If the target is only one, we update targets
+			if((typeof arguments[0] == "string" && arguments[0] == "show") || it.target ){
+				it.targets = [];
+				it.targets.push(it.target);
 			}
 
-			// If the process is in create/assign mode
-			var loading = false;
-			if(!this.target.classList.contains("has-datepicker")){
-				// Assign arguments
-				var m, y, opt;
-				for(var x = 0; x < arguments.length; x++){
-					var param = arguments[x];
-					if(typeof param == "number" && param <= 12) m = param;
-					else if(typeof param == "object") opt = param;
-					else y = param;
-				}
+			this.targets.forEach(function(target, idx){
+				var id = target.id;
+
+				// If the id attrtibute is not set, we assign it by default
+				id = id == "" ? ('DatePicker_' + idx) : id;
 				
-				if(arguments.length == 0) opt = {};
+				var cfg = this.Datepicker.config; 
+				
+				try{ cfg.custom[id].md = { b: [], c: [], a: [] }; } catch(e){}
 
-				// Set parameters
-				var found = false;
-				for(var x = 0; x < cfg.custom.length; x++){
-					if(typeof cfg.custom[x][id] == 'object'){
-						found = true;
-						break;
-					}
-				}
-
-				if(!found){
+				// If the process is in create/assign mode
+				var loading = false;
+				
+				if(!target.classList.contains("has-datepicker")){
 					cfg.custom[id] = {};
 
 					// Set default properties
@@ -1793,254 +1778,263 @@ function isiToolsCallback(json){
 
 					if(!cfg.hasOwnProperty("background")) cfg.custom[id].background = '#0066a8';
 					if(!cfg.hasOwnProperty("color")) cfg.custom[id].foreground = '#fff';
-					
-					// Set sent properties
-					for(var k in opt){
-						if(k == 'custom') continue;
-						cfg.custom[id][k] = opt[k];
+
+					// Add Styles
+					it.Datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
+
+					// Add class to target input 
+					target.classList.add("has-datepicker");
+
+					// Add and configure trigger button
+					var trigger = document.createElement('button');
+					trigger.id = 'DatePicker_trigger_' + idx;
+					if(cfg.buttonicon.indexOf("<") != -1){
+						trigger.innerHTML = cfg.buttonicon;
+					} else {
+						var cls = cfg.buttonicon.split(" ");
+						cls.forEach(function(val){
+							trigger.classList.add(val)
+						});
 					}
-				}
+					target.parentElement.insertBefore(trigger, target.nextElementSibling);
 
-				// Add Styles
-				it.Datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
-
-				// Add class to target input
-				this.target.classList.add("has-datepicker");
-				this.target.nextElementSibling.addEventListener("click", function(e){
-					it('#' + e.target.previousElementSibling.id).Datepicker();
-				});
-
-				loading = true;
-			}
-
-			// Get config
-			cfg = cfg.custom[id];
-
-			if(!loading){
-				// Close all previous datepickers
-				var items = document.querySelectorAll(".datepicker-close");
-				for(var x = 0; x < items.length; x++){ items[x].click(); }
-
-				// Get current values
-				cfg.curDate = new Date(); 
-				cfg.curDate.setMinutes(new Date().getMinutes() - new Date().getTimezoneOffset()); 
-				cfg.curDate = cfg.curDate.toJSON().slice(0, 10);
-				cfg.curYear = cfg.curDate.split("-")[0];
-				cfg.curMonth = cfg.curDate.split("-")[1];
-				cfg.curDay = cfg.curDate.split("-")[2];
-
-				// Get requested values
-				if(this.target.value.trim() == ""){
-					cfg.selYear = cfg.curYear;
-					cfg.selMonth = cfg.curMonth;
-					cfg.selDay = cfg.curDay;
-					
-					this.target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
-				
-				} else {
-					cfg.selYear = this.target.value.substr(cfg.format.indexOf("YYYY"), 4);
-					cfg.selMonth = this.target.value.substr(cfg.format.indexOf("MM"), 2);
-					cfg.selDay = this.target.value.substr(cfg.format.indexOf("DD"), 2);
-				}
-				cfg.selMName = cfg.longmonths[parseInt(cfg.selMonth-1)];
-				cfg.selDName = cfg.longdays[new Date(cfg.selYear + "-" + cfg.selMonth + "-" + cfg.selDay).getUTCDay()];
-
-				// Get all days from requested month
-				var x = 1, c = true, firstdate = '', lastdate = '';
-				while(c){
-					var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x));
-
-					c = dt.getMonth() + 1 == cfg.selMonth;
-
-					if(x == 1) firstdate = cfg.selYear + '-' + cfg.selMonth + '-01';
-
-					if(c){
-						cfg.md.c[x-1] = (x < 10 ? ('0' + x) : x) + '-' + cfg.selMonth + '-' + cfg.selYear;
-						lastdate = cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
-					}
-					x++;
-				}
-				
-				// Get before days from requested month
-				var aux = new Date(firstdate).getUTCDay() - cfg.weekstart, dt = 0;
-					aux = (aux < 0 ? 6: aux);
-				for(var x = 0; x < aux; x++){
-					dt = new Date(new Date(firstdate).getTime() - (86400000 * (x+1)));
-					var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
-					
-					cfg.md.b[aux - x - 1] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
-				}
-
-				// Fill after days to complete 42
-				var aux = new Date(lastdate).getUTCDay(), dt = 0, cc = cfg.md.c.length + cfg.md.b.length;
-				for(var x = cc; x < 42; x++){
-					dt = new Date(new Date(lastdate).getTime() + (86400000 * (x - cc + 1)));
-					var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
-					
-					cfg.md.a[x - cc] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
-				}
-
-				// Define picker object
-				var cal = document.createElement("section");
-					cal.classList.add("datepicker-date");
-					cal.id = "datepicker-layer-" + this.target.id
-					cal.setAttribute("data-id", this.target.id);
-					
-				var cclose = document.createElement("i");
-					cclose.classList.add("datepicker-close");
-					cclose.innerHTML = "Cerrar";
-
-				var lcal = document.createElement("div");
-					lcal.classList.add("l-cal");
-					var aux = '<span>' + cfg.selDay + '</span>';
-						aux += '<span>' + cfg.selDName + '</span>';
-						aux += '<span>' + cfg.selMName + '</span>';
-						aux += '<span>' + cfg.selYear + '</span>';
-						aux += '<div class="datepicker-buttons">';
-						aux += ' <button id="datepicker-layer-' + this.target.id + '-today">' + cfg.textToday + '</button>';
-						aux += ' <button id="datepicker-layer-' + this.target.id + '-remove">' + cfg.textRemove + '</button>';
-						aux += '</div>';
-
-					lcal.innerHTML = aux;
-
-				// Create right layer
-				var rcal = document.createElement("div");
-					rcal.classList.add("r-cal");
-				
-				// Fill years select 
-				var aux = "";
-				for(var x = 1900; x < parseInt(cfg.curYear) + 10; x++){
-					var active = x == cfg.selYear ? 'selected' : '';
-					aux += '<option value="' + x + '"' + active + '>' + x + '</option>'
-				}
-				rcal.innerHTML  = '<div class="datepicker-years"><select id="datepicker-year">' + aux + '</select></div>';
-
-				// Fill months buttons
-				var aux = "";
-				for(var x = 0; x < cfg.shortmonths.length; x++){
-					var active = x == cfg.selMonth-1 ? ' active' : '';
-					aux += '<span data-id="' + x + '" class="month' + active + '">' + cfg.shortmonths[x]  + '</span>';
-				}
-				rcal.innerHTML += '<div class="datepicker-months">' + aux + '</div>';
-				
-				// Now create template
-				var all = cfg.md.b.concat(cfg.md.c).concat(cfg.md.a);
-				var vday = parseInt(this.target.value.split('-')[0]), vmon = parseInt(this.target.value.split('-')[1]);
-				
-				// Fill day names
-				var dm = '<div class="datepicker-week-names"><div class="datepicker-week">';
-				for(var k = cfg.weekstart; k < cfg.shortdays.length; k++){
-					dm += '<span class="dayname">' + cfg.shortdays[k]  + '</span>';
-				}
-				for(var k = 0; k < cfg.weekstart; k++){
-					dm += '<span class="dayname">' + cfg.shortdays[k]  + '</span>';
-				}
-				dm += '</div></div>';
-				rcal.innerHTML += dm;
-				
-				// Fill day values
-				var tmpl =  '<div class="datepicker-week-data">', x = 0, antday = 0;
-				for(var k in all){
-					var y =  all[k].split('-')[2], m =  all[k].split('-')[1], d =  all[k].split('-')[0];
-					var day = parseInt(d), mon = parseInt(m);
-					
-					if(x == 0){ tmpl += '<div class="datepicker-week">'; }
-					else if(x % 7 == 0){ tmpl += '</div><div class="datepicker-week">'; }
-
-					var mode = '';
-					if(mon == parseInt(cfg.selMonth) && day == vday) mode += ' active';
-					if(mon != parseInt(cfg.selMonth)) mode += " disabled";
-
-					antday = day;
-					
-					tmpl += '<span class="day' + mode + '">' + d + '</span>';
-					x++;
-				}
-				tmpl += '</div>';
-
-				rcal.innerHTML += tmpl;
-
-				cal.appendChild(cclose);
-				cal.appendChild(lcal);
-				cal.appendChild(rcal);
-
-				document.body.appendChild(cal);
-
-				// Add close event
-				cclose.addEventListener("click", function(e){ e.target.parentElement.remove(); });
-
-				// Add day event
-				var items = rcal.querySelectorAll(".day");
-				for(var x = 0; x < items.length; x++){
-					var item = items[x];
-					item.addEventListener("click", function(e){
-						if(e.target.classList.contains("disabled")) return;
-						
-						var aux = e.target.parentElement.parentElement.parentElement.previousElementSibling.previousElementSibling;
-							aux.click();
-						
-						var prt = aux.parentElement.dataset.id;
-						var cfg = it.Datepicker.config.custom[prt];
-
-						document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
-
-						it('#' + prt).Datepicker();
+					// Add event to show picker
+					target.nextElementSibling.addEventListener("click", function(e){
+						it('#' + e.target.previousElementSibling.id).Datepicker('show');
 					});
+
+					loading = true;
 				}
 
-				// Add month event
-				var m = rcal.querySelectorAll(".month");
-				for(var x = 0; x < m.length; x++){
-					var item = m[x];
+				// Get config
+				cfg = cfg.custom[id];
 
-					item.addEventListener("click", function(e){
+				if(!loading){
+					// Close all previous datepickers
+					var items = document.querySelectorAll(".datepicker-close");
+					for(var x = 0; x < items.length; x++){ items[x].click(); }
+
+					// Get current values
+					cfg.curDate = new Date(); 
+					cfg.curDate.setMinutes(new Date().getMinutes() - new Date().getTimezoneOffset()); 
+					cfg.curDate = cfg.curDate.toJSON().slice(0, 10);
+					cfg.curYear = cfg.curDate.split("-")[0];
+					cfg.curMonth = cfg.curDate.split("-")[1];
+					cfg.curDay = cfg.curDate.split("-")[2];
+
+					// Get requested values
+					if(target.value.trim() == ""){
+						cfg.selYear = cfg.curYear;
+						cfg.selMonth = cfg.curMonth;
+						cfg.selDay = cfg.curDay;
+						
+						target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+					
+					} else {
+						cfg.selYear = target.value.substr(cfg.format.indexOf("YYYY"), 4);
+						cfg.selMonth = target.value.substr(cfg.format.indexOf("MM"), 2);
+						cfg.selDay = target.value.substr(cfg.format.indexOf("DD"), 2);
+					}
+					cfg.selMName = cfg.longmonths[parseInt(cfg.selMonth-1)];
+					cfg.selDName = cfg.longdays[new Date(cfg.selYear + "-" + cfg.selMonth + "-" + cfg.selDay).getUTCDay()];
+
+					// Get all days from requested month
+					var x = 1, c = true, firstdate = '', lastdate = '';
+					while(c){
+						var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x));
+
+						c = dt.getMonth() + 1 == cfg.selMonth;
+
+						if(x == 1) firstdate = cfg.selYear + '-' + cfg.selMonth + '-01';
+
+						if(c){
+							cfg.md.c[x-1] = (x < 10 ? ('0' + x) : x) + '-' + cfg.selMonth + '-' + cfg.selYear;
+							lastdate = cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
+						}
+						x++;
+					}
+					
+					// Get before days from requested month
+					var aux = new Date(firstdate).getUTCDay() - cfg.weekstart, dt = 0;
+						aux = (aux < 0 ? 6: aux);
+					for(var x = 0; x < aux; x++){
+						dt = new Date(new Date(firstdate).getTime() - (86400000 * (x+1)));
+						var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+						
+						cfg.md.b[aux - x - 1] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
+					}
+
+					// Fill after days to complete 42
+					var aux = new Date(lastdate).getUTCDay(), dt = 0, cc = cfg.md.c.length + cfg.md.b.length;
+					for(var x = cc; x < 42; x++){
+						dt = new Date(new Date(lastdate).getTime() + (86400000 * (x - cc + 1)));
+						var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+						
+						cfg.md.a[x - cc] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
+					}
+
+					// Define picker object
+					var cal = document.createElement("section");
+						cal.classList.add("datepicker-date");
+						cal.id = "datepicker-layer-" + target.id
+						cal.setAttribute("data-id", target.id);
+						
+					var cclose = document.createElement("i");
+						cclose.classList.add("datepicker-close");
+						cclose.innerHTML = "Cerrar";
+
+					var lcal = document.createElement("div");
+						lcal.classList.add("l-cal");
+						var aux = '<span>' + cfg.selDay + '</span>';
+							aux += '<span>' + cfg.selDName + '</span>';
+							aux += '<span>' + cfg.selMName + '</span>';
+							aux += '<span>' + cfg.selYear + '</span>';
+							aux += '<div class="datepicker-buttons">';
+							aux += ' <button id="datepicker-layer-' + target.id + '-today">' + cfg.textToday + '</button>';
+							aux += ' <button id="datepicker-layer-' + target.id + '-remove">' + cfg.textRemove + '</button>';
+							aux += '</div>';
+
+						lcal.innerHTML = aux;
+
+					// Create right layer
+					var rcal = document.createElement("div");
+						rcal.classList.add("r-cal");
+					
+					// Fill years select 
+					var aux = "";
+					for(var x = 1900; x < parseInt(cfg.curYear) + 10; x++){
+						var active = x == cfg.selYear ? 'selected' : '';
+						aux += '<option value="' + x + '"' + active + '>' + x + '</option>'
+					}
+					rcal.innerHTML  = '<div class="datepicker-years"><select id="datepicker-year">' + aux + '</select></div>';
+
+					// Fill months buttons
+					var aux = "";
+					for(var x = 0; x < cfg.shortmonths.length; x++){
+						var active = x == cfg.selMonth-1 ? ' active' : '';
+						aux += '<span data-id="' + x + '" class="month' + active + '">' + cfg.shortmonths[x]  + '</span>';
+					}
+					rcal.innerHTML += '<div class="datepicker-months">' + aux + '</div>';
+					
+					// Now create template
+					var all = cfg.md.b.concat(cfg.md.c).concat(cfg.md.a);
+					var vday = parseInt(target.value.split('-')[0]), vmon = parseInt(target.value.split('-')[1]);
+					
+					// Fill day names
+					var dm = '<div class="datepicker-week-names"><div class="datepicker-week">';
+					for(var k = cfg.weekstart; k < cfg.shortdays.length; k++){
+						dm += '<span class="dayname">' + cfg.shortdays[k]  + '</span>';
+					}
+					for(var k = 0; k < cfg.weekstart; k++){
+						dm += '<span class="dayname">' + cfg.shortdays[k]  + '</span>';
+					}
+					dm += '</div></div>';
+					rcal.innerHTML += dm;
+					
+					// Fill day values
+					var tmpl =  '<div class="datepicker-week-data">', x = 0, antday = 0;
+					for(var k in all){
+						var y =  all[k].split('-')[2], m =  all[k].split('-')[1], d =  all[k].split('-')[0];
+						var day = parseInt(d), mon = parseInt(m);
+						
+						if(x == 0){ tmpl += '<div class="datepicker-week">'; }
+						else if(x % 7 == 0){ tmpl += '</div><div class="datepicker-week">'; }
+
+						var mode = '';
+						if(mon == parseInt(cfg.selMonth) && day == vday) mode += ' active';
+						if(mon != parseInt(cfg.selMonth)) mode += " disabled";
+
+						antday = day;
+						
+						tmpl += '<span class="day' + mode + '">' + d + '</span>';
+						x++;
+					}
+					tmpl += '</div>';
+
+					rcal.innerHTML += tmpl;
+
+					cal.appendChild(cclose);
+					cal.appendChild(lcal);
+					cal.appendChild(rcal);
+
+					document.body.appendChild(cal);
+
+					// Add close event
+					cclose.addEventListener("click", function(e){ e.target.parentElement.remove(); });
+
+					// Add day event
+					var items = rcal.querySelectorAll(".day");
+					for(var x = 0; x < items.length; x++){
+						var item = items[x];
+						item.addEventListener("click", function(e){
+							if(e.target.classList.contains("disabled")) return;
+							
+							var aux = e.target.parentElement.parentElement.parentElement.previousElementSibling.previousElementSibling;
+								aux.click();
+							
+							var prt = aux.parentElement.dataset.id;
+							var cfg = it.Datepicker.config.custom[prt];
+
+							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+
+							it('#' + prt).Datepicker();
+						});
+					}
+
+					// Add month event
+					var m = rcal.querySelectorAll(".month");
+					for(var x = 0; x < m.length; x++){
+						var item = m[x];
+
+						item.addEventListener("click", function(e){
+							var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+								aux.click();
+							var prt = aux.parentElement.dataset.id;
+							var cfg = it.Datepicker.config.custom[prt];
+							var mm  = parseInt(e.target.dataset.id)+1;
+								mm  = mm < 10 ? ('0' + mm) : mm;
+							
+							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
+								
+
+							it('#' + prt).Datepicker();
+						});
+					}
+
+					// Add year event
+					var s = rcal.querySelector("select");
+					s.addEventListener("change", function(e){
 						var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
 							aux.click();
+
 						var prt = aux.parentElement.dataset.id;
 						var cfg = it.Datepicker.config.custom[prt];
-						var mm  = parseInt(e.target.dataset.id)+1;
-							mm  = mm < 10 ? ('0' + mm) : mm;
 						
-						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
-							
+						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
 
 						it('#' + prt).Datepicker();
 					});
-				}
 
-				// Add year event
-				var s = rcal.querySelector("select");
-				s.addEventListener("change", function(e){
-					var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
-						aux.click();
-
-					var prt = aux.parentElement.dataset.id;
-					var cfg = it.Datepicker.config.custom[prt];
+					// Add set today event
+					var b = document.getElementById("datepicker-layer-" + target.id + "-today");
+					b.addEventListener("click", function(e){
+						var aux = e.target.parentElement.parentElement.parentElement;
+						var cfg = it.Datepicker.config.custom[aux.dataset.id];
 					
-					document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
+						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
 
-					it('#' + prt).Datepicker();
-				});
+						it('#' + aux.dataset.id).Datepicker();
+					});
 
-				// Add set today event
-				var b = document.getElementById("datepicker-layer-" + this.target.id + "-today");
-				b.addEventListener("click", function(e){
-					var aux = e.target.parentElement.parentElement.parentElement;
-					var cfg = it.Datepicker.config.custom[aux.dataset.id];
-				
-					document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
-
-					it('#' + aux.dataset.id).Datepicker();
-				});
-
-				// Add remove data event
-				var b = document.getElementById("datepicker-layer-" + this.target.id + "-remove");
-				b.addEventListener("click", function(e){
-					var aux = e.target.parentElement.parentElement.parentElement;
-				
-					document.getElementById(aux.dataset.id).value = '';
-				});
-			}
+					// Add remove data event
+					var b = document.getElementById("datepicker-layer-" + target.id + "-remove");
+					b.addEventListener("click", function(e){
+						var aux = e.target.parentElement.parentElement.parentElement;
+					
+						document.getElementById(aux.dataset.id).value = '';
+					});
+				}
+			}); // end forEach
 		}
 		
 		it.Datepicker.version = '1.0';
