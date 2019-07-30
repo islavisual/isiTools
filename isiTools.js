@@ -1754,6 +1754,11 @@ function isiToolsCallback(json){
 				it.targets.push(it.target);
 			}
 
+			// If the device is mobile, we change the type of input element to date and do nothing else.
+			if(typeof document.createEvent("TouchEvent") == "undefined"){
+
+			}
+
 			this.targets.forEach(function(target, idx){
 				var id = target.id;
 
@@ -2895,9 +2900,27 @@ function isiToolsCallback(json){
 				return;
 			}
 
-			var mobile = false;
-			if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) mobile = true;
-			return mobile;
+			// Test touch event
+			var te;
+			try{ 
+				document.createEvent("TouchEvent");
+				if(typeof te != "undefined") return true;
+			} catch(e){}
+
+			// Test the operative system
+			var devices = ["webOS", "iPhone", "iPad", 
+                   "iPod", "BlackBerry", "IEMobile", 
+				   "Opera Mini"];
+			devices = new RegExp(devices.join("|"), 'i');
+			if (devices.test(navigator.userAgent)) return true;
+			
+			// Test width of screen
+			if(window.screen.width <= 768) return true;
+
+			// Test width of window (for developers mode with the opened console)
+			if(window.innerWidth <= 768) return true;
+
+			return false;
 		};
 	}
 	
