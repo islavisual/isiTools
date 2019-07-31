@@ -365,7 +365,7 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.3
+		@version: 1.2.3
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 31/07/2019
@@ -456,7 +456,6 @@ function isiToolsCallback(json){
 				opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
 
 				opt.target.addEventListener("inputAfter", function (e) {
-					var ts0 = performance.now();
 					//var ast = new Date().getTime()/1000; console.log("START: ", ast, "con " + this.value.trim());
 					var a, b, c, i, val = this.value.trim();
 
@@ -506,9 +505,9 @@ function isiToolsCallback(json){
 						thead.setAttribute("class", "header");
 
 						var aux = "";
-						opt.tableFields.fields.forEach(function(tableField, z){
-							aux += '<span style="width: ' + (100 / tableField.length) + '%">' + opt.tableFields.headers[z] + "</span>";
-						});
+						for (var z = 0; z < opt.tableFields.fields.length; z++) {
+							aux += '<span style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + opt.tableFields.headers[z] + "</span>";
+						}
 						thead.innerHTML = aux;
 						a.appendChild(thead);
 					}
@@ -517,12 +516,12 @@ function isiToolsCallback(json){
 					if(opt.format == "cluster" && typeof opt.data[0].items[0] == "object") jsonCluster = true;
 
 					// Go through the data
-					opt.data.forEach(function(optData, i){
+					for (var i = 0; i < opt.data.length; i++) {
 						// If val is empty only process the first 100 elements
-						if(val.length == 0 && i > 99) return;
+						if(val.length == 0 && i > 99) break;
 
 						// Check if the item contains the text field value
-						var cval = '', found;
+						var cval = '', found, optData = opt.data[i];
 						if(opt.format != "layer"){
 							cval = '|';
 							for(var keyVal in optData){
@@ -580,7 +579,7 @@ function isiToolsCallback(json){
 								var highlighting = typeof opt.tableFields.highlights != "undefined" ? true : false;
 								var tooltips = opt.tooltips ? true : false;
 
-								opt.tableFields.fields.forEach(function(tableField, f){
+								for (var f = 0; f < opt.tableFields.fields.length; f++) {
 									if(f == 0){
 										b.classList.add("value");
 										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
@@ -591,8 +590,8 @@ function isiToolsCallback(json){
 										});
 									}
 
-									var tfld = tableField[f], tval = optData[tableField[f]];
-									var faux = '<span __tp__ style="width: ' + (100 / tableField.length) + '%">' + optData[tableField[f]] + "</span>";
+									var tfld = opt.tableFields.fields[f], tval = optData[opt.tableFields.fields[f]];
+									var faux = '<span __tp__ style="width: ' + (100 / opt.tableFields.fields.length) + '%">' + optData[opt.tableFields.fields[f]] + "</span>";
 									
 									// If items is disabled
 									if(highlighting){
@@ -607,17 +606,17 @@ function isiToolsCallback(json){
 									// If items have tooltips and add items
 
 									if(tooltips){
-										opt.tooltips.forEach(function(tooltip, t){
+										for (var t = 0; t < opt.tooltips.length; t++) {
 											if(tfld == opt.tooltips[t].field){
-												faux= faux.replace("__tp__", 'title="' + optData[tooltip.text] + '"');
+												faux= faux.replace("__tp__", 'title="' + optData[opt.tooltips[t].text] + '"');
 												break
 											} 
-										});
+										}
 									} else {
 										faux = faux.replace("__tp__", '');
 									}
 									b.innerHTML += faux.replace("__tp__", '');
-								});
+								}
 							}
 							
 							a.appendChild(b);
@@ -627,20 +626,19 @@ function isiToolsCallback(json){
 							if (opt.format == "cluster") {
 								var tooltips = opt.tooltips ? true : false;
 
-								optData.items.forEach(function(item, z){
-								//for (var z = 0; z < optData.items.length; z++) {
+								for (var z = 0; z < optData.items.length; z++) {
 									var text = '';
 									
 									if(jsonCluster){ 
-										for(var zkey in item){
-											var zval = item[zkey];
+										for(var zkey in optData.items[z]){
+											var zval = optData.items[z][zkey];
 											
 											if(zval == null) continue;
 
 											if(typeof zval == 'string') text += zval+"|"; 
 										}
 									} else { 
-										text = item; 
+										text = optData.items[z]; 
 									}
 
 									text = text.substr(0, text.length-1);
@@ -654,14 +652,14 @@ function isiToolsCallback(json){
 										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + text.substr(0, text.indexOf("|")) + "'>";
 
 										// Mark highlighted
-										if(opt.highlights && item[opt.highlights.field] != 0) {
+										if(opt.highlights && optData.items[z][opt.highlights.field] != 0) {
 											b.style.background = opt.highlights.bg
 											b.style.color 	   = opt.highlights.fg;
 										}
 
 										// Set tooltips
 										if(tooltips){
-											b.setAttribute("title", item[opt.tooltips.field])
+											b.setAttribute("title", optData.items[z][opt.tooltips.field])
 										}
 
 										// Add element
@@ -673,7 +671,7 @@ function isiToolsCallback(json){
 											closeAllLists(this);
 										});
 									}
-								})
+								}
 
 								// Clean empty values
 								if(bc.children.length == 0){
@@ -682,11 +680,10 @@ function isiToolsCallback(json){
 								}
 							}
 						}
-					});
+					}
 
 					window._continueAC = false;
-					var ts1 = performance.now();
-					console.log("La búsqueda tardó " + (ts1 - ts0) + " milisegundos.");
+					//console.log("END: ", ast - (new Date().getTime()/1000))
 				});
 			}
 
@@ -851,9 +848,9 @@ function isiToolsCallback(json){
 			}
 
 			function removeActive(x) {
-				x.forEach(function(item){
-					item.classList.remove(opt.className + "-active");
-				});
+				for (var i = 0; i < x.length; i++) {
+					x[i].classList.remove(opt.className + "-active");
+				}
 			}
 
 			function closeAllLists(elmnt) {
