@@ -1740,15 +1740,20 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.00
+		@version: 1.01
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 10/07/2019
+		@Last update: 23/08/2019
 	**/
 	if(json.Datepicker){
-		this.Datepicker = it.Datepicker = function(){
+		this.Datepicker = it.Datepicker = function(cfg){
 			// If the target is only one, we update targets
-			if((typeof arguments[0] == "string" && arguments[0] == "show") || it.target ){
+			if((typeof cfg == "string" && cfg == "show")){
+				cfg = this.Datepicker.config.custom[it.target.id];
+			} 
+
+			// If only one datepicker
+			if(it.target) {
 				it.targets = [];
 				it.targets.push(it.target);
 			}
@@ -1768,8 +1773,10 @@ function isiToolsCallback(json){
 				// If the id attrtibute is not set, we assign it by default
 				id = id == "" ? ('DatePicker_' + idx) : id;
 				
-				var cfg = this.Datepicker.config; 
-				
+				for(var key in this.Datepicker.config){
+					cfg[key] = cfg.hasOwnProperty(key) ? cfg[key] : this.Datepicker.config[key]
+				}
+								
 				try{ cfg.custom[id].md = { b: [], c: [], a: [] }; } catch(e){}
 
 				// If the process is in create/assign mode
@@ -1787,6 +1794,7 @@ function isiToolsCallback(json){
 					if(!cfg.hasOwnProperty("background")) cfg.custom[id].background = '#0066a8';
 					if(!cfg.hasOwnProperty("color")) cfg.custom[id].foreground = '#fff';
 
+
 					// Add Styles
 					it.Datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
 
@@ -1796,6 +1804,7 @@ function isiToolsCallback(json){
 					// Add and configure trigger button
 					var trigger = document.createElement('button');
 					trigger.id = 'DatePicker_trigger_' + idx;
+					trigger.type="button";
 					if(cfg.buttonicon.indexOf("<") != -1){
 						trigger.innerHTML = cfg.buttonicon;
 					} else {
@@ -1808,7 +1817,11 @@ function isiToolsCallback(json){
 
 					// Add event to show picker
 					target.nextElementSibling.addEventListener("click", function(e){
-						it('#' + e.target.previousElementSibling.id).Datepicker('show');
+						var trg = e.target.previousElementSibling;
+
+						if(!trg) trg = e.target.parentElement.previousElementSibling;
+
+						it('#' + trg.id).Datepicker('show');
 					});
 
 					loading = true;
@@ -1985,7 +1998,7 @@ function isiToolsCallback(json){
 
 							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
 
-							it('#' + prt).Datepicker();
+							it('#' + prt).Datepicker('show');
 						});
 					}
 
@@ -2005,7 +2018,7 @@ function isiToolsCallback(json){
 							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
 								
 
-							it('#' + prt).Datepicker();
+							it('#' + prt).Datepicker('show');
 						});
 					}
 
@@ -2020,7 +2033,7 @@ function isiToolsCallback(json){
 						
 						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
 
-						it('#' + prt).Datepicker();
+						it('#' + prt).Datepicker('show');
 					});
 
 					// Add set today event
@@ -2031,7 +2044,7 @@ function isiToolsCallback(json){
 					
 						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
 
-						it('#' + aux.dataset.id).Datepicker();
+						it('#' + aux.dataset.id).Datepicker('show');
 					});
 
 					// Add remove data event
