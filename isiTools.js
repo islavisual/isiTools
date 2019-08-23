@@ -1767,7 +1767,7 @@ function isiToolsCallback(json){
 				}
 			} catch(e) {}
 
-			this.targets.forEach(function(target, idx){
+			for(var idx = 0; idx < this.targets.length; idx++){
 				var id = target.id;
 
 				// If the id attrtibute is not set, we assign it by default
@@ -2055,7 +2055,7 @@ function isiToolsCallback(json){
 						document.getElementById(aux.dataset.id).value = '';
 					});
 				}
-			}); // end forEach
+			} // end for
 		}
 		
 		it.Datepicker.version = '1.0';
