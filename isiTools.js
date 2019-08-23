@@ -1,3 +1,5 @@
+var itEnabledModules = {Datepicker : true, AddCSSRule: true }
+
 var it = function(t){
 	//if(!/^[\.#]/.test(t)) t = '#' + t;
 	var items = document.querySelectorAll(t);
@@ -11,7 +13,7 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.4.2",
+it.version = "1.4.3",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
 it.lastupdate = "31/07/2019",
@@ -25,7 +27,7 @@ it.help = function(plugin, cfg){
 	if(typeof cfg == "undefined") cfg = {help: ''};
 	if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-	if (typeof showHelper != "undefined") showHelper("Datepicker", cfg);
+	if (typeof showHelper != "undefined") showHelper("index", cfg);
 	else alert("Helper not available!")
 	return;
 }
@@ -104,10 +106,10 @@ function isiToolsCallback(json){
 
 	/**
 		 AddCSSRule functionality																		
-		@version: 1.00																					
+		@version: 1.01																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2019 Islavisual. 																	
-		@Last update: 13/03/2019																			
+		@Last update: 23/08/2019																			
 	**/
 	if(json.AddCSSRule){
 		this.AddCSSRule = it.AddCSSRule = function (cfg, selector, styles, index) {
@@ -130,9 +132,9 @@ function isiToolsCallback(json){
 					
 					// Add style tag to head
 					document.head.insertBefore(style, document.head.firstChild);
-					s = style;
+					s = style.sheet;
 				} else {
-					s  = itS;
+					s  = itS.sheet;
 				}
 			} else {
 				if (typeof sheet == "number") s = document.styleSheets[sheet];
@@ -140,30 +142,27 @@ function isiToolsCallback(json){
 				else console.log("sheet not avilable!")
 			}
 
-			if(typeof sheet == "number" || typeof sheet == "object"){
-				// Get rule
-				try { 
-					var rText = s.cssRules || s.rules; 
-					if(typeof index == "undefined") index = rText.length;
-				} catch (ex) { }
 
-				for (var i = rText.length - 1; i >= 0; i--) {
-					r = rText[i];
-					if (typeof r.selectorText != "undefined" && r.selectorText.trim() == selector.trim()) {
-						s.deleteRule(i);
-						break;
-					}
-				}
+			// Get rules
+			var rText = s.cssRules || s.rules; 
+				index = typeof index == "undefined" ? rText.length : index;
 
-				// Insert rule
-				if ("insertRule" in s) {
-					s.insertRule(selector + " { " + styles + " } ", index);
-					
-				} else if ("addRule" in s) {
-					s.addRule(selector, styles, index);
+			for(var i = 0; i < index; i++) {
+				r = rText[i];
+
+				if (typeof r.selectorText != "undefined" && r.selectorText.trim() == selector.trim()) {
+					s.deleteRule(i);
+					index--;
+					break;
 				}
-			} else {
-				s.innerHTML += selector + " { " + styles + " }\n";
+			}
+
+			// Insert rule
+			if ("insertRule" in s) {
+				s.insertRule(selector + " { " + styles + " } ", index);
+				
+			} else if ("addRule" in s) {
+				s.addRule(selector, styles, index);
 			}
 		}
 	}
@@ -1757,19 +1756,24 @@ function isiToolsCallback(json){
 				it.targets = [];
 				it.targets.push(it.target);
 			}
+				
 
 			// If the device is mobile, we change the type of input element to date and do nothing else.
 			try{
 				if(typeof document.createEvent("TouchEvent") == "undefined"){
-					this.targets.forEach(function(target, idx){
+					Array.prototype.slice.call(this.targets).forEach(function(target, idx){
 						target.type = "date";
 					});
 				}
-			} catch(e) {}
+			} catch(e) {
+				Array.prototype.slice.call(this.targets).forEach(function(target, idx){
+					target.type = "text";
+				});
+			}
 
-			for(var idx = 0; idx < this.targets.length; idx++){
+			Array.prototype.slice.call(this.targets).forEach(function(target, idx){
 				var id = target.id;
-
+				
 				// If the id attrtibute is not set, we assign it by default
 				id = id == "" ? ('DatePicker_' + idx) : id;
 				
@@ -2055,7 +2059,7 @@ function isiToolsCallback(json){
 						document.getElementById(aux.dataset.id).value = '';
 					});
 				}
-			} // end for
+			}); // end for
 		}
 		
 		it.Datepicker.version = '1.0';
@@ -2083,8 +2087,8 @@ function isiToolsCallback(json){
 			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id +" .datepicker-week .day", 'cursor: pointer; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
 			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.disabled", 'opacity: 0.5;');
 			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id +" .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding-top: 5px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'background: transparent; border: 1px solid transparent; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin-bottom: 2px; padding-top: 1px;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
+			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
 			it.AddCSSRule('', "input.has-datepicker + button", 'background: rgba(0,0,0,0); border: 0 none; position: absolute; right: 20px; bottom: 5px;');
 		};
 
