@@ -1,5 +1,4 @@
-// Uncomment to enable some plugins only
-//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true, Constraint: true }
+var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true, Constraint: true }
 
 var it = function(t){
     it.targets = document.querySelectorAll(t);
@@ -94,6 +93,17 @@ it.autoload = function(){
 it.set = function(){
 	if(this.so != null)	
 		this[this.so].set.call(this[this.so])
+}
+
+it.simulateEvent = function(evt, el){
+
+	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
+	el.dispatchEvent(event);
+
+	if(evt == "change"){
+		var event = new Event('input', {'bubbles': true, 'cancelable': true});
+		el.dispatchEvent(event);
+	}
 }
 
 it.autoload();
@@ -1756,10 +1766,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.01
+		@version: 1.02
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 23/08/2019
+		@Last update: 27/08/2019
 	**/
 	if(json.Datepicker){
 		this.Datepicker = it.datepicker = function(cfg){
@@ -1863,7 +1873,9 @@ function isiToolsCallback(json){
 						cfg.selMonth = cfg.curMonth;
 						cfg.selDay = cfg.curDay;
 						
-						target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+						target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
+
+						it.simulateEvent("change", target);
 					
 					} else {
 						cfg.selYear = target.value.substr(cfg.format.indexOf("YYYY"), 4);
@@ -2010,7 +2022,9 @@ function isiToolsCallback(json){
 							var prt = aux.parentElement.dataset.id;
 							var cfg = it.datepicker.config.custom[prt];
 
-							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
+
+							it.simulateEvent("change", document.getElementById(prt));
 
 							it('#' + prt).datepicker('show');
 						});
@@ -2029,8 +2043,9 @@ function isiToolsCallback(json){
 							var mm  = parseInt(e.target.dataset.id)+1;
 								mm  = mm < 10 ? ('0' + mm) : mm;
 							
-							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
-								
+							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
+
+							it.simulateEvent("change", document.getElementById(prt));
 
 							it('#' + prt).datepicker('show');
 						});
@@ -2045,7 +2060,9 @@ function isiToolsCallback(json){
 						var prt = aux.parentElement.dataset.id;
 						var cfg = it.datepicker.config.custom[prt];
 						
-						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
+						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value);
+
+						it.simulateEvent("change", document.getElementById(prt));
 
 						it('#' + prt).datepicker('show');
 					});
@@ -2056,7 +2073,9 @@ function isiToolsCallback(json){
 						var aux = e.target.parentElement.parentElement.parentElement;
 						var cfg = it.datepicker.config.custom[aux.dataset.id];
 					
-						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
+						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear);
+
+						it.simulateEvent("change", document.getElementById(prt));
 
 						it('#' + aux.dataset.id).datepicker('show');
 					});
@@ -2067,6 +2086,8 @@ function isiToolsCallback(json){
 						var aux = e.target.parentElement.parentElement.parentElement;
 					
 						document.getElementById(aux.dataset.id).value = '';
+
+						it.simulateEvent("change", document.getElementById(prt));
 					});
 				}
 			}); // end for
