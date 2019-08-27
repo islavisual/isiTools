@@ -1,7 +1,7 @@
-var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true, Constraint: true }
+//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true, Constraint: true }
 
 var it = function(t){
-    it.targets = document.querySelectorAll(t);
+	it.targets = document.querySelectorAll(t);
 
 	return it;
 };
@@ -1780,20 +1780,21 @@ function isiToolsCallback(json){
 
 			// If the device is mobile, we change the type of input element to date and do nothing else.
 			try{
-				if(typeof document.createEvent("TouchEvent") == "undefined"){
+				if(typeof document.createEvent("TouchEvent") != "undefined"){
 					Array.prototype.slice.call(this.targets).forEach(function(target, idx){
 						target.type = "date";
 					});
+
+					return;
 				}
-			} catch(e) {
-				Array.prototype.slice.call(this.targets).forEach(function(target, idx){
-					target.type = "text";
-				});
-			}
+			} catch(e) { }
 
 			Array.prototype.slice.call(this.targets).forEach(function(target, idx){
+				target.type = "text";
+
+				// Get ID
 				var id = target.id;
-				
+			
 				// If the id attrtibute is not set, we assign it by default
 				id = id == "" ? ('DatePicker_' + idx) : id;
 				
@@ -2075,7 +2076,7 @@ function isiToolsCallback(json){
 					
 						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear);
 
-						it.simulateEvent("change", document.getElementById(prt));
+						it.simulateEvent("change", document.getElementById(aux.dataset.id));
 
 						it('#' + aux.dataset.id).datepicker('show');
 					});
@@ -2087,7 +2088,7 @@ function isiToolsCallback(json){
 					
 						document.getElementById(aux.dataset.id).value = '';
 
-						it.simulateEvent("change", document.getElementById(prt));
+						it.simulateEvent("change", document.getElementById(aux.dataset.id));
 					});
 				}
 			}); // end for
@@ -2102,7 +2103,7 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-close", ' cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: ' + bg + '; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::before, #datepicker-layer-" + id +" .datepicker-close::after", 'content: ""; border-top: 2px solid ' + bg + '; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::after", 'transform: rotate(-45deg);');
-			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal", 'position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: ' + bg + '; color: ' + fg + '; float: left; text-align: center; padding: 37px 3px 5px 3px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal", 'position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: ' + bg + '; color: ' + fg + '; float: left; text-align: center; padding: 0px 3px 5px 3px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span", 'opacity: 0.5;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:first-child", 'font-size: 38px; width: 100%; display: block; margin-top: 5px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(2)", 'font-size: 18px; width: 100%; display: block; margin-bottom: 18px;');
@@ -2111,7 +2112,7 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years select", 'cursor: pointer; height: 24px; width: 25%; background: ' + fg + '; color: #000; border: 0 navajowhite; margin-left: 75%;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
-			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id +" .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week", 'padding: 0 5px; display: table;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .r-cal .datepicker-week-names .datepicker-week", 'padding: 5px; background: ' + bg + '; color: ' + fg + ';');
@@ -2119,8 +2120,8 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.disabled", 'opacity: 0.5;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id +" .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
-			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
-			it.addCSSRule('', "input.has-datepicker + button", 'background: rgba(0,0,0,0); border: 0 none; position: absolute; right: 20px; bottom: 5px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'cursor: pointer; color: ' + fg + '; background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
+			it.addCSSRule('', "input.has-datepicker + button", 'cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 24px;');
 		};
 
 		it.datepicker.config = { 
