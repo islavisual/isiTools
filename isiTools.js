@@ -1,5 +1,5 @@
 // Uncomment to enable some plugins only
-//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true }
+//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true, Constraint: true }
 
 var it = function(t){
     it.targets = document.querySelectorAll(t);
@@ -8,10 +8,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.4.3",
+it.version = "1.5.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "27/08/2019",
+it.lastupdate = "26/08/2019",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -19,7 +19,7 @@ it.help = function(plugin, cfg){
 	if(typeof cfg == "undefined") cfg = {help: ''};
 	if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-	if (typeof showHelper != "undefined") showHelper(plugin ? plugin : "index", cfg);
+	if (typeof showHelper != "undefined") showHelper("index", cfg);
 	else alert("Helper not available!")
 	return;
 }
@@ -89,7 +89,12 @@ it.autoload = function(){
 			}
 		}
 	}
-};
+}
+
+it.set = function(){
+	if(this.so != null)	
+		this[this.so].set.call(this[this.so])
+}
 
 it.autoload();
 
@@ -970,36 +975,53 @@ function isiToolsCallback(json){
 		@Last update: 04/03/2019
 	**/
 	if(json.Constraint){
-		this.Constraint = it.constraint = {
-			version: '1.1',
-			options: {},
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+		this.Constraint = it.constraint = function(cfg){
+			if (!cfg || cfg == "") { alert("Constraint data not defined!"); return false; }
 
-				if (typeof showHelper != "undefined") showHelper("Constraint", cfg);
-				else alert("Helper not available!")
-				return;
-			},
-			increment: function(t){
-				var opt = document[t].options;
-				if (opt.type == 'hour') {
-					this._setHour(document.getElementById(opt.target), "up");
-				} else {
-					this._setNumber(document.getElementById(opt.target), "up");
-				}
-			},
-			decrement: function(t){
-				var opt = document[t].options;
-				if (opt.type == 'hour') {
-					this._setHour(document.getElementById(opt.target), "down");
-				} else {
-					this._setNumber(document.getElementById(opt.target), "down");
-				}
-			},
-			set: function (cfg){
+			Array.prototype.slice.call(this.targets).forEach(function(target){
+				it.constraint.config[target.id] = cfg;
+				it.constraint.config[target.id].target = target.id;
+			});
+
+			this.so = "constraint";
+			return this;
+		}
+		it.constraint.version =  '1.1';
+		it.constraint.config = {};
+		it.constraint.options = {};
+		it.constraint.help = function(cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("Constraint", cfg);
+			else alert("Helper not available!")
+			return;
+		}
+		
+		it.constraint.increment = function(t){
+			var opt = document[t].options;
+			if (opt.type == 'hour') {
+				this._setHour(document.getElementById(opt.target), "up");
+			} else {
+				this._setNumber(document.getElementById(opt.target), "up");
+			}
+		}
+		
+		it.constraint.decrement = function(t){
+			var opt = document[t].options;
+			if (opt.type == 'hour') {
+				this._setHour(document.getElementById(opt.target), "down");
+			} else {
+				this._setNumber(document.getElementById(opt.target), "down");
+			}
+		}
+		it.constraint.set = function (){
+			for(var key in this.config){
+				// Set attributes
+				cfg = this.config[key];
+
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
+				//if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an input ID into 'target' parameter!. Please, see the help with the Constraint.help();"); return false; }
@@ -1093,73 +1115,76 @@ function isiToolsCallback(json){
 
 				// Enable control
 				assignEvents(document.getElementById(opt.target), opt.type, opt.ds);
-
-				document[opt.target] = {};
-				document[opt.target]['Constraint'] = Constraint;
-				document[opt.target]['options'] = opt;
-				return this;
-			},
-			_setNumber: function(e, d){
-				var opt = document[e.id].options, aux = '';
-				var d = (d == 'down' ? -1 : 1) * opt.step;
-				var v = parseFloat(opt.ds != "." ? e.value.replace(opt.ds, ".") : e.value);
-				var md = parseInt((Math.abs(d) < 1.0) ? d.toString().split(".")[1].length : 0);
-				var dec = e.value.indexOf(opt.ds) != -1 ? (e.value.length - e.value.indexOf(opt.ds) - 1) : md;
-				dec = dec < md ? md : dec;
-
-				if (opt.base != 10) {
-					aux = parseInt(e.value, opt.base) + d;
-					aux = aux.toString(opt.base);
-				} else {
-					aux = (v + d).toFixed(dec);
-					aux = opt.ds != "." ? aux.toString().replace(".", opt.ds) : aux;
-				}
-
-				var _type = opt.type, valid;
-				if(_type == "decimal" || _type == "float"){
-					valid = Constraint._types[opt.type](aux, opt.ds);
-				} else {
-					valid = Constraint._types[opt .type](aux);
-				}
-				
-				if(!valid) aux = '0';
-				e.value = aux;
-			},
-			_setHour: function(e, d) {
-				var aux = e.value.split(":"), sep = e.value.indexOf(":"), sp = e.selectionStart < sep ? 0 : 5;
-				var va = 0, d = d == 'down' ? -1 : 1;
-
-				if (sep != -1 && sp < 3) {
-					va = parseInt(aux[0]) + d;
-					aux = (va < 10 ? ('0' + va) : va) + ":" + aux[1];
-				} else if (sep != -1 && sp >= 3) {
-					va = parseInt(aux[1]) + d;
-					aux = aux[0] + ":" + (va < 10 ? ('0' + va) : va);
-				} else if (sep == -1) {
-					va = parseInt(aux) + d;
-					aux = va < 10 ? ('0' + va) : va;
-				}
-
-				var valid = Constraint._types[document[e.id].options.type](aux);
-				if(!valid && aux.toString().length < 3) aux = '00:00';
-				else if(valid && aux.toString().length < 3) aux = aux + ':00';
-				else if(!valid) aux = e.value;
-				e.value = aux;
-				
-				setTimeout(function () { e.setSelectionRange(sp, sp); }, 10);
-			},
-			_types: {
-				// Formats by default
-				int: function (value) { return /^-?\d*$/.test(value); },
-				uint: function (value) { return /^\d*$/.test(value); },
-				float: function (value, ds) { return new RegExp('^-?\\d*[' + ds + ']?\\d*$').test(value); },
-				decimal: function (value, ds) { return new RegExp('^-?\\d*[' + ds + ']?\\d{0,2}$').test(value); },
-				percent: function (value) { return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 100); },
-				binary: function (value) { return /^(0|1)*$/.test(value); },
-				hexadecimal: function (value) { return /^[0-9a-f]*$/i.test(value); },
-				hour: function (value) { return /^([0-2]{0,1}|0[0-9]|1[0-9]|2[0-3])([:]?|:[0-5]{1}[0-9]{0,1})$/.test(value); },
-				custom: this.function ? this.function : null,
 			}
+
+			document[opt.target] = {};
+			document[opt.target]['Constraint'] = Constraint;
+			document[opt.target]['options'] = opt;
+			return this;
+		};
+
+		it.constraint._setNumber = function(e, d){
+			var opt = document[e.id].options, aux = '';
+			var d = (d == 'down' ? -1 : 1) * opt.step;
+			var v = parseFloat(opt.ds != "." ? e.value.replace(opt.ds, ".") : e.value);
+			var md = parseInt((Math.abs(d) < 1.0) ? d.toString().split(".")[1].length : 0);
+			var dec = e.value.indexOf(opt.ds) != -1 ? (e.value.length - e.value.indexOf(opt.ds) - 1) : md;
+			dec = dec < md ? md : dec;
+
+			if (opt.base != 10) {
+				aux = parseInt(e.value, opt.base) + d;
+				aux = aux.toString(opt.base);
+			} else {
+				aux = (v + d).toFixed(dec);
+				aux = opt.ds != "." ? aux.toString().replace(".", opt.ds) : aux;
+			}
+
+			var _type = opt.type, valid;
+			if(_type == "decimal" || _type == "float"){
+				valid = Constraint._types[opt.type](aux, opt.ds);
+			} else {
+				valid = Constraint._types[opt .type](aux);
+			}
+			
+			if(!valid) aux = '0';
+			e.value = aux;
+		}
+
+		it.constraint._setHour = function(e, d) {
+			var aux = e.value.split(":"), sep = e.value.indexOf(":"), sp = e.selectionStart < sep ? 0 : 5;
+			var va = 0, d = d == 'down' ? -1 : 1;
+
+			if (sep != -1 && sp < 3) {
+				va = parseInt(aux[0]) + d;
+				aux = (va < 10 ? ('0' + va) : va) + ":" + aux[1];
+			} else if (sep != -1 && sp >= 3) {
+				va = parseInt(aux[1]) + d;
+				aux = aux[0] + ":" + (va < 10 ? ('0' + va) : va);
+			} else if (sep == -1) {
+				va = parseInt(aux) + d;
+				aux = va < 10 ? ('0' + va) : va;
+			}
+
+			var valid = Constraint._types[document[e.id].options.type](aux);
+			if(!valid && aux.toString().length < 3) aux = '00:00';
+			else if(valid && aux.toString().length < 3) aux = aux + ':00';
+			else if(!valid) aux = e.value;
+			e.value = aux;
+			
+			setTimeout(function () { e.setSelectionRange(sp, sp); }, 10);
+		}
+		
+		it.constraint._types = {
+			// Formats by default
+			int: function (value) { return /^-?\d*$/.test(value); },
+			uint: function (value) { return /^\d*$/.test(value); },
+			float: function (value, ds) { return new RegExp('^-?\\d*[' + ds + ']?\\d*$').test(value); },
+			decimal: function (value, ds) { return new RegExp('^-?\\d*[' + ds + ']?\\d{0,2}$').test(value); },
+			percent: function (value) { return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 100); },
+			binary: function (value) { return /^(0|1)*$/.test(value); },
+			hexadecimal: function (value) { return /^[0-9a-f]*$/i.test(value); },
+			hour: function (value) { return /^([0-2]{0,1}|0[0-9]|1[0-9]|2[0-3])([:]?|:[0-5]{1}[0-9]{0,1})$/.test(value); },
+			custom: this.function ? this.function : null,
 		}
 	}
 
@@ -3045,219 +3070,222 @@ function isiToolsCallback(json){
 		@Last update: 11/07/2019
 	**/
 	if(json.Mask){
-		this.Mask = it.mask = {
-			version: '1.0',
-			config: [],
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+		this.Mask = it.mask = function(cfg){
+			if (!cfg || cfg == "") { alert("Mask not defined!"); return false; }
 
-				if (typeof showHelper != "undefined") showHelper("Mask", cfg);
-				else alert("Helper not available!")
-				return;
-			},
-			set: function(cfg){
-				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
+			Array.prototype.slice.call(this.targets).forEach(function(target){
+				it.mask.config[target.id] = { target: target, mask: cfg}
+			});
 
-				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
-				if (cfg.hasOwnProperty("mask") == null) { alert("Mask not defined to '" + cfg.target + "'"); return false; }
+			this.so = "mask";
+			return this;
+		}
 
-				if(arguments.length == 0) opt = {};
+		it.mask.version = '1.1';
+		it.mask.config = [];
+		it.mask.help = function(cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-				// Assign arguments
-				this.config[cfg.target] = cfg;
-				
-				cfg.target = document.getElementById(cfg.target);
-				cfg.target.type = "text";
+			if (typeof showHelper != "undefined") showHelper("Mask", cfg);
+			else alert("Helper not available!")
+			return;
+		}
+		
+		it.mask.set = function(){
+			if(arguments.length == 0) opt = {};
 
+			for(var key in this.config){
 				// Set attributes
+				cfg = this.config[key];
 				cfg.target.setAttribute("placeholder", cfg.mask);
 				cfg.target.setAttribute("maxlength", cfg.mask.length);
+
+				cfg.target.type = "text";
 
 				// Set paste event
 				cfg.target.addEventListener('paste', function (e){
 					var EV = e;
-					setTimeout(function(){ Mask.fullFormat(EV)} , 150);
+					setTimeout(function(){ it.mask.fullFormat(EV)} , 150);
 				});
 
 				// Set keyborad events
 				cfg.target.addEventListener('keydown', function (e){
-					return Mask._customEvent(e, Mask.config[e.target.id]);
+					return it.mask._customEvent(e, it.mask.config[e.target.id]);
 				});
-			},
-			getPositionCursor: function(e) {
-				var p = 0, trg = e.target;
-			  
-				if (document.selection) {
-					trg.focus();
+			}
+		}
+		it.mask.getPositionCursor = function(e) {
+			var p = 0, trg = e.target;
+			
+			if (document.selection) {
+				trg.focus();
 
-					var s = document.selection.createRange();
-						s.moveStart('character', -trg.value.length);
+				var s = document.selection.createRange();
+					s.moveStart('character', -trg.value.length);
 
-					p = s.text.length;
+				p = s.text.length;
 
-				} else if (trg.selectionStart || trg.selectionStart == '0'){
-					p = trg.selectionDirection=='backward' ? trg.selectionStart : trg.selectionEnd;
-				}
+			} else if (trg.selectionStart || trg.selectionStart == '0'){
+				p = trg.selectionDirection=='backward' ? trg.selectionStart : trg.selectionEnd;
+			}
 
-				return p;
-			  },
-			_customEvent: function(e, config){
-				var kc = e.keyCode, k = e.key[0], aok;
+			return p;
+		}
+		it.mask._customEvent = function(e, config){
+			var kc = e.keyCode, k = e.key[0], aok;
 
-				// Check if ignore keys
-				var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
-				if(_ignoreKeys.indexOf(kc) != -1){ return false; }
-				if(e.ctrlKey) return true;
+			// Check if ignore keys
+			var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
+			if(_ignoreKeys.indexOf(kc) != -1){ return false; }
+			if(e.ctrlKey) return true;
 
-				// Check if char coincidence with mask
-				var m = config.mask.charAt(this.getPositionCursor(e));
-				if(config.target.selectionEnd - config.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
-					e.target.value += m; 
-					m = config.mask.charAt(this.getPositionCursor(e));
-				}
+			// Check if char coincidence with mask
+			var m = config.mask.charAt(this.getPositionCursor(e));
+			if(config.target.selectionEnd - config.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
+				e.target.value += m; 
+				m = config.mask.charAt(this.getPositionCursor(e));
+			}
 
-				var isSep = config.mask.replace(/[9ADMYHIS#]/mg, '').indexOf(k) != -1;
-				if(isSep){
-					
-				}
-
-				aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
-
-				var reg, tmp = m, mg = true;
-				switch (m) {
-					case "D":
-						reg = /(0[1-9]|1[0-9]|2[0-9]|3[0-1])/;
-						break;
-					case "M":
-						reg = /(0[1-9]|1[0-2])/;
-						break;
-					case "Y":
-						reg = /\d{4}/;
-						break;
-					case "H":
-						reg = /(0[0-9]|1[0-9]|2[0-3])/;
-						break;
-					case "I":
-						reg = /(0[0-9]|[1-5][0-9])/;
-						break;
-					case "S":
-						reg = /(0[0-9]|[1-5][0-9])/;
-						break;
-					case "#":
-						reg = /./;
-						break;
-					default:
-						mg = false;
-				}
+			var isSep = config.mask.replace(/[9ADMYHIS#]/mg, '').indexOf(k) != -1;
+			if(isSep){
 				
-				if(mg){
-					if('DMYHIS'.indexOf(m) != -1) tmp = m+m; 
-					if(config.mask.substr(config.mask.indexOf(m)+2,1) == "Y") tmp = "YYYY";
+			}
 
-					aok = aok ? this._check(tmp, reg, e) : false;
-				}
+			aok = ('9DMYHIS'.indexOf(m) != -1 ? /\d/ : (m == 'A' ? /[a-zA-Z]/ : /./)).test(k);
+
+			var reg, tmp = m, mg = true;
+			switch (m) {
+				case "D":
+					reg = /(0[1-9]|1[0-9]|2[0-9]|3[0-1])/;
+					break;
+				case "M":
+					reg = /(0[1-9]|1[0-2])/;
+					break;
+				case "Y":
+					reg = /\d{4}/;
+					break;
+				case "H":
+					reg = /(0[0-9]|1[0-9]|2[0-3])/;
+					break;
+				case "I":
+					reg = /(0[0-9]|[1-5][0-9])/;
+					break;
+				case "S":
+					reg = /(0[0-9]|[1-5][0-9])/;
+					break;
+				case "#":
+					reg = /./;
+					break;
+				default:
+					mg = false;
+			}
+			
+			if(mg){
+				if('DMYHIS'.indexOf(m) != -1) tmp = m+m; 
+				if(config.mask.substr(config.mask.indexOf(m)+2,1) == "Y") tmp = "YYYY";
+
+				aok = aok ? this._check(tmp, reg, e) : false;
+			}
+			
+			if (aok){
+				if(e.type == "paste") {e.target.value += k;}
+			} else {
+				return this._rollbackEvent(e);
+			}
+
+			return aok;
+		}
+		it.mask.fullFormat = function(e){
+			var cfg  = this.config[e.target.id];
+			var v = e.target.value;
+			e.target.value = "";
+
+			for(var x = 0; x < v.length; x++){
+				if(cfg.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
+
+				// Modify event
+				var e1 = e;
+					e1.keyCode = v[x].charCodeAt(0); e1.which = v[x].charCodeAt(0); e1.key = v[x];
+					e1.ctrlKey = false; e1.altKey = false; e1.shiftKey = false;
 				
-				if (aok){
-					if(e.type == "paste") {e.target.value += k;}
-				} else {
-					return this._rollbackEvent(e);
-				}
+				// Trigger custom event
+				var st = this._customEvent(e1, cfg);
+				if(!st) break;
+			}
+		}
+		it.mask._check = function(f, reg, e){
+			var cfg  = this.config[e.target.id];
+			var p    = cfg.mask.indexOf(f)
+			var pmax = cfg.mask.indexOf(f) + cfg.mask.substr(cfg.mask.indexOf(f),4).length;
+			var b    = true;
+			var v    = e.target.value, k = e.key[0];
+			var ss   = e.target.selectionStart, se = e.target.selectionEnd;
 
-				return aok;
-			},
-			fullFormat: function(e){
-				var cfg  = this.config[e.target.id];
-				var v = e.target.value;
-				e.target.value = "";
+			if(f == 'YYYY' && ss == pmax - 1){
+				var yy = v.substr(p, 4) + k
+				var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
+				var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
+				
+				var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
+				if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
 
-				for(var x = 0; x < v.length; x++){
-					if(cfg.mask.replace(/[9ADMYHIS]/g, '').indexOf(v[x]) != -1) continue;
-
-					// Modify event
-					var e1 = e;
-						e1.keyCode = v[x].charCodeAt(0); e1.which = v[x].charCodeAt(0); e1.key = v[x];
-						e1.ctrlKey = false; e1.altKey = false; e1.shiftKey = false;
-					
-					// Trigger custom event
-					var st = this._customEvent(e1, cfg);
-					if(!st) break;
-				}
-			},
-			_check: function(f, reg, e){
-				var cfg  = this.config[e.target.id];
-				var p    = cfg.mask.indexOf(f)
-				var pmax = cfg.mask.indexOf(f) + cfg.mask.substr(cfg.mask.indexOf(f),4).length;
-				var b    = true;
-				var v    = e.target.value, k = e.key[0];
-				var ss   = e.target.selectionStart, se = e.target.selectionEnd;
-
-				if(f == 'YYYY' && ss == pmax - 1){
-					var yy = v.substr(p, 4) + k
+			} else if(f == 'YY' && ss == pmax - 1){
+					var yy = 20 + v.substr(p, 2) + k
 					var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
 					var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
 					
 					var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
 					if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
 
-				} else if(f == 'YY' && ss == pmax - 1){
-						var yy = 20 + v.substr(p, 2) + k
-						var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
-						var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
-						
-						var isleap = (yy % 100 === 0) ? (yy % 400 === 0) : (yy % 4 === 0);
-						if ((mm == 2 && dd > 29) || (mm == 2 && dd == 29 && !isleap)) b = false;
-
-				} else if(f == 'MM' && ss == p + 1){
-					var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
-					var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
-					var monthdays=[31,29,31,30,31,30,31,31,30,31,30,31];
-					var max = monthdays[parseInt(mm) - 1];
-					
-					b = dd <= max;
-
-				} else {
-					if(se - ss > 0){
-						e.target.value = v.substring(0, ss) + v.substring(se, v.length);
-						v = e.target.value;
-						e.target.selectionStart = ss;
-						e.target.selectionEnd = ss;
-					}
-
-					// rebuild new input value
-					v = v.substr(0, ss) + k + v.substr(ss, v.length);
-					v = parseInt(v.substr(cfg.mask.indexOf(f), f.length))
-
-					// Show log
-					//console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
-
-					// Truncate 00 to 01 in day type
-					var fb = false;
-					if(f == "HH" && ss == p && k != 0) fb = /[0-2]/.test(k);
-					else if(f == "II" && ss == p && k != 0) fb = /[0-5]/.test(k);
-					else if(f == "SS" && ss == p && k != 0) fb = /[0-5]/.test(k);
-					else if(f == "DD" && ss == p && k != 0) fb = /[0-3]/.test(k);
-					else if(f == "MM" && ss == p && k != 0) fb = /[0-1]/.test(k);
-					else if(f[0] == "Y" && ss < pmax) return /[0-9]/.test(k);
-
-					if(!fb && ss == p && ((f == "DD" || f == "MM") || (k != 0 && (f == "HH" || f == "II" || f == "SS")))){
-						e.target.value = e.target.value.substr(0, ss) + '0' + e.target.value.substr(se);
-					}
+			} else if(f == 'MM' && ss == p + 1){
+				var dd = (v + k).substr(cfg.mask.indexOf('DD'), 2);
+				var mm = (v + k).substr(cfg.mask.indexOf('MM'), 2);
+				var monthdays=[31,29,31,30,31,30,31,31,30,31,30,31];
+				var max = monthdays[parseInt(mm) - 1];
 				
-					// Add zero before if lower than 10
-					v = v < 10 ? ("0" + v) : (v + "");
+				b = dd <= max;
 
-					b = new RegExp(reg).test(v);
+			} else {
+				if(se - ss > 0){
+					e.target.value = v.substring(0, ss) + v.substring(se, v.length);
+					v = e.target.value;
+					e.target.selectionStart = ss;
+					e.target.selectionEnd = ss;
 				}
 
-				return b;
-			},
-			_rollbackEvent: function(e){
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				return false;
+				// rebuild new input value
+				v = v.substr(0, ss) + k + v.substr(ss, v.length);
+				v = parseInt(v.substr(cfg.mask.indexOf(f), f.length))
+
+				// Show log
+				//console.log("F:", f, "SS:",ss, "SE:", se, "V:",v, "PM:", p)
+
+				// Truncate 00 to 01 in day type
+				var fb = false;
+				if(f == "HH" && ss == p && k != 0) fb = /[0-2]/.test(k);
+				else if(f == "II" && ss == p && k != 0) fb = /[0-5]/.test(k);
+				else if(f == "SS" && ss == p && k != 0) fb = /[0-5]/.test(k);
+				else if(f == "DD" && ss == p && k != 0) fb = /[0-3]/.test(k);
+				else if(f == "MM" && ss == p && k != 0) fb = /[0-1]/.test(k);
+				else if(f[0] == "Y" && ss < pmax) return /[0-9]/.test(k);
+
+				if(!fb && ss == p && ((f == "DD" || f == "MM") || (k != 0 && (f == "HH" || f == "II" || f == "SS")))){
+					e.target.value = e.target.value.substr(0, ss) + '0' + e.target.value.substr(se);
+				}
+			
+				// Add zero before if lower than 10
+				v = v < 10 ? ("0" + v) : (v + "");
+
+				b = new RegExp(reg).test(v);
 			}
+
+			return b;
+		}
+		it.mask._rollbackEvent = function(e){
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			return false;
 		}
 	}
 
