@@ -1,4 +1,3 @@
-// Uncomment to enable some plugins only
 //var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true }
 
 var it = function(t){
@@ -89,7 +88,18 @@ it.autoload = function(){
 			}
 		}
 	}
-};
+}
+
+it.simulateEvent = function(evt, el){
+
+	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
+	el.dispatchEvent(event);
+
+	if(evt == "change"){
+		var event = new Event('input', {'bubbles': true, 'cancelable': true});
+		el.dispatchEvent(event);
+	}
+}
 
 it.autoload();
 
@@ -790,8 +800,7 @@ function isiToolsCallback(json){
 			opt.target.addEventListener("keydown", function (e) {
 				if (e.keyCode == 40) { 			// down
 					if (document.querySelectorAll("." + opt.className + "-items").length == 0) {
-						var event = new Event('input', { 'bubbles': true, 'cancelable': true });
-						e.target.dispatchEvent(event);
+						it.simulateEvent("input", e.target);
 					}
 
 					var x = getAutocompleteList(this);
@@ -1310,8 +1319,7 @@ function isiToolsCallback(json){
 
 				// Trigger change event id data-id is set
 				if(dID != ""){
-					var EV = new Event('change', {'bubbles': true, 'cancelable': true});
-					document.getElementById(dID).dispatchEvent(EV);
+					it.simulateEvent("change", document.getElementById(dID));
 				}
 
 				// If id is empty dont make anything
@@ -1598,16 +1606,14 @@ function isiToolsCallback(json){
 
 						// Another events
 						} else {
-							var EV = new Event(item.event, {'bubbles': true, 'cancelable': true});
-							el.dispatchEvent(EV);
+							it.simulateEvent(item.event, el);
 
 							// If item have data-id
 							try {
 								dID = typeof trg.dataset.id != "undefined" ? trg.dataset.id : '';
 								dID = dID.replace("#", '');
 
-								var EV = new Event('change', {'bubbles': true, 'cancelable': true});
-								document.getElementById(dID).dispatchEvent(EV);
+								it.simulateEvent("change", document.getElementById(dID));
 							} catch(e){ }
 						}
 
@@ -1681,8 +1687,7 @@ function isiToolsCallback(json){
 						this.addHistoryForward(id, document.getElementById(id).value);
 						document.getElementById(id).value = value;
 
-						var event = new Event('change', {'bubbles': true, 'cancelable': true});
-						e.target.dispatchEvent(event);
+						it.simulateEvent("change", e.target);
 
 						return value;
 					}
@@ -1714,8 +1719,7 @@ function isiToolsCallback(json){
 						this.addHistoryBack(id, document.getElementById(id).value);
 						document.getElementById(id).value = value;
 
-						var event = new Event('change', {'bubbles': true, 'cancelable': true});
-						e.target.dispatchEvent(event);
+						it.simulateEvent("change", e.target);
 
 						return value;
 					}
@@ -1731,10 +1735,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.01
+		@version: 1.02
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 23/08/2019
+		@Last update: 27/08/2019
 	**/
 	if(json.Datepicker){
 		this.Datepicker = it.datepicker = function(cfg){
@@ -1838,7 +1842,9 @@ function isiToolsCallback(json){
 						cfg.selMonth = cfg.curMonth;
 						cfg.selDay = cfg.curDay;
 						
-						target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+						target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
+
+						it.simulateEvent("change", target);
 					
 					} else {
 						cfg.selYear = target.value.substr(cfg.format.indexOf("YYYY"), 4);
@@ -1985,7 +1991,9 @@ function isiToolsCallback(json){
 							var prt = aux.parentElement.dataset.id;
 							var cfg = it.datepicker.config.custom[prt];
 
-							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
+							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
+
+							it.simulateEvent("change", document.getElementById(prt));
 
 							it('#' + prt).datepicker('show');
 						});
@@ -2004,8 +2012,9 @@ function isiToolsCallback(json){
 							var mm  = parseInt(e.target.dataset.id)+1;
 								mm  = mm < 10 ? ('0' + mm) : mm;
 							
-							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
-								
+							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
+
+							it.simulateEvent("change", document.getElementById(prt));
 
 							it('#' + prt).datepicker('show');
 						});
@@ -2020,7 +2029,9 @@ function isiToolsCallback(json){
 						var prt = aux.parentElement.dataset.id;
 						var cfg = it.datepicker.config.custom[prt];
 						
-						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
+						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value);
+
+						it.simulateEvent("change", document.getElementById(prt));
 
 						it('#' + prt).datepicker('show');
 					});
@@ -2031,7 +2042,9 @@ function isiToolsCallback(json){
 						var aux = e.target.parentElement.parentElement.parentElement;
 						var cfg = it.datepicker.config.custom[aux.dataset.id];
 					
-						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
+						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear);
+
+						it.simulateEvent("change", document.getElementById(prt));
 
 						it('#' + aux.dataset.id).datepicker('show');
 					});
@@ -2042,6 +2055,8 @@ function isiToolsCallback(json){
 						var aux = e.target.parentElement.parentElement.parentElement;
 					
 						document.getElementById(aux.dataset.id).value = '';
+
+						it.simulateEvent("change", document.getElementById(prt));
 					});
 				}
 			}); // end for
@@ -2455,8 +2470,7 @@ function isiToolsCallback(json){
 
 									blp.showMessage(blp.messages.keyPress.replace("<selector>", id).replace("<keys>", strCombKey+strKey).replace("<keysCode>", codeCombKey+charCode), 'keyPress');
 									if(typeof e.target.id != "undefined" && e.target.id != '' && e.target.id != null){
-										var event = new Event('change', {'bubbles': true, 'cancelable': true});
-										e.target.dispatchEvent(event);
+										it.simulateEvent("change", e.target);
 									}
 								}
 							}
@@ -3450,9 +3464,7 @@ function isiToolsCallback(json){
 						var item = items[x];
 						item.addEventListener("click", function(e){
 							e.target.parentElement.previousElementSibling.value = e.target.dataset.value;
-
-							var EV = new Event('change', {'bubbles': true, 'cancelable': true});
-							e.target.parentElement.previousElementSibling.dispatchEvent(EV);
+							it.simulateEvent("change", e.target.parentElement.previousElementSibling);
 						});
 					}
 				}
@@ -3996,7 +4008,7 @@ function isiToolsCallback(json){
 					setInterval(function(e){ 
 						if(e.getAttribute("data-value") != e.value){
 							e.setAttribute("data-value", e.value);
-							e.dispatchEvent(new Event('change'));
+							it.simulateEvent("change", e);
 							Selectpicker._update(e.id, e.querySelector('option[value="' + e.value + '"]').index);
 						}
 					}.bind(null, trg), 150);
