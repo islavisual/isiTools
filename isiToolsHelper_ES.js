@@ -1332,8 +1332,8 @@ this.Helper = it.Helper = function (func, cfg) {
 
 	if (opt.printOnScreen) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-		AddCSSRule('', "#h31p3r", 'font-family: arial; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
-		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + ';padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -10px;border-bottom: 1px solid rgba(255,255,255,.1);')
+		AddCSSRule('', "#h31p3r", 'font-family: arial; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
+		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -15px;border-bottom: 1px solid rgba(255,255,255,.1);')
 		AddCSSRule('', "#h31p3r h3", 'z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0rem; padding: 64px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ';');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
 		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
@@ -1367,7 +1367,7 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r nav > a + ul li:hover', 'background: ' + opt.highlight + '; padding: 5px 10px;');
 		AddCSSRule('', '#h31p3r nav > a + ul li a', ' color: ' + opt.background + '; ');
 
-		if(GetParam("f") == '.me'){
+		if(Helper.getParameters("f") == '.me'){
 			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
 		} else {
 			AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
@@ -1601,4 +1601,21 @@ this.showHelper = it.showHelper = function(cs, cfg){
 			alert('Helper no disponible!');
 		return;
 	}
+}
+
+this.Helper.getParameters = function (cfg) {
+	if (typeof cfg == "undefined") cfg = {};
+
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+		if(typeof cfg == "string" && cfg == key){
+			vars = value;
+			return vars;
+
+		} else if(typeof cfg == 'object'){
+			vars[key] = value;
+		}
+	});
+
+	return vars;
 }
