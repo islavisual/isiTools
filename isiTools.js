@@ -3115,7 +3115,12 @@ function isiToolsCallback(json){
 		}
 		
 		it.mask.set = function(){
-			if(arguments.length == 0) opt = {};
+			if(arguments.length == 0)
+				opt = {};
+			else {
+				it(arguments[0].target).mask(arguments[0].mask).set();
+				return;
+			}
 
 			for(var key in this.config){
 				// Set attributes
