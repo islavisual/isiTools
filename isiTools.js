@@ -1,13 +1,8 @@
-var itEnabledModules = {Datepicker : true, AddCSSRule: true }
+// Uncomment to enable some plugins only
+//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true }
 
 var it = function(t){
-	//if(!/^[\.#]/.test(t)) t = '#' + t;
-	var items = document.querySelectorAll(t);
-
-    if(items.length > 1)
-        it.targets = items;
-	else
-		it.target = items[0];
+    it.targets = document.querySelectorAll(t);
 
 	return it;
 };
@@ -16,18 +11,15 @@ it.name = "isiTools";
 it.version = "1.4.3",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "31/07/2019",
+it.lastupdate = "27/08/2019",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
-it.getAll = function(t){
-	return document.querySelectorAll(t);
-};
 it.help = function(plugin, cfg){
 	if(typeof cfg == "undefined") cfg = {help: ''};
 	if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-	if (typeof showHelper != "undefined") showHelper("index", cfg);
+	if (typeof showHelper != "undefined") showHelper(plugin ? plugin : "index", cfg);
 	else alert("Helper not available!")
 	return;
 }
@@ -106,13 +98,13 @@ function isiToolsCallback(json){
 
 	/**
 		 AddCSSRule functionality																		
-		@version: 1.01																					
+		@version: 1.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2019 Islavisual. 																	
-		@Last update: 23/08/2019																			
+		@Last update: 13/03/2019																			
 	**/
 	if(json.AddCSSRule){
-		this.AddCSSRule = it.AddCSSRule = function (cfg, selector, styles, index) {
+		this.AddCSSRule = it.addCSSRule = function (cfg, selector, styles, index) {
 			var s, r, itS = document.getElementById("isiToolsStyles");
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
@@ -175,7 +167,7 @@ function isiToolsCallback(json){
 		@Last update: 12/03/2019
 	**/
 	if(json.Alert){
-		this.Alert = it.Alert = function (cfg) {
+		this.Alert = it.alert = function (cfg) {
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("Alert", cfg);
 				else alert("Helper not available!")
@@ -339,7 +331,7 @@ function isiToolsCallback(json){
 
 			function init() {
 
-				if(typeof it.AddCSSRule != "undefined"){
+				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', ".Alert-overlay", 'position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999');
 					AddCSSRule('', ".Alert", 'max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; overflow: hidden; color: ' + opt.styles.body.color + ';');
 					AddCSSRule('', ".Alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
@@ -372,11 +364,11 @@ function isiToolsCallback(json){
 	
 	if(json.Autocomplete){
 		window._timeoutAC = null, window._continueAC = false;
-		this.Autocomplete = it.Autocomplete = function (cfg) {
+		this.Autocomplete = it.autocomplete = function (cfg) {
 			if(typeof cfg == "undefined") cfg = {};
 
 			// If it.target has value, set to cfg object
-			if(!cfg.hasOwnProperty('input') && it.target) cfg.input = it.target.id;
+			if(!cfg.hasOwnProperty('input') && this.targets) cfg.input = this.targets[0].id;
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("Autocomplete", cfg);
@@ -876,7 +868,7 @@ function isiToolsCallback(json){
 		@Last update: 15/03/2019
 	**/
 	if(json.Benchmark){
-		this.Benchmark = it.Benchmark = {
+		this.Benchmark = it.benchmark = {
 			showLog: false,
 			maxIterations: 0x3FFFFFFF,
 			testTime: 3000,
@@ -978,7 +970,7 @@ function isiToolsCallback(json){
 		@Last update: 04/03/2019
 	**/
 	if(json.Constraint){
-		this.Constraint = it.Constraint = {
+		this.Constraint = it.constraint = {
 			version: '1.1',
 			options: {},
 			help: function(cfg){
@@ -1007,7 +999,7 @@ function isiToolsCallback(json){
 			},
 			set: function (cfg){
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an input ID into 'target' parameter!. Please, see the help with the Constraint.help();"); return false; }
@@ -1179,7 +1171,7 @@ function isiToolsCallback(json){
 		@Last update: 19/03/2019
 	**/
 	if(json.IntelliForm){
-		this.IntelliForm = it.IntelliForm = {
+		this.IntelliForm = it.intelliForm = {
 			sequenceList: [],
 			sequence: [],
 			undo: {},
@@ -1254,7 +1246,7 @@ function isiToolsCallback(json){
 				for(var key in cfg){ this[key] = cfg[key]; }
 
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				// If targets, enable undo functionality.
 				if(this.hasOwnProperty("target")){
@@ -1298,7 +1290,7 @@ function isiToolsCallback(json){
 			},
 			_addEvent: function(e){
 				// Set values
-				var iform = it.IntelliForm;
+				var iform = it.intelliForm;
 				var trg = e.target, id = trg.id, evt = e.type, tagName = trg == document ? "document" : trg.tagName.toLowerCase();
 				var st  = iform._startAt == -1 ? (iform._startAt = new Date().getTime()) : iform._startAt;
 				var ts  = new Date().getTime() - st;
@@ -1417,12 +1409,12 @@ function isiToolsCallback(json){
 						else if(elm.tagName.toLowerCase() == "a" && event != "click") continue;
 
 						// Add CSS rule to disabling the children selection
-						if(typeof it.AddCSSRule != "undefined"){
-							it.AddCSSRule('', "#" + elm.id + " *", "pointer-events: none;");
+						if(typeof it.addCSSRule != "undefined"){
+							it.addCSSRule('', "#" + elm.id + " *", "pointer-events: none;");
 						}
 
 						// Add event/element
-						elm.addEventListener(event, it.IntelliForm._addEvent);
+						elm.addEventListener(event, it.intelliForm._addEvent);
 					}
 				});
 			},
@@ -1453,7 +1445,7 @@ function isiToolsCallback(json){
 						var elm = items[its];
 
 						// Add event/element
-						elm.removeEventListener(event, it.IntelliForm._addEvent);
+						elm.removeEventListener(event, it.intelliForm._addEvent);
 					}
 				});
 
@@ -1745,18 +1737,11 @@ function isiToolsCallback(json){
 		@Last update: 23/08/2019
 	**/
 	if(json.Datepicker){
-		this.Datepicker = it.Datepicker = function(cfg){
+		this.Datepicker = it.datepicker = function(cfg){
 			// If the target is only one, we update targets
 			if((typeof cfg == "string" && cfg == "show")){
-				cfg = this.Datepicker.config.custom[it.target.id];
+				cfg = it.datepicker.config.custom[this.targets[0].id];
 			} 
-
-			// If only one datepicker
-			if(it.target) {
-				it.targets = [];
-				it.targets.push(it.target);
-			}
-				
 
 			// If the device is mobile, we change the type of input element to date and do nothing else.
 			try{
@@ -1777,8 +1762,8 @@ function isiToolsCallback(json){
 				// If the id attrtibute is not set, we assign it by default
 				id = id == "" ? ('DatePicker_' + idx) : id;
 				
-				for(var key in this.Datepicker.config){
-					cfg[key] = cfg.hasOwnProperty(key) ? cfg[key] : this.Datepicker.config[key]
+				for(var key in it.datepicker.config){
+					cfg[key] = cfg.hasOwnProperty(key) ? cfg[key] : it.datepicker.config[key]
 				}
 								
 				try{ cfg.custom[id].md = { b: [], c: [], a: [] }; } catch(e){}
@@ -1800,7 +1785,7 @@ function isiToolsCallback(json){
 
 
 					// Add Styles
-					it.Datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
+					it.datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
 
 					// Add class to target input 
 					target.classList.add("has-datepicker");
@@ -1825,7 +1810,7 @@ function isiToolsCallback(json){
 
 						if(!trg) trg = e.target.parentElement.previousElementSibling;
 
-						it('#' + trg.id).Datepicker('show');
+						it('#' + trg.id).datepicker('show');
 					});
 
 					loading = true;
@@ -1998,11 +1983,11 @@ function isiToolsCallback(json){
 								aux.click();
 							
 							var prt = aux.parentElement.dataset.id;
-							var cfg = it.Datepicker.config.custom[prt];
+							var cfg = it.datepicker.config.custom[prt];
 
 							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear)
 
-							it('#' + prt).Datepicker('show');
+							it('#' + prt).datepicker('show');
 						});
 					}
 
@@ -2015,14 +2000,14 @@ function isiToolsCallback(json){
 							var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
 								aux.click();
 							var prt = aux.parentElement.dataset.id;
-							var cfg = it.Datepicker.config.custom[prt];
+							var cfg = it.datepicker.config.custom[prt];
 							var mm  = parseInt(e.target.dataset.id)+1;
 								mm  = mm < 10 ? ('0' + mm) : mm;
 							
 							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear)
 								
 
-							it('#' + prt).Datepicker('show');
+							it('#' + prt).datepicker('show');
 						});
 					}
 
@@ -2033,22 +2018,22 @@ function isiToolsCallback(json){
 							aux.click();
 
 						var prt = aux.parentElement.dataset.id;
-						var cfg = it.Datepicker.config.custom[prt];
+						var cfg = it.datepicker.config.custom[prt];
 						
 						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value)
 
-						it('#' + prt).Datepicker('show');
+						it('#' + prt).datepicker('show');
 					});
 
 					// Add set today event
 					var b = document.getElementById("datepicker-layer-" + target.id + "-today");
 					b.addEventListener("click", function(e){
 						var aux = e.target.parentElement.parentElement.parentElement;
-						var cfg = it.Datepicker.config.custom[aux.dataset.id];
+						var cfg = it.datepicker.config.custom[aux.dataset.id];
 					
 						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear)
 
-						it('#' + aux.dataset.id).Datepicker('show');
+						it('#' + aux.dataset.id).datepicker('show');
 					});
 
 					// Add remove data event
@@ -2062,37 +2047,37 @@ function isiToolsCallback(json){
 			}); // end for
 		}
 		
-		it.Datepicker.version = '1.0';
+		it.datepicker.version = '1.0';
 
-		it.Datepicker.addStyles = function(id, bg, fg){
-			it.AddCSSRule('', "#datepicker-layer-" + id, 'width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + "::before", 'content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + "::after ", 'content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:' + fg + '; z-index: -1;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-close", ' cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: ' + bg + '; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::before, #datepicker-layer-" + id +" .datepicker-close::after", 'content: ""; border-top: 2px solid ' + bg + '; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::after", 'transform: rotate(-45deg);');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal", 'position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: ' + bg + '; color: ' + fg + '; float: left; text-align: center; padding: 37px 3px 5px 3px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span", 'opacity: 0.5;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span:first-child", 'font-size: 38px; width: 100%; display: block; margin-top: 5px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(2)", 'font-size: 18px; width: 100%; display: block; margin-bottom: 18px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(4)", 'line-height: 32px; display: block;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .r-cal", 'width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-years select", 'cursor: pointer; height: 24px; width: 25%; background: ' + fg + '; color: #000; border: 0 navajowhite; margin-left: 75%;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id +" .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week", 'padding: 0 5px; display: table;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .r-cal .datepicker-week-names .datepicker-week", 'padding: 5px; background: ' + bg + '; color: ' + fg + ';');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id +" .datepicker-week .day", 'cursor: pointer; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.disabled", 'opacity: 0.5;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id +" .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
-			it.AddCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
-			it.AddCSSRule('', "input.has-datepicker + button", 'background: rgba(0,0,0,0); border: 0 none; position: absolute; right: 20px; bottom: 5px;');
+		it.datepicker.addStyles = function(id, bg, fg){
+			it.addCSSRule('', "#datepicker-layer-" + id, 'width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden;');
+			it.addCSSRule('', "#datepicker-layer-" + id + "::before", 'content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1;');
+			it.addCSSRule('', "#datepicker-layer-" + id + "::after ", 'content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:' + fg + '; z-index: -1;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-close", ' cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: ' + bg + '; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::before, #datepicker-layer-" + id +" .datepicker-close::after", 'content: ""; border-top: 2px solid ' + bg + '; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-close::after", 'transform: rotate(-45deg);');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal", 'position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: ' + bg + '; color: ' + fg + '; float: left; text-align: center; padding: 37px 3px 5px 3px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span", 'opacity: 0.5;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:first-child", 'font-size: 38px; width: 100%; display: block; margin-top: 5px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(2)", 'font-size: 18px; width: 100%; display: block; margin-bottom: 18px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(4)", 'line-height: 32px; display: block;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .r-cal", 'width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years select", 'cursor: pointer; height: 24px; width: 25%; background: ' + fg + '; color: #000; border: 0 navajowhite; margin-left: 75%;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id +" .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week", 'padding: 0 5px; display: table;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .r-cal .datepicker-week-names .datepicker-week", 'padding: 5px; background: ' + bg + '; color: ' + fg + ';');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id +" .datepicker-week .day", 'cursor: pointer; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.disabled", 'opacity: 0.5;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id +" .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
+			it.addCSSRule('', "input.has-datepicker + button", 'background: rgba(0,0,0,0); border: 0 none; position: absolute; right: 20px; bottom: 5px;');
 		};
 
-		it.Datepicker.config = { 
+		it.datepicker.config = { 
 			buttonicon: 'fa fa-calendar',
 			shortdays: ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
 			longdays: ['Domingo', 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
@@ -2110,7 +2095,7 @@ function isiToolsCallback(json){
 			custom: []
 		}
 
-		it.Datepicker.help = function(cfg){
+		it.datepicker.help = function(cfg){
 			it.help('Datepicker', cfg);
 		}
 	}
@@ -2123,7 +2108,7 @@ function isiToolsCallback(json){
 		@Last update: 15/03/2019
 	**/
 	if(json.Debugger){
-		this.Debugger = it.Debugger = {
+		this.Debugger = it.debugger = {
 			target: '',
 			targetWindow: null,
 			mutationObserver: 'Not Supported',
@@ -2667,7 +2652,7 @@ function isiToolsCallback(json){
 		@Last update: 05/03/2019
 	**/
 	if(json.GetBrowser){
-		this.GetBrowser = it.GetBrowser = function (cfg) {
+		this.GetBrowser = it.getBrowser = function (cfg) {
 			if (typeof cfg == "undefined") cfg = {};
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
@@ -2688,7 +2673,7 @@ function isiToolsCallback(json){
 		@Last update: 07/04/2019
 	**/
 	if(json.GetParam){
-		this.GetParam = it.GetParam = function (cfg) {
+		this.GetParam = it.getParam = function (cfg) {
 			if (typeof cfg == "undefined") cfg = {};
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
@@ -2720,7 +2705,7 @@ function isiToolsCallback(json){
 		@Last update: 27/02/2019																			
 	**/
 	if(json.HttpRequest){
-		this.HttpRequest = it.HttpRequest = function (cfg) {
+		this.HttpRequest = it.httpRequest = function (cfg) {
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("HttpRequest", cfg);
 				else alert("Helper not available!")
@@ -2816,7 +2801,7 @@ function isiToolsCallback(json){
 		@Last update: 27/02/2019
 	**/
 	if(json.Include){
-		this.Include = it.Include = function (cfg) {
+		this.Include = it.include = function (cfg) {
 			// Default values to cfg
 			if (typeof cfg == "undefined" || cfg == null) cfg = {};
 
@@ -2826,80 +2811,84 @@ function isiToolsCallback(json){
 				return;
 			}
 
-			// If the request is data-include
-			if (cfg.hasOwnProperty('attribute') && cfg.attribute != "") {
-				dataInclude(cfg.attribute);
-				return;
-
-			} else if (cfg.hasOwnProperty('attribute') && cfg.attribute == "") {
-				alert("The 'attribute' parameter can not be empty!.");
-				return;
+			if(!this.targets){
+				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to execute the include!. Please, see the help with the Include('help');"); return false; }
 			}
 
-			// If it.target has value, set to cfg object
-			if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+			Array.prototype.slice.call(this.targets).forEach(function(target){
+				cfg.target = target;
 
-			// If configuration object is invalid
-			if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a string 'data' or 'file' parameter!. Please, see the help with the Include('help');"); return false; }
-			if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to execute the include!. Please, see the help with the Include('help');"); return false; }
+				// If the request is data-include
+				if (cfg.hasOwnProperty('attribute') && cfg.attribute != "") {
+					dataInclude(cfg.attribute);
+					return;
 
-			// Create JSON with current opt
-			var opt = {
-				data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
-				file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
-				target: document.getElementById(cfg.target),
-			}
+				} else if (cfg.hasOwnProperty('attribute') && cfg.attribute == "") {
+					alert("The 'attribute' parameter can not be empty!.");
+					return;
+				}
 
-			if (opt.file) {
-				getData(opt.target, opt.file, false);
-				return;
+				// If configuration object is invalid
+				if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a string 'data' or 'file' parameter!. Please, see the help with the Include('help');"); return false; }
 
-			} else {
-				opt.target.innerHTML = opt.data;
-				opt.target.querySelector("script") ? execute(opt.target) : '';
-			}
+				// Create JSON with current opt
+				var opt = {
+					data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
+					file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
+					target: target,
+				}
 
-			function execute(trg) {
-				setTimeout(function () {
-					try { eval(trg.querySelector("script").innerHTML); } catch (e) { }
-				}, 250);
-			}
+				if (opt.file) {
+					getData(opt.target, opt.file, false);
+					return;
 
-			function getData(trg, file, dIncFlag) {
-				var xhttp = new XMLHttpRequest(), dIncFlag = typeof dIncFlag == "undefined" ? false : true;
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4) {
-						if (this.status == 200) { trg.innerHTML = this.responseText; trg.querySelector("script") ? execute(trg) : ''; }
-						if (this.status == 404) { trg.innerHTML = "Page not found."; }
+				} else {
+					opt.target.innerHTML = opt.data;
+					opt.target.querySelector("script") ? execute(opt.target) : '';
+				}
 
-						if (dIncFlag) {
-							trg.removeAttribute(cfg.attribute);
-							dataInclude(cfg.attribute);
+				function execute(trg) {
+					setTimeout(function () {
+						try { eval(trg.querySelector("script").innerHTML); } catch (e) { }
+					}, 250);
+				}
+
+				function getData(trg, file, dIncFlag) {
+					var xhttp = new XMLHttpRequest(), dIncFlag = typeof dIncFlag == "undefined" ? false : true;
+					xhttp.onreadystatechange = function () {
+						if (this.readyState == 4) {
+							if (this.status == 200) { trg.innerHTML = this.responseText; trg.querySelector("script") ? execute(trg) : ''; }
+							if (this.status == 404) { trg.innerHTML = "Page not found."; }
+
+							if (dIncFlag) {
+								trg.removeAttribute(cfg.attribute);
+								dataInclude(cfg.attribute);
+							}
+						}
+					}
+
+					xhttp.open("GET", file, true);
+					xhttp.send();
+
+					return;
+				}
+
+				function dataInclude(attr) {
+					var z, i, trg, file, xhttp;
+
+					z = document.querySelectorAll("[" + attr + "]");
+					for (i = 0; i < z.length; i++) {
+						trg = z[i];
+
+						file = trg.getAttribute(attr);
+						if (file) {
+							getData(trg, file, true);
+
+							return;
 						}
 					}
 				}
-
-				xhttp.open("GET", file, true);
-				xhttp.send();
-
-				return;
-			}
-
-			function dataInclude(attr) {
-				var z, i, trg, file, xhttp;
-
-				z = document.querySelectorAll("[" + attr + "]");
-				for (i = 0; i < z.length; i++) {
-					trg = z[i];
-
-					file = trg.getAttribute(attr);
-					if (file) {
-						getData(trg, file, true);
-
-						return;
-					}
-				}
-			}
+			});
 		}
 	}
 
@@ -2911,7 +2900,7 @@ function isiToolsCallback(json){
 		@Last update: 30/07/2019
 	**/
 	if(json.IsMobile){
-		this.IsMobile = it.IsMobile = function (cfg) {
+		this.IsMobile = it.isMobile = function (cfg) {
 			if (typeof cfg == "undefined") cfg = {};
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
@@ -2953,7 +2942,7 @@ function isiToolsCallback(json){
 	**/
 	
 	if(json.Language){
-		this.Language = it.Language = {
+		this.Language = it.language = {
 			version: '1.0',
 			translations: {},
 			selectedLang: '',
@@ -3056,7 +3045,7 @@ function isiToolsCallback(json){
 		@Last update: 11/07/2019
 	**/
 	if(json.Mask){
-		this.Mask = it.Mask = {
+		this.Mask = it.mask = {
 			version: '1.0',
 			config: [],
 			help: function(cfg){
@@ -3069,7 +3058,7 @@ function isiToolsCallback(json){
 			},
 			set: function(cfg){
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 				if (cfg.hasOwnProperty("mask") == null) { alert("Mask not defined to '" + cfg.target + "'"); return false; }
@@ -3080,6 +3069,7 @@ function isiToolsCallback(json){
 				this.config[cfg.target] = cfg;
 				
 				cfg.target = document.getElementById(cfg.target);
+				cfg.target.type = "text";
 
 				// Set attributes
 				cfg.target.setAttribute("placeholder", cfg.mask);
@@ -3293,7 +3283,7 @@ function isiToolsCallback(json){
 		@Last update: 11/06/2019
 	**/
 	if(json.Nstate){
-		this.Nstate = it.Nstate = {
+		this.Nstate = it.nstate = {
 			version: '1.0',
 			config: { type: 'switch', style: '', id: '' },
 			help: function(cfg){
@@ -3310,45 +3300,45 @@ function isiToolsCallback(json){
 				this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
 
 				if(type == "switch"){
-					it.AddCSSRule('', "nstate[type=switch]", "border-radius: 5px; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
-					it.AddCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: 100%; left: 0; opacity: 0; position: absolute; top: 0; height: 20px !important; z-index: 1; ");
-					it.AddCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
-					it.AddCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
-					it.AddCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
-					it.AddCSSRule('', "nstate[type=switch] label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
-					it.AddCSSRule('', "nstate[type=switch] input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 5px;");
-					it.AddCSSRule('', "nstate[type=switch] input:checked ~ label::before", "opacity: 0;");
-					it.AddCSSRule('', "nstate[type=switch] input:checked ~ label::after", "opacity: 1;");
-					it.AddCSSRule('', "nstate[type=switch] handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 5px;");
-					it.AddCSSRule('', "nstate[type=switch] handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
-					it.AddCSSRule('', "nstate[type=switch] input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 5px);");
+					it.addCSSRule('', "nstate[type=switch]", "border-radius: 5px; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
+					it.addCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: 100%; left: 0; opacity: 0; position: absolute; top: 0; height: 20px !important; z-index: 1; ");
+					it.addCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+					it.addCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+					it.addCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
+					it.addCSSRule('', "nstate[type=switch] label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
+					it.addCSSRule('', "nstate[type=switch] input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 5px;");
+					it.addCSSRule('', "nstate[type=switch] input:checked ~ label::before", "opacity: 0;");
+					it.addCSSRule('', "nstate[type=switch] input:checked ~ label::after", "opacity: 1;");
+					it.addCSSRule('', "nstate[type=switch] handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 5px;");
+					it.addCSSRule('', "nstate[type=switch] handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
+					it.addCSSRule('', "nstate[type=switch] input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 5px);");
 
 				} else if(type == "multiple") {
-					it.AddCSSRule('', "nstate[type=multiple] values", "width: 100%; display: table; height: auto;");
-					it.AddCSSRule('', "nstate[type=multiple] values span", "color: " + this.config.colors.textColor + "; width: 33.3333%; text-align: left; float: left; margin-top: 5px; cursor: pointer;");
-					it.AddCSSRule('', "nstate[type=multiple] values span:nth-child(2)", "text-align: center;");
-					it.AddCSSRule('', "nstate[type=multiple] values span:nth-child(3)", "text-align: right;");
-					it.AddCSSRule('', "nstate[type=multiple] values span.selected", "font-weight: 600;");
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus", 'border: 0 none !important; outline: none; background: ' + this.config.colors.trackColor + ' !important;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-					it.AddCSSRule('', "nstate[type=multiple] input[type=range]::-ms-tooltip", 'display: none;');
-					it.AddCSSRule('', "@media all and (-ms-high-contrast:none)", 'nstate[type=multiple] { position:relative; top: 6px; } nstate[type=multiple] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=multiple] input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
+					it.addCSSRule('', "nstate[type=multiple] values", "width: 100%; display: table; height: auto;");
+					it.addCSSRule('', "nstate[type=multiple] values span", "color: " + this.config.colors.textColor + "; width: 33.3333%; text-align: left; float: left; margin-top: 5px; cursor: pointer;");
+					it.addCSSRule('', "nstate[type=multiple] values span:nth-child(2)", "text-align: center;");
+					it.addCSSRule('', "nstate[type=multiple] values span:nth-child(3)", "text-align: right;");
+					it.addCSSRule('', "nstate[type=multiple] values span.selected", "font-weight: 600;");
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus", 'border: 0 none !important; outline: none; background: ' + this.config.colors.trackColor + ' !important;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-tooltip", 'display: none;');
+					it.addCSSRule('', "@media all and (-ms-high-contrast:none)", 'nstate[type=multiple] { position:relative; top: 6px; } nstate[type=multiple] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=multiple] input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
 				}
 			},
 			set: function(cfg){
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 				
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 
@@ -3515,7 +3505,7 @@ function isiToolsCallback(json){
 		@Last update: 22/05/2019
 	**/
 	if(json.Password){
-		this.Password = it.Password = {
+		this.Password = it.password = {
 			version: '1.0',
 			config: { autoDraw: true, colorok : 'rgba(255,255,255,0.75)', colornok : '#e0e0e0', onerror: null },
 			minFeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },
@@ -3530,7 +3520,7 @@ function isiToolsCallback(json){
 			},
 			check: function(cfg){
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 				
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
 
@@ -3613,13 +3603,13 @@ function isiToolsCallback(json){
 			},
 			draw: function(c){
 				// Add CSS Rules
-				if(typeof it.AddCSSRule != "undefined"){
-					it.AddCSSRule('', ".strength", "width: 100%; height: 10px; position: absolute; bottom: -2px; left: 0; z-index: 99; padding: 2px 1px 1px 1px; border: 0 none; margin: 0 0 5px 0; display: none");
-					it.AddCSSRule('', ".strength::after", "content: attr(data-label); display: block; position: absolute; left: 0; top: -5px; width: 100%; padding: 3px 5px 2px; font-size: 12px; line-height: 12px;");
-					it.AddCSSRule('', ".strength > div", "background: rgba(0,0,0,0.1); width: calc(16.667% - 4px); float: left; height: 6px; padding: 0; margin: 0px 2px; position: relative;");
-					it.AddCSSRule('', ".strength[data-label] > div", "display: none;");
-					it.AddCSSRule('', ".strength > div.spotlight", "background: " + this.config.colorok + ";");
-					it.AddCSSRule('', "input:focus ~ .strength", "background: " + this.config.colornok + "; display: block;");
+				if(typeof it.addCSSRule != "undefined"){
+					it.addCSSRule('', ".strength", "width: 100%; height: 10px; position: absolute; bottom: -2px; left: 0; z-index: 99; padding: 2px 1px 1px 1px; border: 0 none; margin: 0 0 5px 0; display: none");
+					it.addCSSRule('', ".strength::after", "content: attr(data-label); display: block; position: absolute; left: 0; top: -5px; width: 100%; padding: 3px 5px 2px; font-size: 12px; line-height: 12px;");
+					it.addCSSRule('', ".strength > div", "background: rgba(0,0,0,0.1); width: calc(16.667% - 4px); float: left; height: 6px; padding: 0; margin: 0px 2px; position: relative;");
+					it.addCSSRule('', ".strength[data-label] > div", "display: none;");
+					it.addCSSRule('', ".strength > div.spotlight", "background: " + this.config.colorok + ";");
+					it.addCSSRule('', "input:focus ~ .strength", "background: " + this.config.colornok + "; display: block;");
 				}
 
 				// Define layers
@@ -3666,7 +3656,7 @@ function isiToolsCallback(json){
 				for(var aux in cfg){ this[aux] = cfg[aux]; }
 				
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				this.target.addEventListener("keyup", function(e){
 					Password.check({target: cfg.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
@@ -3762,7 +3752,7 @@ function isiToolsCallback(json){
 		@Last update: 03/04/2019
 	**/
 	if(json.Selectpicker){
-		this.Selectpicker = it.Selectpicker = {
+		this.Selectpicker = it.selectpicker = {
 			version: 1.0,
 			help: function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
@@ -4013,7 +4003,7 @@ function isiToolsCallback(json){
 				} /* End for trgi */
 
 				// Add default Styles
-				if(typeof it.AddCSSRule != "undefined"){
+				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', ".select-picker", 'position: relative; width: auto; width: 164px;');
 					AddCSSRule('', ".select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 32px; width: 100%; z-index: 99999;');
 					AddCSSRule('', ".select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
@@ -4073,7 +4063,7 @@ function isiToolsCallback(json){
 		@status PENDING to UPDATE
 	**/
 	if(json.SendForm){
-		this.SendForm = it.SendForm = function (cfg) {
+		this.SendForm = it.sendForm = function (cfg) {
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("SendForm", cfg);
 				else alert("Helper not available!")
@@ -4119,7 +4109,7 @@ function isiToolsCallback(json){
 		@Last update: 09/02/2019
 	**/
 	if(json.StripTags){
-		this.StripTags = it.StripTags = function (inp, allowed) {
+		this.StripTags = it.stripTags = function (inp, allowed) {
 			if ((typeof inp == "string" && inp == "help") || inp.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("StripTags", inp);
 				else alert("Helper not available!")
@@ -4142,7 +4132,7 @@ function isiToolsCallback(json){
 		@Last update: 09/03/2019
 	**/
 	if(json.Treeview){
-		this.Treeview = it.Treeview = function (cfg) {
+		this.Treeview = it.treeview = function (cfg) {
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("Treeview", cfg);
 				else alert("Helper not available!")
@@ -4164,7 +4154,7 @@ function isiToolsCallback(json){
 			}
 
 			// If it.target has value, set to cfg object
-			if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+			if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 			// If configuration object is invalid
 			if (!cfg.hasOwnProperty('data')) { alert("You need set an object 'data' parameter!. Please, see the help with the Treeview('help');"); return false; }
@@ -4388,7 +4378,7 @@ function isiToolsCallback(json){
 			}
 
 			function addRules() {
-				if(typeof it.AddCSSRule != "undefined"){
+				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', "ul.treeview", "background: " + opt.styles.bgTree + "; width: 100%; border: 1px solid " + opt.styles.borderTree + "; padding: 5px;");
 					AddCSSRule('', "ul.treeview, ul.treeview ul", "list-style: none;", 0);
 					AddCSSRule('', "ul.treeview li", "color: " + opt.styles.textColor + ";");
@@ -4430,7 +4420,7 @@ function isiToolsCallback(json){
 		@Last update: 17/03/2019
 	**/
 	if(json.Validator){
-		this.Validator = it.Validator = {
+		this.Validator = it.validator = {
 			setTarget: function(e){
 				this.opt.target = document.getElementById(e);
 			},
@@ -4574,7 +4564,7 @@ function isiToolsCallback(json){
 				var msg = "";
 
 				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && it.target) cfg.target = it.target.id;
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				cfg.target = document.getElementById(cfg.target);
 				this.opt = cfg; 
@@ -4608,7 +4598,7 @@ function isiToolsCallback(json){
 					ns.innerHTML = trg.validationMessage;
 				}
 
-				if(typeof it.AddCSSRule != "undefined"){
+				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', ".validator-error-msg",  'background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2);');
 				}
 			},
