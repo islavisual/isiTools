@@ -1,4 +1,4 @@
-//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true, Constraint: true }
+//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true }
 
 var it = function(t){
 	it.targets = document.querySelectorAll(t);
@@ -1849,6 +1849,13 @@ function isiToolsCallback(json){
 						it('#' + trg.id).datepicker('show');
 					});
 
+					document.body.onkeydown = function(e){
+						var key = e.keyCode || e.which;
+						if(key == 9 || key == 27){
+							document.querySelector(".datepicker-close").click();
+						}
+					}
+
 					loading = true;
 				}
 
@@ -1858,7 +1865,9 @@ function isiToolsCallback(json){
 				if(!loading){
 					// Close all previous datepickers
 					var items = document.querySelectorAll(".datepicker-close");
-					for(var x = 0; x < items.length; x++){ items[x].click(); }
+					for(var x = 0; x < items.length; x++){
+						items[x].click(); 
+					}
 
 					// Get current values
 					cfg.curDate = new Date(); 
@@ -2008,27 +2017,13 @@ function isiToolsCallback(json){
 					document.body.appendChild(cal);
 
 					// Add close event
-					cclose.addEventListener("click", function(e){ e.target.parentElement.remove(); });
+					cclose.addEventListener("click", it.datepicker.closeEvent);
 
 					// Add day event
 					var items = rcal.querySelectorAll(".day");
 					for(var x = 0; x < items.length; x++){
 						var item = items[x];
-						item.addEventListener("click", function(e){
-							if(e.target.classList.contains("disabled")) return;
-							
-							var aux = e.target.parentElement.parentElement.parentElement.previousElementSibling.previousElementSibling;
-								aux.click();
-							
-							var prt = aux.parentElement.dataset.id;
-							var cfg = it.datepicker.config.custom[prt];
-
-							document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
-
-							it.simulateEvent("change", document.getElementById(prt));
-
-							it('#' + prt).datepicker('show');
-						});
+						item.addEventListener("click", it.datepicker.dayEvent);
 					}
 
 					// Add month event
@@ -2036,62 +2031,90 @@ function isiToolsCallback(json){
 					for(var x = 0; x < m.length; x++){
 						var item = m[x];
 
-						item.addEventListener("click", function(e){
-							var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
-								aux.click();
-							var prt = aux.parentElement.dataset.id;
-							var cfg = it.datepicker.config.custom[prt];
-							var mm  = parseInt(e.target.dataset.id)+1;
-								mm  = mm < 10 ? ('0' + mm) : mm;
-							
-							document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
-
-							it.simulateEvent("change", document.getElementById(prt));
-
-							it('#' + prt).datepicker('show');
-						});
+						item.addEventListener("click", it.datepicker.monthEvent);
 					}
 
 					// Add year event
 					var s = rcal.querySelector("select");
-					s.addEventListener("change", function(e){
-						var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
-							aux.click();
-
-						var prt = aux.parentElement.dataset.id;
-						var cfg = it.datepicker.config.custom[prt];
-						
-						document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value);
-
-						it.simulateEvent("change", document.getElementById(prt));
-
-						it('#' + prt).datepicker('show');
-					});
+					s.addEventListener("change", it.datepicker.yearEvent);
 
 					// Add set today event
 					var b = document.getElementById("datepicker-layer-" + target.id + "-today");
-					b.addEventListener("click", function(e){
-						var aux = e.target.parentElement.parentElement.parentElement;
-						var cfg = it.datepicker.config.custom[aux.dataset.id];
-					
-						document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear);
-
-						it.simulateEvent("change", document.getElementById(aux.dataset.id));
-
-						it('#' + aux.dataset.id).datepicker('show');
-					});
+					b.addEventListener("click", it.datepicker.todayEvent);
 
 					// Add remove data event
 					var b = document.getElementById("datepicker-layer-" + target.id + "-remove");
-					b.addEventListener("click", function(e){
-						var aux = e.target.parentElement.parentElement.parentElement;
-					
-						document.getElementById(aux.dataset.id).value = '';
-
-						it.simulateEvent("change", document.getElementById(aux.dataset.id));
-					});
+					b.addEventListener("click", it.datepicker.removeEvent);
 				}
 			}); // end for
+		}
+
+		it.datepicker.closeEvent = function(e){ 
+			e.target.parentElement.remove(); 
+		}
+
+		it.datepicker.dayEvent = function(e){
+			if(e.target.classList.contains("disabled")) return;
+			
+			var aux = e.target.parentElement.parentElement.parentElement.previousElementSibling.previousElementSibling;
+				aux.click();
+			
+			var prt = aux.parentElement.dataset.id;
+			var cfg = it.datepicker.config.custom[prt];
+
+			document.getElementById(prt).value = cfg.format.replace(/DD/, e.target.innerHTML).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
+
+			it.simulateEvent("change", document.getElementById(prt));
+
+			it('#' + prt).datepicker('show');
+		}
+
+		it.datepicker.monthEvent = function(e){
+			var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+				aux.click();
+			var prt = aux.parentElement.dataset.id;
+			var cfg = it.datepicker.config.custom[prt];
+			var mm  = parseInt(e.target.dataset.id)+1;
+				mm  = mm < 10 ? ('0' + mm) : mm;
+			
+			document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
+
+			it.simulateEvent("change", document.getElementById(prt));
+
+			it('#' + prt).datepicker('show');
+		}
+
+		it.datepicker.yearEvent = function(e){
+			var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+				aux.click();
+
+			var prt = aux.parentElement.dataset.id;
+			var cfg = it.datepicker.config.custom[prt];
+			
+			document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value);
+
+			it.simulateEvent("change", document.getElementById(prt));
+
+			it('#' + prt).datepicker('show');
+		}
+
+		it.datepicker.todayEvent = function(e){
+			var aux = e.target.parentElement.parentElement.parentElement;
+			var cfg = it.datepicker.config.custom[aux.dataset.id];
+		
+			document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear);
+
+			it.simulateEvent("change", document.getElementById(aux.dataset.id));
+
+			it('#' + aux.dataset.id).datepicker('show');
+		}
+
+		it.datepicker.removeEvent = function(e){
+			var aux = e.target.parentElement.parentElement.parentElement;
+		
+			document.getElementById(aux.dataset.id).value = '';
+
+			it.simulateEvent("change", document.getElementById(aux.dataset.id));
 		}
 		
 		it.datepicker.version = '1.0';
@@ -2112,11 +2135,11 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years select", 'cursor: pointer; height: 24px; width: 25%; background: ' + fg + '; color: #000; border: 0 navajowhite; margin-left: 75%;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
-			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id +" .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week", 'padding: 0 5px; display: table;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .r-cal .datepicker-week-names .datepicker-week", 'padding: 5px; background: ' + bg + '; color: ' + fg + ';');
-			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id +" .datepicker-week .day", 'cursor: pointer; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id +" .datepicker-week .day", 'cursor: pointer; font-size: 14px; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.disabled", 'opacity: 0.5;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id +" .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
