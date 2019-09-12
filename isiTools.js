@@ -863,7 +863,6 @@ function isiToolsCallback(json){
 					var x = getAutocompleteList(this);
 
 					if(e.keyCode == 13) e.preventDefault();
-					console.log(e.keyCode, x, this)
 					if (opt.currentFocus > -1) {
 						if (x) x[opt.currentFocus].click();
 					}
