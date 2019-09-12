@@ -1,4 +1,4 @@
-var itEnabledModules = {Datepicker : true, AddCSSRule: true, Autocomplete: true, Include: true, Mask: true, Selectpicker: true, StripTags: true }
+//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Autocomplete: true, Include: true, Mask: true, Selectpicker: true, StripTags: true }
 
 var it = function(t){
 	it.targets = document.querySelectorAll(t);
@@ -620,20 +620,6 @@ function isiToolsCallback(json){
 									if (opt.callback) opt.callback(this.querySelector("input"));
 									closeAllLists(this);
 								};
-
-								b.onmouseover = function () {
-									var x = getAutocompleteList(opt.target);
-									opt.currentFocus= this.querySelector("input").dataset.index;
-									x.forEach(function(e, i){ 
-										if(e.querySelector("input").dataset.index == opt.currentFocus){
-											opt.currentFocus = i;
-										}
-									})
-									addActive(x);
-
-									opt.target.value = this.querySelector("input").value;
-									if (opt.callback) opt.callback(this.querySelector("input"));
-								};
 							}
 
 							// When format is TABLE
@@ -649,20 +635,6 @@ function isiToolsCallback(json){
 											opt.target.value = this.querySelector("input").value;
 											if (opt.callback) opt.callback(this.querySelector("input"));
 											closeAllLists(this);
-										};
-		
-										b.onmouseover = function () {
-											var x = getAutocompleteList(opt.target);
-											opt.currentFocus= this.querySelector("input").dataset.index;
-											x.forEach(function(e, i){ 
-												if(e.querySelector("input").dataset.index == opt.currentFocus){
-													opt.currentFocus = i;
-												}
-											})
-											addActive(x);
-
-											opt.target.value = this.querySelector("input").value;
-											if (opt.callback) opt.callback(this.querySelector("input"));
 										};
 									}
 
@@ -745,20 +717,6 @@ function isiToolsCallback(json){
 											opt.target.value = this.querySelector("input").value;
 											if (opt.callback) opt.callback(this.querySelector("input"));
 											closeAllLists(this);
-										};
-		
-										b.onmouseover = function () {
-											var x = getAutocompleteList(opt.target);
-											opt.currentFocus= this.querySelector("input").dataset.index;
-											x.forEach(function(e, i){ 
-												if(e.querySelector("input").dataset.index == opt.currentFocus){
-													opt.currentFocus = i;
-												}
-											})
-											addActive(x);
-
-											opt.target.value = this.querySelector("input").value;
-											if (opt.callback) opt.callback(this.querySelector("input"));
 										};
 									}
 								}
