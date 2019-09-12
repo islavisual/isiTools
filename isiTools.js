@@ -1,4 +1,4 @@
-//var itEnabledModules = {Datepicker : true, AddCSSRule: true, Include: true, Mask: true }
+var itEnabledModules = {Datepicker : true, AddCSSRule: true, Autocomplete: true, Include: true, Mask: true, Selectpicker: true, StripTags: true }
 
 var it = function(t){
 	it.targets = document.querySelectorAll(t);
@@ -7,10 +7,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.5.0",
+it.version = "1.5.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "29/08/2019",
+it.lastupdate = "12/09/2019",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -391,11 +391,45 @@ function isiToolsCallback(json){
 				return;
 			}
 
+			// If not target
+			cfg.target = document.getElementById(cfg.input) ? document.getElementById(cfg.input) : document.getElementById(cfg.target);
+			
+			if (!cfg.hasOwnProperty('target')) { alert("Control of data entry (target) not defined!.\nPlease, see the help with the Autocomplete('help');"); return; }
+
+			// If target is a select tag, rebuild element and create data
+			if(cfg.target.tagName.toLowerCase() == "select"){
+				var items = cfg.target.options;
+
+				cfg.data = [];
+				for(var x = 0; x < items.length; x++){
+					var item = items[x];
+				
+					var option = {}
+					for(var attr of item.attributes){ option[attr.name] = attr.value }
+					option.text = item.innerHTML;
+				
+					cfg.data.push(option);
+				}
+
+				var newTag = document.createElement("input");
+				newTag.type = "text";
+				for(var attr of cfg.target.attributes){
+					newTag.setAttribute(attr.name, attr.value);
+				}
+				newTag.id = newTag.id + "_newNode-it-Autocomplete";
+
+				cfg.target.parentElement.insertBefore(newTag, cfg.target);
+
+				cfg.target.remove();
+
+				newTag.id = newTag.id.replace("_newNode-it-Autocomplete", "");
+			}
+			cfg.target = cfg.target.id;
+
 			// Hack to old versions
 			if(cfg.hasOwnProperty('input') && !cfg.hasOwnProperty('target')) cfg.target = cfg.input;
 
 			// If configuration object is invalid
-			if (!cfg.hasOwnProperty('target')) { alert("Control of data entry (target) not defined!.\nPlease, see the help with the Autocomplete('help');"); return; }
 			if (!cfg.hasOwnProperty('data')) { alert("The object of possible values has not been supplied!.\nPlease, see the help with the Autocomplete('help');"); return; }
 			if (cfg.format == "table" && !cfg.tableFields) { alert("A JSON Array must be specified with the fields to be displayed!.\nPlease, see the help with the Autocomplete('help');"); return; }
 
@@ -404,8 +438,10 @@ function isiToolsCallback(json){
 			// Create JSON with current opt
 			var opt = {
 				autofocus: !cfg.hasOwnProperty('autofocus') ? false : cfg.autofocus,
+				autoselect: !cfg.hasOwnProperty('autoselect') ? false : cfg.autoselect,
 				callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
 				className: !cfg.hasOwnProperty('className') ? "autocomplete" : cfg.className,
+				autoExpand: !cfg.hasOwnProperty('autoExpand') ? false : cfg.autoExpand,
 				currentFocus: -1,
 				data: cfg.data,
 				delay: !cfg.hasOwnProperty('delay') ? 300 : cfg.delay,
@@ -449,8 +485,8 @@ function isiToolsCallback(json){
 
 				opt.target.addEventListener("keydown",  function (e) { 
 					var kc = e.keyCode, t = e.target;
-					if(kc == 9){ removeItemsList(false); return false; }
-					else if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
+					if(kc == 9 || kc == 13){ return false; }
+					if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
 					else if(kc == 40 && document.getElementById(e.target.id + "-" + opt.className + "-list")) return false;
 
 					var goon = (t.value.trim().length == 1 && (kc == 8 || kc == 46)) ? false : true;
@@ -462,7 +498,6 @@ function isiToolsCallback(json){
 				opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
 
 				opt.target.addEventListener("inputAfter", function (e) {
-					//var ast = new Date().getTime()/1000; console.log("START: ", ast, "con " + this.value.trim());
 					var a, b, c, i, val = this.value.trim();
 
 					// Contains wildcard
@@ -547,7 +582,14 @@ function isiToolsCallback(json){
 							// The search will be executed after 
 							found = true
 						} else {
-							found = existsCoincidence(val, cval, opt.startsWith, wildCard, 0);
+							if(opt.format == "layer" && typeof opt.data[0] == "object"){
+								cval = cval.text;
+							} else {
+								alert('This search type needs one field with name "text!"');
+								return;
+							}
+							
+							found = existsCoincidence(opt, val, cval, opt.startsWith, wildCard, 0);
 						}
 
 						// If item is found
@@ -573,11 +615,25 @@ function isiToolsCallback(json){
 
 							if (b.classList.contains("value")) {
 								b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
-								b.addEventListener("click", function (e) {
-									opt.target.value = this.getElementsByTagName("input")[0].value;
-									if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+								b.onclick = function () {
+									opt.target.value = this.querySelector("input").value;
+									if (opt.callback) opt.callback(this.querySelector("input"));
 									closeAllLists(this);
-								});
+								};
+
+								b.onmouseover = function () {
+									var x = getAutocompleteList(opt.target);
+									opt.currentFocus= this.querySelector("input").dataset.index;
+									x.forEach(function(e, i){ 
+										if(e.querySelector("input").dataset.index == opt.currentFocus){
+											opt.currentFocus = i;
+										}
+									})
+									addActive(x);
+
+									opt.target.value = this.querySelector("input").value;
+									if (opt.callback) opt.callback(this.querySelector("input"));
+								};
 							}
 
 							// When format is TABLE
@@ -589,11 +645,25 @@ function isiToolsCallback(json){
 									if(f == 0){
 										b.classList.add("value");
 										b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
-										b.addEventListener("click", function (e) {
-											opt.target.value = this.getElementsByTagName("input")[0].value;
-											if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+										b.onclick = function () {
+											opt.target.value = this.querySelector("input").value;
+											if (opt.callback) opt.callback(this.querySelector("input"));
 											closeAllLists(this);
-										});
+										};
+		
+										b.onmouseover = function () {
+											var x = getAutocompleteList(opt.target);
+											opt.currentFocus= this.querySelector("input").dataset.index;
+											x.forEach(function(e, i){ 
+												if(e.querySelector("input").dataset.index == opt.currentFocus){
+													opt.currentFocus = i;
+												}
+											})
+											addActive(x);
+
+											opt.target.value = this.querySelector("input").value;
+											if (opt.callback) opt.callback(this.querySelector("input"));
+										};
 									}
 
 									var tfld = opt.tableFields.fields[f], tval = optData[opt.tableFields.fields[f]];
@@ -650,7 +720,7 @@ function isiToolsCallback(json){
 									text = text.substr(0, text.length-1);
 									text += (text.indexOf("|") == -1) ? "|" : "";
 									
-									if (existsCoincidence(val, text, opt.startsWith, wildCard, 1)) {
+									if (existsCoincidence(opt, val, text, opt.startsWith, wildCard, 1)) {
 										b = document.createElement("div");
 										b.classList.add("value");
 										b.style.width = "100%";
@@ -671,11 +741,25 @@ function isiToolsCallback(json){
 										// Add element
 										bc.appendChild(b);
 										// Add event on click
-										b.addEventListener("click", function (e) {
-											opt.target.value = this.getElementsByTagName("input")[0].value;
-											if (opt.callback) opt.callback(this.getElementsByTagName("input")[0]);
+										b.onclick = function () {
+											opt.target.value = this.querySelector("input").value;
+											if (opt.callback) opt.callback(this.querySelector("input"));
 											closeAllLists(this);
-										});
+										};
+		
+										b.onmouseover = function () {
+											var x = getAutocompleteList(opt.target);
+											opt.currentFocus= this.querySelector("input").dataset.index;
+											x.forEach(function(e, i){ 
+												if(e.querySelector("input").dataset.index == opt.currentFocus){
+													opt.currentFocus = i;
+												}
+											})
+											addActive(x);
+
+											opt.target.value = this.querySelector("input").value;
+											if (opt.callback) opt.callback(this.querySelector("input"));
+										};
 									}
 								}
 
@@ -687,13 +771,10 @@ function isiToolsCallback(json){
 							}
 						}
 					}
-
-					window._continueAC = false;
-					//console.log("END: ", ast - (new Date().getTime()/1000))
 				});
 			}
 
-			function existsCoincidence(value, text, mode, wildCards, pass){
+			function existsCoincidence(opt, value, text, mode, wildCards, pass){
 				// Replace double wildcard
 				value = value.replace("**", '*');
 
@@ -705,7 +786,7 @@ function isiToolsCallback(json){
 
 				// transform to lower case all
 				text = text.toLowerCase();
-
+				
 				// Remove empty elements
 				var complexSearch = value.indexOf("+") != -1 ? true : false, value = value.toLowerCase().split("+");
 				for(var v in value){
@@ -820,18 +901,35 @@ function isiToolsCallback(json){
 					opt.currentFocus--;
 					addActive(x);
 					setScrollTop("up");
-				} else if (e.keyCode == 13) {
+				} else if (e.keyCode == 13 || e.keyCode == 9) {
 					var x = getAutocompleteList(this);
 
-					e.preventDefault();
+					if(e.keyCode == 13) e.preventDefault();
+					console.log(e.keyCode, x, this)
 					if (opt.currentFocus > -1) {
 						if (x) x[opt.currentFocus].click();
 					}
 				}
 			});
 
-			if (opt.autofocus) opt.target.addEventListener("focusin", function (e) { e.target.select(); })
-			opt.target.addEventListener("click", function (e) { closeAllLists(e.target); });
+			// Auto select all
+			if (opt.autoselect){
+				opt.target.addEventListener("focusin", function (e) { 
+					e.target.select(); 
+
+					if (opt.autoExpand) {
+						var evt = new KeyboardEvent('keydown', {'keyCode': 40, 'which': 40});
+						e.target.dispatchEvent (evt);
+					}
+				});
+			}
+
+			// Clear on focus
+			
+			// When click, close all list
+			opt.target.addEventListener("click", function (e) {
+				closeAllLists(e.target); 
+			});
 
 			function addActive(x) {
 				if(!x) return false;
@@ -839,6 +937,9 @@ function isiToolsCallback(json){
 				if(opt.currentFocus >= x.length) opt.currentFocus = 0;
 				if(opt.currentFocus < 0) opt.currentFocus = (x.length - 1);
 				if(x[opt.currentFocus]) x[opt.currentFocus].classList.add(opt.className + "-active");
+
+				var inp = x[opt.currentFocus].querySelector("input");
+				document.getElementById(inp.dataset.id).value = inp.value;
 			}
 
 			function setScrollTop(dir) {
@@ -873,6 +974,8 @@ function isiToolsCallback(json){
 				if(item) item.remove();
 				if (reset) opt.target.value = "";
 			}
+
+			return window[cfg.target] = opt;
 		}
 	}
 
@@ -1779,21 +1882,34 @@ function isiToolsCallback(json){
 			} 
 
 			// If the device is mobile, we change the type of input element to date and do nothing else.
+			var type = "text";
 			try{
 				if(typeof document.createEvent("TouchEvent") != "undefined"){
-					Array.prototype.slice.call(this.targets).forEach(function(target, idx){
-						target.type = "date";
-					});
-
-					return;
-				}
+					type = "date";
+				} 
 			} catch(e) { }
 
+			// Set datepicker field type
 			Array.prototype.slice.call(this.targets).forEach(function(target, idx){
-				target.type = "text";
+				var aux = target.value;
+				target.type = type;
+				target.value = aux;
+			});
 
+			Array.prototype.slice.call(this.targets).forEach(function(target, idx){
 				// Get ID
 				var id = target.id;
+
+				// Assure the input format
+				if(target.value.substr(4,1) == "-" && target.value.substr(7,1) == "-"){
+					var date = new Date(target.value).toLocaleString().split(" ")[0].toString().split(/[\-|\/]/g);
+					
+					for(var x = 0; x < date.length; x++){
+						if(date[x] < 10) date[x] = "0" + date[x];
+					}
+
+					target.value = cfg.format.replace("DD", date[0]).replace("MM", date[1]).replace("YYYY", date[2]).replace("YY", date[2].substring(2));
+				}
 			
 				// If the id attrtibute is not set, we assign it by default
 				id = id == "" ? ('DatePicker_' + idx) : id;
@@ -1852,7 +1968,9 @@ function isiToolsCallback(json){
 					document.body.onkeydown = function(e){
 						var key = e.keyCode || e.which;
 						if(key == 9 || key == 27){
-							document.querySelector(".datepicker-close").click();
+							if(document.querySelector(".datepicker-close")){ 
+								document.querySelector(".datepicker-close").click(); 
+							}
 						}
 					}
 
