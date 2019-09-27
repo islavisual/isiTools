@@ -7,7 +7,7 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.4.4",
+it.version = "1.4.5",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
 it.lastupdate = "27/09/2019",
@@ -1773,7 +1773,7 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.03
+		@version: 1.04
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 27/09/2019
@@ -1803,7 +1803,15 @@ function isiToolsCallback(json){
 
             Array.prototype.slice.call(this.targets).forEach(function (target, idx) {
                 // Get ID
-                var id = target.id;
+				var id = target.id;
+				
+				// If the id attrtibute is not set, we assign it by default
+                id = id == "" ? ('DatePicker_' + idx) : id;
+
+				if(cfg == undefined) cfg = it.datepicker.config;
+                for (var key in it.datepicker.config) {
+                    cfg[key] = cfg.hasOwnProperty(key) ? cfg[key] : it.datepicker.config[key]
+                }
                 
                 // Assure the input format
                 if (target.value.substr(4, 1) == "-" && target.value.substr(7, 1) == "-") {
@@ -1817,12 +1825,6 @@ function isiToolsCallback(json){
 					target.value = target.value.replace(/[^(0-9|\-|\/)]/g, '');
                 }
 
-                // If the id attrtibute is not set, we assign it by default
-                id = id == "" ? ('DatePicker_' + idx) : id;
-
-                for (var key in it.datepicker.config) {
-                    cfg[key] = cfg.hasOwnProperty(key) ? cfg[key] : it.datepicker.config[key]
-                }
 
                 try { cfg.custom[id].md = { b: [], c: [], a: [] }; } catch (e) { }
 
@@ -2070,7 +2072,7 @@ function isiToolsCallback(json){
                     var b = document.getElementById("datepicker-layer-" + target.id + "-remove");
                     b.onclick = it.datepicker.removeEvent;
                 }
-            }); // end for
+            }); // end forEach
         }
 
         it.datepicker.closeEvent = function (e) {
@@ -2181,7 +2183,7 @@ function isiToolsCallback(json){
         };
 
         it.datepicker.config = {
-            buttonicon: 'fa fa-calendar',
+            buttonicon: '<i class="fa fa-calendar"></i>',
             shortdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
             longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
             shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
