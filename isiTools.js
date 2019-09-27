@@ -7,10 +7,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.4.3",
+it.version = "1.4.4",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "27/08/2019",
+it.lastupdate = "27/09/2019",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -1773,10 +1773,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.02
+		@version: 1.03
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 24/09/2019
+		@Last update: 27/09/2019
 	**/
     if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
@@ -1957,6 +1957,7 @@ function isiToolsCallback(json){
 					cal.setAttribute("data-id", target.id);
 					cal.setAttribute("tabindex", "0");
 					cal.setAttribute("onkeydown", "it.datepicker.onkeydown()");
+					cal.setAttribute("onclick", "this.querySelector('.datepicker-date .datepicker-close').click()");
 					
                     var cclose = document.createElement("i");
                     cclose.classList.add("datepicker-close");
@@ -2089,7 +2090,7 @@ function isiToolsCallback(json){
 
             it.simulateEvent("change", document.getElementById(prt));
 
-            it('#' + prt).datepicker('show');
+            if(!cfg.autoClose) it('#' + prt).datepicker('show');
         }
 
         it.datepicker.monthEvent = function (e) {
@@ -2129,7 +2130,7 @@ function isiToolsCallback(json){
 
             it.simulateEvent("change", document.getElementById(aux.dataset.id));
 
-            it('#' + aux.dataset.id).datepicker('show');
+            if(!cfg.autoClose) it('#' + aux.dataset.id).datepicker('show');
         }
 
         it.datepicker.removeEvent = function (e) {
@@ -2185,10 +2186,11 @@ function isiToolsCallback(json){
             longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
             shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
             longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            weekstart: 1,
-            textToday: 'Hoy',
+			weekstart: 1,
+			textToday: 'Hoy',
             textRemove: 'Eliminar',
-            curDate: null,
+			autoClose: true,
+			curDate: null,
             selMonth: null,
             selYear: null,
             selDay: null,
