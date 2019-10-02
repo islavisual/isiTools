@@ -1773,10 +1773,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.04
+		@version: 1.05
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 27/09/2019
+		@Last update: 02/10/2019
 	**/
     if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
@@ -1809,6 +1809,7 @@ function isiToolsCallback(json){
                 id = id == "" ? ('DatePicker_' + idx) : id;
 
 				if(cfg == undefined) cfg = it.datepicker.config;
+				
                 for (var key in it.datepicker.config) {
                     cfg[key] = cfg.hasOwnProperty(key) ? cfg[key] : it.datepicker.config[key]
                 }
@@ -1959,7 +1960,7 @@ function isiToolsCallback(json){
 					cal.setAttribute("data-id", target.id);
 					cal.setAttribute("tabindex", "0");
 					cal.setAttribute("onkeydown", "it.datepicker.onkeydown()");
-					cal.setAttribute("onclick", "this.querySelector('.datepicker-date .datepicker-close').click()");
+					cal.setAttribute("onclick", "it.datepicker.click(this)");
 					
                     var cclose = document.createElement("i");
                     cclose.classList.add("datepicker-close");
@@ -2131,16 +2132,25 @@ function isiToolsCallback(json){
             document.getElementById(aux.dataset.id).value = cfg.format.replace(/DD/, cfg.curDay).replace(/MM/, cfg.curMonth).replace(/YYYY/, cfg.curYear);
 
             it.simulateEvent("change", document.getElementById(aux.dataset.id));
-
-            if(!cfg.autoClose) it('#' + aux.dataset.id).datepicker('show');
+			
+            if(cfg.autoClose){
+				e.target.parentElement.parentElement.parentElement.children[0].click();
+			} else {
+				it('#' + aux.dataset.id).datepicker('show');
+			}
         }
 
         it.datepicker.removeEvent = function (e) {
-            var aux = e.target.parentElement.parentElement.parentElement;
+			var aux = e.target.parentElement.parentElement.parentElement;
+			var cfg = it.datepicker.config.custom[aux.dataset.id];
 
             document.getElementById(aux.dataset.id).value = '';
 
-            it.simulateEvent("change", document.getElementById(aux.dataset.id));
+			it.simulateEvent("change", document.getElementById(aux.dataset.id));
+			
+			if(cfg.autoClose){
+				e.target.parentElement.parentElement.parentElement.children[0].click();
+			}
 		}
 		
 		it.datepicker.onkeydown = function () {
@@ -2152,7 +2162,14 @@ function isiToolsCallback(json){
 			}
 		}
 
-        it.datepicker.version = '1.0';
+		it.datepicker.click = function () {
+			var trg = window.event.target;
+			if(trg.tagName.toLowerCase() == "section"){
+				trg.querySelector('.datepicker-close').click();
+			}
+		}
+
+		it.datepicker.version = '1.0';
 
         it.datepicker.addStyles = function (id, bg, fg) {
             it.addCSSRule('', "#datepicker-layer-" + id, 'width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden;');
