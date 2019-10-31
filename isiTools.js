@@ -405,7 +405,10 @@ function isiToolsCallback(json){
 					var item = items[x];
 				
 					var option = {}
-					for(var attr of item.attributes){ option[attr.name] = attr.value }
+					for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
+						var akey = atts[i].nodeName, avalue = atts[i].value;
+						option[akey] = avalue;
+					}
 					option.text = item.innerHTML;
 				
 					cfg.data.push(option);
@@ -413,8 +416,9 @@ function isiToolsCallback(json){
 
 				var newTag = document.createElement("input");
 				newTag.type = "text";
-				for(var attr of cfg.target.attributes){
-					newTag.setAttribute(attr.name, attr.value);
+				for (var i = 0, atts = cfg.target.attributes, n = atts.length, arr = []; i < n; i++){
+					var akey = atts[i].nodeName, avalue = atts[i].value;
+					newTag.setAttribute(akey, avalue);
 				}
 				newTag.id = newTag.id + "_newNode-it-Autocomplete";
 
@@ -2179,10 +2183,22 @@ function isiToolsCallback(json){
             var prt = aux.parentElement.dataset.id;
             var cfg = it.datepicker.config.custom[prt];
             var mm = parseInt(e.target.dataset.id) + 1;
-            mm = mm < 10 ? ('0' + mm) : mm;
-
-            document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
-
+			mm = mm < 10 ? ('0' + mm) : mm;
+			
+			// Adjustment by nonexistent day
+			var ndate = new Date(cfg.selYear,  mm-1, cfg.selDay);
+			if(ndate.getDate() != cfg.selDay){
+				var ndate = new Date(cfg.selYear, mm, 0);
+				cfg.selDay = ndate.getDate();
+				cfg.selDay = cfg.selDay < 10 ? ('0' + cfg.selDay) : cfg.selDay;
+				cfg.selYear = ndate.getFullYear();
+				mm = ndate.getMonth() + 1;
+				mm = mm < 10 ? ('0' + mm) : mm;
+			}
+			
+			// Asign selected date
+			document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
+			
             it.simulateEvent("change", document.getElementById(prt));
 
             it('#' + prt).datepicker('show');
