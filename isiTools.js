@@ -2126,10 +2126,22 @@ function isiToolsCallback(json){
             var prt = aux.parentElement.dataset.id;
             var cfg = it.datepicker.config.custom[prt];
             var mm = parseInt(e.target.dataset.id) + 1;
-            mm = mm < 10 ? ('0' + mm) : mm;
-
-            document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
-
+			mm = mm < 10 ? ('0' + mm) : mm;
+			
+			// Adjustment by nonexistent day
+			var ndate = new Date(cfg.selYear,  mm-1, cfg.selDay);
+			if(ndate.getDate() != cfg.selDay){
+				var ndate = new Date(cfg.selYear, mm, 0);
+				cfg.selDay = ndate.getDate();
+				cfg.selDay = cfg.selDay < 10 ? ('0' + cfg.selDay) : cfg.selDay;
+				cfg.selYear = ndate.getFullYear();
+				mm = ndate.getMonth() + 1;
+				mm = mm < 10 ? ('0' + mm) : mm;
+			}
+			
+			// Asign selected date
+			document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, mm).replace(/YYYY/, cfg.selYear);
+			
             it.simulateEvent("change", document.getElementById(prt));
 
             it('#' + prt).datepicker('show');
