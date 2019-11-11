@@ -7,10 +7,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.4.6",
+it.version = "1.4.7",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "08/10/2019",
+it.lastupdate = "11/11/2019",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -402,6 +402,8 @@ function isiToolsCallback(json){
 
 			// Create JSON with current opt
 			var opt = {
+				ajax: !cfg.hasOwnProperty('ajax') ? false : cfg.ajax,
+				url: !cfg.hasOwnProperty('url') ? null : cfg.url,
 				autofocus: !cfg.hasOwnProperty('autofocus') ? false : cfg.autofocus,
 				callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
 				className: !cfg.hasOwnProperty('className') ? "autocomplete" : cfg.className,
@@ -449,11 +451,20 @@ function isiToolsCallback(json){
 				opt.target.onkeydown = null;
 
 				function triggerAfterKey(t){
-					var event = new Event('inputAfter');
-					t.dispatchEvent(event);
+					if(!opt.ajax){
+						var event = new Event('inputAfter');
+						t.dispatchEvent(event);
+					} else {
+						new HttpRequest({
+							url: opt.url+"?q="+t.value, 
+							ajax: true, 
+							callback: callbackInputAfter, 
+							contentType: "application/json; charset=utf-8"}
+						);
+					}
 				}
 
-				opt.target.addEventListener("keydown",  function (e) { 
+				opt.target.addEventListener("keydown",  function (e) {
 					var kc = e.keyCode, t = e.target;
 					if(kc == 9){ removeItemsList(false); return false; }
 					else if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
@@ -543,7 +554,7 @@ function isiToolsCallback(json){
 					}
 
 					var jsonCluster = false;
-					if(opt.format == "cluster" && typeof opt.data[0].items[0] == "object") jsonCluster = true;
+					if(opt.format == "cluster" && opt.data.length != 0 && typeof opt.data.find(function (x){return x!==undefined}).items.find(function (x){return x!==undefined}) == "object") jsonCluster = true;
 
 					// Go through the data
 					for (var i = 0; i < opt.data.length; i++) {
@@ -708,6 +719,13 @@ function isiToolsCallback(json){
 					//console.log("END: ", ast - (new Date().getTime()/1000))
 					ast = a = b = bc = val = highlighting = tooltips = text = optData = cval = thead = null;
 				});
+			}
+
+			function callbackInputAfter(e){
+				opt.data = e;
+				
+				var event = new Event('inputAfter');
+				opt.target.dispatchEvent(event);
 			}
 
 			function existsCoincidence(value, text, mode, wildCards, pass){
@@ -4943,4 +4961,51 @@ if(it.browser == "IE"){
 			this.parentElement.removeChild(this);
 		} catch(e){}
 	} 
+
+	// Polyfill find method to arrays
+	if (!Array.prototype.find) {
+		Object.defineProperty(Array.prototype, 'find', {
+		  value: function(predicate) {
+		   // 1. Let O be ? ToObject(this value).
+			if (this == null) {
+			  throw new TypeError('"this" is null or not defined');
+			}
+	  
+			var o = Object(this);
+	  
+			// 2. Let len be ? ToLength(? Get(O, "length")).
+			var len = o.length >>> 0;
+	  
+			// 3. If IsCallable(predicate) is false, throw a TypeError exception.
+			if (typeof predicate !== 'function') {
+			  throw new TypeError('predicate must be a function');
+			}
+	  
+			// 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+			var thisArg = arguments[1];
+	  
+			// 5. Let k be 0.
+			var k = 0;
+	  
+			// 6. Repeat, while k < len
+			while (k < len) {
+			  // a. Let Pk be ! ToString(k).
+			  // b. Let kValue be ? Get(O, Pk).
+			  // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+			  // d. If testResult is true, return kValue.
+			  var kValue = o[k];
+			  if (predicate.call(thisArg, kValue, k, o)) {
+				return kValue;
+			  }
+			  // e. Increase k by 1.
+			  k++;
+			}
+	  
+			// 7. Return undefined.
+			return undefined;
+		  },
+		  configurable: true,
+		  writable: true
+		});
+	  }
 }
