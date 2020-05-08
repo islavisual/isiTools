@@ -385,7 +385,7 @@ function isiToolsCallback(json){
 		@version: 1.3.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 31/07/2019
+		@Last update: 30/04/2020
 	**/
 	
 	if(json.Autocomplete){
