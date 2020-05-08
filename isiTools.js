@@ -7,10 +7,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.0",
+it.version = "1.6.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "10/10/2019",
+it.lastupdate = "08/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -3425,7 +3425,6 @@ function isiToolsCallback(json){
 			}
 
 			this.so = "mask";
-			return this;
 		}
 
 		it.mask.version = '1.1';
