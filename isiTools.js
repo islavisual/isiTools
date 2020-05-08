@@ -177,8 +177,8 @@ function isiToolsCallback(json){
 	}
 	
 	/**
-		Custom alerts functionality
-		@version: 1.1.0
+		 Custom alerts functionality
+		@version: 1.1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 08/05/2020
@@ -309,8 +309,10 @@ function isiToolsCallback(json){
 
 			function render() {
 				// If the body has scripts, separate all
-				var data = opt.body;
-				var src = data.match(/<script>(.+)<\/script>/)[0].replace("<script>", '').replace("</script>", '');
+				var data = opt.body, src = '';
+
+				data = data.match(/<script>(.+)<\/script>/);
+				if(data) src = data[0].replace("<script>", '').replace("</script>", '')
 
 				var aux = tmpl.replace("__TITLE__", opt.title)
 					.replace("__DATA__", opt.body)
@@ -333,22 +335,39 @@ function isiToolsCallback(json){
 				e.target.parentElement.parentElement.parentElement.remove();
 			}
 
+			function getData(e, accepted){
+				var trg = e.target.parentElement.parentElement;
+				var items = trg.querySelectorAll('[id], [name], [contenteditable="true"]');
+
+				var json = { general: {title: opt.title, accepted: accepted ? true : false}, elements: [] };
+				for(var i = 0; i < items.length; i++){
+					var item = items[i], aux = {};
+					for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
+						aux[atts[i].nodeName] = atts[i].nodeValue;
+					}
+					aux.value = item.value || item.innerHTML;
+					json.elements.push(aux);
+				}
+
+				return json;
+			}
+
 			function assignEvents() {
 				document.querySelector(".Alert .close-btn").addEventListener("click", function (e) {
-					if (opt.actions.cancel.callback) opt.actions.cancel.callback("cancel");
+					if (opt.actions.cancel.callback) opt.actions.cancel.callback(getData(e, false));
 					closeAlert(e);
 				});
 
 				if (opt.actions.accept.enabled) {
 					document.querySelector(".Alert footer ." + opt.actions.accept.class.replace(/\s/g, '.')).addEventListener("click", function (e) {
-						if (opt.actions.accept.callback) opt.actions.accept.callback("accept");
+						if (opt.actions.accept.callback) opt.actions.accept.callback(getData(e, true));
 						closeAlert(e);
 					});
 				}
 
 				if (opt.actions.cancel.enabled) {
 					document.querySelector(".Alert footer ." + opt.actions.cancel.class.replace(/\s/g, '.')).addEventListener("click", function (e) {
-						if (opt.actions.cancel.callback) opt.actions.cancel.callback("cancel");
+						if (opt.actions.cancel.callback) opt.actions.cancel.callback(getData(e, false));
 						closeAlert(e);
 					});
 				}
