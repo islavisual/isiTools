@@ -95,6 +95,8 @@ it.set = function(){
 		this[this.so].set.call(this[this.so])
 }
 
+it.get = function(index){ if(index == undefined) index = 0; return this.targets[index]; }
+
 it.simulateEvent = function(evt, el){
 
 	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
@@ -175,11 +177,11 @@ function isiToolsCallback(json){
 	}
 	
 	/**
-		 Custom alerts functionality
-		@version: 1.00
+		Custom alerts functionality
+		@version: 1.1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 12/03/2019
+		@Last update: 08/05/2020
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -294,10 +296,10 @@ function isiToolsCallback(json){
 			var tmpl = '<div class="Alert ' + opt.class + '">\
 					<header>\
 						<h3>__TITLE__</h3>\
-						<i class="close-btn">X</i>\
+						<i class="close-btn">&times;</i>\
 					</header>\
 					<div class="Alert-body">\
-						<p> __DATA__ </p>\
+						__DATA__\
 					</div>\
 					<footer>\
 						__ACCEPT__\
@@ -306,6 +308,10 @@ function isiToolsCallback(json){
 				</div>';
 
 			function render() {
+				// If the body has scripts, separate all
+				var data = opt.body;
+				var src = data.match(/<script>(.+)<\/script>/)[0].replace("<script>", '').replace("</script>", '');
+
 				var aux = tmpl.replace("__TITLE__", opt.title)
 					.replace("__DATA__", opt.body)
 					.replace("__ACCEPT__", opt.actions.accept.enabled ? ('<button class="' + opt.actions.accept.class + '" ' + (opt.actions.accept.alignment == "" ? '' : (opt.actions.accept.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.accept.text + '</button>') : '')
@@ -317,6 +323,10 @@ function isiToolsCallback(json){
 					a.innerHTML = aux;
 
 				document.body.appendChild(a);
+
+				if(src && src.trim() != ""){
+					eval(src);
+				}
 			}
 
 			function closeAlert(e) {
@@ -345,17 +355,18 @@ function isiToolsCallback(json){
 			}
 
 			function init() {
-
 				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', ".Alert-overlay", 'position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999');
 					AddCSSRule('', ".Alert", 'max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; overflow: hidden; color: ' + opt.styles.body.color + ';');
 					AddCSSRule('', ".Alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
 					AddCSSRule('', ".Alert header h3", 'font-size: 14px; margin: 0; color: ' + opt.styles.title.color + '; display: inline-block');
-					AddCSSRule('', ".Alert header i", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; padding: 0 2px;');
+					AddCSSRule('', ".Alert header i", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
 					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; font-weight: 600; ' + opt.styles.body.extra);
 					AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
-					AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
-					AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
+					if(opt.actions.accept.class == defaultActions.cancel.class){
+						AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
+						AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
+					}
 				}
 
 				try { document.querySelector(".Alert-overlay").remove(); } catch (e) { }
@@ -3374,10 +3385,10 @@ function isiToolsCallback(json){
 
 	/**
 		Masking inputs functionality
-		@version: 1.00																					
+		@version: 1.1.0																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
-		@Last update: 11/07/2019
+		@Last update: 07/05/2020
 	**/
 	if(json.Mask){
 		this.Mask = it.mask = function(cfg){
@@ -3386,6 +3397,32 @@ function isiToolsCallback(json){
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				it.mask.config[target.id] = { target: target, mask: cfg}
 			});
+
+			if(arguments.length == 0){
+				alert("No se ha definido la máscara")
+				return;
+			}
+
+			for(var key in it.mask.config){
+				// Set attributes
+				cfg = it.mask.config[key];
+				cfg.target.setAttribute("placeholder", cfg.mask);
+				cfg.target.setAttribute("maxlength", cfg.mask.length);
+				cfg.target.setAttribute("minlength", cfg.mask.length);
+
+				cfg.target.type = "text";
+
+				// Set paste event
+				cfg.target.addEventListener('paste', function (e){
+					var EV = e;
+					setTimeout(function(){ it.mask.fullFormat(EV)} , 150);
+				});
+
+				// Set keyborad events
+				cfg.target.addEventListener('keydown', function (e){
+					return it.mask._customEvent(e, it.mask.config[e.target.id]);
+				});
+			}
 
 			this.so = "mask";
 			return this;
@@ -3401,35 +3438,7 @@ function isiToolsCallback(json){
 			else alert("Helper not available!")
 			return;
 		}
-		
-		it.mask.set = function(){
-			if(arguments.length == 0)
-				opt = {};
-			else {
-				it(arguments[0].target).mask(arguments[0].mask).set();
-				return;
-			}
 
-			for(var key in this.config){
-				// Set attributes
-				cfg = this.config[key];
-				cfg.target.setAttribute("placeholder", cfg.mask);
-				cfg.target.setAttribute("maxlength", cfg.mask.length);
-
-				cfg.target.type = "text";
-
-				// Set paste event
-				cfg.target.addEventListener('paste', function (e){
-					var EV = e;
-					setTimeout(function(){ it.mask.fullFormat(EV)} , 150);
-				});
-
-				// Set keyborad events
-				cfg.target.addEventListener('keydown', function (e){
-					return it.mask._customEvent(e, it.mask.config[e.target.id]);
-				});
-			}
-		}
 		it.mask.getPositionCursor = function(e) {
 			var p = 0, trg = e.target;
 			
