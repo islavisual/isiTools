@@ -40,7 +40,7 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.00																					
+   @version: 1.1.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
    @Last update: 08/05/2020																			
@@ -80,9 +80,51 @@ if(it.enabledModules.Alert){
 		},
 		actions: {
 			type: 'object',
-			description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".\nLos campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".',
-			example: 'new Alert({\n\ttitle: "Precaución!",\n\tbody:"El campo se encuentra vacío.",\n\tactions:{\n\t\taccept: {\n\t\t\tenabled: true,\n\t\t\ttext: "Accept",\n\t\t\tclass: "btn btn-primary",\n\t\t\talignment: "right",\n\t\t\tcallback: function(e){\n\t\t\t\tconsole.log(e)\n\t\t\t}\n\t\t},\n\t\tcancel: {\n\t\t\tenabled: true,\n\t\t\ttext: "Cancel",\n\t\t\tclass: "btn btn-secondary",\n\t\t\talignment: "left",\n\t\t\tcallback: function(e){\n\t\t\t\tconsole.log(e)\n\t\t\t}\n\t\t}\n\t}\n});'
-		},
+			description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".\nLos campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".<br/><br/>\n\
+El parámetro "callback" es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert Solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado.',
+			example: 'new Alert({\n\
+	title: "Introduzca un código!",\n\
+	body:"&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>",\n\
+	actions:{\n\
+		accept: {\n\
+			enabled: true,\n\
+			text: "Accept",\n\
+			class: "btn btn-primary",\n\
+			alignment: "right",\n\
+			callback: alertAccepted\n\
+		},\n\
+		cancel: {\n\
+			enabled: true,\n\
+			text: "Cancel",\n\
+			class: "btn btn-secondary",\n\
+			alignment: "left",\n\
+			callback: function(e){\n\
+				console.log(e)\n\
+			}\n\
+		}\n\
+	}\n\
+});\n\
+function alertAccepted(data){\n\
+	console.log(data)\n\
+}\n\
+// Cuando el usuario pulse en el botón de aceptar, se mostrará por la consola algo similar a la siguiente estructura:\n\
+// {\n\
+// 	general:{\n\
+// 		accepted: true\n\
+// 		title: "Introduzca un código!"\n\
+// 	}\n\
+// 	elements: [\n\
+// 		{\n\
+// 			id: "data"\n\
+// 			maxlength: "18"\n\
+// 			minlength: "18"\n\
+// 			placeholder: "99999"\n\
+// 			type: "text"\n\
+// 			value: "28012"\n\
+// 		}\n\
+// 	]\n\
+// }\n\
+'},
 		styles: {
 			type: 'object',
 			description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".',
