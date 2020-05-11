@@ -177,11 +177,11 @@ function isiToolsCallback(json){
 	}
 	
 	/**
-		 Custom alerts functionality
-		@version: 1.1.1
+		Custom alerts functionality
+		@version: 1.2.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 08/05/2020
+		@Last update: 11/05/2020
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -314,9 +314,17 @@ function isiToolsCallback(json){
 				data = data.match(/<script>(.+)<\/script>/);
 				if(data) src = data[0].replace("<script>", '').replace("</script>", '')
 
+				if(opt.body.indexOf("form") != -1){
+					// If content have a form inside
+					var aux = opt.body.match(/<form(.+)id=('|")(.*?)('|")>/g).join().match(/id=('|")(.*?)('|")/g).join().replace(/id=('|")/g,'').replace(/('|")/g,'');
+
+					// If ID attribute is defined, assign to accept button
+					if(aux){ opt.actions.accept.form = 'form="' + aux + '" type="submit"'; }
+				}
+
 				var aux = tmpl.replace("__TITLE__", opt.title)
 					.replace("__DATA__", opt.body)
-					.replace("__ACCEPT__", opt.actions.accept.enabled ? ('<button class="' + opt.actions.accept.class + '" ' + (opt.actions.accept.alignment == "" ? '' : (opt.actions.accept.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.accept.text + '</button>') : '')
+					.replace("__ACCEPT__", opt.actions.accept.enabled ? ('<button ' + opt.actions.accept.form + ' class="' + opt.actions.accept.class + '" ' + (opt.actions.accept.alignment == "" ? '' : (opt.actions.accept.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.accept.text + '</button>') : '')
 					.replace("__CANCEL__", opt.actions.cancel.enabled ? ('<button class="' + opt.actions.cancel.class + '" ' + (opt.actions.cancel.alignment == "" ? '' : (opt.actions.cancel.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.cancel.text + '</button>') : '')
 					.replace(/\n/g, '<br/>');
 
@@ -342,8 +350,11 @@ function isiToolsCallback(json){
 				var json = { general: {title: opt.title, accepted: accepted ? true : false}, elements: [] };
 				for(var i = 0; i < items.length; i++){
 					var item = items[i], aux = {};
-					for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
-						aux[atts[i].nodeName] = atts[i].nodeValue;
+
+					if(item.validationMessage) return {invalidMessage: item.validationMessage };
+
+					for (var x = 0, atts = item.attributes, n = atts.length, arr = []; x < n; x++){
+						aux[atts[x].nodeName] = atts[x].nodeValue;
 					}
 					aux.value = item.value || item.innerHTML;
 					json.elements.push(aux);
@@ -360,8 +371,11 @@ function isiToolsCallback(json){
 
 				if (opt.actions.accept.enabled) {
 					document.querySelector(".Alert footer ." + opt.actions.accept.class.replace(/\s/g, '.')).addEventListener("click", function (e) {
-						if (opt.actions.accept.callback) opt.actions.accept.callback(getData(e, true));
-						closeAlert(e);
+						var aux = getData(e, true);
+						if(!aux.hasOwnProperty("invalidMessage")){
+							if (opt.actions.accept.callback) opt.actions.accept.callback(aux);
+							closeAlert(e);
+						}
 					});
 				}
 
