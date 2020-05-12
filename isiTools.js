@@ -3173,8 +3173,8 @@ function isiToolsCallback(json){
 	}
 
 	/**
-		Include files in HTML through Ajax
-		@version: 1.1.0
+		 Include files in HTML through Ajax
+		@version: 1.2.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
 		@Last update: 12/05/2020
@@ -3183,6 +3183,10 @@ function isiToolsCallback(json){
 		this.Include = it.include = function (cfg) {
 			// Default values to cfg
 			if (typeof cfg == "undefined" || cfg == null) cfg = {};
+
+			if(cfg.hasOwnProperty('attribute') && cfg.attribute.trim() != "" ){
+				this.targets = document.querySelectorAll('[' + cfg.attribute.trim() + ']')
+			}
 
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("Include", cfg);
@@ -3197,8 +3201,17 @@ function isiToolsCallback(json){
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				cfg.target = target;
 
+				// Create JSON with current opt
+				var opt = {
+					add: !cfg.hasOwnProperty('add') ? false : cfg.add,
+					callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
+					data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
+					file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
+					target: target,
+				}
+
 				// If the request is data-include
-				if (cfg.hasOwnProperty('attribute') && cfg.attribute != "") {
+				if (cfg.hasOwnProperty('attribute') && cfg.attribute.trim() != "") {
 					dataInclude(cfg.attribute);
 					return;
 
@@ -3209,15 +3222,6 @@ function isiToolsCallback(json){
 
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a string 'data' or 'file' parameter!. Please, see the help with the Include('help');"); return false; }
-
-				// Create JSON with current opt
-				var opt = {
-					add: !cfg.hasOwnProperty('add') ? false : cfg.add,
-					callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
-					data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
-					file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
-					target: target,
-				}
 
 				if (opt.file) {
 					getData(opt.target, opt.file, false);
