@@ -1020,10 +1020,10 @@ if(it.enabledModules.HttpRequest){
 
 /**
    Include Helper																		
-   @version: 1.00																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 11/03/2019																			
+   @version: 1.2.0
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2020 Islavisual.
+   @Last update: 12/05/2020
  **/
 if(it.enabledModules.Include){
 	WikiHelper.Include = {
@@ -1035,22 +1035,22 @@ if(it.enabledModules.Include){
 		data: {
 			type: 'string',
 			description: 'El código HTML/texto a insertar.',
-			example: 'Include({\n\ttarget: "targetID",\n\tdata: \'&lt;section class="container">\\\n\t\t&lt;article id="art_01">\\\n\t\t\t...\\\n\t\t&lt;/article>\\\n\t&lt;/section>\'\n});'
+			example: 'it("#target").include({\n\tdata: \'&lt;section class="container">\\\n\t\t&lt;article id="art_01">\\\n\t\t\t...\\\n\t\t&lt;/article>\\\n\t&lt;/section>\'\n});'
 		},
 		file: {
 			type: 'string',
 			description: 'URL del archivo a insertar en el elemento contenedor.',
-			example: 'Include({target: "targetID", file: "./customers/profile.html"});'
+			example: 'it("#target").include({ file: "./customers/profile.html" });'
 		},
 		attribute: {
 			type: 'string',
 			description: 'Indica qué atributo de datos personalizado HTML se utilizará para recuperar la URL que incluirá datos dentro de capas de contenedor (generalmente DIV, SECCIÓN, ARTÍCULO,...).',
-			example: '// Supongamos que el siguiente código fuente con "data-include"\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({attribute: "data-include"});'
+			example: '// Supongamos que el siguiente código fuente con "data-include"\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({ attribute: "data-include" });'
 		},
-		target: {
-			type: 'string',
-			description: 'ID del elemento contenedor donde se insertará el código.',
-			example: 'Include({target: "targetID", file: "./customers/profile.html"});'
+		callback: {
+			type: 'function',
+			description: 'Devuelve el control a la función indicada tras el proceso de inclusión. Esto es útil cuando se desea insertar dinámicamente un archivo detrás de otro en un orden preestablecido.',
+			example: 'it("#target").include({ file: "./customers/profile.html", callback: loadedFile });\n\nfunction loadedFile(){\n\tconsole.log("fichero incrustado!");\n}'
 		},
 	}
 }
