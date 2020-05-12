@@ -7,10 +7,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.1",
+it.version = "1.6.2",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2019 Islavisual",
-it.lastupdate = "08/05/2020",
+it.lastupdate = "12/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -3173,11 +3173,11 @@ function isiToolsCallback(json){
 	}
 
 	/**
-		 Include files in HTML through Ajax
-		@version: 1.00
+		Include files in HTML through Ajax
+		@version: 1.1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 27/02/2019
+		@Last update: 12/05/2020
 	**/
 	if(json.Include){
 		this.Include = it.include = function (cfg) {
@@ -3212,6 +3212,8 @@ function isiToolsCallback(json){
 
 				// Create JSON with current opt
 				var opt = {
+					add: !cfg.hasOwnProperty('add') ? false : cfg.add,
+					callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
 					data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
 					file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
 					target: target,
@@ -3222,8 +3224,15 @@ function isiToolsCallback(json){
 					return;
 
 				} else {
-					opt.target.innerHTML = opt.data;
+					if(!opt.add){
+						opt.target.innerHTML = opt.data;
+					} else{
+						opt.target.innerHTML += opt.data;
+					}
+					
 					opt.target.querySelector("script") ? execute(opt.target) : '';
+
+					if(opt.callback) opt.callback();
 				}
 
 				function execute(trg) {
@@ -3236,7 +3245,17 @@ function isiToolsCallback(json){
 					var xhttp = new XMLHttpRequest(), dIncFlag = typeof dIncFlag == "undefined" ? false : true;
 					xhttp.onreadystatechange = function () {
 						if (this.readyState == 4) {
-							if (this.status == 200) { trg.innerHTML = this.responseText; trg.querySelector("script") ? execute(trg) : ''; }
+							if (this.status == 200) { 
+								if(!opt.add){
+									trg.innerHTML = this.responseText; 
+								} else{
+									trg.innerHTML += this.responseText; 
+								}
+
+								trg.querySelector("script") ? execute(trg) : ''; 
+
+								if(opt.callback) opt.callback();
+							}
 							if (this.status == 404) { trg.innerHTML = "Page not found."; }
 
 							if (dIncFlag) {
