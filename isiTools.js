@@ -316,7 +316,9 @@ function isiToolsCallback(json){
 
 				if(opt.body.indexOf("form") != -1){
 					// If content have a form inside
-					var aux = opt.body.match(/<form(.+)id=('|")(.*?)('|")>/g).join().match(/id=('|")(.*?)('|")/g).join().replace(/id=('|")/g,'').replace(/('|")/g,'');
+					var aux = document.createElement("div")
+						aux.innerHTML = opt.body;
+						aux = aux.querySelector("form").id;
 
 					// If ID attribute is defined, assign to accept button
 					if(aux){ opt.actions.accept.form = 'form="' + aux + '" type="submit"'; }
