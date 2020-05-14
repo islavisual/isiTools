@@ -40,10 +40,10 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.1.1																					
+   @version: 1.3.0																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 08/05/2020																			
+   @Last update: 14/05/2020																			
  **/
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
@@ -75,13 +75,20 @@ if(it.enabledModules.Alert){
 		},
 		body: {
 			type: 'string',
-			description: 'Mensaje de la alerta.',
-			example: '// Simply Alert\nAlert("El campo se encuentra vacío.");\n// Custom Alert\nnew Alert({title: "Precaución!", body:"El campo se encuentra vacío."});\n// HTML Alert\nnew Alert({title: "Precaución!", body:"&lt;span>Esto es una prueba&lt;/span> of &lt;b style=\'color: red\'>Alerta!&lt;/b>."});'
+			description: 'Representa el contenido de la alerta o diálogo. Puede contener texto plano, texto HTML o la función url() de CSS.',
+			example: '// Alerta sencilla\n\
+Alert("El campo se encuentra vacío.");\n\n\
+// Alerta personalizada\n\
+new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});\n\n\
+// Alerta con HTML incrustado\n\
+new Alert({title: "Precaución!", body:"&lt;span>Esto es una prueba&lt;/span> of &lt;b style=\'color: red\'>Alerta!&lt;/b>."});\n\n\
+// Alerta con contenido cargado a través de URL\n\
+new Alert({title: "Precaución!", body:"url(./templates/dialog.html)"});'
 		},
 		actions: {
 			type: 'object',
 			description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".\nLos campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".<br/><br/>\n\
-El parámetro "callback" es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert Solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado.',
+El parámetro "callback" es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado. A continuación se muestra un ejemplo que visualiza por consola el contenido de este JSON devuelto.',
 			example: 'new Alert({\n\
 	title: "Introduzca un código!",\n\
 	body:"&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>",\n\
