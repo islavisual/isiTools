@@ -228,6 +228,7 @@ function isiToolsCallback(json){
 			// Create JSON with current opt
 			var opt = {
 				class: !cfg.hasOwnProperty('class') ? '' : cfg.class,
+				draggable: !cfg.hasOwnProperty('draggable') ? false : cfg.draggable,
 				title: !cfg.hasOwnProperty('title') ? '' : cfg.title,
 				theme: !cfg.hasOwnProperty('theme') ? 'light' : cfg.theme,
 				actions: !cfg.hasOwnProperty('actions') ? defaultActions : cfg.actions,
@@ -307,13 +308,11 @@ function isiToolsCallback(json){
 					</footer>\
 				</div>';
 
+			function alertDragStart(e) { var style = window.getComputedStyle(opt.target, null); e.dataTransfer.setData("text/html", (style.left.replace(/[^0-9]/ig, '') - e.clientX) + ',' + (style.top.replace(/[^0-9]/ig, '') - e.clientY)); } 
+			function alertDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
+			function alertDrop(e) { var offset = e.dataTransfer.getData("text/html").split(','); opt.target.style.left = (e.clientX + parseInt(offset[0])) + 'px'; opt.target.style.top = (e.clientY + parseInt(offset[1])) + 'px'; e.preventDefault(); return false; } 
+				
 			function render() {
-				// If the body has scripts, separate all
-				var data = opt.body, src = '';
-
-				data = data.match(/<script>(.+)<\/script>/);
-				if(data) src = data[0].replace("<script>", '').replace("</script>", '')
-
 				if(opt.body.indexOf("<form ") != -1 || opt.body.indexOf("<form>") != -1){
 					// If content have a form inside
 					var aux = document.createElement("div")
@@ -324,21 +323,33 @@ function isiToolsCallback(json){
 					if(aux){ opt.actions.accept.form = 'form="' + aux + '" type="submit"'; }
 				}
 
+				// Create template
 				var aux = tmpl.replace("__TITLE__", opt.title)
 					.replace("__DATA__", opt.body)
 					.replace("__ACCEPT__", opt.actions.accept.enabled ? ('<button ' + opt.actions.accept.form + ' class="' + opt.actions.accept.class + '" ' + (opt.actions.accept.alignment == "" ? '' : (opt.actions.accept.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.accept.text + '</button>') : '')
 					.replace("__CANCEL__", opt.actions.cancel.enabled ? ('<button class="' + opt.actions.cancel.class + '" ' + (opt.actions.cancel.alignment == "" ? '' : (opt.actions.cancel.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.cancel.text + '</button>') : '');
 
+				// Create overlay and add to body
 				var a = document.createElement("div");
 					a.setAttribute("class", "Alert-overlay");
 					a.innerHTML = aux;
 
 				document.body.appendChild(a);
 
+				// Set target
+				opt.target = a.children[0];
+
 				a.querySelector("script") ? execute(a) : '';
 
-				if(src && src.trim() != ""){
-					eval(src);
+				if(opt.draggable){
+					opt.target.setAttribute("draggable", 'true')
+					opt.target.style.left = opt.target.offsetLeft + 'px';
+					opt.target.style.top = opt.target.offsetTop + 'px';
+					opt.target.style.position = "fixed";
+				
+					document.body.addEventListener("dragstart", alertDragStart, false); 
+					document.body.addEventListener("dragover", alertDragOver, false); 
+					document.body.addEventListener("drop", alertDrop, false);
 				}
 			}
 
