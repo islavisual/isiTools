@@ -50,7 +50,7 @@ if(it.enabledModules.Alert){
 		general: {
 			version: 1.0,
 			name: 'Alert',
-			description: "Script para crear alertas con múltiples personalizaciones similares a las de javaScript de forma sencilla.",
+			description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.",
 		},
 		additional: [
 			{
@@ -65,8 +65,13 @@ if(it.enabledModules.Alert){
 		},
 		class: {
 			type: 'string',
-			description: 'Agregar una regla de CSS a la alerta. Esto es útil si se desean definir alertas personalizadas a través de selectores CSS, por ejemplo.',
+			description: 'Agrega una regla de CSS a la alerta. Esto es útil si se desean definir alertas personalizadas a través de selectores CSS, por ejemplo.',
 			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", class: "warning"});'
+		},
+		draggable: {
+			type: 'boolean',
+			description: 'Indica si la alert o diálogo será arrastable dentro de la página. Por defecto, su valor es <str>false</str>.',
+			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", draggable: true});'
 		},
 		title: {
 			type: 'string',
@@ -82,6 +87,8 @@ Alert("El campo se encuentra vacío.");\n\n\
 new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});\n\n\
 // Alerta con HTML incrustado\n\
 new Alert({title: "Precaución!", body:"&lt;span>Esto es una prueba&lt;/span> of &lt;b style=\'color: red\'>Alerta!&lt;/b>."});\n\n\
+// Alerta con contenido a través de otro elemento\n\
+new Alert({title: "Precaución!", body: document.querySelector("custom-dialog").innerHTML});\n\n\
 // Alerta con contenido cargado a través de URL\n\
 new Alert({title: "Precaución!", body:"url(./templates/dialog.html)"});'
 		},
@@ -130,8 +137,7 @@ function alertAccepted(data){\n\
 // 			value: "28012"\n\
 // 		}\n\
 // 	]\n\
-// }\n\
-'},
+// }'	},
 		styles: {
 			type: 'object',
 			description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".',
