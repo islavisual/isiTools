@@ -177,11 +177,11 @@ function isiToolsCallback(json){
 	}
 	
 	/**
-		Custom alerts functionality
-		@version: 1.2.0
+		 Custom alerts functionality
+		@version: 1.3.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 11/05/2020
+		@Last update: 14/05/2020
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -314,7 +314,7 @@ function isiToolsCallback(json){
 				data = data.match(/<script>(.+)<\/script>/);
 				if(data) src = data[0].replace("<script>", '').replace("</script>", '')
 
-				if(opt.body.indexOf("form") != -1){
+				if(opt.body.indexOf("<form ") != -1 || opt.body.indexOf("<form>") != -1){
 					// If content have a form inside
 					var aux = document.createElement("div")
 						aux.innerHTML = opt.body;
@@ -327,14 +327,15 @@ function isiToolsCallback(json){
 				var aux = tmpl.replace("__TITLE__", opt.title)
 					.replace("__DATA__", opt.body)
 					.replace("__ACCEPT__", opt.actions.accept.enabled ? ('<button ' + opt.actions.accept.form + ' class="' + opt.actions.accept.class + '" ' + (opt.actions.accept.alignment == "" ? '' : (opt.actions.accept.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.accept.text + '</button>') : '')
-					.replace("__CANCEL__", opt.actions.cancel.enabled ? ('<button class="' + opt.actions.cancel.class + '" ' + (opt.actions.cancel.alignment == "" ? '' : (opt.actions.cancel.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.cancel.text + '</button>') : '')
-					.replace(/\n/g, '<br/>');
+					.replace("__CANCEL__", opt.actions.cancel.enabled ? ('<button class="' + opt.actions.cancel.class + '" ' + (opt.actions.cancel.alignment == "" ? '' : (opt.actions.cancel.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.cancel.text + '</button>') : '');
 
 				var a = document.createElement("div");
 					a.setAttribute("class", "Alert-overlay");
 					a.innerHTML = aux;
 
 				document.body.appendChild(a);
+
+				a.querySelector("script") ? execute(a) : '';
 
 				if(src && src.trim() != ""){
 					eval(src);
@@ -389,6 +390,31 @@ function isiToolsCallback(json){
 				}
 			}
 
+			function execute(trg) {
+				setTimeout(function () {
+					try { window.eval(trg.querySelector("script").innerHTML); } catch (e) { }
+				}, 250);
+			}
+
+			function getContent(file){
+				var xhttp = new XMLHttpRequest(), dIncFlag = typeof dIncFlag == "undefined" ? false : true;
+					xhttp.onreadystatechange = function () {
+						if (this.readyState == 4) {
+							if (this.status == 200) { 
+								opt.body = this.responseText; 
+								
+								init();
+
+							} else if (this.status == 404) { 
+								trg.innerHTML = "Page not found."; 
+							}
+						}
+					}
+
+					xhttp.open("GET", file, true);
+					xhttp.send();
+			}
+
 			function init() {
 				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', ".Alert-overlay", 'position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999');
@@ -396,7 +422,7 @@ function isiToolsCallback(json){
 					AddCSSRule('', ".Alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
 					AddCSSRule('', ".Alert header h3", 'font-size: 14px; margin: 0; color: ' + opt.styles.title.color + '; display: inline-block');
 					AddCSSRule('', ".Alert header i", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
-					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; font-weight: 600; ' + opt.styles.body.extra);
+					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
 					AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
 					if(opt.actions.accept.class == defaultActions.cancel.class){
 						AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
@@ -407,11 +433,15 @@ function isiToolsCallback(json){
 				try { document.querySelector(".Alert-overlay").remove(); } catch (e) { }
 
 				render();
-
 				assignEvents();
 			}
 
-			init();
+			var aux = opt.body.match(/^url\((.*)\)$/i);
+			if(aux){
+				getContent(aux[1]);
+			} else {
+				init();
+			}
 		};
 	}
 
