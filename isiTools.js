@@ -1496,572 +1496,6 @@ function isiToolsCallback(json){
 	}
 
 	/**
-		 IntelliForm functionality
-		@version: 1.00
-		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
-		@Last update: 19/03/2019
-	**/
-	if(json.IntelliForm){
-		this.IntelliForm = it.intelliForm = {
-			sequenceList: [],
-			sequence: [],
-			undo: {},
-			redo: {},
-			target: [],
-			_startAt: -1,
-			version: '1.0',
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
-
-				if (typeof showHelper != "undefined") showHelper("IntelliForm", cfg);
-				else alert("Helper not available!")
-				return;
-			},
-			addElements: function(cfg){
-				// If configuration object is invalid
-				if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a JSON 'data' parameter!. Please, see the help with the IntelliForm.help({help: 'send'});"); return false; }
-				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to insert the lements!. Please, see the help with the IntelliForm.help({help: 'send'});"); return false; }
-				
-				for(var x = 0; x < cfg.data.length; x++){
-					var item = cfg.data[x], aux, proccessValidation = false;
-					for(var key in item){
-						if(key == "tag"){
-							aux = document.createElement(item[key]);
-						} else{
-							if(key == "dataset"){
-								for(var di = 0; di < item[key].length; di++){
-									aux.setAttribute("data-" + item[key][di].name, item[key][di].value);
-								}
-							} else {
-								if(typeof item[key] == "function"){
-									aux.addEventListener(item[key], item[key]);
-
-								} else if(key == "validate") {
-									proccessValidation = true;
-
-								} else if(typeof item[key] == "object"){
-									aux[key] = item[key];
-								} else {
-									aux.setAttribute(key, item[key]);
-								}
-							}
-						}
-					}
-					
-					document.body.appendChild(aux);
-					if(proccessValidation){
-						var params = item['validate'];
-						params.target = aux.id;
-						Validator.set(params);
-					}
-				}
-			},
-			autofill: function(){
-				try {
-					var path = this.sha1(window.location.pathname);
-					var su = JSON.parse(sessionStorage.getItem('iFormUndo'));
-					
-					for(var key in su[path]){
-						var aux = document.getElementById(key), val = su[path][key].pop();
-						if(aux.getAttribute("type") == "radio" || aux.getAttribute("type") == "checkbox"){
-							aux.checked = val
-						} else {
-							aux.value = val;
-						}
-					}
-				} catch(e){ }
-			},
-			setUndo: function(cfg){
-				// Assign configuration obteins from parameter
-				for(var key in cfg){ this[key] = cfg[key]; }
-
-				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
-
-				// If targets, enable undo functionality.
-				if(this.hasOwnProperty("target")){
-					var und = this;
-
-					for(var key in this.target){
-						var items = document.querySelectorAll(this.target[key]);
-						for(var i = 0; i < items.length; i++){
-							items[i].addEventListener("keydown", function(e){
-								if ( (e.which == 121 || e.which == 89) && e.ctrlKey ) {
-									// Redo
-									IntelliForm.historyForward(e.target.id);
-									return false;
-							
-								} else if ( (e.which == 122 || e.which == 90) && e.ctrlKey ) {
-									// Undo
-									IntelliForm.historyBack(e.target.id);
-									return false;
-								} else {
-									und.addHistoryBack(e.target.id, e.target.value);
-								}
-							});
-
-							items[i].addEventListener("change", function (e) {
-								if(e.target.getAttribute("type") == "radio" || e.target.getAttribute("type") == "checkbox"){
-									und.addHistoryBack(e.target.id, e.target.checked);
-								} else {
-									und.addHistoryBack(e.target.id, e.target.value);
-								}
-							});
-						}
-					}
-				} else {
-					alert('You need to configure at least one object as a target to execute the "setUndo" functionality. Please, see the help with the IntelliForm.help({help: "setUndo"});');
-					return false;
-				}
-
-				// Set undo session
-				var sessionUndo = JSON.parse(sessionStorage.getItem('iFormUndo'));
-				if(typeof sessionUndo != 'undefined' && sessionUndo != null && sessionUndo != '') this.undo = sessionUndo;
-			},
-			_addEvent: function(e){
-				// Set values
-				var iform = it.intelliForm;
-				var trg = e.target, id = trg.id, evt = e.type, tagName = trg == document ? "document" : trg.tagName.toLowerCase();
-				var st  = iform._startAt == -1 ? (iform._startAt = new Date().getTime()) : iform._startAt;
-				var ts  = new Date().getTime() - st;
-				var val = typeof trg.value != "undefined" ? trg.value : trg.innerHTML;
-					val = val == "" ? '""' : (!isNaN(val) ? parseFloat(val) : ('"' + val + '"'));
-
-				// Get IDs
-				var dID = '';
-				if(evt != "scroll"){
-					try {
-						dID = typeof trg.dataset.id != "undefined" ? trg.dataset.id : '';
-						dID = dID.replace("#", '');
-					} catch(e){ }
-				} else {
-					id = document;
-				}
-
-				// Trigger change event id data-id is set
-				if(dID != ""){
-					var EV = new Event('change', {'bubbles': true, 'cancelable': true});
-					document.getElementById(dID).dispatchEvent(EV);
-				}
-
-				// If id is empty dont make anything
-				if(id == "" || (evt == "click" && tagName == 'input')) return;
-				
-				// If input is checkbox or radio, the value is checked
-				if(id != document && tagName == "input" && (trg.getAttribute("type") == "radio" || trg.getAttribute("type") == "checkbox")){
-					val = trg.checked;
-				} else if(id == document) { id = "document"; }
-				
-				// Find the old element
-				var json = {}, found = false, lst = iform.sequence.length != 0 ? iform.sequence[iform.sequence.length-1] : {};
-				for(var i = 0; i < iform.sequence.length; i++){
-					var item = iform.sequence[i];
-
-					if(lst.event == "keydown" && lst.id == id && lst.keyCode == e.keyCode && lst.ts + 100 > ts){
-						found = true; 
-						break;
-					} else if(lst.event == "change" && lst.id == id && lst.value == val && lst.ts + 100 > ts){
-						found = true; 
-						break;
-					} else if(lst.event == "scroll" && lst.id == id && lst.top == e.target.scrollingElement.scrollTop && lst.left == e.target.scrollingElement.scrollLeft && lst.ts + 1000 > ts){
-						found = true; 
-						break;
-					} else if(lst.event == e.type && lst.id == id && lst.ts + 100 > ts){
-						found = true; 
-						break;
-					}
-				}
-				
-				if(!found){
-					if(evt == "keydown"){
-						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "keyCode": ' + e.keyCode + ', "key": "' + e.key + '"}';
-					} else if(evt == "change"){
-						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "value": ' + val + '}';
-					} else if(evt == "scroll"){
-						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "top": ' + e.target.scrollingElement.scrollTop + ', "left": ' + e.target.scrollingElement.scrollLeft + '}';
-					} else if(evt == "mutation"){
-						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "mutation": "' + e.mutation + '", "value": "' + e.value + '"}';
-					} else {
-						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '"}';
-					}
-
-					iform._updateSequence(JSON.parse(json))
-				} 
-			},
-			_updateSequence: function(s){
-				if(typeof s == "undefined" || s == null) s = [];
-				
-				// Set sequence
-				if(s.length == 0){
-					this.sequence = [{ts: 0, id: "document", event: "scroll", top: window.pageYOffset, left: window.pageXOffset, on: window.navigator.userAgent}];
-				} else {
-					this.sequence.push(s);
-				}
-			},
-			removeSequence: function(){
-				this._updateSequence();
-				var path = IntelliForm.sha1(window.location.pathname);
-				sessionStorage.removeItem(path + 'IFormSeq');
-			},
-			startSequence: function(){
-				// Set attribute id for all element without ID
-				this.setIDs();
-
-				// add listeners of change, blur, focus, keydown and click to input, select, buttons and contenteditable sets to "true"
-				var events = 'change click keydown focusin focusout';
-				var elmnts = 'a, input, select, textarea, button, [contenteditable=true], [onclick]';
-
-				// Disable submit events
-				var items = document.querySelectorAll("form");
-				for(var i = 0; i < items.length; i++){
-					var item = items[i];
-					if(item.getAttribute("onsubmit") != null){
-						item.setAttribute("data-onsubmit", item.getAttribute("onsubmit"));
-					}
-					item.setAttribute("onsubmit", "return false");
-				}
-
-				// Reset old sequence
-				this.removeSequence();
-				
-				// Add global events
-				window.addEventListener("scroll", this._addEvent);
-
-				// Add events to all elements
-				events.split(' ').forEach(function (event) {
-					var items = document.querySelectorAll(elmnts);
-					for(var its = 0; its < items.length; its++){
-						var elm = items[its];
-
-						// Ignore combinations of element and event
-						if(elm.tagName.toLowerCase() == "select" && event != "change") continue;
-						else if(elm.tagName.toLowerCase() == "input" && (elm.type != "radio" || elm.type == "checkbox" ) && event == "click") continue;
-						else if(elm.tagName.toLowerCase() == "a" && event != "click") continue;
-
-						// Add CSS rule to disabling the children selection
-						if(typeof it.addCSSRule != "undefined"){
-							it.addCSSRule('', "#" + elm.id + " *", "pointer-events: none;");
-						}
-
-						// Add event/element
-						elm.addEventListener(event, it.intelliForm._addEvent);
-					}
-				});
-			},
-			stopSequence: function(){
-				// add listeners of change, blur, focus, keydown and click to input, select, buttons and contenteditable sets to "true"
-				var events = 'change click keydown focusin focusout';
-				var elmnts = 'a, input, select, textarea, button, [contenteditable=true], [onclick]';
-
-				// Restore submit events
-				var items = document.querySelectorAll("form");
-				for(var i = 0; i < items.length; i++){
-					var item = items[i];
-					if(item.getAttribute("data-onsubmit") != null){
-						item.setAttribute("onsubmit", item.getAttribute("data-onsubmit"));
-						item.removeAttribute("data-onsubmit");
-					} else {
-						item.removeAttribute("onsubmit");
-					}
-				}
-
-				// Remove global events
-				window.removeEventListener("scroll", this._addEvent);
-
-				// Remove events to all elements added
-				events.split(' ').forEach(function (event) {
-					var items = document.querySelectorAll(elmnts);
-					for(var its = 0; its < items.length; its++){
-						var elm = items[its];
-
-						// Add event/element
-						elm.removeEventListener(event, it.intelliForm._addEvent);
-					}
-				});
-
-				// Save in session storage if cache is enabled
-				var path = IntelliForm.sha1(window.location.pathname);
-				sessionStorage.setItem(path + 'IFormSeq', JSON.stringify(this.sequence));
-			},
-			getSequence: function(j){
-				var path = IntelliForm.sha1(window.location.pathname), json = sessionStorage.getItem(path + 'IFormSeq');
-				if(typeof j == "undefined"){
-					return json;
-				} else if(j == 0){
-					return JSON.parse(json);
-				}
-			},
-			setSequence: function(s){
-				if(typeof s != "undefined" && s.trim() != ""){
-					s = JSON.parse(s);
-					for(var i = 0; i < s.length; i++){
-						this._updateSequence({sequence: s[i]});
-					}
-				}
-			},
-			playSequence: function(cfg){
-				// Set attribute id for all element without ID
-				this.setIDs();
-
-				// If dont have ID or ID is empty, assign sequential index
-				var elmnts = 'a, input, select, textarea, button, [contenteditable=true], [onclick]';
-				var items = document.querySelectorAll(elmnts);
-				for(var its = 0; its < items.length; its++){
-					var elm = items[its];
-
-					if(typeof elm.id == "undefined" || elm.id == "") elm.id = elm.tagName + "ID" + its;
-				}
-
-				// Get configuration
-				if(typeof cfg == "undefined") cfg = { seq: [], velocity: 1 };
-				if(!cfg.hasOwnProperty("velocity")) cfg.velocity = 1;
-				if(!cfg.hasOwnProperty("seq") || cfg.seq.length == 0){
-					// If not send sequence, get by url name
-					cfg.seq = this.getSequence(0);
-				}
-				
-				// Add overlay
-				var overlay = document.createElement("div");
-					overlay.setAttribute("id", "ov3rl4y");
-					overlay.innerHTML = '<div id="ovT1m3r" style="position: fixed; bottom: 5px; right: 5px; padding: 5px 10px; background: rgba(0,0,0,0.75); color: #fff;">';
-					overlay.style.width = "100%";
-					overlay.style.height = "100%";
-					overlay.style.position = "fixed";
-					overlay.style.background = "rgba(0,0,0,0.1)";
-					overlay.style.top = "0";
-					overlay.style.left = "0";
-					overlay.style.zIndex = 999999999999;
-				document.body.appendChild(overlay);		
-
-				// Add countdown
-				var initial = cfg.seq[cfg.seq.length - 1].ts / 10 / cfg.velocity, count = initial, counter;
-				function timer() { if (count <= 0) { clearInterval(counter); return; } count--; displayCount(count); }
-
-				function displayCount(count) { 
-					var res = parseFloat((count / 100).toFixed(2));
-					var prc = res.toString().indexOf(".") == -1 ? (res.length + 2) : (res.toString().split(".")[1].length == 1 ? (res.length + 1) : res.length);
-					try{ document.getElementById("ovT1m3r").innerHTML = (cfg.velocity > 1 ? (cfg.velocity + "x ") : '') + "\u25B6 " + res.toPrecision(prc) + " secs"; } catch (e){}
-				}
-				counter = setInterval(timer, 10);
-				displayCount(initial);
-
-				// focusin the current element
-				function _focus(e){
-					if(e != null){
-						if(e.style.length != 0) e.setAttribute("data-style", e.getAttribute("style").replace(/\s{2,8}/g, ' ').trim());
-						e.style.background = "#2f2f2f";
-						e.style.boxShadow = "0 0 2px 1px #fff";
-						e.style.color = "#ffffff";
-
-						var aux = document.querySelector('[for=' + e.id + ']');
-						if( aux != null){
-							if(aux.style.length != 0) aux.setAttribute("data-style", aux.getAttribute("style").replace(/\s{2,8}/g, ' ').trim());
-							aux.style.background = "#2f2f2f";
-							aux.style.color = "#ffffff";
-						};
-					}
-				}
-				
-				// focusout the current element
-				function _blur(e){
-					if(e != null){
-						e.style.background = "";
-						e.style.boxShadow = "";
-						e.style.color = "";
-						if(e.getAttribute("data-style")) e.style = e.dataset.style;
-
-						var aux = document.querySelector('[for=' + e.id + ']');
-						if( aux != null){
-							aux.style.background = "";
-							aux.style.boxShadow = "";
-							aux.style.color = "";
-							if(aux.getAttribute("data-style")) aux.style = aux.dataset.style;
-						};
-					}
-				}		
-
-				// Execute sequence
-				for(var x = 0; x < cfg.seq.length; x++){
-					var item = cfg.seq[x];
-
-					setTimeout(function(item, x){
-						var el = document.getElementById(item.id), val = item.value;
-
-						// Change events
-						if(item.event == "change"){
-							if(el.tagName.toLowerCase() == "input" && (el.getAttribute("type") == "radio" || el.getAttribute("type") == "checkbox")){
-								el.checked = val
-							} else {
-								el.value = val;
-							}
-
-						// keyborads events
-						} else if(item.event == "keydown"){
-							var ignore = false;
-							if(item.keyCode >= 112 && item.keyCode <= 123){
-								ignore = true;
-							} else if(item.keyCode > 48){
-								el.value += item.key; //String.fromCharCode(item.keyCode);
-							} else if(item.keyCode == 8) {
-								el.value = el.value.substr(0, el.value.length - 1);
-							}
-							if(!ignore){
-								var evt = new KeyboardEvent('keydown', {'keyCode': item.keyCode, 'which': item.keyCode});
-								el.dispatchEvent (evt);
-							}
-
-						// Change events
-						} else if(item.event == "change"){
-							el.value = val;
-
-						// Scroll events
-						} else if(item.event == "scroll"){
-							window.scroll({ top: item.top, left: item.left, behavior: 'smooth' });
-
-						// Focusin
-						} else if(item.event == "focusin"){
-							_focus(el);
-
-						// Focusout
-						} else if(item.event == "focusout"){
-							_blur(el);
-
-						// Another events
-						} else {
-							var EV = new Event(item.event, {'bubbles': true, 'cancelable': true});
-							el.dispatchEvent(EV);
-
-							// If item have data-id
-							try {
-								dID = typeof trg.dataset.id != "undefined" ? trg.dataset.id : '';
-								dID = dID.replace("#", '');
-
-								var EV = new Event('change', {'bubbles': true, 'cancelable': true});
-								document.getElementById(dID).dispatchEvent(EV);
-							} catch(e){ }
-						}
-
-						if(x == cfg.seq.length - 1) {
-							document.getElementById("ov3rl4y").remove();
-							_blur(el);
-							console.log("sequence ended!");
-						}
-					}.bind(null, item, x), item.ts / cfg.velocity);
-				}
-			},
-			send: function (cfg) {
-				// If configuration object is invalid
-				if (!cfg.hasOwnProperty('url')) { alert("The 'url' parameter has not been supplied!.\nPlease, see the help with the IntelliForm.help({help: 'send'});"); return; }
-				if (!cfg.hasOwnProperty('params')) { alert("The 'params' parameter has not been supplied!.\nPlease, see the help with the IntelliForm.help({help: 'send'});"); return; }
-			
-				// Create form
-				var f = document.createElement("form");
-				f.setAttribute('method', "post");
-				f.setAttribute('action', cfg.url);
-				f.style.display = "none";
-			
-				for (var i = 0; i < cfg.params.length; i++) {
-					var item = cfg.params[i], p = document.createElement("input");
-			
-					p.setAttribute('type', item.type);
-					p.setAttribute('name', item.id);
-					p.setAttribute('id', item.id);
-					p.setAttribute('value', item.value);
-			
-					f.appendChild(p);
-				}
-				var s = document.createElement("input");
-				s.setAttribute('type', "submit");
-				s.setAttribute('value', "Submit");
-				f.appendChild(s);
-			
-				document.getElementsByTagName('body')[0].appendChild(f);
-			
-				s.click();
-			},
-			setIDs: function(e){
-				var items = document.body.querySelectorAll("*");
-				for(var x = 0; x < items.length; x++){
-					var i = items[x];
-					if(typeof i.id == "undefined" || i.id == "") i.id = "_bodyItem" + x;
-				}
-			},
-			addHistoryBack: function (id, value){
-				var path = this.sha1(window.location.pathname);
-
-				if(typeof this.undo[path] == 'undefined'){ this.undo[path] = {}; }
-				try {
-					if(this.undo[path][id][this.undo[path][id].length-1] != value) this.undo[path][id][this.undo[path][id].length] = value;
-				} catch (e){
-					this.undo[path][id] = new Array();
-					this.undo[path][id][0] = value;
-				}
-				sessionStorage.setItem('iFormUndo', JSON.stringify(this.undo));
-			},
-			historyBack: function(id){
-				try {
-					var path = this.sha1(window.location.pathname);
-					var value = this.undo[path][id].pop();
-					
-					if(document.getElementById(id).value ==  value) var value = this.undo[path][id].pop();
-
-					if(typeof value !== 'undefined' && value != null && value != ""){
-						if(this.undo[path][id].length == 0) delete this.undo[path][id];
-						sessionStorage.setItem('iFormUndo', JSON.stringify(this.undo));
-						this.addHistoryForward(id, document.getElementById(id).value);
-						document.getElementById(id).value = value;
-
-						var event = new Event('change', {'bubbles': true, 'cancelable': true});
-						e.target.dispatchEvent(event);
-
-						return value;
-					}
-
-					return null;
-				} catch(e){ }
-			},
-			addHistoryForward: function (id, value){
-				var path = this.sha1(window.location.pathname);
-
-				if(typeof this.redo[path] == 'undefined'){ this.redo[path] = {}; }
-				try {
-					if(this.redo[path][id][this.redo[path][id].length-1] != value) this.redo[path][id][this.redo[path][id].length] = value;
-				} catch (e){
-					this.redo[path][id] = new Array();
-					this.redo[path][id][0] = value;
-				}
-				sessionStorage.setItem('iFormUndo', JSON.stringify(this.redo));
-			},
-			historyForward: function(id){
-				try {
-					var path = this.sha1(window.location.pathname);
-					var value = this.redo[path][id].pop();
-					if(document.getElementById(id).value ==  value) var value = this.undo[path][id].pop();
-
-					if(typeof value != 'undefined' && value != null && value != ""){
-						if(this.redo[path][id].length == 0) delete this.redo[path][id];
-						sessionStorage.setItem('iFormUndo', JSON.stringify(this.redo));
-						this.addHistoryBack(id, document.getElementById(id).value);
-						document.getElementById(id).value = value;
-
-						var event = new Event('change', {'bubbles': true, 'cancelable': true});
-						e.target.dispatchEvent(event);
-
-						return value;
-					}
-
-					return null;
-				} catch(e){ }
-			},
-			sha1:function(str){
-				var rotate_left=function(e,t){var n=e<<t|e>>>32-t;return n};var cvt_hex=function(e){var t="";var n;var r;for(n=7;n>=0;n--){r=e>>>n*4&15;t+=r.toString(16)}return t};var blockstart,i,j,W=new Array(80),H0=1732584193,H1=4023233417,H2=2562383102,H3=271733878,H4=3285377520,A,B,C,D,E,temp,str_len=str.length,word_array=[];for(i=0;i<str_len-3;i+=4){j=str.charCodeAt(i)<<24|str.charCodeAt(i+1)<<16|str.charCodeAt(i+2)<<8|str.charCodeAt(i+3);word_array.push(j)}switch(str_len%4){case 0:i=2147483648;break;case 1:i=str.charCodeAt(str_len-1)<<24|8388608;break;case 2:i=str.charCodeAt(str_len-2)<<24|str.charCodeAt(str_len-1)<<16|32768;break;case 3:i=str.charCodeAt(str_len-3)<<24|str.charCodeAt(str_len-2)<<16|str.charCodeAt(str_len-1)<<8|128;break}word_array.push(i);while(word_array.length%16!=14){word_array.push(0)}word_array.push(str_len>>>29);word_array.push(str_len<<3&4294967295);for(blockstart=0;blockstart<word_array.length;blockstart+=16){for(i=0;i<16;i++){W[i]=word_array[blockstart+i]}for(i=16;i<=79;i++){W[i]=rotate_left(W[i-3]^W[i-8]^W[i-14]^W[i-16],1)}A=H0;B=H1;C=H2;D=H3;E=H4;for(i=0;i<=19;i++){temp=rotate_left(A,5)+(B&C|~B&D)+E+W[i]+1518500249&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=20;i<=39;i++){temp=rotate_left(A,5)+(B^C^D)+E+W[i]+1859775393&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=40;i<=59;i++){temp=rotate_left(A,5)+(B&C|B&D|C&D)+E+W[i]+2400959708&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=60;i<=79;i++){temp=rotate_left(A,5)+(B^C^D)+E+W[i]+3395469782&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}H0=H0+A&4294967295;H1=H1+B&4294967295;H2=H2+C&4294967295;H3=H3+D&4294967295;H4=H4+E&4294967295}temp=cvt_hex(H0)+cvt_hex(H1)+cvt_hex(H2)+cvt_hex(H3)+cvt_hex(H4); return temp.toLowerCase();
-			},
-		}
-	}
-	
-	/**
 		Create counters.
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -2785,8 +2219,8 @@ function isiToolsCallback(json){
         it.datepicker.help = function (cfg) {
             it.help('Datepicker', cfg);
         }
-    }
-
+	}
+	
 	/**
 		 Debugger functionality
 		@version: 1.00
@@ -3601,6 +3035,572 @@ function isiToolsCallback(json){
 		}
 	}
 
+	/**
+		 IntelliForm functionality
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 19/03/2019
+	**/
+	if(json.IntelliForm){
+		this.IntelliForm = it.intelliForm = {
+			sequenceList: [],
+			sequence: [],
+			undo: {},
+			redo: {},
+			target: [],
+			_startAt: -1,
+			version: '1.0',
+			help: function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+				if (typeof showHelper != "undefined") showHelper("IntelliForm", cfg);
+				else alert("Helper not available!")
+				return;
+			},
+			addElements: function(cfg){
+				// If configuration object is invalid
+				if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a JSON 'data' parameter!. Please, see the help with the IntelliForm.help({help: 'send'});"); return false; }
+				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to insert the lements!. Please, see the help with the IntelliForm.help({help: 'send'});"); return false; }
+				
+				for(var x = 0; x < cfg.data.length; x++){
+					var item = cfg.data[x], aux, proccessValidation = false;
+					for(var key in item){
+						if(key == "tag"){
+							aux = document.createElement(item[key]);
+						} else{
+							if(key == "dataset"){
+								for(var di = 0; di < item[key].length; di++){
+									aux.setAttribute("data-" + item[key][di].name, item[key][di].value);
+								}
+							} else {
+								if(typeof item[key] == "function"){
+									aux.addEventListener(item[key], item[key]);
+
+								} else if(key == "validate") {
+									proccessValidation = true;
+
+								} else if(typeof item[key] == "object"){
+									aux[key] = item[key];
+								} else {
+									aux.setAttribute(key, item[key]);
+								}
+							}
+						}
+					}
+					
+					document.body.appendChild(aux);
+					if(proccessValidation){
+						var params = item['validate'];
+						params.target = aux.id;
+						Validator.set(params);
+					}
+				}
+			},
+			autofill: function(){
+				try {
+					var path = this.sha1(window.location.pathname);
+					var su = JSON.parse(sessionStorage.getItem('iFormUndo'));
+					
+					for(var key in su[path]){
+						var aux = document.getElementById(key), val = su[path][key].pop();
+						if(aux.getAttribute("type") == "radio" || aux.getAttribute("type") == "checkbox"){
+							aux.checked = val
+						} else {
+							aux.value = val;
+						}
+					}
+				} catch(e){ }
+			},
+			setUndo: function(cfg){
+				// Assign configuration obteins from parameter
+				for(var key in cfg){ this[key] = cfg[key]; }
+
+				// If it.target has value, set to cfg object
+				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
+
+				// If targets, enable undo functionality.
+				if(this.hasOwnProperty("target")){
+					var und = this;
+
+					for(var key in this.target){
+						var items = document.querySelectorAll(this.target[key]);
+						for(var i = 0; i < items.length; i++){
+							items[i].addEventListener("keydown", function(e){
+								if ( (e.which == 121 || e.which == 89) && e.ctrlKey ) {
+									// Redo
+									IntelliForm.historyForward(e.target.id);
+									return false;
+							
+								} else if ( (e.which == 122 || e.which == 90) && e.ctrlKey ) {
+									// Undo
+									IntelliForm.historyBack(e.target.id);
+									return false;
+								} else {
+									und.addHistoryBack(e.target.id, e.target.value);
+								}
+							});
+
+							items[i].addEventListener("change", function (e) {
+								if(e.target.getAttribute("type") == "radio" || e.target.getAttribute("type") == "checkbox"){
+									und.addHistoryBack(e.target.id, e.target.checked);
+								} else {
+									und.addHistoryBack(e.target.id, e.target.value);
+								}
+							});
+						}
+					}
+				} else {
+					alert('You need to configure at least one object as a target to execute the "setUndo" functionality. Please, see the help with the IntelliForm.help({help: "setUndo"});');
+					return false;
+				}
+
+				// Set undo session
+				var sessionUndo = JSON.parse(sessionStorage.getItem('iFormUndo'));
+				if(typeof sessionUndo != 'undefined' && sessionUndo != null && sessionUndo != '') this.undo = sessionUndo;
+			},
+			_addEvent: function(e){
+				// Set values
+				var iform = it.intelliForm;
+				var trg = e.target, id = trg.id, evt = e.type, tagName = trg == document ? "document" : trg.tagName.toLowerCase();
+				var st  = iform._startAt == -1 ? (iform._startAt = new Date().getTime()) : iform._startAt;
+				var ts  = new Date().getTime() - st;
+				var val = typeof trg.value != "undefined" ? trg.value : trg.innerHTML;
+					val = val == "" ? '""' : (!isNaN(val) ? parseFloat(val) : ('"' + val + '"'));
+
+				// Get IDs
+				var dID = '';
+				if(evt != "scroll"){
+					try {
+						dID = typeof trg.dataset.id != "undefined" ? trg.dataset.id : '';
+						dID = dID.replace("#", '');
+					} catch(e){ }
+				} else {
+					id = document;
+				}
+
+				// Trigger change event id data-id is set
+				if(dID != ""){
+					var EV = new Event('change', {'bubbles': true, 'cancelable': true});
+					document.getElementById(dID).dispatchEvent(EV);
+				}
+
+				// If id is empty dont make anything
+				if(id == "" || (evt == "click" && tagName == 'input')) return;
+				
+				// If input is checkbox or radio, the value is checked
+				if(id != document && tagName == "input" && (trg.getAttribute("type") == "radio" || trg.getAttribute("type") == "checkbox")){
+					val = trg.checked;
+				} else if(id == document) { id = "document"; }
+				
+				// Find the old element
+				var json = {}, found = false, lst = iform.sequence.length != 0 ? iform.sequence[iform.sequence.length-1] : {};
+				for(var i = 0; i < iform.sequence.length; i++){
+					var item = iform.sequence[i];
+
+					if(lst.event == "keydown" && lst.id == id && lst.keyCode == e.keyCode && lst.ts + 100 > ts){
+						found = true; 
+						break;
+					} else if(lst.event == "change" && lst.id == id && lst.value == val && lst.ts + 100 > ts){
+						found = true; 
+						break;
+					} else if(lst.event == "scroll" && lst.id == id && lst.top == e.target.scrollingElement.scrollTop && lst.left == e.target.scrollingElement.scrollLeft && lst.ts + 1000 > ts){
+						found = true; 
+						break;
+					} else if(lst.event == e.type && lst.id == id && lst.ts + 100 > ts){
+						found = true; 
+						break;
+					}
+				}
+				
+				if(!found){
+					if(evt == "keydown"){
+						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "keyCode": ' + e.keyCode + ', "key": "' + e.key + '"}';
+					} else if(evt == "change"){
+						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "value": ' + val + '}';
+					} else if(evt == "scroll"){
+						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "top": ' + e.target.scrollingElement.scrollTop + ', "left": ' + e.target.scrollingElement.scrollLeft + '}';
+					} else if(evt == "mutation"){
+						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '", "mutation": "' + e.mutation + '", "value": "' + e.value + '"}';
+					} else {
+						json = '{"ts": ' + ts + ', "id": "' + id + '", "event": "' + evt + '"}';
+					}
+
+					iform._updateSequence(JSON.parse(json))
+				} 
+			},
+			_updateSequence: function(s){
+				if(typeof s == "undefined" || s == null) s = [];
+				
+				// Set sequence
+				if(s.length == 0){
+					this.sequence = [{ts: 0, id: "document", event: "scroll", top: window.pageYOffset, left: window.pageXOffset, on: window.navigator.userAgent}];
+				} else {
+					this.sequence.push(s);
+				}
+			},
+			removeSequence: function(){
+				this._updateSequence();
+				var path = IntelliForm.sha1(window.location.pathname);
+				sessionStorage.removeItem(path + 'IFormSeq');
+			},
+			startSequence: function(){
+				// Set attribute id for all element without ID
+				this.setIDs();
+
+				// add listeners of change, blur, focus, keydown and click to input, select, buttons and contenteditable sets to "true"
+				var events = 'change click keydown focusin focusout';
+				var elmnts = 'a, input, select, textarea, button, [contenteditable=true], [onclick]';
+
+				// Disable submit events
+				var items = document.querySelectorAll("form");
+				for(var i = 0; i < items.length; i++){
+					var item = items[i];
+					if(item.getAttribute("onsubmit") != null){
+						item.setAttribute("data-onsubmit", item.getAttribute("onsubmit"));
+					}
+					item.setAttribute("onsubmit", "return false");
+				}
+
+				// Reset old sequence
+				this.removeSequence();
+				
+				// Add global events
+				window.addEventListener("scroll", this._addEvent);
+
+				// Add events to all elements
+				events.split(' ').forEach(function (event) {
+					var items = document.querySelectorAll(elmnts);
+					for(var its = 0; its < items.length; its++){
+						var elm = items[its];
+
+						// Ignore combinations of element and event
+						if(elm.tagName.toLowerCase() == "select" && event != "change") continue;
+						else if(elm.tagName.toLowerCase() == "input" && (elm.type != "radio" || elm.type == "checkbox" ) && event == "click") continue;
+						else if(elm.tagName.toLowerCase() == "a" && event != "click") continue;
+
+						// Add CSS rule to disabling the children selection
+						if(typeof it.addCSSRule != "undefined"){
+							it.addCSSRule('', "#" + elm.id + " *", "pointer-events: none;");
+						}
+
+						// Add event/element
+						elm.addEventListener(event, it.intelliForm._addEvent);
+					}
+				});
+			},
+			stopSequence: function(){
+				// add listeners of change, blur, focus, keydown and click to input, select, buttons and contenteditable sets to "true"
+				var events = 'change click keydown focusin focusout';
+				var elmnts = 'a, input, select, textarea, button, [contenteditable=true], [onclick]';
+
+				// Restore submit events
+				var items = document.querySelectorAll("form");
+				for(var i = 0; i < items.length; i++){
+					var item = items[i];
+					if(item.getAttribute("data-onsubmit") != null){
+						item.setAttribute("onsubmit", item.getAttribute("data-onsubmit"));
+						item.removeAttribute("data-onsubmit");
+					} else {
+						item.removeAttribute("onsubmit");
+					}
+				}
+
+				// Remove global events
+				window.removeEventListener("scroll", this._addEvent);
+
+				// Remove events to all elements added
+				events.split(' ').forEach(function (event) {
+					var items = document.querySelectorAll(elmnts);
+					for(var its = 0; its < items.length; its++){
+						var elm = items[its];
+
+						// Add event/element
+						elm.removeEventListener(event, it.intelliForm._addEvent);
+					}
+				});
+
+				// Save in session storage if cache is enabled
+				var path = IntelliForm.sha1(window.location.pathname);
+				sessionStorage.setItem(path + 'IFormSeq', JSON.stringify(this.sequence));
+			},
+			getSequence: function(j){
+				var path = IntelliForm.sha1(window.location.pathname), json = sessionStorage.getItem(path + 'IFormSeq');
+				if(typeof j == "undefined"){
+					return json;
+				} else if(j == 0){
+					return JSON.parse(json);
+				}
+			},
+			setSequence: function(s){
+				if(typeof s != "undefined" && s.trim() != ""){
+					s = JSON.parse(s);
+					for(var i = 0; i < s.length; i++){
+						this._updateSequence({sequence: s[i]});
+					}
+				}
+			},
+			playSequence: function(cfg){
+				// Set attribute id for all element without ID
+				this.setIDs();
+
+				// If dont have ID or ID is empty, assign sequential index
+				var elmnts = 'a, input, select, textarea, button, [contenteditable=true], [onclick]';
+				var items = document.querySelectorAll(elmnts);
+				for(var its = 0; its < items.length; its++){
+					var elm = items[its];
+
+					if(typeof elm.id == "undefined" || elm.id == "") elm.id = elm.tagName + "ID" + its;
+				}
+
+				// Get configuration
+				if(typeof cfg == "undefined") cfg = { seq: [], velocity: 1 };
+				if(!cfg.hasOwnProperty("velocity")) cfg.velocity = 1;
+				if(!cfg.hasOwnProperty("seq") || cfg.seq.length == 0){
+					// If not send sequence, get by url name
+					cfg.seq = this.getSequence(0);
+				}
+				
+				// Add overlay
+				var overlay = document.createElement("div");
+					overlay.setAttribute("id", "ov3rl4y");
+					overlay.innerHTML = '<div id="ovT1m3r" style="position: fixed; bottom: 5px; right: 5px; padding: 5px 10px; background: rgba(0,0,0,0.75); color: #fff;">';
+					overlay.style.width = "100%";
+					overlay.style.height = "100%";
+					overlay.style.position = "fixed";
+					overlay.style.background = "rgba(0,0,0,0.1)";
+					overlay.style.top = "0";
+					overlay.style.left = "0";
+					overlay.style.zIndex = 999999999999;
+				document.body.appendChild(overlay);		
+
+				// Add countdown
+				var initial = cfg.seq[cfg.seq.length - 1].ts / 10 / cfg.velocity, count = initial, counter;
+				function timer() { if (count <= 0) { clearInterval(counter); return; } count--; displayCount(count); }
+
+				function displayCount(count) { 
+					var res = parseFloat((count / 100).toFixed(2));
+					var prc = res.toString().indexOf(".") == -1 ? (res.length + 2) : (res.toString().split(".")[1].length == 1 ? (res.length + 1) : res.length);
+					try{ document.getElementById("ovT1m3r").innerHTML = (cfg.velocity > 1 ? (cfg.velocity + "x ") : '') + "\u25B6 " + res.toPrecision(prc) + " secs"; } catch (e){}
+				}
+				counter = setInterval(timer, 10);
+				displayCount(initial);
+
+				// focusin the current element
+				function _focus(e){
+					if(e != null){
+						if(e.style.length != 0) e.setAttribute("data-style", e.getAttribute("style").replace(/\s{2,8}/g, ' ').trim());
+						e.style.background = "#2f2f2f";
+						e.style.boxShadow = "0 0 2px 1px #fff";
+						e.style.color = "#ffffff";
+
+						var aux = document.querySelector('[for=' + e.id + ']');
+						if( aux != null){
+							if(aux.style.length != 0) aux.setAttribute("data-style", aux.getAttribute("style").replace(/\s{2,8}/g, ' ').trim());
+							aux.style.background = "#2f2f2f";
+							aux.style.color = "#ffffff";
+						};
+					}
+				}
+				
+				// focusout the current element
+				function _blur(e){
+					if(e != null){
+						e.style.background = "";
+						e.style.boxShadow = "";
+						e.style.color = "";
+						if(e.getAttribute("data-style")) e.style = e.dataset.style;
+
+						var aux = document.querySelector('[for=' + e.id + ']');
+						if( aux != null){
+							aux.style.background = "";
+							aux.style.boxShadow = "";
+							aux.style.color = "";
+							if(aux.getAttribute("data-style")) aux.style = aux.dataset.style;
+						};
+					}
+				}		
+
+				// Execute sequence
+				for(var x = 0; x < cfg.seq.length; x++){
+					var item = cfg.seq[x];
+
+					setTimeout(function(item, x){
+						var el = document.getElementById(item.id), val = item.value;
+
+						// Change events
+						if(item.event == "change"){
+							if(el.tagName.toLowerCase() == "input" && (el.getAttribute("type") == "radio" || el.getAttribute("type") == "checkbox")){
+								el.checked = val
+							} else {
+								el.value = val;
+							}
+
+						// keyborads events
+						} else if(item.event == "keydown"){
+							var ignore = false;
+							if(item.keyCode >= 112 && item.keyCode <= 123){
+								ignore = true;
+							} else if(item.keyCode > 48){
+								el.value += item.key; //String.fromCharCode(item.keyCode);
+							} else if(item.keyCode == 8) {
+								el.value = el.value.substr(0, el.value.length - 1);
+							}
+							if(!ignore){
+								var evt = new KeyboardEvent('keydown', {'keyCode': item.keyCode, 'which': item.keyCode});
+								el.dispatchEvent (evt);
+							}
+
+						// Change events
+						} else if(item.event == "change"){
+							el.value = val;
+
+						// Scroll events
+						} else if(item.event == "scroll"){
+							window.scroll({ top: item.top, left: item.left, behavior: 'smooth' });
+
+						// Focusin
+						} else if(item.event == "focusin"){
+							_focus(el);
+
+						// Focusout
+						} else if(item.event == "focusout"){
+							_blur(el);
+
+						// Another events
+						} else {
+							var EV = new Event(item.event, {'bubbles': true, 'cancelable': true});
+							el.dispatchEvent(EV);
+
+							// If item have data-id
+							try {
+								dID = typeof trg.dataset.id != "undefined" ? trg.dataset.id : '';
+								dID = dID.replace("#", '');
+
+								var EV = new Event('change', {'bubbles': true, 'cancelable': true});
+								document.getElementById(dID).dispatchEvent(EV);
+							} catch(e){ }
+						}
+
+						if(x == cfg.seq.length - 1) {
+							document.getElementById("ov3rl4y").remove();
+							_blur(el);
+							console.log("sequence ended!");
+						}
+					}.bind(null, item, x), item.ts / cfg.velocity);
+				}
+			},
+			send: function (cfg) {
+				// If configuration object is invalid
+				if (!cfg.hasOwnProperty('url')) { alert("The 'url' parameter has not been supplied!.\nPlease, see the help with the IntelliForm.help({help: 'send'});"); return; }
+				if (!cfg.hasOwnProperty('params')) { alert("The 'params' parameter has not been supplied!.\nPlease, see the help with the IntelliForm.help({help: 'send'});"); return; }
+			
+				// Create form
+				var f = document.createElement("form");
+				f.setAttribute('method', "post");
+				f.setAttribute('action', cfg.url);
+				f.style.display = "none";
+			
+				for (var i = 0; i < cfg.params.length; i++) {
+					var item = cfg.params[i], p = document.createElement("input");
+			
+					p.setAttribute('type', item.type);
+					p.setAttribute('name', item.id);
+					p.setAttribute('id', item.id);
+					p.setAttribute('value', item.value);
+			
+					f.appendChild(p);
+				}
+				var s = document.createElement("input");
+				s.setAttribute('type', "submit");
+				s.setAttribute('value', "Submit");
+				f.appendChild(s);
+			
+				document.getElementsByTagName('body')[0].appendChild(f);
+			
+				s.click();
+			},
+			setIDs: function(e){
+				var items = document.body.querySelectorAll("*");
+				for(var x = 0; x < items.length; x++){
+					var i = items[x];
+					if(typeof i.id == "undefined" || i.id == "") i.id = "_bodyItem" + x;
+				}
+			},
+			addHistoryBack: function (id, value){
+				var path = this.sha1(window.location.pathname);
+
+				if(typeof this.undo[path] == 'undefined'){ this.undo[path] = {}; }
+				try {
+					if(this.undo[path][id][this.undo[path][id].length-1] != value) this.undo[path][id][this.undo[path][id].length] = value;
+				} catch (e){
+					this.undo[path][id] = new Array();
+					this.undo[path][id][0] = value;
+				}
+				sessionStorage.setItem('iFormUndo', JSON.stringify(this.undo));
+			},
+			historyBack: function(id){
+				try {
+					var path = this.sha1(window.location.pathname);
+					var value = this.undo[path][id].pop();
+					
+					if(document.getElementById(id).value ==  value) var value = this.undo[path][id].pop();
+
+					if(typeof value !== 'undefined' && value != null && value != ""){
+						if(this.undo[path][id].length == 0) delete this.undo[path][id];
+						sessionStorage.setItem('iFormUndo', JSON.stringify(this.undo));
+						this.addHistoryForward(id, document.getElementById(id).value);
+						document.getElementById(id).value = value;
+
+						var event = new Event('change', {'bubbles': true, 'cancelable': true});
+						e.target.dispatchEvent(event);
+
+						return value;
+					}
+
+					return null;
+				} catch(e){ }
+			},
+			addHistoryForward: function (id, value){
+				var path = this.sha1(window.location.pathname);
+
+				if(typeof this.redo[path] == 'undefined'){ this.redo[path] = {}; }
+				try {
+					if(this.redo[path][id][this.redo[path][id].length-1] != value) this.redo[path][id][this.redo[path][id].length] = value;
+				} catch (e){
+					this.redo[path][id] = new Array();
+					this.redo[path][id][0] = value;
+				}
+				sessionStorage.setItem('iFormUndo', JSON.stringify(this.redo));
+			},
+			historyForward: function(id){
+				try {
+					var path = this.sha1(window.location.pathname);
+					var value = this.redo[path][id].pop();
+					if(document.getElementById(id).value ==  value) var value = this.undo[path][id].pop();
+
+					if(typeof value != 'undefined' && value != null && value != ""){
+						if(this.redo[path][id].length == 0) delete this.redo[path][id];
+						sessionStorage.setItem('iFormUndo', JSON.stringify(this.redo));
+						this.addHistoryBack(id, document.getElementById(id).value);
+						document.getElementById(id).value = value;
+
+						var event = new Event('change', {'bubbles': true, 'cancelable': true});
+						e.target.dispatchEvent(event);
+
+						return value;
+					}
+
+					return null;
+				} catch(e){ }
+			},
+			sha1:function(str){
+				var rotate_left=function(e,t){var n=e<<t|e>>>32-t;return n};var cvt_hex=function(e){var t="";var n;var r;for(n=7;n>=0;n--){r=e>>>n*4&15;t+=r.toString(16)}return t};var blockstart,i,j,W=new Array(80),H0=1732584193,H1=4023233417,H2=2562383102,H3=271733878,H4=3285377520,A,B,C,D,E,temp,str_len=str.length,word_array=[];for(i=0;i<str_len-3;i+=4){j=str.charCodeAt(i)<<24|str.charCodeAt(i+1)<<16|str.charCodeAt(i+2)<<8|str.charCodeAt(i+3);word_array.push(j)}switch(str_len%4){case 0:i=2147483648;break;case 1:i=str.charCodeAt(str_len-1)<<24|8388608;break;case 2:i=str.charCodeAt(str_len-2)<<24|str.charCodeAt(str_len-1)<<16|32768;break;case 3:i=str.charCodeAt(str_len-3)<<24|str.charCodeAt(str_len-2)<<16|str.charCodeAt(str_len-1)<<8|128;break}word_array.push(i);while(word_array.length%16!=14){word_array.push(0)}word_array.push(str_len>>>29);word_array.push(str_len<<3&4294967295);for(blockstart=0;blockstart<word_array.length;blockstart+=16){for(i=0;i<16;i++){W[i]=word_array[blockstart+i]}for(i=16;i<=79;i++){W[i]=rotate_left(W[i-3]^W[i-8]^W[i-14]^W[i-16],1)}A=H0;B=H1;C=H2;D=H3;E=H4;for(i=0;i<=19;i++){temp=rotate_left(A,5)+(B&C|~B&D)+E+W[i]+1518500249&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=20;i<=39;i++){temp=rotate_left(A,5)+(B^C^D)+E+W[i]+1859775393&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=40;i<=59;i++){temp=rotate_left(A,5)+(B&C|B&D|C&D)+E+W[i]+2400959708&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=60;i<=79;i++){temp=rotate_left(A,5)+(B^C^D)+E+W[i]+3395469782&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}H0=H0+A&4294967295;H1=H1+B&4294967295;H2=H2+C&4294967295;H3=H3+D&4294967295;H4=H4+E&4294967295}temp=cvt_hex(H0)+cvt_hex(H1)+cvt_hex(H2)+cvt_hex(H3)+cvt_hex(H4); return temp.toLowerCase();
+			},
+		}
+	}
+	
 	/**
 		 Function to detect if a device is mobile or tablet.
 		@version: 1.00
