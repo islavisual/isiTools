@@ -712,6 +712,119 @@ if(it.enabledModules.Constraint){
 }
 
 /**
+   Counter Helper																		
+   @version: 1.0																					
+   @author: Pablo E. Fernández (islavisual@gmail.com).												
+   @Copyright 2017-2020 Islavisual. 																	
+   @Last update: 15/05/2020																			
+ **/
+if(it.enabledModules.Counter){
+	WikiHelper.Counter = {
+		general: {
+			version: 1.0,
+			name: 'Counter',
+			description: "Este componente permite crear contadores ascendentes y descendentes y proveerlos de algunas opciones de personalización.",
+		},
+		additional: [
+			{
+				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+				example: '_CSS_// styles.css (de tu sitio web)\n\
+<p>Ejemplo de estilo formato batería</p>\
+.nexus-app>header .nexus-profile .counter { position: relative; float: right; width: 64px; height: 27px; margin: 10px 0 10px 10px; border-radius: 4px; padding: 3px; background: rgba(var(--color-shadow), 1); border: 1px solid rgba(var(--color-lighting), 0.8); box-shadow: 0 0 0 2px #000 inset; }\n\
+.nexus-app>header .nexus-profile .counter::before { content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #fff; height: 100%; padding: 0; line-height: 26px; font-size: 1.1rem; }\n\
+.nexus-app>header .nexus-profile .counter::after { content: ""; background: rgba(var(--color-lighting), 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0; }\n\
+.nexus-app>header .nexus-profile .counter span.progress{ width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: #7d7a7d; }\n\_CSS_'
+			}
+		],
+		callback: {
+			type: 'function',
+			description: 'Función que se debe llamar cuando se termine la cuenta del contador.',
+			example: 'it("#counter").counter({\n\
+	from: 5,\n\
+	callback: function(){ console.log("Cuenta terminada!") }\n\
+});'	},
+		colors: {
+			type: 'object',
+			description: 'Permite definir los colores que se aplicarán en la barra de progreso asociada al contador. Por defecto son los que se preentan como ejemplo.',
+			example: 'it(".counter-div").counter({\n\
+	colors: {low: "rgb(128,128,128)", half: "rgb(255,255,0)", high: "rgb(255,0,0)"},\n\
+	to: 30,\n\
+	interval: 1,\n\
+	mode: "count"\n\
+});'	},
+		from: {
+			type: 'integer',
+			description: 'Permite definir una cuenta atrás del valor indicado.',
+			example: 'it("#counter").counter({\n\
+	from: 10,\n\
+})'		},
+		interval: {
+			type: 'integer',
+			description: 'Es el el número de segundos que deben pasar para incrementar o decrementar la cuenta. Por defecto su valor es 1.',
+			example: 'it("#counter").counter({\n\
+	from: 10,\n\
+	interval: 0.2\n\
+	mode: "count"\n\
+})'		},
+		mode: {
+			type: 'string',
+			description: 'Indica el modo de visualiación del contador. Si el modo es "timer" (el modo por defecto) se presentará como una marca de tiempo, por lo que aunque el intervalo sea menor que un segundo, la duración será la misma qu para el intervalo por defecto\nEn otras palabras, si el modo es "timer", el parámetro interval no tendrá efecto si es menor que uno. Si el modo es "count", se presentará como un contador normal.',
+			example: 'it(".session").counter({\n\
+	from: 3600,\n\
+	mode: "timer",\n\
+});'	},
+		notify: {
+			type: 'object',
+			description: 'Muestra un mensaje de alerta cuando se cumpla un valor determinado. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
+			example: 'it(".session").counter({\n\
+	from: 3600,\n\
+	notify: {\n\
+		in: 300,\n\
+		message: "La sesión está a punto de caducar. Por favor, renuévela si desea continuar..."\n\
+		callback: enviarAlServidor()\n\
+	},\n\
+})'
+		},
+		renew: {
+			type: 'object',
+			description: 'Muestra un mensaje en el contenedor que funciona como botón de renovación de tiempo. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
+			example: 'it(".session").counter({\n\
+	from: 3600,\n\
+	renew: {\n\
+		in: 300,\n\
+		message: "Renovar"\n\
+		callback: enviarAlServidor()\n\
+	},\n\
+})'
+		},
+		showvalue: {
+			type: 'boolean',
+			description: 'Indica si se debe mostrar el valor del contador o sólo la barra de progreso. Por defecto es true.',
+			example: 'it("#counter").counter({\n\
+	from: 3600,\n\
+	showvalue: false\n\
+})'
+		},
+		title: {
+			type: 'string',
+			description: 'Es la propiedad title que se asignará al elemento que tenga asociado el contador. Por defecto es vacío.',
+			example: 'it("#counter").counter({\n\
+	from: 10,\n\
+	title: "Cuenta atrás hasta 10"\n\
+})'
+		},
+		to: {
+			type: 'integer',
+			description: 'Permite definir un contador que cuenta hacia adelante hasta el valor indicado.',
+			example: 'it(".nexus-profile .session").counter({\n\
+	to: 10,\n\
+	interval: 0.2\n\
+	mode: "count"\n\
+})'		},
+	}
+}
+
+/**
 	 Datepicker functionality
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
