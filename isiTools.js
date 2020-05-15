@@ -1,4 +1,30 @@
-var itEnabledModules = {Alert: true, Datepicker : true, AddCSSRule: true, Autocomplete: true, HttpRequest:true, Include: true, Mask: true, Selectpicker: true, StripTags: true }
+var itEnabledModules = {
+	AddCSSRule: true,
+	Alert: true, 
+	Autocomplete: true,
+	Benchmark: false,
+	Constraint: false,
+	Counter: false,
+	Datepicker : true, 
+	Debugger: false,
+	DOM: false,
+	GetBrowser: false,
+	GetParam: false,
+	HttpRequest:true,
+	Include: true,
+	IntelliForm: false,
+	IsMobile: false,
+	Language: false,
+	Mask: true,
+	Now: false,
+	Nstate: false,
+	Password: false,
+	Selectpicker: true,
+	SendForm: false,
+	StripTags: true,
+	Treeview: false,
+	Validator: false
+}
 
 var it = function(t){
 	it.targets = document.querySelectorAll(t);
@@ -7,10 +33,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.3",
+it.version = "1.6.4",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "14/05/2020",
+it.lastupdate = "15/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -2033,6 +2059,244 @@ function isiToolsCallback(json){
 				var rotate_left=function(e,t){var n=e<<t|e>>>32-t;return n};var cvt_hex=function(e){var t="";var n;var r;for(n=7;n>=0;n--){r=e>>>n*4&15;t+=r.toString(16)}return t};var blockstart,i,j,W=new Array(80),H0=1732584193,H1=4023233417,H2=2562383102,H3=271733878,H4=3285377520,A,B,C,D,E,temp,str_len=str.length,word_array=[];for(i=0;i<str_len-3;i+=4){j=str.charCodeAt(i)<<24|str.charCodeAt(i+1)<<16|str.charCodeAt(i+2)<<8|str.charCodeAt(i+3);word_array.push(j)}switch(str_len%4){case 0:i=2147483648;break;case 1:i=str.charCodeAt(str_len-1)<<24|8388608;break;case 2:i=str.charCodeAt(str_len-2)<<24|str.charCodeAt(str_len-1)<<16|32768;break;case 3:i=str.charCodeAt(str_len-3)<<24|str.charCodeAt(str_len-2)<<16|str.charCodeAt(str_len-1)<<8|128;break}word_array.push(i);while(word_array.length%16!=14){word_array.push(0)}word_array.push(str_len>>>29);word_array.push(str_len<<3&4294967295);for(blockstart=0;blockstart<word_array.length;blockstart+=16){for(i=0;i<16;i++){W[i]=word_array[blockstart+i]}for(i=16;i<=79;i++){W[i]=rotate_left(W[i-3]^W[i-8]^W[i-14]^W[i-16],1)}A=H0;B=H1;C=H2;D=H3;E=H4;for(i=0;i<=19;i++){temp=rotate_left(A,5)+(B&C|~B&D)+E+W[i]+1518500249&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=20;i<=39;i++){temp=rotate_left(A,5)+(B^C^D)+E+W[i]+1859775393&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=40;i<=59;i++){temp=rotate_left(A,5)+(B&C|B&D|C&D)+E+W[i]+2400959708&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}for(i=60;i<=79;i++){temp=rotate_left(A,5)+(B^C^D)+E+W[i]+3395469782&4294967295;E=D;D=C;C=rotate_left(B,30);B=A;A=temp}H0=H0+A&4294967295;H1=H1+B&4294967295;H2=H2+C&4294967295;H3=H3+D&4294967295;H4=H4+E&4294967295}temp=cvt_hex(H0)+cvt_hex(H1)+cvt_hex(H2)+cvt_hex(H3)+cvt_hex(H4); return temp.toLowerCase();
 			},
 		}
+	}
+	
+	/**
+		Create counters.
+		@version: 1.00
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2019 Islavisual.
+		@Last update: 15/05/2020
+	**/
+	if(json.Counter){
+		this.Counter = it.counter = function (cfg) {
+			if (!cfg || cfg == "") { alert("Counter not defined!"); return false; }
+
+			Array.prototype.slice.call(this.targets).forEach(function(target){
+				it.counter.config[target.id] = { target: target, config: cfg}
+			});
+
+			if(arguments.length == 0){
+				alert("No se ha definido la máscara")
+				return;
+			}
+
+			var low, half, high;
+			for(var key in it.counter.config){
+				// Recover the configuration
+				cfg = it.counter.config[key].config;
+				
+				// Set the default values if not setted
+				if(!cfg.hasOwnProperty("colors")) {
+					low  = 'rgb(255,0,0)'.replace(/rgb\(/i, '').replace(/\)/, '').trim().split(',');
+					half = 'rgb(255,175,0)'.replace(/rgb\(/i, '').replace(/\)/, '').trim().split(',');
+					high = 'rgb(128,128,128)'.replace(/rgb\(/i, '').replace(/\)/, '').trim().split(',');
+
+				} else {
+					low = cfg.colors.low.replace(/rgb\(/i, '').replace(/\)/, '').trim().split(',');
+					half = cfg.colors.half.replace(/rgb\(/i, '').replace(/\)/, '').trim().split(',');
+					high = cfg.colors.high.replace(/rgb\(/i, '').replace(/\)/, '').trim().split(',');
+				}
+
+				if(!cfg.hasOwnProperty("notify")) cfg.notify = {};
+				if(!cfg.hasOwnProperty("interval")) cfg.interval = 1;
+				if(!cfg.hasOwnProperty("mode")) cfg.mode = 'timer';
+				if(!cfg.hasOwnProperty("showvalue")) cfg.showvalue = true;
+				if(!cfg.hasOwnProperty("title")) cfg.title = '';
+				if(!cfg.hasOwnProperty("renew")) cfg.renew = false;
+
+				// Notify status is false by default
+				cfg.notify.shown = false;
+
+				// Set colors to counter
+				if(cfg.from){
+					cfg.colors = [
+						{ pct: 0.0, color: { r: low[0], g: low[1], b: low[2] } },
+						{ pct: 0.5, color: { r: half[0], g: half[1], b: half[2] } },
+						{ pct: 1.0, color: { r: high[0], g: high[1], b: high[2] } } 
+					]
+				} else{
+					cfg.colors = [
+						{ pct: 0.0, color: { r: high[0], g: high[1], b: high[2] } },
+						{ pct: 0.5, color: { r: half[0], g: half[1], b: half[2] } },
+						{ pct: 1.0, color: { r: low[0], g: low[1], b: low[2] } } 
+					]
+				}
+				
+				// Create element container to counter
+				var div = document.createElement("div");
+					div.classList.add("counter");
+
+					if(cfg.showvalue) {
+						if(cfg.from){
+							if(cfg.mode == 'timer'){
+								var h = Math.floor(cfg.from / 60 / 60);
+								var m = Math.floor((cfg.from - (h * 3600)) / 60);
+								var s = Math.floor(cfg.from - (h * 3600) - (m * 60));
+			
+								div.dataset.value = (h != 0 ? (h < 10 ? ("0" + h + ":") : (h + ":")) : '') + (m < 10 ? ("0" + m) : m) + ":" + (s < 10 ? ("0" + s) : s);
+							} else {
+								div.dataset.value = cfg.from;
+							}
+
+						} else if(cfg.to) {
+							if(cfg.mode == 'timer'){
+								div.dataset.value = '00:00';
+							} else {
+								div.dataset.value = '0';
+							}
+						}
+					}
+
+					div.setAttribute("title", cfg.title);
+
+				var span = document.createElement("span");
+					span.classList.add("progress");
+					span.style.width = "100%";
+				
+				div.append(span);
+
+				// Store the target to future uses
+				it.counter.config[key].target.innerHTML = '';
+				it.counter.config[key].target.append(div);
+
+				// Trigger timeout
+				if(cfg.from){
+					it.counter.timer = setTimeout(it.counter.countdown, cfg.interval * 1000, div, cfg);
+				} else if(cfg.to){
+					it.counter.timer = setTimeout(it.counter.countup, cfg.interval * 1000, div, cfg);
+				}
+			}
+
+			this.so = "counter";
+		}
+
+		it.counter.version = '1.0';
+		it.counter.config = [];
+		it.counter.help = function(cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("Counter", cfg);
+			else alert("Helper not available!")
+			return;
+		}
+		it.counter.timer = null;
+		it.counter.countdown = function (trg, cfg) {
+			if(!cfg.start) cfg.start = cfg.mode == 'timer' ? Math.floor(new Date().getTime() / 1000) : 0;
+			
+			clearTimeout(it.counter.timer);
+
+			var t = cfg.mode == 'timer' ? Math.floor(cfg.from - (new Date().getTime() / 1000 - cfg.start)) : (cfg.from - cfg.start)
+
+			if(t <= 0) t = 0;
+
+			it.counter.updateCounter(t, trg, cfg);
+
+			t = null;
+		}
+		it.counter.countup = function (trg, cfg) {
+			if(!cfg.start) cfg.start = cfg.mode == 'timer' ? Math.floor(new Date().getTime() / 1000) : 0;
+
+			clearTimeout(it.counter.timer);
+
+			var t = cfg.mode == 'timer' ? Math.floor((new Date().getTime() / 1000)- cfg.start) : cfg.start++;
+
+			if(t > cfg.to) t = cfg.to;
+
+			it.counter.updateCounter(t, trg, cfg);
+
+			t = null;
+		}
+		it.counter.updateCounter = function(t, trg, cfg){
+			var h, m, s;
+
+			if(cfg.notify && !cfg.notify.shown && t <= cfg.notify.in){
+				alert(cfg.notify.message)
+				cfg.notify.shown = true;
+
+				if(cfg.notify.callback) cfg.notify.callback();
+			}
+
+			if(cfg.from && cfg.renew && t <= cfg.renew.in){
+				cfg.showvalue = false;
+				trg.dataset.value = cfg.renew.message;
+				trg.setAttribute("onclick", "it.counter.renew(this)");
+				trg.style.cursor = "pointer";
+			}
+
+			if(cfg.showvalue || (cfg.from && t == 0)) {
+				if(cfg.mode == 'timer'){
+					h = Math.floor(t / 60 / 60);
+					m = Math.floor((t - (h * 3600)) / 60);
+					s = Math.floor(t - (h * 3600) - (m * 60));
+
+					trg.dataset.value = (h != 0 ? (h < 10 ? ("0" + h + ":") : (h + ":")) : '') + (m < 10 ? ("0" + m) : m) + ":" + (s < 10 ? ("0" + s) : s);
+
+				} else {
+					trg.dataset.value = t;
+					cfg.start++;
+				}
+			}
+
+			var pct = (t * 100 / (cfg.from || cfg.to)).toFixed(2);
+			
+			trg.querySelector("span").style.width = pct +"%";
+			trg.querySelector("span").style.background = it.counter.getColorForPercentage(pct/100, cfg.colors);
+
+			if(cfg.from && t > 0){
+				it.counter.timer = setTimeout(it.counter.countdown, cfg.interval * 1000, trg, cfg)
+			} else if(t < cfg.to){
+				it.counter.timer = setTimeout(it.counter.countup, cfg.interval * 1000, trg, cfg)
+			} else {
+				it.counter.renew(trg);
+				it.counter.timer = null;
+
+				if(cfg.callback) cfg.callback();
+			}
+
+			t = h = m = s = null;
+		}
+		it.counter.renew = function(el){
+			var cfg = it.counter.config[el.id].config;
+			cfg.start = cfg.mode == 'timer' ? Math.floor(new Date().getTime() / 1000) : 0;
+			cfg.showvalue = true;
+			
+			el.removeAttribute("onclick");
+			el.style.cursor = "";
+
+			if(cfg.renew && cfg.renew.callback){
+				cfg.renew.callback();
+			}
+		}
+		it.counter.getColorForPercentage = function(pct, colors) {
+			for (var i = 1; i < colors.length - 1; i++) {
+				if (pct < colors[i].pct) {
+					break;
+				}
+			}
+			var lower = colors[i - 1];
+			var upper = colors[i];
+			var range = upper.pct - lower.pct;
+			var rangePct = (pct - lower.pct) / range;
+			var pctLower = 1 - rangePct;
+			var pctUpper = rangePct;
+			var color1 = {
+				r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+				g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+				b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+			};
+
+			var color2 = { r: color1.r - 32, g: color1.g - 32, b: color1.b - 32 };
+
+			if(color2.r < 0) color2.r = 0;
+			if(color2.g < 0) color2.g = 0;
+			if(color2.b < 0) color2.b = 0;
+
+			pct = colors = lower = upper = range = rangePct = pctLower = pctUpper = null;
+
+			return 'linear-gradient(90deg, rgb(' + [color1.r, color1.g, color1.b].join(',') + '), rgb(' + [color2.r, color2.g, color2.b].join(',') + '))';
+		};
 	}
 
 	/**
