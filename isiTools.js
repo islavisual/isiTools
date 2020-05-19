@@ -4,7 +4,7 @@ var itEnabledModules = {
 	Autocomplete: true,
 	Benchmark: false,
 	Constraint: false,
-	Counter: false,
+	Counter: true,
 	Datepicker : true, 
 	Debugger: false,
 	DOM: false,
@@ -33,10 +33,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.4",
+it.version = "1.6.5",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "15/05/2020",
+it.lastupdate = "19/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -1276,10 +1276,10 @@ function isiToolsCallback(json){
 
 	/**
 		 Constraint to input functionality
-		@version: 1.1
+		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 04/03/2019
+		@Last update: 19/05/2020
 	**/
 	if(json.Constraint){
 		this.Constraint = it.constraint = function(cfg){
@@ -1346,8 +1346,8 @@ function isiToolsCallback(json){
 					custom: cfg.type == "custom" ? true : false,
 					function: !cfg.hasOwnProperty('function') ? null : cfg.function,
 				}
-				if (!opt.hasOwnProperty('enabled')) opt.indicators.enabled = true;
-				if (!opt.hasOwnProperty('color')) opt.indicators.color = 'rgba(0,0,0,0.25)';
+				if (!opt.indicators.hasOwnProperty('enabled')) opt.indicators.enabled = true;
+				if (!opt.indicators.hasOwnProperty('color')) opt.indicators.color = 'rgba(0,0,0,0.25)';
 
 				// Update input type assigned
 				document.getElementById(opt.target).setAttribute("type", "text");
@@ -1422,11 +1422,12 @@ function isiToolsCallback(json){
 
 				// Enable control
 				assignEvents(document.getElementById(opt.target), opt.type, opt.ds);
-			}
 
-			document[opt.target] = {};
-			document[opt.target]['Constraint'] = Constraint;
-			document[opt.target]['options'] = opt;
+				document[opt.target] = {};
+				document[opt.target]['Constraint'] = Constraint;
+				document[opt.target]['options'] = opt;
+			}
+			
 			return this;
 		};
 
@@ -1497,10 +1498,10 @@ function isiToolsCallback(json){
 
 	/**
 		Create counters.
-		@version: 1.00
+		@version: 1.1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 15/05/2020
+		@Last update: 19/05/2020
 	**/
 	if(json.Counter){
 		this.Counter = it.counter = function (cfg) {
@@ -1538,6 +1539,7 @@ function isiToolsCallback(json){
 				if(!cfg.hasOwnProperty("showvalue")) cfg.showvalue = true;
 				if(!cfg.hasOwnProperty("title")) cfg.title = '';
 				if(!cfg.hasOwnProperty("renew")) cfg.renew = false;
+				if(!cfg.hasOwnProperty("format")) cfg.format = "HH:MM:SS";
 
 				// Notify status is false by default
 				cfg.notify.shown = false;
@@ -1568,14 +1570,17 @@ function isiToolsCallback(json){
 								var m = Math.floor((cfg.from - (h * 3600)) / 60);
 								var s = Math.floor(cfg.from - (h * 3600) - (m * 60));
 			
-								div.dataset.value = (h != 0 ? (h < 10 ? ("0" + h + ":") : (h + ":")) : '') + (m < 10 ? ("0" + m) : m) + ":" + (s < 10 ? ("0" + s) : s);
+								var tmpl = cfg.format.replace("HH", h < 10 ? ("0" + h) : h)
+										             .replace("MM", m < 10 ? ("0" + m) : m)
+										             .replace("SS", s < 10 ? ("0" + s) : s)
+								div.dataset.value =  tmpl;
 							} else {
 								div.dataset.value = cfg.from;
 							}
 
 						} else if(cfg.to) {
 							if(cfg.mode == 'timer'){
-								div.dataset.value = '00:00';
+								div.dataset.value = cfg.format.replace("HH", "00").replace("MM", "00").replace("SS", "00");
 							} else {
 								div.dataset.value = '0';
 							}
@@ -1665,7 +1670,10 @@ function isiToolsCallback(json){
 					m = Math.floor((t - (h * 3600)) / 60);
 					s = Math.floor(t - (h * 3600) - (m * 60));
 
-					trg.dataset.value = (h != 0 ? (h < 10 ? ("0" + h + ":") : (h + ":")) : '') + (m < 10 ? ("0" + m) : m) + ":" + (s < 10 ? ("0" + s) : s);
+					var tmpl = cfg.format.replace("HH", h < 10 ? ("0" + h) : h)
+										 .replace("MM", m < 10 ? ("0" + m) : m)
+									 	 .replace("SS", s < 10 ? ("0" + s) : s)
+					trg.dataset.value =  tmpl;
 
 				} else {
 					trg.dataset.value = t;
@@ -1735,16 +1743,16 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.06
+		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 08/10/2019
+		@Last update: 19/05/2020
 	**/
 	if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
             // If the target is only one, we update targets
             if ((typeof cfg == "string" && cfg == "show")) {
-                cfg = it.datepicker.config.custom[this.targets[0].id];
+				cfg = it.datepicker.config.custom[this.targets[0].id];
             } else {
 				// If the device is mobile, we change the type of input element to date and do nothing else.
 				var type = "text";
@@ -1794,7 +1802,7 @@ function isiToolsCallback(json){
                 // If the process is in create/assign mode
                 var loading = false;
 
-                if (!target.classList.contains("has-datepicker")) {
+                if (!target.parentElement.classList.contains("has-datepicker")) {
                     cfg.custom[id] = {};
 
                     // Set default properties
@@ -1810,8 +1818,14 @@ function isiToolsCallback(json){
                     // Add Styles
                     it.datepicker.addStyles(id, cfg.custom[id].background, cfg.custom[id].foreground);
 
-                    // Add class to target input 
-                    target.classList.add("has-datepicker");
+                    // Create new container to datepicker 
+					var aux = target.outerHTML;
+					var new_html = "<div class='has-datepicker'>" + aux + "</div>";
+					target.insertAdjacentHTML("afterend", new_html);
+					aux = target.nextElementSibling.querySelector("input")
+					target.remove();
+					target = aux;
+					aux = null;
 
                     // Add and configure trigger button
                     var trigger = document.createElement('button');
@@ -1889,7 +1903,7 @@ function isiToolsCallback(json){
                     // Get all days from requested month
                     var x = 1, c = true, firstdate = '', lastdate = '';
                     while (c) {
-                        var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x));
+                        var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x) + ' 12:00:00');
 
                         c = dt.getMonth() + 1 == cfg.selMonth;
 
@@ -1901,7 +1915,7 @@ function isiToolsCallback(json){
                         }
                         x++;
                     }
-
+					
                     // Get before days from requested month
                     var aux = new Date(firstdate).getUTCDay() - cfg.weekstart, dt = 0;
                     aux = (aux < 0 ? 6 : aux);
@@ -1952,13 +1966,11 @@ function isiToolsCallback(json){
                     rcal.classList.add("r-cal");
 
                     // Fill years select 
-                    var aux = "";
-                    for (var x = 1900; x < parseInt(cfg.curYear) + 10; x++) {
-                        var active = x == cfg.selYear ? 'selected' : '';
-                        aux += '<option value="' + x + '"' + active + '>' + x + '</option>'
-                    }
-                    rcal.innerHTML = '<div class="datepicker-years"><select id="datepicker-year">' + aux + '</select></div>';
-
+                    rcal.innerHTML = '<div class="datepicker-years"><input id="datepicker-year" value="' + cfg.selYear + '" /><span class="dt-up"></span><span class="dt-down"></span></div>';
+					
+					rcal.querySelector(".dt-up").setAttribute("onclick", "it.datepicker.updateYear(event, 1)");
+					rcal.querySelector(".dt-down").setAttribute("onclick", "it.datepicker.updateYear(event, -1)");
+					
                     // Fill months buttons
                     var aux = "";
                     for (var x = 0; x < cfg.shortmonths.length; x++) {
@@ -1983,9 +1995,10 @@ function isiToolsCallback(json){
                     rcal.innerHTML += dm;
 
                     // Fill day values
-                    var tmpl = '<div class="datepicker-week-data">', x = 0, antday = 0;
+					var tmpl = '<div class="datepicker-week-data">', x = 0, antday = 0;
+console.log("1")
                     for (var k in all) {
-                        var y = all[k].split('-')[2], m = all[k].split('-')[1], d = all[k].split('-')[0];
+						var y = all[k].split('-')[2], m = all[k].split('-')[1], d = all[k].split('-')[0];
                         var day = parseInt(d), mon = parseInt(m);
 
                         if (x == 0) { tmpl += '<div class="datepicker-week">'; }
@@ -2030,8 +2043,9 @@ function isiToolsCallback(json){
                     }
 
                     // Add year event
-                    var s = rcal.querySelector("select");
-                    s.onchange = it.datepicker.yearEvent;
+                    var s = rcal.querySelector("input");
+					s.onkeydown = it.datepicker.updateYear;
+					s.onchange = it.datepicker.yearEvent;
 
                     // Add set today event
                     var b = document.getElementById("datepicker-layer-" + target.id + "-today");
@@ -2044,10 +2058,23 @@ function isiToolsCallback(json){
             }); // end forEach
 		}
 		
+		it.datepicker.updateYear = function(e, v){
+			if(e.type == 'keydown' && e.keyCode == 38){ e.preventDefault(); v = 1; }
+			else if(e.type == 'keydown' && e.keyCode == 40){ e.preventDefault(); v = -1; }
+			else if(e.type == 'keydown') return true;
+
+			var cs = e.target.selectionStart, ce = e.target.selectionEnd;
+			
+			var trg = it("#datepicker-year").get();
+				trg.value = parseInt(trg.value) + v;
+
+			it.datepicker.yearEvent(e, cs, ce)
+		}
+
 		it.datepicker.validDate = function(d, m, y){
 			var validDaysPerMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 
-			var validYear = y >= 1900 && y < (new Date(Date.now()).getFullYear() + 10);
+			var validYear = true; //y >= 1900 && y < (new Date(Date.now()).getFullYear() + 300);
 			
 			var isleap = (y % 100 === 0) ? (y % 400 === 0) : (y % 4 === 0);
 			if(isleap){
@@ -2109,18 +2136,29 @@ function isiToolsCallback(json){
             it('#' + prt).datepicker('show');
         }
 
-        it.datepicker.yearEvent = function (e) {
+        it.datepicker.yearEvent = function (e, cs, ce) {
+			e.preventDefault();
+
+			var value = it("#datepicker-year").get().value;
             var aux = e.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
             aux.click();
 
             var prt = aux.parentElement.dataset.id;
             var cfg = it.datepicker.config.custom[prt];
 
-            document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, e.target.value);
+            document.getElementById(prt).value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, value);
 
             it.simulateEvent("change", document.getElementById(prt));
 
-            it('#' + prt).datepicker('show');
+			it('#' + prt).datepicker('show');
+			
+			if(e.type == "keydown"){
+				setTimeout(function(cs, ce){ 
+					var aux = document.getElementById(this); 
+					aux.focus(); 
+					aux.setSelectionRange(cs, ce)
+				}.bind(e.target.id, cs, ce), 0) ;
+			}
         }
 
         it.datepicker.todayEvent = function (e) {
@@ -2182,8 +2220,12 @@ function isiToolsCallback(json){
             it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(2)", 'font-size: 18px; width: 100%; display: block; margin-bottom: 18px;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .l-cal span:nth-child(4)", 'line-height: 32px; display: block;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .r-cal", 'background: ' + fg + '; width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%;');
-            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px;');
-            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years select", 'font-size: 14px; cursor: pointer; height: 24px; width: 25%; background: ' + fg + '; color: #000; border: 0 navajowhite; margin-left: 75%;');
+            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years", 'margin-bottom: 0; padding: 0 5px 5px; position: relative;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input", 'font-size: 14px; height: 24px; width: 3.2em; background: ' + fg + '; color: #000;     border: 1px solid rgba(0,0,0,0.1); padding: 0; text-align: center; float: right; margin: 0 3px 5px calc(75% - 10px); position: relative; left: -10px; box-shadow: none !important;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input ~ span.dt-down", 'display: block; position: absolute; right: 8px; top: 12px; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input ~ span.dt-down::before", 'display: block; position: absolute; right: 2px; top: 3px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: "";');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input ~ span.dt-up", 'display: block; position: absolute; right: 8px; top: 0; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px;');
+			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input ~ span.dt-up::before", 'display: block; position: absolute; right: 2px; top: 2px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: "";');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id + " .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
@@ -2194,7 +2236,8 @@ function isiToolsCallback(json){
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .day.active, #datepicker-layer-" + id + " .datepicker-week .day:hover", 'font-weight: normal; background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); padding: 0 6px;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'cursor: pointer; color: ' + fg + '; background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
-            it.addCSSRule('', "input.has-datepicker + button", 'cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 24px;');
+			it.addCSSRule('', ".has-datepicker input", 'width: 6.8em !important; float: left;');
+			it.addCSSRule('', ".has-datepicker input + button", 'cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 24px;');
         };
 
         it.datepicker.config = {
