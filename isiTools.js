@@ -1283,15 +1283,18 @@ function isiToolsCallback(json){
 	**/
 	if(json.Constraint){
 		this.Constraint = it.constraint = function(cfg){
-			if (!cfg || cfg == "") { alert("Constraint data not defined!"); return false; }
+			if (!cfg || cfg == "") { alert("Restricción no definida!. Por favor, mira la ayuda a través de: Helper('Constraint')"); return false; }
+
+			if(this.targets.length == 0) alert("Restricción no definida!.\nNo se ha encontrado el objetivo.")
 
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				it.constraint.config[target.id] = cfg;
 				it.constraint.config[target.id].target = target.id;
 			});
 
+			this.constraint.set();
+
 			this.so = "constraint";
-			return this;
 		}
 		it.constraint.version =  '1.1';
 		it.constraint.config = {};
@@ -1305,8 +1308,10 @@ function isiToolsCallback(json){
 			return;
 		}
 		
-		it.constraint.increment = function(t){
-			var opt = document[t].options;
+		it.constraint.increment = function(id){
+			if(id == undefined) id = it.targets[0].id;
+
+			var opt = document[id].options;
 			if (opt.type == 'hour') {
 				this._setHour(document.getElementById(opt.target), "up");
 			} else {
@@ -1314,8 +1319,10 @@ function isiToolsCallback(json){
 			}
 		}
 		
-		it.constraint.decrement = function(t){
-			var opt = document[t].options;
+		it.constraint.decrement = function(id){
+			if(id == undefined) id = it.targets[0].id;
+			
+			var opt = document[id].options;
 			if (opt.type == 'hour') {
 				this._setHour(document.getElementById(opt.target), "down");
 			} else {
@@ -1326,9 +1333,6 @@ function isiToolsCallback(json){
 			for(var key in this.config){
 				// Set attributes
 				cfg = this.config[key];
-
-				// If it.target has value, set to cfg object
-				//if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				// If configuration object is invalid
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an input ID into 'target' parameter!. Please, see the help with the Constraint.help();"); return false; }
@@ -1887,7 +1891,6 @@ function isiToolsCallback(json){
 						cfg.selDay = target.value.substr(cfg.format.indexOf("DD"), 2);
 
 						if(!it.datepicker.validDate(cfg.selDay, cfg.selMonth, cfg.selYear)){
-							// console.log("Invalid Date!")
 							cfg.selYear = cfg.curYear;
 							cfg.selMonth = cfg.curMonth;
 							cfg.selDay = cfg.curDay;
