@@ -33,10 +33,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.5",
+it.version = "1.6.6",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "19/05/2020",
+it.lastupdate = "20/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -1743,10 +1743,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.1
+		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 19/05/2020
+		@Last update: 20/05/2020
 	**/
 	if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
@@ -1968,8 +1968,10 @@ function isiToolsCallback(json){
                     // Fill years select 
                     rcal.innerHTML = '<div class="datepicker-years"><input id="datepicker-year" value="' + cfg.selYear + '" /><span class="dt-up"></span><span class="dt-down"></span></div>';
 					
-					rcal.querySelector(".dt-up").setAttribute("onclick", "it.datepicker.updateYear(event, 1)");
-					rcal.querySelector(".dt-down").setAttribute("onclick", "it.datepicker.updateYear(event, -1)");
+					rcal.querySelector(".dt-up").setAttribute("onmousedown", "window.interval_ = setInterval(function(){ it.datepicker.updateYear(event, 1)}, 50)");
+					rcal.querySelector(".dt-up").setAttribute("onmouseup", "clearInterval(window.interval_)");
+					rcal.querySelector(".dt-down").setAttribute("onmousedown", "window.interval_ = setInterval(function(){ it.datepicker.updateYear(event, -1)}, 50)");
+					rcal.querySelector(".dt-down").setAttribute("onmouseup", "clearInterval(window.interval_)");
 					
                     // Fill months buttons
                     var aux = "";
@@ -1981,7 +1983,7 @@ function isiToolsCallback(json){
 
                     // Now create template
                     var all = cfg.md.b.concat(cfg.md.c).concat(cfg.md.a);
-                    var vday = parseInt(target.value.split('-')[0]), vmon = parseInt(target.value.split('-')[1]);
+                    var vday = parseInt(target.value.split('-')[0]);
 
                     // Fill day names
                     var dm = '<div class="datepicker-week-names"><div class="datepicker-week">';
@@ -1996,7 +1998,7 @@ function isiToolsCallback(json){
 
                     // Fill day values
 					var tmpl = '<div class="datepicker-week-data">', x = 0, antday = 0;
-console.log("1")
+
                     for (var k in all) {
 						var y = all[k].split('-')[2], m = all[k].split('-')[1], d = all[k].split('-')[0];
                         var day = parseInt(d), mon = parseInt(m);
@@ -2045,7 +2047,6 @@ console.log("1")
                     // Add year event
                     var s = rcal.querySelector("input");
 					s.onkeydown = it.datepicker.updateYear;
-					s.onchange = it.datepicker.yearEvent;
 
                     // Add set today event
                     var b = document.getElementById("datepicker-layer-" + target.id + "-today");
@@ -2059,22 +2060,32 @@ console.log("1")
 		}
 		
 		it.datepicker.updateYear = function(e, v){
-			if(e.type == 'keydown' && e.keyCode == 38){ e.preventDefault(); v = 1; }
-			else if(e.type == 'keydown' && e.keyCode == 40){ e.preventDefault(); v = -1; }
-			else if(e.type == 'keydown') return true;
+			if(v == undefined) v = 0;
+
+			var k  = e.keyCode || e.which;
+			var kv = (k >= 48 && k <= 57 && e.location == 0) || (k >= 96 && k <= 105 && e.location == 3);
+
+			if(e.type == 'keydown' && k == 38){ e.preventDefault(); v = 1; }
+			else if(e.type == 'keydown' && k == 40){ e.preventDefault(); v = -1; }
+			else if(e.type == 'keydown' && !kv ) return true;
 
 			var cs = e.target.selectionStart, ce = e.target.selectionEnd;
 			
 			var trg = it("#datepicker-year").get();
+			if(v == 0){
+				trg.value = trg.value.substr(0,cs) + e.key + trg.value.substr(ce);
+				if(cs == ce) { cs++; ce++; }
+			} else {
 				trg.value = parseInt(trg.value) + v;
-
+			}
+			
 			it.datepicker.yearEvent(e, cs, ce)
 		}
 
 		it.datepicker.validDate = function(d, m, y){
 			var validDaysPerMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 
-			var validYear = true; //y >= 1900 && y < (new Date(Date.now()).getFullYear() + 300);
+			var validYear = true; 
 			
 			var isleap = (y % 100 === 0) ? (y % 400 === 0) : (y % 4 === 0);
 			if(isleap){
