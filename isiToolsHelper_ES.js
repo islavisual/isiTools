@@ -650,10 +650,10 @@ if(it.enabledModules.Benchmark){
 
 /**
    Constraint to input Helper
-   @version: 1.1
+   @version: 1.2
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2020 Islavisual.
-   @Last update: 04/03/2019
+   @Last update: 20/05/2020
  **/
 if(it.enabledModules.Constraint){
 	WikiHelper.Constraint = {
@@ -666,47 +666,88 @@ if(it.enabledModules.Constraint){
 		base: {
 			type: 'integer',
 			description: 'El parámetro "base" establece una base numérica diferente a 10, la establecida por defecto. El tipo binario establece automáticamente la base a 2. El tipo hexadecimal establece automáticamente la base a 16.',
-			example: 'new Constraint.set({target: "inputTextID", type: "decimal", base: 2});\n// A través del tipo binario\nnew Constraint.set({target: "inputTextID", type: "binary"});'
+			example: 'it("#inputTextID").constraint({ type: "decimal", base: 2 });\n\
+// A través del tipo binario\n\
+it("#inputTextID").constraint({type: "binary"});'
 		},
 		decimalpoint: {
 			type: 'string',
 			description: 'El parámetro "decimalpoint" indica el carácter que separará la parte entera de la parte decimal. Sólo será válido en los tipos numéricos con decimales. Por defecto el valor es "." (punto).',
-			example: 'new Constraint.set({target: "inputTextID", type: "decimal", decimalpoint: ","});'
+			example: 'it("#inputTextID").constraint({ type: "decimal", decimalpoint: "," });'
 		},
 		function: {
 			type: 'function',
 			description: 'El parámetro "function" define la función de validación que controlará el formato de entrada y los valores admitidos. La validación realizada por esta función se puede definir a través de expresiones regulares (en el caso del subtipo "binario", la función podría ser "return /^(0|1)*$/.test(value);") aunque no es obligatorio. Si se define este parámetro a través de una función, el parámetro "type" debe establecerse a "custom".',
-			example: '// Ejemplo de subtipo personalizado (Número en formato octal).\nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});'
+			example: '// Ejemplo de subtipo personalizado (Número en formato octal).\n\
+it("#inputTextID").constraint({\n\
+	type: "custom",\n\
+	function: function(value) {\n\
+		return /^[0-7]*$/i.test(value);\n\
+	},\n\
+	base: 8,\n\
+});'
 		},
 		indicators: {
 			type: 'object',
 			description: 'El parámetro "indicators" indica si se deben mostrar los iconos de flecha hacia arriba, flecha hacia abajo y el color. Estos iconos a menudo se asocian con los controles de tipo numérico en HTML5, por lo que generalmente es una buena idea mostrarlos. Por defecto, el valor está establecido a true.\nEl parámetro "indicators" se compone de atributos "enabled" y "color".',
-			example: 'new Constraint.set({target: "inputTextID", type: "decimal", indicators: {enabled: true, color: "rgba(0,0,0,0.25)"}});\nnew Constraint.set({target: "inputTextID", type: "decimal", indicators: {color: "red"}});'
+			example: '// Restricción sin indicadores\n\
+it("#inputTextID").constraint({ type: "decimal", indicators: {enabled: false} });\n\
+// Restricción con indicadores en rojo\n\
+it("#inputTextID").constraint({ type: "decimal", indicators: {color: "red"} });'
 		},
 		target: {
 			type: 'string',
 			description: 'ID del control dónde será implementado el constraint',
-			example: 'new Constraint.set({target: "inputTextID", type: "int"});'
+			example: 'it("#inputTextID").constraint({ type: "int" });'
 		},
 		step: {
 			type: 'float',
 			description: 'El parámetro "step" indica el incremento o decremento cuando el usuario presiona las teclas de cursor o uno de los botones asignados como "indicadores". Por defecto es 1.',
-			example: 'new Constraint.set({target: "inputTextID", type: "decimal", step: 0.01});'
+			example: 'it("#inputTextID").constraint({ type: "decimal", step: 0.01 });'
 		},
 		type: {
 			type: 'string',
 			description: 'El parámetro "type" define el formato o el tipo de datos que permitirá el control. Los valores aceptados son:\n\t● <b>int</b>: Los valores permitidos son únicamente enteros positivos y negativos.\n\t● <b>uint</b>: Los valores permitidos son únicamente enteros positivos.\n\t● <b>float</b>: Los valores permitidos son enteros y números reales con decimales infinitos.\n\t● <b>decimal</b>: Los valores permitidos son enteros y números reales con dos decimales.\n\t● <b>percent</b>: Los valores permitidos son entre 0 y 100.\n\t● <b>binary</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso 0 y 1.\n\t● <b>hexadecimal</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso de 0 a 9 y de A a F.\n\t● <b>hour</b>: Los valores permitidos son de 00:00 a 23:59.\n\t● <b>custom</b>: Permite definir una función de tipo personalizado. El subtipo "custom" se alimenta del parámetro "function", por lo que si el control se define como "custom", será obligatorio (el parámetro "function").',
-			example: '// Example of Integer subtype\nnew Constraint.set({target: "inputTextID", type: "int"});\n\n// Example of Hour subtype\nnew Constraint.set({target: "inputTextID", type: "hour"});\n\n// Example of Custom subtype (Number in octal format). The custom subtype needs \nnew Constraint.set({\n\ttarget: "inputTextID",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[0-7]*$/i.test(value);\n\t},\n\tbase: 8,\n});\n\n// Sólo letras con  acentos a través del bloque unicode Latin1\n// \\u00C0-\\u00FF Suplemento Latin-1\n// \\u0100-\\u017F Latín Extendido-A\n// \\u0180-\\u024F Latín Extendido-b\n// \\u1E00-\\u1EFF Latín Extendido Adicional\nnew Constraint.set({\n\ttarget: "name",\n\ttype: "custom",\n\tfunction: function(value) {\n\t\treturn /^[a-zA-Z\s\\u00C0-\\u024F\\u1E00-\\u1EFF]*$/.test(value);\n\t}\n});'
+			example: '// Example of Integer subtype\n\
+it("#inputTextID").constraint({ type: "int"});\n\n\
+// Example of Hour subtype\n\
+it("#inputTextID").constraint({ type: "hour"});\n\n\
+// Example of Custom subtype (Number in octal format). The custom subtype needs \n\
+it("#inputTextID").constraint({\n\
+	type: "custom",\n\
+	function: function(value) {\n\
+		return /^[0-7]*$/i.test(value);\n\
+	},\n\
+	base: 8,\n\
+});\n\n\
+// Sólo letras con  acentos a través del bloque unicode Latin1\n\
+// \\u00C0-\\u00FF Suplemento Latin-1\n\
+// \\u0100-\\u017F Latín Extendido-A\n\
+// \\u0180-\\u024F Latín Extendido-b\n\
+// \\u1E00-\\u1EFF Latín Extendido Adicional\n\
+it("#inputTextID").constraint({\n\
+	type: "custom",\n\
+	function: function(value) {\n\
+		return /^[a-zA-Z\s\\u00C0-\\u024F\\u1E00-\\u1EFF]*$/.test(value);\n\
+	}\n});'
 		},
 		increment: {
 			type: 'string',
-			description: 'Aumenta el valor de la entrada asociada al valor establecido en "step". Por defecto, "step" es 1.',
-			example: 'Constraint.increment("inputTextID");'
+			description: 'Aumenta el valor de la entrada asociada al valor establecido en "step". El parámetro a enviar debe ser el ID del elemento que tiene la restricción.',
+			example: '// Hay dos posibilidades de realizar este incremento.\n\
+// Primera forma:\n\
+Constraint.increment("inputTextID");\n\
+// Segunda forma:\n\
+it("#inputTextID").constraint.increment();'
 		},
 		decrement: {
 			type: 'string',
-			description: 'Disminuye el valor de la entrada asociada al valor establecido en "step". Por defecto, "step" es 1.',
-			example: 'Constraint.decrement("inputTextID");'
+			description: 'Disminuye el valor de la entrada asociada al valor establecido en "step". El parámetro a enviar debe ser el ID del elemento que tiene la restricción.',
+			example: '// Hay dos posibilidades de realizar este decremento.\n\
+// Primera forma:\n\
+Constraint.decrement("inputTextID");\n\
+// Segunda forma:\n\
+it("#inputTextID").constraint.decrement();'
 		},
 	}
 }
@@ -752,6 +793,13 @@ if(it.enabledModules.Counter){
 	interval: 1,\n\
 	mode: "count"\n\
 });'	},
+		format: {
+	type: 'integer',
+	description: 'Establece una máscara para la visualización de valores. Sólo es aplicable en modo "timer". Por defecto es "HH:MM:SS".',
+	example: 'it("#counter").counter({\n\
+from: 10,\n\
+forma: "MM min",\n\
+})'		},
 		from: {
 			type: 'integer',
 			description: 'Permite definir una cuenta atrás del valor indicado.',
