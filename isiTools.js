@@ -33,10 +33,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.6",
+it.version = "1.6.7",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "20/05/2020",
+it.lastupdate = "21/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -3823,9 +3823,12 @@ function isiToolsCallback(json){
 				return;
 			}
 
-			for(var key in it.mask.config){
+			for(var x =0; x < this.targets.length; x++){
+				key = this.targets[x].id;
+
 				// Set attributes
 				cfg = it.mask.config[key];
+
 				cfg.target.setAttribute("placeholder", cfg.mask);
 				cfg.target.setAttribute("maxlength", cfg.mask.length);
 				cfg.target.setAttribute("minlength", cfg.mask.length);
@@ -3845,6 +3848,8 @@ function isiToolsCallback(json){
 			}
 
 			this.so = "mask";
+
+			return this.targets[0];
 		}
 
 		it.mask.version = '1.1';
