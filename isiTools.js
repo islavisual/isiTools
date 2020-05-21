@@ -4,7 +4,7 @@ var itEnabledModules = {
 	Autocomplete: true,
 	Benchmark: false,
 	Constraint: false,
-	Counter: true,
+	Counter: false,
 	Datepicker : true, 
 	Debugger: false,
 	DOM: false,
@@ -3879,7 +3879,7 @@ function isiToolsCallback(json){
 			var kc = e.keyCode, k = e.key[0], aok;
 
 			// Check if ignore keys
-			var _ignoreKeys = [8,9,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
+			var _ignoreKeys = [8,9,13,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
 			if(_ignoreKeys.indexOf(kc) != -1){ return false; }
 			if(e.ctrlKey) return true;
 
