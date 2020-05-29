@@ -33,10 +33,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.7",
+it.version = "1.6.8",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "21/05/2020",
+it.lastupdate = "29/05/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -204,10 +204,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 Custom alerts functionality
-		@version: 1.3.0
+		@version: 1.3.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 14/05/2020
+		@Last update: 29/05/2020
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -404,6 +404,14 @@ function isiToolsCallback(json){
 			}
 
 			function assignEvents() {
+				document.addEventListener("keydown", function(e){
+					if(e.keyCode == 27 && document.querySelector(".Alert")){
+						document.querySelector(".Alert .close-btn").click();
+						return false;
+					}
+					return;
+				});
+
 				document.querySelector(".Alert .close-btn").addEventListener("click", function (e) {
 					if (opt.actions.cancel.callback) opt.actions.cancel.callback(getData(e, false));
 					closeAlert(e);
@@ -2972,10 +2980,10 @@ function isiToolsCallback(json){
 
 	/**
 		 Include files in HTML through Ajax
-		@version: 1.2.0
+		@version: 1.3.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2019 Islavisual.
-		@Last update: 12/05/2020
+		@Last update: 27/05/2020
 	**/
 	if(json.Include){
 		this.Include = it.include = function (cfg) {
@@ -2996,30 +3004,31 @@ function isiToolsCallback(json){
 				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to execute the include!. Please, see the help with the Include('help');"); return false; }
 			}
 
+			// Assign options 
+			var opt = {
+				add: !cfg.hasOwnProperty('add') ? false : cfg.add,
+				attribute: !cfg.hasOwnProperty('attribute') ? null : cfg.attribute,
+				callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
+				data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
+				file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
+				target: this.targets[0],
+			}
+
+			// If the request is data-include
+			if (opt.attribute) {
+				dataInclude(opt.attribute);
+				return;
+
+			} else if (opt.attribute && opt.attribute == "") {
+				alert("The 'attribute' parameter can not be empty!.");
+				return;
+			}
+
 			Array.prototype.slice.call(this.targets).forEach(function(target){
-				cfg.target = target;
-
-				// Create JSON with current opt
-				var opt = {
-					add: !cfg.hasOwnProperty('add') ? false : cfg.add,
-					callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
-					data: !cfg.hasOwnProperty('data') ? '' : cfg.data,
-					file: !cfg.hasOwnProperty('file') ? '' : cfg.file,
-					target: target,
-				}
-
-				// If the request is data-include
-				if (cfg.hasOwnProperty('attribute') && cfg.attribute.trim() != "") {
-					dataInclude(cfg.attribute);
-					return;
-
-				} else if (cfg.hasOwnProperty('attribute') && cfg.attribute == "") {
-					alert("The 'attribute' parameter can not be empty!.");
-					return;
-				}
-
+				opt.target = target;
+				
 				// If configuration object is invalid
-				if (!cfg.hasOwnProperty('data') && !cfg.hasOwnProperty('file')) { alert("You need set a string 'data' or 'file' parameter!. Please, see the help with the Include('help');"); return false; }
+				if (!opt.hasOwnProperty('data') && !opt.hasOwnProperty('file')) { alert("You need set a string 'data' or 'file' parameter!. Please, see the help with the Include('help');"); return false; }
 
 				if (opt.file) {
 					getData(opt.target, opt.file, false);
@@ -3036,60 +3045,62 @@ function isiToolsCallback(json){
 
 					if(opt.callback) opt.callback();
 				}
+			});
 
-				function execute(trg) {
-					setTimeout(function () {
-						try { window.eval(trg.querySelector("script").innerHTML); } catch (e) { }
-					}, 250);
-				}
+			function execute(trg) {
+				setTimeout(function () {
+					try { window.eval(trg.querySelector("script").innerHTML); } catch (e) { }
+				}, 250);
+			}
 
-				function getData(trg, file, dIncFlag) {
-					var xhttp = new XMLHttpRequest(), dIncFlag = typeof dIncFlag == "undefined" ? false : true;
-					xhttp.onreadystatechange = function () {
-						if (this.readyState == 4) {
-							if (this.status == 200) { 
-								if(!opt.add){
-									trg.innerHTML = this.responseText; 
-								} else{
-									trg.innerHTML += this.responseText; 
-								}
-
-								trg.querySelector("script") ? execute(trg) : ''; 
-
-								if(opt.callback) opt.callback();
+			function getData(trg, file, dIncFlag) {
+				var xhttp = new XMLHttpRequest(), dIncFlag = !dIncFlag ? false : true;
+				xhttp.onreadystatechange = function () {
+					if (this.readyState == 4) {
+						if (this.status == 200) { 
+							if(!opt.add){
+								trg.innerHTML = this.responseText; 
+							} else{
+								trg.innerHTML += this.responseText; 
 							}
-							if (this.status == 404) { trg.innerHTML = "Page not found."; }
 
-							if (dIncFlag) {
-								trg.removeAttribute(cfg.attribute);
-								dataInclude(cfg.attribute);
+							trg.querySelector("script") ? execute(trg) : ''; 
+
+							if(opt.callback && !dIncFlag) opt.callback();
+						}
+						if (this.status == 404) { trg.innerHTML = "Page not found."; }
+
+						if (dIncFlag) {
+							trg.removeAttribute(opt.attribute);
+							dataInclude(opt.attribute)
+							
+							if(opt.callback && document.querySelectorAll("[" + opt.attribute + "]").length == 0){
+								opt.callback();
 							}
 						}
 					}
+				}
 
-					xhttp.open("GET", file, true);
-					xhttp.send();
+				xhttp.open("GET", file, true);
+				xhttp.send();
+
+				return;
+			}
+
+			function dataInclude(attr) {
+				var trg, file;
+
+				var trg = document.querySelector("[" + attr + "]");
+				if(trg ) file = trg.getAttribute(attr);
+				if (file) {
+					getData(trg, file, true);
 
 					return;
 				}
-
-				function dataInclude(attr) {
-					var z, i, trg, file, xhttp;
-
-					z = document.querySelectorAll("[" + attr + "]");
-					for (i = 0; i < z.length; i++) {
-						trg = z[i];
-
-						file = trg.getAttribute(attr);
-						if (file) {
-							getData(trg, file, true);
-
-							return;
-						}
-					}
-				}
-			});
+			}
 		}
+
+		this.Include.includedFiles = false;
 	}
 
 	/**
@@ -3805,10 +3816,10 @@ function isiToolsCallback(json){
 
 	/**
 		Masking inputs functionality
-		@version: 1.1.0																					
+		@version: 1.1.1																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
-		@Last update: 07/05/2020
+		@Last update: 29/05/2020
 	**/
 	if(json.Mask){
 		this.Mask = it.mask = function(cfg){
@@ -3884,7 +3895,7 @@ function isiToolsCallback(json){
 			var kc = e.keyCode, k = e.key[0], aok;
 
 			// Check if ignore keys
-			var _ignoreKeys = [8,9,13,16,17,18,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
+			var _ignoreKeys = [8,9,13,16,17,18,27,33,34,35,36,37,38,39,40,45,46,112,113,114,115,116,117,118,119,120,121,122,123];
 			if(_ignoreKeys.indexOf(kc) != -1){ return false; }
 			if(e.ctrlKey) return true;
 
@@ -5463,3 +5474,12 @@ if(it.browser == "IE"){
 		} catch(e){}
 	} 
 }
+
+window.addEventListener("load", function(){
+	if(it.include){
+		if(!this.Include.includedFiles){
+			this.Include.includedFiles = true;
+			(function(){ Include({ attribute: "auto-include", callback: onPageReady }); })()
+		}
+	}
+}, false);
