@@ -1518,18 +1518,18 @@ if(it.enabledModules.Password){
 
 /**
 	 Create and send forms in real time.
-	 @version: 1.00
+	 @version: 1.1
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2020 Islavisual.
-	 @Last update: 03/04/2019
+	 @Last update: 29/05/2020
  **/
 if(it.enabledModules.Selectpicker){
 	WikiHelper.Selectpicker = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			help: 1,
 			name: 'Selectpicker',
-			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTRML5 y que proporciona una capa personalización sencilla de modificar.",
+			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.",
 		},
 		additional: [
 			{
@@ -1541,20 +1541,15 @@ if(it.enabledModules.Selectpicker){
 				example: '.select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}'
 			},
 		],
-		init: {
+		selectpicker: {
 			type: 'function',
 			description: 'Crea y establece los componentes de configuración y presentación para los desplegables solicitados.',
-			example: 'Selectpicker.init(".select-picker");'
-		},
-		target: {
-			type: 'string',
-			description: 'Si el método "init" recibe una cadena, esta cadena se tomará como patrón de destino. Si el método "init" recibe un objeto, el parámetro objetivo será el patrón para inicializar los desplegables.',
-			example: '//Forma sencilla :\nSelectpicker.init(".select-picker");\n\n// A través del parámetro target:\nSelectpicker.init({ target: ".select-picker" });'
+			example: 'it(".select-picker").selectpicker();'
 		},
 		liveSearch: {
 			type: 'boolean',
-			description: 'Enable search into dropdown.',
-			example: 'Selectpicker.init({ target: ".select-picker", liveSearch: true });'
+			description: 'Habilita la búsqueda predictiva a través de un campo de texto.',
+			example: 'it(".select-picker").selectpicker({ liveSearch: true });'
 		},
 	}
 }
@@ -2166,6 +2161,9 @@ this.Helper = it.Helper = function (func, cfg) {
 			console.log.apply(console, arr);
 		}
 	}
+
+	// Fixed problem of refresh when counter is running
+	setTimeout(function(){ it('#h31p3r').get().scrollTop = 1, it('#h31p3r').get().scrollTop = 0; },0)
 }
 
 this.showHelper = it.showHelper = function(cs, cfg){
