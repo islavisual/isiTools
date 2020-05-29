@@ -4535,8 +4535,8 @@ function isiToolsCallback(json){
 		Dropdown select
 		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
-		@Last update: 29/05/2019
+		@Copyright 2017-2020 Islavisual.
+		@Last update: 29/05/2020
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
