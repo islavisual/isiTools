@@ -4540,16 +4540,11 @@ function isiToolsCallback(json){
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
-			if (!cfg || cfg == "") { alert("Mask not defined!"); return false; }
+			if (!cfg || cfg == "") { cfg = {}; }
 
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				it.selectpicker.all[target.id] = { target: target, config: cfg}
 			});
-
-			if(arguments.length == 0){
-				alert("No se ha definido la máscara")
-				return;
-			}
 
 			for(var x =0; x < this.targets.length; x++){
 				var trg = this.targets[x];
