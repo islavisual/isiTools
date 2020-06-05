@@ -33,10 +33,10 @@ var it = function(t){
 };
 
 it.name = "isiTools";
-it.version = "1.6.9",
+it.version = "1.7.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "29/05/2020",
+it.lastupdate = "05/06/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -123,6 +123,19 @@ it.set = function(){
 
 it.get = function(index){ if(index == undefined) index = 0; return this.targets[index]; }
 
+it.getTextWidth = function(obj, fontname, fontsize){
+	if(typeof obj != 'string'){
+		obj = obj.reduce(function (a, b) { return a.text.length > b.text.length ? a : b; }).innerText;
+	}
+	var canvas = document.createElement('canvas');
+    var ctx    = canvas.getContext('2d');
+	ctx.font   = fontsize + ' ' + fontname;
+	
+    return ctx.measureText(obj).width;
+}
+
+
+
 it.simulateEvent = function(evt, el){
 
 	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
@@ -143,7 +156,7 @@ function isiToolsCallback(json){
 		 AddCSSRule functionality																		
 		@version: 1.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
-		@Copyright 2017-2019 Islavisual. 																	
+		@Copyright 2017-2020 Islavisual. 																	
 		@Last update: 13/03/2019																			
 	**/
 	if(json.AddCSSRule){
@@ -206,7 +219,7 @@ function isiToolsCallback(json){
 		 Custom alerts functionality
 		@version: 1.3.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 29/05/2020
 	**/
 	if(json.Alert){
@@ -492,294 +505,328 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.3.0
+		@version: 1.4.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
-		@Last update: 30/04/2020
+		@Copyright 2017-2020 Islavisual.
+		@Last update: 30/05/2020
 	**/
 	
 	if(json.Autocomplete){
 		window._timeoutAC = null, window._continueAC = false;
-		this.Autocomplete = it.Autocomplete = function (cfg) {
+		it.autocomplete = function (cfg) {
 			if(typeof cfg == "undefined") cfg = {};
 
-            // If it.target has value, set to cfg object
-            if (!cfg.hasOwnProperty('input') && this.targets) cfg.input = this.targets[0].id;
+			for(var x =0; x < this.targets.length; x++){
+				cfg.target = this.targets[x];
 
-            if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
-                if (typeof showHelper != "undefined") showHelper("Autocomplete", cfg);
-                else alert("Helper not available!")
-                return;
-            }
-
-			// If configuration object is invalid
-			if (!cfg.hasOwnProperty('target')) { alert("No se ha definido el control de entrada de datos (target).\nPor favor, mire la ayuda pulsando F1."); return; }
-			if (!cfg.ajax && !cfg.hasOwnProperty('data')) { alert("No se ha suministrado el objeto con los datos (data).\nPor favor, mire la ayuda pulsando F1."); return; }
-			if (cfg.ajax && !cfg.hasOwnProperty('url')) { alert("No se ha suministrado la URL para recuperar los datos.\nPor favor, mire la ayuda pulsando F1."); return; }
-			if (cfg.format == "table" && !cfg.row) { alert("No se ha especificado la matriz JSON (row) con los campos que a mostrar.\nPor favor, mire la ayuda pulsando F1."); return; }
-
-			if (document.getElementById(cfg.target) == null) { alert('El ID "' + cfg.target + '" provided to Autocomplete not exists!') }
-
-			// Create JSON with current opt
-			var opt = {
-				ajax: !cfg.hasOwnProperty('ajax') ? false : cfg.ajax,
-				url: !cfg.hasOwnProperty('url') ? null : cfg.url,
-				autoFocus: !cfg.hasOwnProperty('autoFocus') ? false : cfg.autoFocus,
-				autoExpand: !cfg.hasOwnProperty('autoExpand') ? false : cfg.autoExpand,
-				autoSelect: !cfg.hasOwnProperty('autoSelect') ? false : cfg.autoSelect,
-				callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
-				className: !cfg.hasOwnProperty('className') ? "autocomplete" : cfg.className,
-				currentFocus: -1,
-				data: cfg.data,
-				delay: !cfg.hasOwnProperty('delay') ? 300 : cfg.delay,
-				disable: !cfg.hasOwnProperty('disable') ? null : cfg.disable,
-				format: !cfg.hasOwnProperty('format') ? "list" : cfg.format,
-				helper: !cfg.hasOwnProperty('helper') ? true : cfg.helper,
-				highlight: !cfg.hasOwnProperty('highlight') ? null : cfg.highlight,
-				minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
-				minLengthMessage: !cfg.hasOwnProperty('minLengthMessage') ? "Cargando..." : cfg.minLengthMessage,
-				row: !cfg.hasOwnProperty('row') ? {} : cfg.row,
-				resort: !cfg.hasOwnProperty('resort') ? false : cfg.resort,
-				target: document.getElementById(cfg.target),
-				tooltips: !cfg.hasOwnProperty('tooltips') ? null : cfg.tooltips,
-				voidMessage: !cfg.hasOwnProperty('voidMessage') ? "No se han encontrado coincidencias" : cfg.voidMessage,
-			}
-
-            if(opt.format == "table"){
-                // Define column fields by default
-                if(!opt.row.hasOwnProperty('columns')){
-                    opt.row.columns = [];
-                    for(var key in opt.data[0]){
-                        opt.row.columns.push(key);
-                    }
-                }
-
-                // Define header fields by default
-                if(!opt.row.hasOwnProperty('headers')){
-                    opt.row.headers = [];
-                    for(var key in opt.data[0]){
-                        opt.row.headers.push(key.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s){ return s.toUpperCase(); }));
-                    }
-                }
-
-                // Define return value by default
-                if(!opt.row.hasOwnProperty('return_value')) opt.row.return_value = Object.keys(opt.data[0])[0];
-                if(!opt.row.hasOwnProperty('showHeaders')) opt.row.showHeaders = false;
-                
-            } else if(opt.format == "cluster"){
-                // Define fields by default
-                if(!opt.row.hasOwnProperty('groupby')) opt.row.groupby = 'group';
-                if(!opt.row.hasOwnProperty('items')) opt.row.items = 'items';
-				if(!opt.row.hasOwnProperty('return_value')) opt.row.return_value = 'text';
-				
-				if(!opt.row.hasOwnProperty('columns')){
-					opt.row.columns = [opt.row.return_value];
-				} else if(typeof opt.row.columns == "string"){
-					opt.row.columns = [opt.row.columns];
+				if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
+					if (typeof showHelper != "undefined") showHelper("Autocomplete", cfg);
+					else alert("Helper not available!")
+					return;
 				}
-            }
-
-			// Backup of placeholder if exists
-			if(!opt.target.getAttribute("data-placeholder")){
-				if(opt.target.getAttribute("placeholder")){
-					opt.target.setAttribute("data-placeholder", opt.target.getAttribute("placeholder"));
-				} else {
-					opt.target.setAttribute("data-placeholder", "");
-				}
-			}
-
-			// Save config of all targets
-			if(!Autocomplete.targets) {
-				Autocomplete.targets = [];
-			}
-			Autocomplete.targets[opt.target.id] = {};
-			Autocomplete.targets[opt.target.id].opt = opt;
-			opt.target.dataset.helper = "Autocomplete";
-			
-			// Remove duplicating events for body element
-			document.body.removeEventListener('click', Autocomplete._checkFocus);
-			document.body.addEventListener('click', Autocomplete._checkFocus);
-
-			// Set message if minLength is -1 and message and events if minLength not id -1
-			if(opt.minLength == -1) {
-				opt.target.setAttribute("placeholder", opt.minLengthMessage);
-
-				opt.target.onkeydown = function(){ return false; }
 				
-			} else {
-				opt.target.setAttribute("placeholder", opt.target.dataset.placeholder);
-				opt.target.onkeydown = null;
+				// If target is a select tag, rebuild element and create data
+				if(cfg.target.tagName.toLowerCase() == "select"){
+					var items = cfg.target.options;
 
-                function callbackInputAfter(e){
-					opt.data = e;
+					cfg.data = [];
+					for(var x = 0; x < items.length; x++){
+						var item = items[x];
 					
-					// If file is JSON, disable ajax property to filter by this component
-					if(opt.url.split(".json")[opt.url.split(".json").length-1] == '') opt.ajax = false;
-                    
-                    var event = new Event('inputAfter');
-                    opt.target.dispatchEvent(event);
-                }
+						var option = {}
+						for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
+							var akey = atts[i].nodeName, avalue = atts[i].value;
+							option[akey] = avalue;
+						}
+						option.text = item.innerHTML;
+					
+						cfg.data.push(option);
+					}
 
-				function triggerAfterKey(t){
-					if(!opt.ajax){
-						var event = new Event('inputAfter');
-						t.dispatchEvent(event);
+					var newTag = document.createElement("input");
+					newTag.type = "text";
+					for (var i = 0, atts = cfg.target.attributes, n = atts.length, arr = []; i < n; i++){
+						var akey = atts[i].nodeName, avalue = atts[i].value;
+						newTag.setAttribute(akey, avalue);
+					}
+					newTag.id = newTag.id + "_newNode-it-Autocomplete";
+
+					cfg.target.parentElement.insertBefore(newTag, cfg.target);
+
+					cfg.target.remove();
+
+					newTag.id = newTag.id.replace("_newNode-it-Autocomplete", "");
+
+					cfg.target = newTag;
+				}
+				
+				// If configuration object is invalid
+				//if (!cfg.hasOwnProperty('target')) { alert("No se ha definido el control de entrada de datos (target).\nPor favor, mire la ayuda pulsando F1."); return; }
+				if (!cfg.ajax && !cfg.hasOwnProperty('data')) { alert("No se ha suministrado el objeto con los datos (data).\nPor favor, mire la ayuda pulsando F1."); return; }
+				if (cfg.ajax && !cfg.hasOwnProperty('url')) { alert("No se ha suministrado la URL para recuperar los datos.\nPor favor, mire la ayuda pulsando F1."); return; }
+				if (cfg.format == "table" && !cfg.row) { alert("No se ha especificado la matriz JSON (row) con los campos que a mostrar.\nPor favor, mire la ayuda pulsando F1."); return; }
+
+				// Create JSON with current opt
+				var opt = {
+					ajax: !cfg.hasOwnProperty('ajax') ? false : cfg.ajax,
+					url: !cfg.hasOwnProperty('url') ? null : cfg.url,
+					autoFocus: !cfg.hasOwnProperty('autoFocus') ? false : cfg.autoFocus,
+					autoExpand: !cfg.hasOwnProperty('autoExpand') ? false : cfg.autoExpand,
+					autoSelect: !cfg.hasOwnProperty('autoSelect') ? false : cfg.autoSelect,
+					callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
+					className: !cfg.hasOwnProperty('className') ? "autocomplete" : cfg.className,
+					currentFocus: -1,
+					data: cfg.data,
+					delay: !cfg.hasOwnProperty('delay') ? 300 : cfg.delay,
+					disable: !cfg.hasOwnProperty('disable') ? null : cfg.disable,
+					format: !cfg.hasOwnProperty('format') ? "list" : cfg.format,
+					helper: !cfg.hasOwnProperty('helper') ? true : cfg.helper,
+					highlight: !cfg.hasOwnProperty('highlight') ? null : cfg.highlight,
+					minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
+					minLengthMessage: !cfg.hasOwnProperty('minLengthMessage') ? "Cargando..." : cfg.minLengthMessage,
+					row: !cfg.hasOwnProperty('row') ? {} : cfg.row,
+					resort: !cfg.hasOwnProperty('resort') ? false : cfg.resort,
+					target: cfg.target,
+					tooltips: !cfg.hasOwnProperty('tooltips') ? null : cfg.tooltips,
+					voidMessage: !cfg.hasOwnProperty('voidMessage') ? "No se han encontrado coincidencias" : cfg.voidMessage,
+				}
+
+				if(opt.format == "table"){
+					// Define column fields by default
+					if(!opt.row.hasOwnProperty('columns')){
+						opt.row.columns = [];
+						for(var key in opt.data[0]){
+							opt.row.columns.push(key);
+						}
+					}
+
+					// Define header fields by default
+					if(!opt.row.hasOwnProperty('headers')){
+						opt.row.headers = [];
+						for(var key in opt.data[0]){
+							opt.row.headers.push(key.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s){ return s.toUpperCase(); }));
+						}
+					}
+
+					// Define return value by default
+					if(!opt.row.hasOwnProperty('return_value')) opt.row.return_value = Object.keys(opt.data[0])[0];
+					if(!opt.row.hasOwnProperty('showHeaders')) opt.row.showHeaders = false;
+					
+				} else if(opt.format == "cluster"){
+					// Define fields by default
+					if(!opt.row.hasOwnProperty('groupby')) opt.row.groupby = 'group';
+					if(!opt.row.hasOwnProperty('items')) opt.row.items = 'items';
+					if(!opt.row.hasOwnProperty('return_value')) opt.row.return_value = 'text';
+					
+					if(!opt.row.hasOwnProperty('columns')){
+						opt.row.columns = [opt.row.return_value];
+					} else if(typeof opt.row.columns == "string"){
+						opt.row.columns = [opt.row.columns];
+					}
+				}
+
+				// Backup of placeholder if exists
+				if(!opt.target.getAttribute("data-placeholder")){
+					if(opt.target.getAttribute("placeholder")){
+						opt.target.setAttribute("data-placeholder", opt.target.getAttribute("placeholder"));
 					} else {
-						new HttpRequest({
-							url: opt.url + (opt.url.split("?").length == 1 ? "?q=" : "&q=") + encodeURIComponent(t.value),
-							ajax: true, 
-							callback: callbackInputAfter, 
-							contentType: "application/json; charset=utf-8",
-							responseType: "json"}
-						);
+						opt.target.setAttribute("data-placeholder", "");
 					}
 				}
 
-                opt.target.addEventListener("keydown",  function (e) {
-					var kc = e.keyCode, t = e.target;
-					var aList= Autocomplete._getAutocompleteList(this, opt.className);
+				// Save config of all targets
+				if(!it.autocomplete.targets) {
+					it.autocomplete.targets = [];
+				}
+				it.autocomplete.targets[opt.target.id] = {};
+				it.autocomplete.targets[opt.target.id].opt = opt;
+				opt.target.dataset.helper = "Autocomplete";
+				
+				// Remove duplicating events for body element
+				document.body.removeEventListener('click', it.autocomplete._checkFocus);
+				document.body.addEventListener('click', it.autocomplete._checkFocus);
 
-					if(kc == 13) e.preventDefault();
+				// Set message if minLength is -1 and message and events if minLength not id -1
+				if(opt.minLength == -1) {
+					opt.target.setAttribute("placeholder", opt.minLengthMessage);
 
-					if((kc == 13 || kc == 9) && aList){ 
-						
-						if (opt.currentFocus > -1 && aList) {
-							aList[opt.currentFocus].click();
-
-							Autocomplete._removeItemsList(false, opt);
-						}
-
-						return false; 
-					} else if(kc == 9 || kc == 27){
-						Autocomplete._removeItemsList(false, opt);
-						return;
-
-					} else if (kc == 40) { 			// down
-						if (document.querySelectorAll("." + opt.className + "-items").length == 0) {
-							it.simulateEvent("input", e.target);
-						}
-	
-						var x = Autocomplete._getAutocompleteList(this, opt.className);
-						opt.currentFocus++;
-	
-						Autocomplete._addActive(x, opt);
-						Autocomplete._setScrollTop(e.target.id, opt.className, "down");
-
-					} else if (kc == 38) { 	//up
-						var x = Autocomplete._getAutocompleteList(this, opt.className);
-	
-						opt.currentFocus--;
-						Autocomplete._addActive(x, opt);
-						Autocomplete._setScrollTop(e.target.id, opt.className, "up");
-
-					} 
+					opt.target.onkeydown = function(){ return false; }
 					
-					if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
-					else if(kc == 40 && document.getElementById(e.target.id + "-" + opt.className + "-list")) return false;
+				} else {
+					opt.target.setAttribute("placeholder", opt.target.dataset.placeholder);
+					opt.target.onkeydown = null;
 
-					var goon = (t.value.trim().length + (kc == 8 || kc == 46 ? -1: 1) < opt.minLength) || (t.value.trim().length == 1 && (kc == 8 || kc == 46) ) ? false : true;
-
-					clearTimeout(_timeoutAC); 
-					if(goon) {
-                        _timeoutAC = setTimeout(triggerAfterKey, opt.delay, t); 
-                    } else {
-                        Autocomplete._removeItemsList(false, opt)
-                    }
-				});
-
-				// Auto select all
-				opt.target.addEventListener("focusin", function (e) { 
-					if (opt.autoSelect){
-						e.target.select(); 
+					function callbackInputAfter(e){
+						opt.data = e;
+						
+						// If file is JSON, disable ajax property to filter by this component
+						if(opt.url.split(".json")[opt.url.split(".json").length-1] == '') opt.ajax = false;
+						
+						var event = new Event('inputAfter');
+						opt.target.dispatchEvent(event);
 					}
 
-					if (opt.autoExpand) {
-						var evt = new KeyboardEvent('keydown', {'keyCode': 40, 'which': 40});
-						e.target.dispatchEvent (evt);
-					}
-				});
-
-				opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
-
-                opt.target.addEventListener("inputAfter", function (e) {
-					var a, b, c, i, val = this.value.trim();
-
-					// Contains wildcard
-					var wildCard = val.indexOf("*") == -1 ? -1 : (val.indexOf("*") == val.length - 1 ? 1 : 0);
-
-					// Only search when length is greater than "minLength" attribute.
-                    Autocomplete._removeItemsList(false, opt);
-					if (opt.minLength == -1) this.value = "";
-					if (opt.minLength == -1 || val.length < opt.minLength) {
-						return false;
+					function triggerAfterKey(t){
+						if(!opt.ajax){
+							var event = new Event('inputAfter');
+							t.dispatchEvent(event);
+						} else {
+							new HttpRequest({
+								url: opt.url + (opt.url.split("?").length == 1 ? "?q=" : "&q=") + encodeURIComponent(t.value),
+								ajax: true, 
+								callback: callbackInputAfter, 
+								contentType: "application/json; charset=utf-8",
+								responseType: "json"}
+							);
+						}
 					}
 
-                    // Close all lists
-                    Autocomplete._closeAllLists(this);
+					opt.target.addEventListener("keydown",  function (e) {
+						var kc = e.keyCode, t = e.target;
+						var aList= it.autocomplete._getAutocompleteList(this, opt.className);
 
-                    // Reset current focus / element selected
-                    opt.currentFocus = -1;
+						if(kc == 13) e.preventDefault();
 
-                    // Create a DIV element that will contain the values
-					a = document.createElement("div");
-					a.setAttribute("id", opt.target.id + "-" + opt.className + "-list");
-					a.setAttribute("class", opt.className + "-items display");
-					a.classList.add(opt.format);
+						if((kc == 13 || kc == 9) && aList){ 
+							
+							if (opt.currentFocus > -1 && aList) {
+								aList[opt.currentFocus].click();
 
-                    
-					document.body.addEventListener("click", function (e) {
-                        if(e.path.filter(function(e){ return e != document && e!= window && e.classList.contains("expand-layer")}).length == 0){
-                            try{ document.getElementById(opt.target.id + "-" + opt.className + "-list").remove(); } catch(e){ }
-                        }
+								it.autocomplete._removeItemsList(false, opt);
+							}
+
+							return false; 
+						} else if(kc == 9 || kc == 27){
+							it.autocomplete._removeItemsList(false, opt);
+							return;
+
+						} else if (kc == 40) { 			// down
+							if (document.querySelectorAll("." + opt.className + "-items").length == 0) {
+								it.simulateEvent("input", e.target);
+							}
+		
+							var x = it.autocomplete._getAutocompleteList(this, opt.className);
+							opt.currentFocus++;
+		
+							it.autocomplete._addActive(x, opt);
+							it.autocomplete._setScrollTop(e.target.id, opt.className, "down");
+
+						} else if (kc == 38) { 	//up
+							var x = it.autocomplete._getAutocompleteList(this, opt.className);
+		
+							opt.currentFocus--;
+							it.autocomplete._addActive(x, opt);
+							it.autocomplete._setScrollTop(e.target.id, opt.className, "up");
+
+						} 
+						
+						if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
+						else if(kc == 40 && document.getElementById(e.target.id + "-" + opt.className + "-list")) return false;
+
+						var goon = (t.value.trim().length + (kc == 8 || kc == 46 ? -1: 1) < opt.minLength) || (t.value.trim().length == 1 && (kc == 8 || kc == 46) ) ? false : true;
+
+						clearTimeout(_timeoutAC); 
+						if(goon) {
+							_timeoutAC = setTimeout(triggerAfterKey, opt.delay, t); 
+						} else {
+							it.autocomplete._removeItemsList(false, opt)
+						}
 					});
 
-                    this.parentNode.appendChild(a);
+					// Auto select all
+					opt.target.addEventListener("focusin", function (e) { 
+						if (opt.autoSelect){
+							e.target.select(); 
+						}
 
-					if (opt.format == "table") {
-                        // If format is table and is desired show headers 
-                        if(opt.row.showHeaders){
-                            var thead = document.createElement("span");
-                            thead.setAttribute("class", "header");
+						if (opt.autoExpand) {
+							var evt = new KeyboardEvent('keydown', {'keyCode': 40, 'which': 40});
+							e.target.dispatchEvent (evt);
+						}
+					});
 
-                            var aux = "";
-                            for (var z = 0; z < opt.row.columns.length; z++) {
-                                aux += '<span style="width: ' + (100 / opt.row.columns.length) + '%">' + opt.row.headers[z] + "</span>";
-                            }
-                            thead.innerHTML = aux;
-                            a.appendChild(thead);
-                        }
+					opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
 
-					} else if(opt.format == "cluster"){
-                        var jsonCluster = false;
-					    if(opt.data.length != 0 && typeof opt.data.find(function (x){return x!==undefined})[opt.row.items].find(function (x){return x!==undefined}) == "object") jsonCluster = true;
-                    }
+					opt.target.addEventListener("inputAfter", function (e) {
+						var a, b, c, i, val = this.value.trim();
 
-                    // Searching...
-                    Autocomplete.foreach(val, opt, a)
+						// Contains wildcard
+						var wildCard = val.indexOf("*") == -1 ? -1 : (val.indexOf("*") == val.length - 1 ? 1 : 0);
 
-                    // Clean memory
-                    a = b = c = val = jsonCluster = wildcard = thead = aux = null;
-				});
+						// Only search when length is greater than "minLength" attribute.
+						it.autocomplete._removeItemsList(false, opt);
+						if (opt.minLength == -1) this.value = "";
+						if (opt.minLength == -1 || val.length < opt.minLength) {
+							return false;
+						}
+
+						// Close all lists
+						it.autocomplete._closeAllLists(this);
+
+						// Reset current focus / element selected
+						opt.currentFocus = -1;
+
+						// Create a DIV element that will contain the values
+						a = document.createElement("div");
+						a.setAttribute("id", opt.target.id + "-" + opt.className + "-list");
+						a.setAttribute("class", opt.className + "-items display");
+						a.classList.add(opt.format);
+
+						
+						document.body.addEventListener("click", function (e) {
+							if(e.path.filter(function(e){ return e != document && e!= window && e.classList.contains("expand-layer")}).length == 0){
+								try{ document.getElementById(opt.target.id + "-" + opt.className + "-list").remove(); } catch(e){ }
+							}
+						});
+
+						this.parentNode.appendChild(a);
+
+						if (opt.format == "table") {
+							// If format is table and is desired show headers 
+							if(opt.row.showHeaders){
+								var thead = document.createElement("span");
+								thead.setAttribute("class", "header");
+
+								var aux = "";
+								for (var z = 0; z < opt.row.columns.length; z++) {
+									aux += '<span style="width: ' + (100 / opt.row.columns.length) + '%">' + opt.row.headers[z] + "</span>";
+								}
+								thead.innerHTML = aux;
+								a.appendChild(thead);
+							}
+
+						} else if(opt.format == "cluster"){
+							var jsonCluster = false;
+							if(opt.data.length != 0 && typeof opt.data.find(function (x){return x!==undefined})[opt.row.items].find(function (x){return x!==undefined}) == "object") jsonCluster = true;
+						}
+
+						// Searching...
+						it.autocomplete.foreach(val, opt, a)
+
+						// Clean memory
+						a = b = c = val = jsonCluster = wildcard = thead = aux = null;
+					});
+				}
+
+				// Add helper button
+				if(opt.helper){
+					document.body.append(it.autocomplete.addHelperButton());
+
+					var icon = document.createElement("i");
+						icon.classList.add("Autocomplete-helper-icon");
+						icon.onclick = function(){
+							document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
+						}
+						icon.innerHTML ='?';
+
+					opt.target.parentNode.insertBefore(icon, opt.target.nextSibling);
+				}
+
+				if(opt.autoFocus){ opt.target.focus(); }
 			}
-
-			// Add helper button
-			if(opt.helper){
-				document.body.append(Autocomplete.addHelperButton());
-
-				var icon = document.createElement("i");
-					icon.classList.add("Autocomplete-helper-icon");
-					icon.onclick = function(){
-						document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
-					}
-					icon.innerHTML ='?';
-
-				opt.target.parentNode.insertBefore(icon, opt.target.nextSibling);
-			}
-
-            if(opt.autoFocus){ opt.target.focus(); }
 		}
 
-		this.Autocomplete.foreach = function(val, opt, a){
+		it.autocomplete.foreach = function(val, opt, a){
             var itemsCount = 0;
             
             for (var i = 0; i < opt.data.length; i++) {
@@ -810,7 +857,7 @@ function isiToolsCallback(json){
                 // Now, we have the item converted to string and separated by pipes.
                 // Extract wildcards and check item
                 var wildCard = val.indexOf("*") == -1 ? -1 : (val.indexOf("*") == val.length - 1 ? 1 : 0);
-                found = opt.format == "cluster" || opt.ajax || Autocomplete.search(val, cval, wildCard, 0);
+                found = opt.format == "cluster" || opt.ajax || it.autocomplete.search(val, cval, wildCard, 0);
 
                 // Add items to autocomplete list
                 if(found){
@@ -904,7 +951,7 @@ function isiToolsCallback(json){
 
                             text += (text.indexOf("|") == -1) ? "|" : "";
 
-                            if (opt.ajax || Autocomplete.search(val, text, wildCard, 1)) {
+                            if (opt.ajax || it.autocomplete.search(val, text, wildCard, 1)) {
 								text = '';
                                 for(var x = 0; x < opt.row.columns.length; x++){
                                     var aux = cItem[opt.row.columns[x]];
@@ -939,7 +986,7 @@ function isiToolsCallback(json){
                                 bc.appendChild(aux);
 
                                 // Add event on click
-                                aux.setAttribute("onclick", 'Autocomplete._click(this)');
+                                aux.setAttribute("onclick", 'it.autocomplete._click(this)');
 
                                 itemsCount++
                             }
@@ -954,7 +1001,7 @@ function isiToolsCallback(json){
                         a.appendChild(b);
 
                         // Add event on click
-                        b.setAttribute("onclick", 'Autocomplete._click(this)');
+                        b.setAttribute("onclick", 'it.autocomplete._click(this)');
 
                         itemsCount++
                     }
@@ -986,7 +1033,7 @@ function isiToolsCallback(json){
             cval = found = optData = keyVal = valAux = wildCard = bc = aux = highlighting = tooltips = tfld = faux = i = f = null;
 		}
 
-        this.Autocomplete.search = function(value, text, wildCards, pass){
+        it.autocomplete.search = function(value, text, wildCards, pass){
 			var mode = value.match(/\*(.+)\*/ig) != null ? "contains" : ( value.match(/\*(.+)/ig) != null ? 'ends' : (value.indexOf("*") == -1 ? 'contains': 'starts'));
 
 			// Replace double wildcard
@@ -1006,12 +1053,12 @@ function isiToolsCallback(json){
             }
 
             // If search is complex
-            var aux = Autocomplete._test(text, value, mode);
+            var aux = it.autocomplete._test(text, value, mode);
 
             return aux;
         }
 
-        this.Autocomplete._test = function (text, value, method){
+        it.autocomplete._test = function (text, value, method){
             method = value.length > 1 ? "contains" : method;
             var aux = value, counter = 0;
 
@@ -1019,7 +1066,8 @@ function isiToolsCallback(json){
                 value = aux[i].toString().trim();
 
                 counter += text.split("|").filter(function(v){ 
-                    v = v.trim();
+					v = v.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+					value = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
                     var exacts = value.split('"');
                     if(exacts.length == 3){ value = exacts[1]; method = "exacts"; }
@@ -1038,9 +1086,9 @@ function isiToolsCallback(json){
             return counter == aux.length;
 		}
 		
-		this.Autocomplete._addActive = function(x, opt) {
+		it.autocomplete._addActive = function(x, opt) {
 			if(!x) return false;
-			Autocomplete._removeActive(x, opt.className);
+			it.autocomplete._removeActive(x, opt.className);
 
 			if(opt.currentFocus >= x.length) opt.currentFocus = 0;
 			if(opt.currentFocus < 0) opt.currentFocus = (x.length - 1);
@@ -1048,19 +1096,19 @@ function isiToolsCallback(json){
 		}
 
 		// Get Autocomplete List
-		this.Autocomplete._getAutocompleteList = function(e, cls) {
+		it.autocomplete._getAutocompleteList = function(e, cls) {
 			var x = document.getElementById(e.id + "-" + cls + "-list");
 			if (x) x = x.querySelectorAll("div.value");
 			return x;
 		}
 
-		this.Autocomplete._removeActive = function(x, cls) {
+		it.autocomplete._removeActive = function(x, cls) {
 			for (var i = 0; i < x.length; i++) {
 				x[i].classList.remove(cls + "-active");
 			}
 		}
 
-		this.Autocomplete._setScrollTop = function(id, cls, dir) {
+		it.autocomplete._setScrollTop = function(id, cls, dir) {
 			// Move scroll to current position
 			try {
 				var active = document.querySelector('.' + cls + '-active'), items = document.getElementById(id + "-" + cls + "-list");
@@ -1072,7 +1120,7 @@ function isiToolsCallback(json){
 			} catch (e) { }
 		}
 
-        this.Autocomplete._removeItemsList = function(reset, opt) {
+        it.autocomplete._removeItemsList = function(reset, opt) {
             var item = opt.target.parentElement.querySelector("." + opt.className + "-items");
             if(item) item.remove();
             if (reset) opt.target.value = "";
@@ -1080,22 +1128,24 @@ function isiToolsCallback(json){
             item = null;
         }
 
-        Autocomplete._getID = function(e){
+        it.autocomplete._getID = function(e){
 			return e.id || e.querySelector("[data-id]").dataset.id;
 		}
 
-        Autocomplete._click = function(val){
-			var id = Autocomplete._getID(val);
-			var opt = Autocomplete.targets[id].opt;
+        it.autocomplete._click = function(val){
+			var id = it.autocomplete._getID(val);
+			var opt = it.autocomplete.targets[id].opt;
 			
 			opt.target.value = val.getElementsByTagName("input")[0].value;
 			if (opt.callback) opt.callback(val.getElementsByTagName("input")[0]);
-			Autocomplete._closeAllLists(val);
+			it.autocomplete._closeAllLists(val);
+
+			opt.target.focus();
 		}
 
-        Autocomplete._closeAllLists = function(elmnt){
-			var id = Autocomplete._getID(elmnt);
-			var opt = Autocomplete.targets[id].opt;
+        it.autocomplete._closeAllLists = function(elmnt){
+			var id = it.autocomplete._getID(elmnt);
+			var opt = it.autocomplete.targets[id].opt;
 
 			var x = document.querySelectorAll("." + opt.className + "-items");
 			for (var i = 0; i < x.length; i++) {
@@ -1105,10 +1155,10 @@ function isiToolsCallback(json){
 			}
 		}
 
-		this.Autocomplete._checkFocus = function(e){
+		it.autocomplete._checkFocus = function(e){
 			var trg = e.target;
-			for(var trgID in Autocomplete.targets){
-				var opt = Autocomplete.targets[trgID].opt;
+			for(var trgID in it.autocomplete.targets){
+				var opt = it.autocomplete.targets[trgID].opt;
 
 				while(trg && trg.id != trgID && !trg.classList.contains(opt.className + "-items") && trg.tagName != "BODY"){
 					trg = trg.parentNode;
@@ -1122,7 +1172,7 @@ function isiToolsCallback(json){
 			}
 		}
 
-        this.Autocomplete.help = function(cfg){
+        it.autocomplete.help = function(cfg){
 			if(typeof cfg == "undefined") cfg = {help: ''};
 			if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
@@ -1131,7 +1181,7 @@ function isiToolsCallback(json){
 			return;
 		}
 
-		this.Autocomplete.addHelperButton = function(){
+		it.autocomplete.addHelperButton = function(){
 			it.addCSSRule('', "input[data-helper]", "padding-right: 28px;");
 			it.addCSSRule('', ".Autocomplete-helper-icon","cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
 			it.addCSSRule('', ".Autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 25vw; display: block; width: 50vw; max-height: 550px; overflow: auto; z-index: 99;");
@@ -1286,7 +1336,7 @@ function isiToolsCallback(json){
 		 Constraint to input functionality
 		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 19/05/2020
 	**/
 	if(json.Constraint){
@@ -1512,7 +1562,7 @@ function isiToolsCallback(json){
 		Create counters.
 		@version: 1.1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 19/05/2020
 	**/
 	if(json.Counter){
@@ -1757,7 +1807,7 @@ function isiToolsCallback(json){
 		Datepicker functionality
 		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 20/05/2020
 	**/
 	if (json.Datepicker) {
@@ -2290,7 +2340,7 @@ function isiToolsCallback(json){
 		 Debugger functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 15/03/2019
 	**/
 	if(json.Debugger){
@@ -2733,7 +2783,7 @@ function isiToolsCallback(json){
 		 Simple DOM ready() detection in pure JS.
 		@version: 1.00
 		@author: Carl Danley.
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 04/03/2019
 	**/
 	if(json.DOM){
@@ -2833,7 +2883,7 @@ function isiToolsCallback(json){
 		 Get Browser Plugin
 		@version: 1.02
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 05/03/2019
 	**/
 	if(json.GetBrowser){
@@ -2854,7 +2904,7 @@ function isiToolsCallback(json){
 		 Get parameter from url
 		@version: 1.03
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 07/04/2019
 	**/
 	if(json.GetParam){
@@ -2886,7 +2936,7 @@ function isiToolsCallback(json){
 		 HttpRequest functionality																		
 		@version: 2.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
-		@Copyright 2017-2019 Islavisual. 																	
+		@Copyright 2017-2020 Islavisual. 																	
 		@Last update: 27/02/2019																			
 	**/
 	if(json.HttpRequest){
@@ -2982,7 +3032,7 @@ function isiToolsCallback(json){
 		 Include files in HTML through Ajax
 		@version: 1.3.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 27/05/2020
 	**/
 	if(json.Include){
@@ -3107,7 +3157,7 @@ function isiToolsCallback(json){
 		 IntelliForm functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 19/03/2019
 	**/
 	if(json.IntelliForm){
@@ -3673,7 +3723,7 @@ function isiToolsCallback(json){
 		 Function to detect if a device is mobile or tablet.
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 30/07/2019
 	**/
 	if(json.IsMobile){
@@ -3714,7 +3764,7 @@ function isiToolsCallback(json){
 		Multi-Language functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 31/03/2019
 	**/
 	
@@ -4066,7 +4116,7 @@ function isiToolsCallback(json){
 		N-State
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 11/06/2019
 	**/
 	if(json.Nstate){
@@ -4288,7 +4338,7 @@ function isiToolsCallback(json){
 		Password tools
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 22/05/2019
 	**/
 	if(json.Password){
@@ -4533,14 +4583,14 @@ function isiToolsCallback(json){
 
 	/**
 		Dropdown select
-		@version: 1.1
+		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 29/05/2020
+		@Last update: 05/06/2020
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
-			if (!cfg || cfg == "") { cfg = {}; }
+			if(typeof cfg == "undefined") cfg = {};
 
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				it.selectpicker.all[target.id] = { target: target, config: cfg}
@@ -4568,8 +4618,7 @@ function isiToolsCallback(json){
 				// Add layer will contents button and list
 				var div = document.createElement("div");
 				div.setAttribute("class", "select-picker");
-				div.style.minWidth = trg.offsetWidth + 'px';
-
+				
 				// Add button will contents the selected text
 				var btn = document.createElement("button");
 				btn.setAttribute("id", trg.id + "trigger");
@@ -4578,6 +4627,11 @@ function isiToolsCallback(json){
 				btn.setAttribute("aria-expanded", "false");
 				btn.setAttribute("type", "button");
 				btn.setAttribute("tabindex", "-1");
+				if(parseInt(getComputedStyle(trg, null).minWidth) == 0){
+					btn.style.minWidth = it.getTextWidth(Array.prototype.slice.call(trg.querySelectorAll("option"), 0),
+														 getComputedStyle(trg, null).fontFamily,
+														 getComputedStyle(trg, null).fontSize) + 'px';
+				}
 
 				// Assign all select properties 
 				for (var i = 0, atts = trg.attributes, n = atts.length; i < n; i++){
@@ -4624,7 +4678,7 @@ function isiToolsCallback(json){
 					if(active) trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
 				});
 
-				document.addEventListener("click", it.selectpicker._windowListener);
+				window.addEventListener("click", it.selectpicker._windowListener);
 
 				// Add dropdown-container
 				var diC = document.createElement("div");
@@ -4655,7 +4709,7 @@ function isiToolsCallback(json){
 
 				// Keyboard management
 				inp.addEventListener("keydown", function(){
-					var e = arguments[0], trg = e.target, val = trg.value;
+					var e = arguments[0], trg = e.target, val = trg.value, list;
 
 					function getList(id) {
 						var x = document.getElementById(id).nextElementSibling.querySelectorAll("li");
@@ -4698,22 +4752,25 @@ function isiToolsCallback(json){
 						it.selectpicker.close(trg.parentElement.parentElement.parentElement)
 
 					} else if(e.keyCode == 38){ // up
-						var list = getList(trg.dataset.id);
+						list = getList(trg.dataset.id);
 						
 						it.selectpicker._curIndex[trg.dataset.id] = setActive(it.selectpicker._curIndex[trg.dataset.id], '-');
 						setScrollTop('up', trg);
 
 					} else if(e.keyCode == 40){ // down
-						var list = getList(trg.dataset.id);
+						list = getList(trg.dataset.id);
 						it.selectpicker._curIndex[trg.dataset.id] = setActive(it.selectpicker._curIndex[trg.dataset.id], '+');
 						setScrollTop('down', trg);
 
-					} else if(e.keyCode == 13 || e.keyCode == 9){ // enter
-						e.preventDefault();
-						e.stopPropagation();
+					} else if(e.keyCode == 13 || e.keyCode == 9){
+						if(e.keyCode == 13) {
+							e.preventDefault();
+							e.stopPropagation();
+						}
 
-						var list = getList(trg.dataset.id);
+						list = getList(trg.dataset.id);
 						document.getElementById(trg.dataset.id).selectedIndex = it.selectpicker._curIndex[trg.dataset.id];
+						it.selectpicker._update(trg.dataset.id, it.selectpicker._curIndex[trg.dataset.id]);
 						return false;
 					}
 				}.bind(it.selectpicker));
@@ -4762,9 +4819,6 @@ function isiToolsCallback(json){
 					lst.appendChild(li);
 				}
 
-				// Auto-select first option
-				if(btn.innerText.trim() == "") btn.innerText = items[0].innerHTML;
-				
 				// Add components to layer
 				diC.appendChild(lst);
 				div.appendChild(btn);
@@ -4773,15 +4827,11 @@ function isiToolsCallback(json){
 				// Hide select and append new dropdown
 				trg.parentNode.insertBefore(div, trg.nextSibling);
 
-				trg.style = 'display: block !important; height: 0 !important; width: 0; overflow: hidden !important; opacity: 0; font-size: 0; position: absolute;';
-				
-				setInterval(function(e){ 
-					if(e.getAttribute("data-value") != e.value){
-						e.setAttribute("data-value", e.value);
-						e.dispatchEvent(new Event('change'));
-						it.selectpicker._update(e.id, e.querySelector('option[value="' + e.value + '"]').index);
-					}
-				}.bind(null, trg), 150);
+				trg.style = 'border: 0 none; height: 0; overflow: hidden; opacity: 0; padding: 0; margin: 0;';
+				trg.onchange = function(e){
+					var btn = e.target.nextElementSibling.children[0];
+					btn.innerHTML = e.target.options[e.target.selectedIndex].text;
+				}
 			}
 
 			// Add default Styles
@@ -4800,6 +4850,7 @@ function isiToolsCallback(json){
 				AddCSSRule('', ".select-picker .search-icon::before", 'content: ""; background: #ccc; width: 10px; height: 3px; position: absolute; border-radius: 100px; top: 21px; right: 10px; transform: rotate(40deg);');
 				AddCSSRule('', ".select-picker .search-icon:after", 'content: ""; width: 16px; height: 16px; border: 3px solid #ccc; border-radius: 100px; display: block; position: absolute; top: 8px; right: 15px;');
 				AddCSSRule('', ".select-picker-active", 'background: #000; color: #fff;');
+				AddCSSRule('', ".select-picker > button:focus, select:focus + .select-picker > button", 'border: 1px solid red;');
 			}
 
 			return div
@@ -4830,21 +4881,26 @@ function isiToolsCallback(json){
 			e.nextElementSibling.classList.remove("open");
 			e.nextElementSibling.children[1].style.display = "none";
 			e.nextElementSibling.children[0].setAttribute("aria-expanded", "false");
+
+			e.dispatchEvent(new Event('change'));
+			e.focus();
 		}; 
 
 		it.selectpicker._windowListener = function(e){
-			var p = e.target;
-			
-			try{ 
-				while (p != document && !p.classList.contains('select-picker')){
-					p = p.parentNode;
-				}
-			} catch(e){ p == e.target; }
+			if(document.querySelectorAll("div.select-picker.open").length != 0){
+				var p = e.target;
+				
+				try{ 
+					while (p != document && !p.classList.contains('select-picker')){
+						p = p.parentNode;
+					}
+				} catch(e){ p == e.target; }
 
-			if(p == document){
-				var items = document.querySelectorAll("div.select-picker");
-				for(var i = 0; i < items.length; i++){
-					it.selectpicker.close(items[i])
+				if(p == document){
+					var items = document.querySelectorAll("div.select-picker.open");
+					for(var i = 0; i < items.length; i++){
+						it.selectpicker.close(items[i])
+					}
 				}
 			}
 		}
@@ -4853,7 +4909,6 @@ function isiToolsCallback(json){
 			item.classList.remove("open");
 			item.querySelector(".dropdown-container").style.display = 'none';
 			item.querySelector("button").setAttribute("aria-expanded", "false");
-			item.querySelector("button").focus();
 		}
 	}
 
@@ -4861,7 +4916,7 @@ function isiToolsCallback(json){
 		Create and send forms in real time.
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 11/03/2019
 		@status PENDING to UPDATE
 	**/
@@ -5223,7 +5278,7 @@ function isiToolsCallback(json){
 		 Validator functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2019 Islavisual.
+		@Copyright 2017-2020 Islavisual.
 		@Last update: 17/03/2019
 	**/
 	if(json.Validator){
