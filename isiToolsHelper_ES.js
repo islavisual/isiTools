@@ -40,10 +40,10 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.3.0																					
+   @version: 1.3.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 14/05/2020																			
+   @Last update: 29/05/2020																			
  **/
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
@@ -148,7 +148,7 @@ function alertAccepted(data){\n\
 
 /**
    Autocomplete Helper
-   @version: 1.2.3
+   @version: 1..4.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2020 Islavisual.
    @Last update: 30/04/2020
@@ -156,7 +156,7 @@ function alertAccepted(data){\n\
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
 		general: {
-			version: 1.0,
+			version: 1.4,
 			name: 'Autocomplete',
 			description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
 Tambien permite realizar búsquedas mediante caracteres comodin como son las comillas dobles, el símbolo más o el símbolo asterisco.\n\n\
@@ -193,8 +193,7 @@ Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la 
 			description: 'Indica que se van a utilizar llamadas al servidor para recuperar los datos del autocomplete. Cuándo ese parámetro está a <strong>true</strong>, supone que el filtrado de elementos lo realizará el servidor (a no ser que sea un archivo JSON), es decir, por más que escribamos en el campo de texto, no se reducirá el número de resultados.Por defecto es <str>false</str>.',
 			example: '// Autocomplete con filtrado por servidor.\n\
 // Cuando se utiliza este modo de filtrado, el servidor recibirá una petición POST con un parámetro llamado "q" que contendrá el texto introducido por el usuario.\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "table",\n\
 	ajax: true,\n\
 	url: "http://www.islavisual.com/data/getMunicipio.php",\n\
@@ -212,8 +211,7 @@ new Autocomplete({\n\
 })\n\n\
 // Autocomplete con AJAX y filtrado por el componente.\n\
 // Cuando se utiliza este modo de filtrado, el componente llamará al servidor para recuperar los datos, pero filtrará a través de su función integrada.\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({,\n\
 	url: "./municipios.json",\n\
 	format: "list",\n\
 	ajax: true,\n\
@@ -227,8 +225,7 @@ new Autocomplete({\n\
 			type: 'boolean',
 			description: 'Indica que se establezca el foco después de que finalice la creación del autocomeplete. Por defecto es <str>false</str>.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: arrayList,\n\
 	format: "list",\n\
 	autoFocus: true\n\
@@ -238,8 +235,7 @@ new Autocomplete({\n\
 			type: 'boolean',
 			description: 'Indica que se despliegue el autocomplete de forma automática. Por defecto es <str>false</str>.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: arrayList,\n\
 	format: "list",\n\
 	autoExpand: true\n\
@@ -249,8 +245,7 @@ new Autocomplete({\n\
 			type: 'boolean',
 			description: 'Indica que el valor del elemento de formulario o input seleccione el texto automáticamente. Por defecto es <str>false</str>.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: arrayList,\n\
 	format: "list",\n\
 	autoSelect: true\n\
@@ -292,8 +287,7 @@ function callback(input){\n\
 Por defecto, el nombre de la clase de control es <str>autocomplete</str>.<br></br>\
 <b style="display: inline-block;">NOTA:</b> Mirar la información adicional para personalizar los estilos del componente.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "catalogBox",\n\
+it("#inputTextID").autocomplete({\n\
 	data: arrayList,\n\
 	className: "auto-complete"\n\
 });'
@@ -302,8 +296,7 @@ new Autocomplete({\n\
 			type: 'object',
 			description: 'Objeto con los elementos para manejar o tratar. Este objeto puede estar en formato <str>JSON</str> o estar en formato <str>Array</str>.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: arrayList\n\
 });'
 		},
@@ -311,8 +304,7 @@ new Autocomplete({\n\
 			type: 'integer',
 			description: 'Es el valor en milisegundos que personaliza el tiempo de espera entre que el usuario deja de escribir y se realiza la búsqueda. Por defecto está establecido a <str>300</str> milisegundos.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: arrayList,\n\
 	delay: 1000\n\
 });'
@@ -327,8 +319,7 @@ var countriesJSON = [\n\
 	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
 	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "table",\n\
 	data: countriesJSON,\n\
 	disable: {\n\
@@ -356,8 +347,7 @@ var brandsList = [\n\
 		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
 	]},\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: clusterList,\n\
 	minLength: 1,\n\
 	disable: {\n\
@@ -380,8 +370,7 @@ Este parámetro tiene como valor por defecto es "list".\n<p style="margin: 10px 
 </ul>',
 			example: '// Ejemplo de autocomplete en formato list (lista)\n\
 var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "list",\n\
 	data: arrayList\n\
 });\n\n\
@@ -391,8 +380,7 @@ var countriesJSON = [\n\
 	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
 	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "table",\n\
 	data: countriesJSON,\n\
 	row: {\n\
@@ -415,8 +403,7 @@ var brandsList = [\n\
             { id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
         ]},\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "cluster",\n\
 	data: brandsList\n\
 });'
@@ -436,8 +423,7 @@ var countriesJSON = [\n\
 	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  EU: 1 },\n\
 	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  EU: 1 },\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "table",\n\
 	data: countriesJSON,\n\
 	highlight: {\n\
@@ -465,8 +451,7 @@ var brandsList = [\n\
 		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
 	]},\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: clusterList,\n\
 	minLength: 1,\n\
 	highlight: {\n\
@@ -487,8 +472,8 @@ new Autocomplete({\n\
 			type: 'string',
 			description: 'Es un mensaje que se muestra únicamente cuando la propiedad minLength es -1. Se puede utilizar, por ejemplo, para sacar un mensaje mientras se carga y configura el componente o para indicar el estado del autocomplete.',
 			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\n\
-new Autocomplete({target: "inputTextID", data: {}, ajax: true, url: "https:\u002F<n/>\u002Fwsdeejemplo.com/get", minLength: -1, minLengthMessage: "Cargando..."});\n\n\
-new Autocomplete({target: "inputTextID", data: arrayList, minLength: -1, minLengthMessage: "Elemento desactivado..."});'
+it("#inputTextID").autocomplete({ data: {}, ajax: true, url: "https:\u002F<n/>\u002Fwsdeejemplo.com/get", minLength: -1, minLengthMessage: "Cargando..."} );\n\n\
+it("#inputTextID").autocomplete({ data: arrayList, minLength: -1, minLengthMessage: "Elemento desactivado..."} );'
 		},
 		row: {
 			type: 'object',
@@ -513,8 +498,7 @@ var countriesJSON = [\n\
 	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
 	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "table",\n\
 	data: countriesJSON,\n\
 	row: {\n\
@@ -530,8 +514,7 @@ var vehiclesList = [\n\
 	{ marca: "Ford", modelos: [{id: 201, modelo: "Fiesta", coste: 4}, {id: 202, modelo: "Mondeo", coste: 5}, {id: 203, modelo: "Focus", coste: 6}] },\n\
 	{ marca: "Renault", modelos: [{id: 301, modelo: "Captur", coste: 7}, {id: 302, modelo: "Clio", coste: 8}, {id: 303, modelo: "Espace", coste: 9}] },\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: vehiclesList,\n\
 	format: "cluster",\n\
 	row: {\n\
@@ -557,8 +540,7 @@ var countriesJSON = [\n\
 	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
 	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	format: "table",\n\
 	data: countriesJSON,\n\
 	// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\
@@ -587,8 +569,7 @@ var brandsList = [\n\
 		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
 	]},\n\
 ];\n\
-new Autocomplete({\n\
-	target: "inputTextID",\n\
+it("#inputTextID").autocomplete({\n\
 	data: clusterList,\n\
 	minLength: 1,\n\
 	tooltips: {\n\
@@ -601,7 +582,7 @@ new Autocomplete({\n\
 		voidMessage: {
 			type: 'string',
 			description: 'Indica el mensaje a mostrar cuando no hay resultados.',
-			example: 'new Autocomplete({target: "inputTextID", data: {}, minLength: -1, voidMessage: "No se han encontrado coincidencias"});'
+			example: 'it("#inputTextID").autocomplete({ data: {}, minLength: -1, voidMessage: "No se han encontrado coincidencias"} );'
 		},
 	};
 }
@@ -754,15 +735,15 @@ it("#inputTextID").constraint.decrement();'
 
 /**
    Counter Helper																		
-   @version: 1.0																					
+   @version: 1.1.0																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 15/05/2020																			
+   @Last update: 19/05/2020																			
  **/
 if(it.enabledModules.Counter){
 	WikiHelper.Counter = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'Counter',
 			description: "Este componente permite crear contadores ascendentes y descendentes y proveerlos de algunas opciones de personalización.",
 		},
@@ -874,7 +855,7 @@ forma: "MM min",\n\
 
 /**
 	 Datepicker functionality
-	 @version: 1.00
+	 @version: 1.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2020 Islavisual.
 	 @Last update: 11/07/2019
@@ -882,7 +863,7 @@ forma: "MM min",\n\
 if(it.enabledModules.Datepicker){
 	WikiHelper.Datepicker = {
 		general: {
-			version: 1.0,
+			version: 1.2,
 			name: 'Datepicker',
 			help: 1,
 			description: 'Datepicker es un control que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks.'
@@ -1518,15 +1499,15 @@ if(it.enabledModules.Password){
 
 /**
 	 Create and send forms in real time.
-	 @version: 1.1
+	 @version: 1.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2020 Islavisual.
-	 @Last update: 29/05/2020
+	 @Last update: 05/06/2020
  **/
 if(it.enabledModules.Selectpicker){
 	WikiHelper.Selectpicker = {
 		general: {
-			version: 1.1,
+			version: 1.2,
 			help: 1,
 			name: 'Selectpicker',
 			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.",
@@ -1538,7 +1519,105 @@ if(it.enabledModules.Selectpicker){
 			},
 			{
 				description: 'Personaliza el aspecto del Selectpicker a través de CSS:',
-				example: '.select-picker{position: relative;width: 100%;}.select-picker .dropdown-container{list-style: none;background: #fff;border: 1px solid rgba(0,0,0,0.1);padding: 0;position: absolute;top: 53px;width: 100%;z-index: 99999;}.select-picker ul{overflow: auto;max-height: 164px;padding: 0;list-style: none;margin: 0;}.select-picker button{background: #f4f4f4;border: 1px solid rgba(0,0,0,0.1);width: 100%;height: 54px;text-align: left;line-height: 70px;font-weight: 500;}.select-picker button::before{content: "";display: inline-block;width: 0;height: 0;margin-left: 2px;vertical-align: middle;border-top: 4px dashed;border-right: 4px solid transparent;border-left: 4px solid transparent;position: absolute;right: 15px;top: 26px;}.select-picker button:hover{border-color: #adadad;}.select-picker.open button{background: #02a5a5;color: #ffffff;}.select-picker li{min-height: 36px;border-bottom: 1px solid rgba(0,0,0,0.1);padding: 4px 10px 0px 10px;line-height: 36px;}.select-picker li:not(.searcher):hover{background: #02A5A5;color: #fff;width: 100%;}.select-picker .searcher{position: relative;padding: 3px 40px 0 4px;min-height: 39px;border-bottom: 1px solid rgba(0,0,0,0.1);}.select-picker .searcher .input-search{line-height: 36px;height: 32px;padding-right: 26px;color: #fff;}.select-picker .search-icon::before{content: "";background: #ccc;width: 10px;height: 3px;position: absolute;border-radius: 100px;top: 21px;right: 6px;transform: rotate(40deg);}.select-picker .search-icon:after{content: "";width: 16px;height: 16px;border: 3px solid #ccc;border-radius: 100px;display: block;position: absolute;top: 8px;right: 12px;}.select-picker-active{background: #02a5a5;color: #fff;}'
+				example: '.select-picker{\n\
+	position: relative;\n\
+	width: 100%;\n\
+}\n\n\
+.select-picker .dropdown-container{\n\
+	list-style: none;\n\
+	background: #fff;\n\
+	border: 1px solid rgba(0,0,0,0.1);\n\
+	padding: 0;\n\
+	position: absolute;\n\
+	top: 53px;\n\
+	width: 100%;\n\
+	z-index: 99999;\n\
+}\n\n\
+.select-picker ul{\n\
+	overflow: auto;\n\
+	max-height: 164px;\n\
+	padding: 0;\n\
+	list-style: none;\n\
+	margin: 0;\n\
+}\n\n\
+.select-picker button{\n\
+	background: #f4f4f4;\n\
+	border: 1px solid rgba(0,0,0,0.1);\n\
+	width: 100%;\n\
+	height: 54px;\n\
+	text-align: left;\n\
+	line-height: 70px;\n\
+	font-weight: 500;\n\
+}\n\n\
+.select-picker button::before{\n\
+	content: "";\n\
+	display: inline-block;\n\
+	width: 0;\n\
+	height: 0;\n\
+	margin-left: 2px;\n\
+	vertical-align: middle;\n\
+	border-top: 4px dashed;\n\
+	border-right: 4px solid transparent;\n\
+	border-left: 4px solid transparent;\n\
+	position: absolute;\n\
+	right: 15px;\n\
+	top: 26px;\n\
+}\n\n\
+.select-picker button:hover{\n\
+	border-color: #adadad;\n\
+}\n\n\.select-picker.open button{\n\
+	background: #02a5a5;\n\
+	color: #ffffff;\n\
+}\n\n\
+.select-picker li{\n\
+	min-height: 36px;\n\
+	border-bottom: 1px solid rgba(0,0,0,0.1);\n\
+	padding: 4px 10px 0px 10px;\n\
+	line-height: 36px;\n\
+}\n\n\
+.select-picker li:not(.searcher):hover{\n\
+	background: #02A5A5;\n\
+	color: #fff;\n\
+	width: 100%;\n\
+}\n\n\
+.select-picker .searcher{\n\
+	position: relative;\n\
+	padding: 3px 40px 0 4px;\n\
+	min-height: 39px;\n\
+	border-bottom: 1px solid rgba(0,0,0,0.1);\n\
+}\n\n\
+.select-picker .searcher .input-search{\n\
+	line-height: 36px;\n\
+	height: 32px;\n\
+	padding-right: 26px;\n\
+	color: #fff;\n\
+}\n\n\
+.select-picker .search-icon::before{\n\
+	content: "";\n\
+	background: #ccc;\n\
+	width: 10px;\n\
+	height: 3px;\n\
+	position: absolute;\n\
+	border-radius: 100px;\n\
+	top: 21px;\n\
+	right: 6px;\n\
+	transform: rotate(40deg);\n\
+}\n\n\
+.select-picker .search-icon:after{\n\
+	content: "";\n\
+	width: 16px;\n\
+	height: 16px;\n\
+	border: 3px solid #ccc;\n\
+	border-radius: 100px;\n\
+	display: block;\n\
+	position: absolute;\n\
+	top: 8px;\n\
+	right: 12px;\n\
+}\n\n\
+.select-picker-active{\n\
+	background: #02a5a5;\n\
+	color: #fff;\n\
+}'
 			},
 		],
 		selectpicker: {
@@ -1913,7 +1992,7 @@ this.Helper = it.Helper = function (func, cfg) {
 
 	if (opt.printOnScreen) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-		AddCSSRule('', "#h31p3r", 'font-family: inherit; font-size: 14px; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
+		AddCSSRule('', "#h31p3r", 'font-family: inherit; font-size: 14px; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: break-spaces; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -15px;border-bottom: 1px solid rgba(255,255,255,.1);')
 		AddCSSRule('', "#h31p3r h3", 'background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0rem; padding: 64px 5px 5px 5px; color: ' + opt.keyColor + ';');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
@@ -2054,7 +2133,8 @@ this.Helper = it.Helper = function (func, cfg) {
 				aux = aux.replace(/function/ig, '<func>function</func>');
 				aux = aux.replace(/null/ig, '<null>null</null>');
 				aux = aux.indexOf("//") != -1 ? ('<comm>' + aux + '</comm>') : aux;
-				aux = aux.replace(new RegExp(func + "(\\.|\\()", "ig"), function($0, $1){ return "<name>" + $0.substr(0, $0.length-1) + "</name>" + $1})
+				aux = aux.replace(new RegExp(func + "(\\.|\\()", "ig"), function($0, $1){ return "<name>" + $0.substr(0, $0.length-1) + "</name>" + $1});
+				aux = aux.replace(new RegExp(/(\.|\#){0,1}([a-zA-Z0-9\(\)\:\.\-\s\\\^]+)\{/, "ig"), function($0, $1){	return "<name>" + $0.substr(0, $0.length-1) + "</name>{"});
 				aux += '<br/>';
 
 				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
