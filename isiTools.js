@@ -5550,7 +5550,7 @@ window.addEventListener("load", function(){
 	if(it.include){
 		if(!this.Include.includedFiles){
 			this.Include.includedFiles = true;
-			(function(){ Include({ attribute: "auto-include", callback: onPageReady }); })()
+			(function(){ Include({ attribute: "auto-include", callback: typeof onPageReady == "function" ? onPageReady: null }); })()
 		}
 	}
 }, false);
