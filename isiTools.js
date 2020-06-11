@@ -123,6 +123,13 @@ it.set = function(){
 
 it.get = function(index){ if(index == undefined) index = 0; return this.targets[index]; }
 
+/**
+	Función para calcular el ancho de un elemento en base a un texto dado
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 10/06/2020
+**/
 it.getTextWidth = function(obj, fontname, fontsize){
 	if(typeof obj != 'string'){
 		obj = obj.reduce(function (a, b) { return a.text.length > b.text.length ? a : b; }).innerText;
@@ -134,8 +141,81 @@ it.getTextWidth = function(obj, fontname, fontsize){
     return ctx.measureText(obj).width;
 }
 
+/**
+	Función para mover el scroll vertical hasta un elemento
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 10/06/2020
+**/
+it.scrollTo = function(offset){
+	var pos = this.targets[0].getBoundingClientRect();
+	document.documentElement.scrollTop = document.documentElement.scrollTop + pos.top + offset;
+	return this.targets[0];
+}
 
+/**
+	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 10/06/2020
+	@Examples 
+	it('input, textarea, select').foreach(function(){
+		this.classList.toggle("focused")
+	});
 
+	it('input').foreach({
+		style: 'opacity: 0.5', 
+		onclick: function(e){
+			console.log(e, 'tomó el foco')
+		}
+	});
+**/
+it.each = function(){
+	for(var i = 0; i < this.targets.length; i++){
+		var item = this.targets[i];
+
+		for(var j = 0; j < arguments.length; j++){
+			var arg = arguments[j], targ = typeof arg;
+			if(targ == 'object'){
+				for(var key in arg){
+					item[key] = arg[key];
+				}
+			} else if(targ == 'function'){
+				arg.apply(item)
+			}
+		}
+	}
+
+	return this.targets;
+}
+
+/**
+	Devolver el primer elemento de los elementos recuperados por la función constructora
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 10/06/2020
+**/
+it.first = function(){ return this.targets[0] }
+
+/**
+	Devolver el último elemento de los elementos recuperados por la función constructora
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 10/06/2020
+**/
+it.last = function(){ return this.targets[this.targets.length - 1] }
+
+/**
+	Simular evento como fuese lanzado por el usuario
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 18/09/2019
+**/
 it.simulateEvent = function(evt, el){
 
 	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
@@ -147,6 +227,20 @@ it.simulateEvent = function(evt, el){
 	}
 }
 
+Number.prototype.leftPad = function(w){
+    var n1 = Array.from(this + "");
+
+    if(w - n1.length <=0) return this;
+    else return new Array(w-n1.length).fill(0).concat(n1).join("");
+}
+
+String.prototype.leftPad = function(len) {
+    var str = this;
+    while (str.length < len) str = "0" + str;
+    
+    return str;
+}
+
 it.autoload();
 
 function isiToolsCallback(json){
@@ -154,7 +248,7 @@ function isiToolsCallback(json){
 
 	/**
 		 AddCSSRule functionality																		
-		@version: 1.00																					
+		@version: 1.1																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2020 Islavisual. 																	
 		@Last update: 13/03/2019																			
@@ -267,11 +361,12 @@ function isiToolsCallback(json){
 			// Create JSON with current opt
 			var opt = {
 				class: !cfg.hasOwnProperty('class') ? '' : cfg.class,
-				draggable: !cfg.hasOwnProperty('draggable') ? false : cfg.draggable,
-				title: !cfg.hasOwnProperty('title') ? '' : cfg.title,
-				theme: !cfg.hasOwnProperty('theme') ? 'light' : cfg.theme,
 				actions: !cfg.hasOwnProperty('actions') ? defaultActions : cfg.actions,
 				body: !cfg.hasOwnProperty('body') ? "This is example!" : cfg.body,
+				draggable: !cfg.hasOwnProperty('draggable') ? false : cfg.draggable,
+				onerror: !cfg.hasOwnProperty('onerror') ? null : cfg.onerror,
+				title: !cfg.hasOwnProperty('title') ? '' : cfg.title,
+				theme: !cfg.hasOwnProperty('theme') ? 'light' : cfg.theme,
 				styles: !cfg.hasOwnProperty('styles') ? defaultStylesLight : cfg.styles,
 			}
 
@@ -460,11 +555,14 @@ function isiToolsCallback(json){
 						if (this.readyState == 4) {
 							if (this.status == 200) { 
 								opt.body = this.responseText; 
-								
 								init();
 
 							} else if (this.status == 404) { 
-								trg.innerHTML = "Page not found."; 
+								if(opt.onerror){
+									opt.onerror("Documento o módulo no encontrado:" + "<br/>" + "URL: " + file)
+								}
+								opt.body = "Documento o módulo no encontrado:" + "<br/>" + "URL: " + file; 
+								init();
 							}
 						}
 					}
@@ -1937,7 +2035,7 @@ function isiToolsCallback(json){
                     cfg.curDay = cfg.curDate.split(/[\-|\/]/g)[2];
 
                     // Get requested values
-                    if (target.value.trim() == "" || target.value.length < 10) {
+                    if (target.value.trim() == "") {
                         cfg.selYear = cfg.curYear;
                         cfg.selMonth = cfg.curMonth;
                         cfg.selDay = cfg.curDay;
@@ -1956,42 +2054,47 @@ function isiToolsCallback(json){
 					}
 					
 					target.value = cfg.format.replace(/DD/, cfg.selDay).replace(/MM/, cfg.selMonth).replace(/YYYY/, cfg.selYear);
-                    it.simulateEvent("change", target);
+					
+					it.simulateEvent("change", target);
 
-                    cfg.selMName = cfg.longmonths[parseInt(cfg.selMonth - 1)];
-                    cfg.selDName = cfg.longdays[new Date(cfg.selYear + "-" + cfg.selMonth + "-" + cfg.selDay).getUTCDay()];
+					cfg.selMName = cfg.longmonths[parseInt(cfg.selMonth - 1)];
+					var dtSel = new Date(1970 + "-" + cfg.selMonth + "-" + cfg.selDay); dtSel.setFullYear(cfg.selYear);
+                    cfg.selDName = cfg.longdays[dtSel.getUTCDay()];
 
                     // Get all days from requested month
                     var x = 1, c = true, firstdate = '', lastdate = '';
                     while (c) {
-                        var dt = new Date(cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x) + ' 12:00:00');
+						var dt = new Date(1970 + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x) + ' 12:00:00'); dt.setFullYear(cfg.selYear);
 
                         c = dt.getMonth() + 1 == cfg.selMonth;
 
-                        if (x == 1) firstdate = cfg.selYear + '-' + cfg.selMonth + '-01';
+                        if (x == 1) firstdate = 1970 + '-' + cfg.selMonth + '-01';
 
                         if (c) {
                             cfg.md.c[x - 1] = (x < 10 ? ('0' + x) : x) + '-' + cfg.selMonth + '-' + cfg.selYear;
-                            lastdate = cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
+                            lastdate = 1970 + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
                         }
                         x++;
                     }
 					
-                    // Get before days from requested month
-                    var aux = new Date(firstdate).getUTCDay() - cfg.weekstart, dt = 0;
+					// Get before days from requested month
+					var dtFirst = new Date(firstdate); dtFirst.setFullYear(cfg.selYear);
+					var aux = dtFirst.getUTCDay() - cfg.weekstart, dt = 0;
+					
                     aux = (aux < 0 ? 6 : aux);
                     for (var x = 0; x < aux; x++) {
-                        dt = new Date(new Date(firstdate).getTime() - (86400000 * (x + 1)));
+						dt = new Date(dtFirst.getTime() - (86400000 * (x + 1)));
                         var d = dt.getDate(), m = dt.getMonth() + 1, y = dt.getFullYear();
 
                         cfg.md.b[aux - x - 1] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
                     }
 
-                    // Fill after days to complete 42
-                    var aux = new Date(lastdate).getUTCDay(), dt = 0, cc = cfg.md.c.length + cfg.md.b.length;
+					// Fill after days to complete 42
+					var dtLast = new Date(lastdate); dtLast.setFullYear(cfg.selYear);
+					var aux = dtLast.getUTCDay(), dt = 0, cc = cfg.md.c.length + cfg.md.b.length;
                     for (var x = cc; x < 42; x++) {
-                        dt = new Date(new Date(lastdate).getTime() + (86400000 * (x - cc + 1)));
-                        var d = dt.getDate(), m = dt.getMonth() + 1, y = dt.getFullYear();
+						dt = new Date(dtLast.getTime() + (86400000 * (x - cc + 1)));
+						var d = dt.getDate(), m = dt.getMonth() + 1, y = dt.getFullYear();
 
                         cfg.md.a[x - cc] = (d < 10 ? ('0' + d) : d) + '-' + (m < 10 ? ('0' + m) : m) + '-' + y;
                     }
@@ -2027,7 +2130,7 @@ function isiToolsCallback(json){
                     rcal.classList.add("r-cal");
 
                     // Fill years select 
-                    rcal.innerHTML = '<div class="datepicker-years"><input id="datepicker-year" value="' + cfg.selYear + '" /><span class="dt-up"></span><span class="dt-down"></span></div>';
+                    rcal.innerHTML = '<div class="datepicker-years"><input id="datepicker-year" maxlength="4" value="' + cfg.selYear + '" /><span class="dt-up"></span><span class="dt-down"></span></div>';
 					
 					rcal.querySelector(".dt-up").setAttribute("onmousedown", "window.interval_ = setInterval(function(){ it.datepicker.updateYear(event, 1)}, 50)");
 					rcal.querySelector(".dt-up").setAttribute("onmouseup", "clearInterval(window.interval_)");
@@ -2042,7 +2145,7 @@ function isiToolsCallback(json){
                     }
                     rcal.innerHTML += '<div class="datepicker-months">' + aux + '</div>';
 
-                    // Now create template
+					// Now create template
                     var all = cfg.md.b.concat(cfg.md.c).concat(cfg.md.a);
                     var vday = parseInt(target.value.split('-')[0]);
 
@@ -2074,7 +2177,9 @@ function isiToolsCallback(json){
                         antday = day;
 
                         tmpl += '<span class="day' + mode + '">' + d + '</span>';
-                        x++;
+						x++;
+						
+						if(x > 42) break;
                     }
                     tmpl += '</div>';
 
@@ -2107,13 +2212,14 @@ function isiToolsCallback(json){
 
                     // Add year event
                     var s = rcal.querySelector("input");
+					//s.onblur = it.datepicker.updateYear;
 					s.onkeydown = it.datepicker.updateYear;
 
-                    // Add set today event
+                    // Add event of set today
                     var b = document.getElementById("datepicker-layer-" + target.id + "-today");
                     b.onclick = it.datepicker.todayEvent;
 
-                    // Add remove data event
+                    // Add event to removing data
                     var b = document.getElementById("datepicker-layer-" + target.id + "-remove");
                     b.onclick = it.datepicker.removeEvent;
                 }
@@ -2131,13 +2237,14 @@ function isiToolsCallback(json){
 			else if(e.type == 'keydown' && !kv ) return true;
 
 			var cs = e.target.selectionStart, ce = e.target.selectionEnd;
-			
+
 			var trg = it("#datepicker-year").get();
-			if(v == 0){
+
+			if(v != 0){
+				trg.value = parseInt(trg.value) + v;
+			} else {
 				trg.value = trg.value.substr(0,cs) + e.key + trg.value.substr(ce);
 				if(cs == ce) { cs++; ce++; }
-			} else {
-				trg.value = parseInt(trg.value) + v;
 			}
 			
 			it.datepicker.yearEvent(e, cs, ce)
@@ -2190,9 +2297,11 @@ function isiToolsCallback(json){
 			mm = mm < 10 ? ('0' + mm) : mm;
 			
 			// Adjustment by nonexistent day
-			var ndate = new Date(cfg.selYear,  mm-1, cfg.selDay);
+			var ndate = new Date(1970,  mm-1, cfg.selDay); ndate.setFullYear(cfg.selYear);
+			
 			if(ndate.getDate() != cfg.selDay){
-				var ndate = new Date(cfg.selYear, mm, 0);
+				var ndate = new Date(1970, mm, 0); ndate.setFullYear(cfg.selYear);
+
 				cfg.selDay = ndate.getDate();
 				cfg.selDay = cfg.selDay < 10 ? ('0' + cfg.selDay) : cfg.selDay;
 				cfg.selYear = ndate.getFullYear();
@@ -2225,11 +2334,11 @@ function isiToolsCallback(json){
 			it('#' + prt).datepicker('show');
 			
 			if(e.type == "keydown"){
-				setTimeout(function(cs, ce){ 
+				setTimeout(function(ce){ 
 					var aux = document.getElementById(this); 
 					aux.focus(); 
-					aux.setSelectionRange(cs, ce)
-				}.bind(e.target.id, cs, ce), 0) ;
+					aux.setSelectionRange(ce, ce)
+				}.bind(e.target.id, ce), 0) ;
 			}
         }
 
@@ -4602,9 +4711,8 @@ function isiToolsCallback(json){
 				// Get options
 				if(typeof cfg == "string") cfg = { target: cfg };
 				
-				if(!cfg.hasOwnProperty('liveSearch')) cfg.liveSearch = false;
-
 				// select needs searcher
+				cfg.liveSearch = false;
 				if((cfg.hasOwnProperty("liveSearch") && cfg.liveSearch) ||
 				   (trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "true")) cfg.liveSearch = true; else cfg.liveSearch = false; 
 
