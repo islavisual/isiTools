@@ -26,17 +26,21 @@ var itEnabledModules = {
 	Validator: false
 }
 
-var it = function(t){
-	it.targets = document.querySelectorAll(t);
+var it = function(t, f){
+	if(f == undefined){
+		it.targets = document.querySelectorAll(t);
+	} else {
+		it.targets = document.querySelector(f).querySelectorAll(t);
+	}
 
 	return it;
 };
 
 it.name = "isiTools";
-it.version = "1.7.0",
+it.version = "1.7.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "05/06/2020",
+it.lastupdate = "12/06/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -161,11 +165,11 @@ it.scrollTo = function(offset){
 	@Copyright 2017-2020 Islavisual.
 	@Last update: 10/06/2020
 	@Examples 
-	it('input, textarea, select').foreach(function(){
+	it('input, textarea, select').each(function(){
 		this.classList.toggle("focused")
 	});
 
-	it('input').foreach({
+	it('input').each({
 		style: 'opacity: 0.5', 
 		onclick: function(e){
 			console.log(e, 'tomó el foco')
