@@ -28,19 +28,25 @@ var itEnabledModules = {
 
 var it = function(t, f){
 	if(f == undefined){
-		it.targets = document.querySelectorAll(t);
+		if(typeof t == "string"){
+			it.targets = document.querySelectorAll(t) || t;
+		} else {
+			it.targets = t;
+		}
+	} else if(typeof f == "object"){
+		it.targets = f.querySelectorAll(t);
 	} else {
 		it.targets = document.querySelector(f).querySelectorAll(t);
 	}
-
+	
 	return it;
 };
 
 it.name = "isiTools";
-it.version = "1.7.1",
+it.version = "1.7.2",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "12/06/2020",
+it.lastupdate = "13/06/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -160,12 +166,13 @@ it.scrollTo = function(offset){
 
 /**
 	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
-	@version: 1.0.0
+	@version: 1.0.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2020 Islavisual.
-	@Last update: 10/06/2020
+	@Last update: 13/06/2020
 	@Examples 
-	it('input, textarea, select').each(function(){
+	it('input, textarea, select').each(function(index){
+		console.log('índice', index)
 		this.classList.toggle("focused")
 	});
 
@@ -177,8 +184,9 @@ it.scrollTo = function(offset){
 	});
 **/
 it.each = function(){
-	for(var i = 0; i < this.targets.length; i++){
-		var item = this.targets[i];
+	var trgs = this.targets;
+	for(var i = 0; i < trgs.length; i++){
+		var item = trgs[i];
 
 		for(var j = 0; j < arguments.length; j++){
 			var arg = arguments[j], targ = typeof arg;
@@ -187,12 +195,12 @@ it.each = function(){
 					item[key] = arg[key];
 				}
 			} else if(targ == 'function'){
-				arg.apply(item)
+				arg.call(item, i)
 			}
 		}
 	}
 
-	return this.targets;
+	return trgs;
 }
 
 /**
@@ -4696,14 +4704,15 @@ function isiToolsCallback(json){
 
 	/**
 		Dropdown select
-		@version: 1.2
+		@version: 1.3
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 05/06/2020
+		@Last update: 13/06/2020
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
 			if(typeof cfg == "undefined") cfg = {};
+			else if(typeof cfg == 'string' && cfg == "destroy") return this.selectpicker.destroy(this.targets)
 
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				it.selectpicker.all[target.id] = { target: target, config: cfg}
@@ -4939,7 +4948,15 @@ function isiToolsCallback(json){
 				// Hide select and append new dropdown
 				trg.parentNode.insertBefore(div, trg.nextSibling);
 
-				trg.style = 'border: 0 none; height: 0; overflow: hidden; opacity: 0; padding: 0; margin: 0;';
+				if(trg.style.length != 0){
+					var s = trg.style, str = '';
+					for(var i = 0; i < s.length; i++){
+						btn.style[s[0]] = s[s[0]];
+						str = s[0] + ': ' + s[s[0]] + ';';
+					}
+					trg.dataset.style = str;
+				}
+				trg.style = 'border: 0 none; width: 0; height: 0; overflow: hidden; opacity: 0; padding: 0; margin: 0;';
 				trg.onchange = function(e){
 					var btn = e.target.nextElementSibling.children[0];
 					btn.innerHTML = e.target.options[e.target.selectedIndex].text;
@@ -5021,6 +5038,15 @@ function isiToolsCallback(json){
 			item.classList.remove("open");
 			item.querySelector(".dropdown-container").style.display = 'none';
 			item.querySelector("button").setAttribute("aria-expanded", "false");
+		}
+
+		it.selectpicker.destroy = function(targets){
+			for(var i = 0; i < targets.length; i++){
+				var item = targets[i];
+				console.log(item)
+				item.nextElementSibling.remove()
+				item.style = item.dataset.style
+			}
 		}
 	}
 
