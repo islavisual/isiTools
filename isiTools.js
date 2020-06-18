@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.7.2",
+it.version = "1.7.3",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "13/06/2020",
+it.lastupdate = "18/06/2020",
 it.enabledModules = {},
 it.target = null,
 it.targets = null,
@@ -166,10 +166,10 @@ it.scrollTo = function(offset){
 
 /**
 	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
-	@version: 1.0.1
+	@version: 1.0.2
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2020 Islavisual.
-	@Last update: 13/06/2020
+	@Last update: 18/06/2020
 	@Examples 
 	it('input, textarea, select').each(function(index){
 		console.log('índice', index)
@@ -195,7 +195,8 @@ it.each = function(){
 					item[key] = arg[key];
 				}
 			} else if(targ == 'function'){
-				arg.call(item, i)
+				var res = arg.call(item, i)
+				if(res != undefined) return res;
 			}
 		}
 	}
@@ -1915,10 +1916,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.2
+		@version: 1.2.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 20/05/2020
+		@Last update: 18/06/2020
 	**/
 	if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
@@ -2224,7 +2225,6 @@ function isiToolsCallback(json){
 
                     // Add year event
                     var s = rcal.querySelector("input");
-					//s.onblur = it.datepicker.updateYear;
 					s.onkeydown = it.datepicker.updateYear;
 
                     // Add event of set today
@@ -2242,7 +2242,7 @@ function isiToolsCallback(json){
 			if(v == undefined) v = 0;
 
 			var k  = e.keyCode || e.which;
-			var kv = (k >= 48 && k <= 57 && e.location == 0) || (k >= 96 && k <= 105 && e.location == 3);
+			var kv = (k >= 48 && k <= 57 && e.location == 0) || (k >= 96 && k <= 105 && e.location == 3) || k == 8 || k == 46 ;
 
 			if(e.type == 'keydown' && k == 38){ e.preventDefault(); v = 1; }
 			else if(e.type == 'keydown' && k == 40){ e.preventDefault(); v = -1; }
@@ -2251,14 +2251,22 @@ function isiToolsCallback(json){
 			var cs = e.target.selectionStart, ce = e.target.selectionEnd;
 
 			var trg = it("#datepicker-year").get();
+			var key = e.key;
 
 			if(v != 0){
 				trg.value = parseInt(trg.value) + v;
 			} else {
-				trg.value = trg.value.substr(0,cs) + e.key + trg.value.substr(ce);
-				if(cs == ce) { cs++; ce++; }
-			}
-			
+				if(cs == ce && k == 8){ cs--; key = '' }
+				else if(cs == ce && k == 46){ ce++; key = '' }
+				else if(cs != ce && (k == 8 || k == 46) ){ key = ''; }
+
+				trg.value = trg.value.substr(0,cs) + key + trg.value.substr(ce);
+
+				if(k == 8 || k == 46){ cs--; ce = cs; }
+
+				if(cs == ce){ cs++; ce++; }
+			} 
+
 			it.datepicker.yearEvent(e, cs, ce)
 		}
 
@@ -4704,10 +4712,10 @@ function isiToolsCallback(json){
 
 	/**
 		Dropdown select
-		@version: 1.3
+		@version: 1.3.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 13/06/2020
+		@Last update: 18/06/2020
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
@@ -4934,7 +4942,7 @@ function isiToolsCallback(json){
 					li.setAttribute("onclick", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
 					if(item.getAttribute("selected") != null && item.getAttribute("disabled") == null){
 						li.setAttribute("class", "selected");
-						btn.innerText = item.innerText;
+						btn.innerText = trg.options[trg.selectedIndex].innerText;
 					}
 					
 					lst.appendChild(li);
@@ -5129,50 +5137,51 @@ function isiToolsCallback(json){
 	**/
 	if(json.Treeview){
 		this.Treeview = it.treeview = function (cfg) {
+			if(cfg == undefined) cfg = {};
+
 			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
 				if (typeof showHelper != "undefined") showHelper("Treeview", cfg);
 				else alert("Helper not available!")
 				return;
 			}
 
-			// Refreshing data
-			if (typeof cfg.hasOwnProperty('data') && cfg.hasOwnProperty('refresh')) {
-				var opt = this.options;
-				refresh();
-				return;
-			}
-
 			// Checking data
 			if (typeof cfg.hasOwnProperty('id') && cfg.hasOwnProperty('checked')) {
-				var opt = this.options;
+				var opt = it[it.targets[0]].options;
 				checkID();
 				return;
 			}
 
-			// If it.target has value, set to cfg object
-			if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
+			// Creamos el JSON con la configuración por defecto
+			var opt = {};
+			if(it.targets[0].classList.contains("treeview")){
+				it.targets[0].innerHTML = "";
+				it.targets[0].classList.remove("treeview");
+				opt = it[it.targets[0].id].options;
+			} else {
+				opt = {
+					classLeaf: !cfg.hasOwnProperty('classLeaf') ? 'leaf-node' : cfg.classLeaf,
+					collapsedIcon: !cfg.hasOwnProperty('collapsedIcon') ? '\u25BA' : cfg.collapsedIcon,
+					customCheck: !cfg.hasOwnProperty('customCheck') ? '' : cfg.customCheck,
+					data: null,
+					expandedIcon: !cfg.hasOwnProperty('expandedIcon') ? '\u25BC' : cfg.expandedIcon,
+					leafIcon: !cfg.hasOwnProperty('leafIcon') ? '' : cfg.leafIcon,
+					branchIcon: !cfg.hasOwnProperty('branchIcon') ? '' : cfg.branchIcon,
+					onSelectNode: !cfg.hasOwnProperty('onSelectNode') ? null : cfg.onSelectNode,
+					onCheckNode: !cfg.hasOwnProperty('onCheckNode') ? null : cfg.onCheckNode,
+					selectable: !cfg.hasOwnProperty('selectable') ? false : cfg.selectable,
+					searchable: !cfg.hasOwnProperty('searchable') ? false : cfg.searchable,
+					placeholderText: !cfg.hasOwnProperty('placeholderText') ? 'Filter...' : cfg.placeholderText,
+					styles: !cfg.hasOwnProperty('styles') ? { bgTree: "rgba(0,0,0,0)", borderTree: "rgba(0,0,0,0.15)", textColor: "#000", searchColor: "#000", searchBg: "#fff", activeColor: "#ffffff", activeBg: "#000000", linkColor: "#069", linkBg: "rgba(0,0,0,0)" } : cfg.styles,
+					target: it.targets[0],
+				}
+			}
+
+			// Actualizamos los valores pasados por parámetro
+			for(var key in cfg){ opt[key] = cfg[key]; }
 
 			// If configuration object is invalid
-			if (!cfg.hasOwnProperty('data')) { alert("You need set an object 'data' parameter!. Please, see the help with the Treeview('help');"); return false; }
-			if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create the Treeview!. Please, see the help with the Treeview('help');"); return false; }
-
-			// Create JSON with current opt
-			var opt = {
-				classLeaf: !cfg.hasOwnProperty('classLeaf') ? 'leaf-node' : cfg.classLeaf,
-				collapsedIcon: !cfg.hasOwnProperty('collapsedIcon') ? '\u25BA' : cfg.collapsedIcon,
-				customCheck: !cfg.hasOwnProperty('customCheck') ? '' : cfg.customCheck,
-				data: cfg.data,
-				expandedIcon: !cfg.hasOwnProperty('expandedIcon') ? '\u25BC' : cfg.expandedIcon,
-				leafIcon: !cfg.hasOwnProperty('leafIcon') ? '' : cfg.leafIcon,
-				branchIcon: !cfg.hasOwnProperty('branchIcon') ? '' : cfg.branchIcon,
-				onSelectNode: !cfg.hasOwnProperty('onSelectNode') ? null : cfg.onSelectNode,
-				onCheckNode: !cfg.hasOwnProperty('onCheckNode') ? null : cfg.onCheckNode,
-				selectable: !cfg.hasOwnProperty('selectable') ? false : cfg.selectable,
-				searchable: !cfg.hasOwnProperty('searchable') ? false : cfg.searchable,
-				placeholderText: !cfg.hasOwnProperty('placeholderText') ? 'Filter...' : cfg.placeholderText,
-				styles: !cfg.hasOwnProperty('styles') ? { bgTree: "rgba(0,0,0,0)", borderTree: "rgba(0,0,0,0.15)", textColor: "#000", searchColor: "#000", searchBg: "#fff", activeColor: "#ffffff", activeBg: "#000000", linkColor: "#069", linkBg: "rgba(0,0,0,0)" } : cfg.styles,
-				target: document.getElementById(cfg.target),
-			}
+			if (!opt.data) { alert("Se necesita establecer un conjunto de datos!. Por favor, consulta la ayuda. Helper('Treeview');"); return false; }
 
 			function render(items, target, level) {
 				if (level == 0) {
@@ -5266,14 +5275,6 @@ function isiToolsCallback(json){
 				}
 			}
 
-			// function to refresh all data
-			function refresh() {
-				opt.data = cfg.data;
-				opt.target.innerHTML = "";
-				cfg = opt;
-				init();
-			}
-
 			// function to check one item
 			function checkID() {
 				opt.target.querySelector("input[data-id='" + cfg.id + "']").checked = cfg.checked;
@@ -5291,10 +5292,6 @@ function isiToolsCallback(json){
 							trg = trg.parentElement;
 						}
 
-						var nItems = trg.nextElementSibling.nextElementSibling.querySelectorAll("li").length
-//						var mh = document.querySelector(".treeview span").offsetHeight * nItems;
-
-//						trg.nextElementSibling.nextElementSibling.style.maxHeight = trg.parentElement.classList.contains("collapsed") ? (mh + "px") : "initial";
 						trg.parentElement.classList.toggle("collapsed");
 						trg.innerHTML = trg.parentElement.classList.contains("collapsed") ? opt.collapsedIcon : opt.expandedIcon;
 					});
@@ -5337,7 +5334,7 @@ function isiToolsCallback(json){
 				// Filter elements from Treeview
 				if (opt.searchable) {
 					opt.target.querySelector('[type=search]').addEventListener("input", function (e) {
-						var items = opt.target.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
+						var items = e.target.parentElement.nextElementSibling.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
 
 						for (var x = 0; x < items.length; x++) {
 							var item = items[x];
@@ -5407,8 +5404,10 @@ function isiToolsCallback(json){
 			init();
 
 			it[opt.target.id] = {};
-			it[opt.target.id]['options'] = opt;
-			it[opt.target.id]['Treeview'] = Treeview;
+			it[opt.target.id].options = opt;
+			//it[opt.target.id]['Treeview'] = Treeview;
+
+			return it.treeview;
 		}
 	}
 
