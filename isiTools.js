@@ -43,13 +43,13 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.7.3",
+it.version = "1.7.4",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "18/06/2020",
+it.lastupdate = "21/06/2020",
 it.enabledModules = {},
-it.target = null,
 it.targets = null,
+it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
 it.help = function(plugin, cfg){
 	if(typeof cfg == "undefined") cfg = {help: ''};
 	if(!cfg.hasOwnProperty("help")) cfg.help = '';
@@ -616,10 +616,10 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.4.0
+		@version: 1.5.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 30/05/2020
+		@Last update: 21/06/2020
 	**/
 	
 	if(json.Autocomplete){
@@ -627,7 +627,10 @@ function isiToolsCallback(json){
 		it.autocomplete = function (cfg) {
 			if(typeof cfg == "undefined") cfg = {};
 
-			for(var x =0; x < this.targets.length; x++){
+			// If method was called by HTMLSelectElement
+			this.targets = this.tagName != undefined ? [this] : (this.entries == undefined ? this.targets : this);
+
+			for(var x = 0; x < this.targets.length; x++){
 				cfg.target = this.targets[x];
 
 				if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
@@ -635,7 +638,7 @@ function isiToolsCallback(json){
 					else alert("Helper not available!")
 					return;
 				}
-				
+
 				// If target is a select tag, rebuild element and create data
 				if(cfg.target.tagName.toLowerCase() == "select"){
 					var items = cfg.target.options;
@@ -798,8 +801,7 @@ function isiToolsCallback(json){
 
 						if(kc == 13) e.preventDefault();
 
-						if((kc == 13 || kc == 9) && aList){ 
-							
+						if((kc == 13 || kc == 9) && aList){
 							if (opt.currentFocus > -1 && aList) {
 								aList[opt.currentFocus].click();
 
@@ -860,9 +862,7 @@ function isiToolsCallback(json){
 
 					opt.target.addEventListener("inputAfter", function (e) {
 						var a, b, c, i, val = this.value.trim();
-
-						// Contains wildcard
-						var wildCard = val.indexOf("*") == -1 ? -1 : (val.indexOf("*") == val.length - 1 ? 1 : 0);
+						var opt = it.autocomplete.targets[e.target.id].opt;
 
 						// Only search when length is greater than "minLength" attribute.
 						it.autocomplete._removeItemsList(false, opt);
@@ -921,12 +921,23 @@ function isiToolsCallback(json){
 
 				// Add helper button
 				if(opt.helper){
-					document.body.append(it.autocomplete.addHelperButton());
+					it.addCSSRule('', "input[data-helper]", "padding-right: 28px;");
+					it.addCSSRule('', ".Autocomplete-helper-icon","cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
+					it.addCSSRule('', ".Autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 10vw; display: block; width: 80vw; max-height: 550px; overflow: auto; z-index: 99;");
+					it.addCSSRule('', ".Autocomplete-helper::after", 'content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;');
+					it.addCSSRule('', ".Autocomplete-helper ul","background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;");
+					it.addCSSRule('', ".Autocomplete-helper ul b","font-weight: bold;");
+					it.addCSSRule('', ".Autocomplete-helper code", "padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px;");
+					it.addCSSRule('', ".Autocomplete-helper button", "cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px;");
+					it.addCSSRule('', ".Autocomplete-helper h3", "background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px;");
+					it.addCSSRule('', ".Autocomplete-helper .hidden","display: none !important");
+					it.addCSSRule('', "@media all and (max-width: 640px)",".Autocomplete-helper{ width: 100%; left: 0; top: 0;}");
 
 					var icon = document.createElement("i");
 						icon.classList.add("Autocomplete-helper-icon");
 						icon.onclick = function(){
-							document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
+							//document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
+							it.autocomplete.showHelper(this);
 						}
 						icon.innerHTML ='?';
 
@@ -1246,12 +1257,13 @@ function isiToolsCallback(json){
         it.autocomplete._click = function(val){
 			var id = it.autocomplete._getID(val);
 			var opt = it.autocomplete.targets[id].opt;
+			var trg = val.parentElement.previousElementSibling.previousElementSibling
 			
-			opt.target.value = val.getElementsByTagName("input")[0].value;
+			trg.value = val.getElementsByTagName("input")[0].value;
 			if (opt.callback) opt.callback(val.getElementsByTagName("input")[0]);
 			it.autocomplete._closeAllLists(val);
 
-			opt.target.focus();
+			trg.focus();
 		}
 
         it.autocomplete._closeAllLists = function(elmnt){
@@ -1292,22 +1304,39 @@ function isiToolsCallback(json){
 			return;
 		}
 
-		it.autocomplete.addHelperButton = function(){
-			it.addCSSRule('', "input[data-helper]", "padding-right: 28px;");
-			it.addCSSRule('', ".Autocomplete-helper-icon","cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
-			it.addCSSRule('', ".Autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 25vw; display: block; width: 50vw; max-height: 550px; overflow: auto; z-index: 99;");
-			it.addCSSRule('', ".Autocomplete-helper::after", 'content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;');
-			it.addCSSRule('', ".Autocomplete-helper ul","background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;");
-			it.addCSSRule('', ".Autocomplete-helper ul b","font-weight: bold;");
-			it.addCSSRule('', ".Autocomplete-helper code", "padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px;");
-			it.addCSSRule('', ".Autocomplete-helper button", "cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px;");
-			it.addCSSRule('', ".Autocomplete-helper h3", "background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px;");
-			it.addCSSRule('', ".Autocomplete-helper .hidden","display: none !important");
-			it.addCSSRule('', "@media all and (max-width: 640px)",".Autocomplete-helper{ width: 100%; left: 0; top: 0;}");
+		it.autocomplete.showHelper = function(el){
+			var data = it.autocomplete.targets[el.previousElementSibling.id].opt.data.slice(0, 10);
 
+			// Definimos el array de ejemplo
+			var strData = ''
+			for(var x = 0; x < data.length; x++){
+				strData += '<b>"' + data[x] + '"</b>, ';
+			}
+
+			function getResults(pattern){
+				var str = [], iCount = 0;
+				for(var i = 0; i < data.length; i++){
+					if(it.autocomplete.search(pattern, data[i])){ str.push(data[i]); iCount++; }
+
+					if(iCount == 3) break;
+				}
+
+				var text = 'devolvera, entre otros, ';
+				if(iCount == 0) text = 'no devolverá nada';
+
+				return text + "<b>" + str.join("</b>, <b>") + '</b>';
+			}
+
+			// Definimos los resultados para los ejemplos recuperados
+			var equal    = getResults('"' + data[0] + '"');
+			var contains = getResults(data[0].toLowerCase().substr(0, 1) + "+" + data[0].toLowerCase().substr(1, 1));
+			var astStart = getResults("*" + data[0].toLowerCase().substr(0, 1));
+			var astEnds  = getResults(data[0].toLowerCase().substr(0, 1) + "*");
+			var astAst   = getResults("*" + data[0].toLowerCase().substr(0, 1) + "*");
+
+			// Creamos la capa de ayuda
 			var div = document.createElement("div");
 			div.classList.add("Autocomplete-helper");
-			div.classList.add("hidden");
 			
 			var ul = document.createElement("ul");
 			var li1 = document.createElement("li");
@@ -1319,26 +1348,33 @@ function isiToolsCallback(json){
 			ul.append(li2);
 			
 			var li3 = document.createElement("li");
-			li3.innerHTML  ='<p>Este campo permite realizar búsquedas mediante caracteres comodin como son las comillas dobles, el símbolo más o el símbolo asterisco.</p>';
-			li3.innerHTML +='<p>Para entender mejor el significado de los caracteres comodín, supóngase que se tiene una lista que contiene los siguientes datos:</p>';
-			li3.innerHTML +='<code style="display: block;margin: 10;margin: 10px 0;"><b>"Fat Bob"</b>, <b>"Street Bob"</b>, <b>"Scout Bobber"</b>, <b>"Sportster Iron"</b>, <b>"Rockster Flat"</b>, <b>"Street Rod"</b></code>';
-			li3.innerHTML +='<b>""</b>: Busca los resultados que coincidan exactamente con la cadena entrecomillada. Por ejemplo, si buscamos <b>"bobber"</b> no devolverá nada, pero si buscamos <b>"scout bobber"</b>, nos devolverá el registro que contenga el campo marca establecido a ese valor.';
+			li3.innerHTML  ='<p>Este campo permite realizar búsquedas mediante caracteres comodín como son las comillas dobles, el símbolo más o el símbolo asterisco.</p>';
+			//li3.innerHTML +='<p>Para entender mejor el significado de los caracteres comodín, supóngase que se tiene una lista que contiene los siguientes datos:</p>';
+			//li3.innerHTML  ='<p>Por ejemplo:/p>';
+			li3.innerHTML +='<code style="display: block;margin: 10;margin: 10px 0;">' + strData + '</code>';
+			li3.innerHTML +='<p><b>""</b>: Busca los resultados que coincidan exactamente con la cadena entrecomillada. Por ejemplo, si buscamos <b>"' + data[0] + '-"</b> no devolverá nada, pero si buscamos <b>"' + data[0] + '"</b>, nos devolverá el registro que tenga como texto, exáctamente ese valor. En este caso, ' + equal.replace('devolvera, entre otros, ', '') + '.</p>';
 			ul.append(li3);
 
 			var li4 = document.createElement("li");
-			li4.innerHTML = '<b>+</b>: Permite establecer búsquedas que tengan coincidencias parciales o totales de ambas expresiones. Por ejemplo, si buscamos <b>fat+b</b>, nos devolverá Fat Bob.';
+			li4.innerHTML = '<p><b>+</b>: Permite establecer búsquedas que tengan coincidencias parciales o totales de ambas expresiones. Por ejemplo, si buscamos <b>' + (data[0].toLowerCase().substr(0, 1) + "+" + data[0].toLowerCase().substr(1, 1)) + '</b> ' + contains + '.</p>';
 			ul.append(li4);
 
-			var li5 = document.createElement("li");
-			li5.innerHTML = '<b>*</b>: El símbolo asterisco equivale a decir "cualquier cosa", pero dependiendo de dónde se encuentre y cuántos haya, significará una cosa u otra.';
-			li5.innerHTML +='Si se establece delante de una expresión buscará todas las coincidencias que terminen con la expresión. Así, si buscamos <b>*bob</b>, nos devolverá "Fat Bob", "Street Bob".';
-			li5.innerHTML +='Si se establece detrás de una expresión buscará todas las coincidencias que empiecen con la expresión. Así, si buscamos <b>str*</b>, nos devolverá "Street Bob" y "Street Rod".';
-			li5.innerHTML +='Si se establece delante y detrás de una expresión buscará todas las coincidencias que contengan la expresión. Así, si buscamos <b>*ster*</b>, nos devolverá "Sportster Iron", "Rockster Flat".';
+			var li5 = document.createElement("li"), str = '';
+			str += '<p><b>*</b>: El símbolo asterisco equivale a decir "cualquier cosa", pero dependiendo de dónde se encuentre y cuántos haya, significará una cosa u otra. ';
+			str +='Por ejemplo, si se establece delante de una expresión buscará todas las coincidencias que terminen con la expresión, por lo que si buscamos <b>' + ("*" + data[0].toLowerCase().substr(0, 1)) + '</b> ' + astStart + '. ';
+			str +='Si se establece detrás de una expresión buscará todas las coincidencias que empiecen con la expresión, por lo que si buscamos <b>' + (data[0].toLowerCase().substr(0, 1) + "*") + '</b> ' + astEnds + '. ';
+			str +='Si se establece delante y detrás de una expresión buscará todas las coincidencias que contengan la expresión, por lo que si buscamos <b>' + ("*" + data[0].toLowerCase().substr(0, 1) + "*") + '</b>, ' + astAst + '.</p>';
+			li5.innerHTML = str;
 			ul.append(li5);
 
 			div.append(ul);
 
-			return div;
+			// La mostramos en pantalla
+			document.body.append(div);
+		}
+
+		it.autocomplete.hideHelper = function(el){
+			document.querySelector(".Autocomplete-helper").remove();
 		}
 	}
 
@@ -3995,14 +4031,16 @@ function isiToolsCallback(json){
 
 	/**
 		Masking inputs functionality
-		@version: 1.1.1																					
+		@version: 1.1.2																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
-		@Last update: 29/05/2020
+		@Last update: 21/06/2020
 	**/
 	if(json.Mask){
 		it.mask = function(cfg){
 			if (!cfg || cfg == "") { alert("Mask not defined!"); return false; }
+
+			this.targets = it.checkTargets(this);
 
 			Array.prototype.slice.call(this.targets).forEach(function(target){
 				it.mask.config[target.id] = { target: target, mask: cfg}
@@ -4712,22 +4750,26 @@ function isiToolsCallback(json){
 
 	/**
 		Dropdown select
-		@version: 1.3.1
+		@version: 1.4.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 18/06/2020
+		@Last update: 21/06/2020
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
 			if(typeof cfg == "undefined") cfg = {};
 			else if(typeof cfg == 'string' && cfg == "destroy") return this.selectpicker.destroy(this.targets)
 
-			Array.prototype.slice.call(this.targets).forEach(function(target){
-				it.selectpicker.all[target.id] = { target: target, config: cfg}
+			// If method was called by HTMLSelectElement
+			this.targets = this.targets == undefined ? [this] : this.targets
+			
+			Array.prototype.slice.call(this.targets).forEach(function(target, idx){
+				if(target.id.trim() == '') target.id = 'select' + idx;
+				it.selectpicker.all[idx] = { target: target, config: cfg}
 			});
 
-			for(var x =0; x < this.targets.length; x++){
-				var trg = this.targets[x];
+			for(var x = 0; x < it.selectpicker.all.length; x++){
+				var trg = it.selectpicker.all[x].target;
 
 				// Get options
 				if(typeof cfg == "string") cfg = { target: cfg };
@@ -4913,8 +4955,16 @@ function isiToolsCallback(json){
 				if(!cfg.liveSearch)	src.style = 'opacity: 0; height: 0; overflow: hidden; min-height: inherit;';
 				
 				// Add icon search
-				var ic = document.createElement("i");
-				ic.setAttribute("class", "search-icon");
+				var ic = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+				ic.setAttribute("version", "1.1");
+				ic.setAttribute("x", "0px");
+				ic.setAttribute("y", "0px");
+				ic.setAttribute("viewBox", "0 0 128 128");
+
+				var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				path.setAttribute("d", "M 126.351562 118.78125 L 94.644531 87.050781 C 102.144531 77.851562 106.667969 66.140625 106.667969 53.359375 C 106.667969 23.953125 82.753906 0.0117188 53.320312 0.0117188 C 23.890625 0.0117188 0 23.953125 0 53.359375 C 0 82.761719 23.917969 106.679688 53.347656 106.679688 C 66.101562 106.679688 77.839844 102.15625 87.039062 94.65625 L 118.742188 126.363281 C 120.914062 128.53125 124.207031 128.53125 126.375 126.363281 C 128.546875 124.191406 128.546875 120.949219 126.351562 118.78125 Z M 10.636719 53.359375 C 10.636719 29.808594 29.769531 10.675781 53.320312 10.675781 C 76.871094 10.675781 96.03125 29.835938 96.03125 53.386719 C 96.03125 76.933594 76.871094 96.09375 53.320312 96.09375 C 29.769531 96.09375 10.636719 76.910156 10.636719 53.359375 Z M 10.636719 53.359375");
+
+				ic.appendChild(path);
 				src.appendChild(ic);
 
 				// Add like first option
@@ -4982,10 +5032,9 @@ function isiToolsCallback(json){
 				AddCSSRule('', ".select-picker.open button", ' background: #000; color: #ffffff;');
 				AddCSSRule('', ".select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 5px; line-height: normal; margin: 0;');
 				AddCSSRule('', ".select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
-				AddCSSRule('', ".select-picker .searcher", 'position: relative; padding: 3px 40px 0 4px; min-height: 39px; border-bottom: 1px solid rgba(0,0,0,0.1);');
-				AddCSSRule('', ".select-picker .searcher .input-search", 'border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; line-height: normal;  height: auto; padding: 5px 26px 5px 5px; color: #000; width: 100%;');
-				AddCSSRule('', ".select-picker .search-icon::before", 'content: ""; background: #ccc; width: 10px; height: 3px; position: absolute; border-radius: 100px; top: 21px; right: 10px; transform: rotate(40deg);');
-				AddCSSRule('', ".select-picker .search-icon:after", 'content: ""; width: 16px; height: 16px; border: 3px solid #ccc; border-radius: 100px; display: block; position: absolute; top: 8px; right: 15px;');
+				AddCSSRule('', ".select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); min-height: 30px; padding: 0px; position: relative; width: 100%;');
+				AddCSSRule('', ".select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; min-height: 30px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
+				AddCSSRule('', ".select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 7px; fill: #aaa;');
 				AddCSSRule('', ".select-picker-active", 'background: #000; color: #fff;');
 				AddCSSRule('', ".select-picker > button:focus, select:focus + .select-picker > button", 'border: 1px solid red;');
 			}
@@ -5405,8 +5454,7 @@ function isiToolsCallback(json){
 
 			it[opt.target.id] = {};
 			it[opt.target.id].options = opt;
-			//it[opt.target.id]['Treeview'] = Treeview;
-
+			
 			return it.treeview;
 		}
 	}
@@ -5608,6 +5656,12 @@ function isiToolsCallback(json){
 		}
 	}
 }
+
+// Enrichment of HTMLElements
+HTMLInputElement.prototype.mask = it.mask;
+HTMLSelectElement.prototype.picker = it.selectpicker;
+HTMLInputElement.prototype.autoComplete = it.autocomplete;
+NodeList.prototype.autoComplete = it.autocomplete;
 
 // If ie, override some functions and methods
 var e, r = navigator.userAgent;
