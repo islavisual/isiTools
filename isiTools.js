@@ -22,7 +22,7 @@ var itEnabledModules = {
 	Selectpicker: true,
 	SendForm: false,
 	StripTags: true,
-	Treeview: false,
+	Treeview: true,
 	Validator: false
 }
 
@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.7.4",
+it.version = "1.7.5",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "21/06/2020",
+it.lastupdate = "23/06/2020",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -4750,10 +4750,10 @@ function isiToolsCallback(json){
 
 	/**
 		Dropdown select
-		@version: 1.4.0
+		@version: 1.4.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 21/06/2020
+		@Last update: 23/06/2020
 	**/
 	if(json.Selectpicker){
 		it.selectpicker = function(cfg){
@@ -4807,7 +4807,7 @@ function isiToolsCallback(json){
 				// Assign all select properties 
 				for (var i = 0, atts = trg.attributes, n = atts.length; i < n; i++){
 					var att = atts[i];
-					if(att.name == "id" || att.name == "name" || att.name == "class") continue;
+					if(att.name == "id" || att.name == "name" || att.name == "class" || att.name.indexOf("on") == 0) continue;
 				
 					btn.setAttribute(att.name, att.value);
 				}
@@ -5015,10 +5015,10 @@ function isiToolsCallback(json){
 					trg.dataset.style = str;
 				}
 				trg.style = 'border: 0 none; width: 0; height: 0; overflow: hidden; opacity: 0; padding: 0; margin: 0;';
-				trg.onchange = function(e){
+				trg.addEventListener("change", function(e){
 					var btn = e.target.nextElementSibling.children[0];
 					btn.innerHTML = e.target.options[e.target.selectedIndex].text;
-				}
+				});
 			}
 
 			// Add default Styles
