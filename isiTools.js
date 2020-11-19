@@ -9,7 +9,7 @@ var itEnabledModules = {
 	Debugger: false,
 	DOM: false,
 	GetBrowser: false,
-	GetParam: false,
+	GetParam: true,
 	HttpRequest:true,
 	Include: true,
 	IntelliForm: false,
@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.7.5",
+it.version = "1.8.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "23/06/2020",
+it.lastupdate = "19/11/2020",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -221,6 +221,17 @@ it.first = function(){ return this.targets[0] }
 	@Last update: 10/06/2020
 **/
 it.last = function(){ return this.targets[this.targets.length - 1] }
+
+/**
+	Convertir el primer carácter a mayúscula y, el resto, minúsculas.
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2020 Islavisual.
+	@Last update: 13/09/2020
+**/
+it.ucwords = function(txt) {
+return txt.toLowerCase().charAt(0).toUpperCase() + txt.toLowerCase().slice(1);
+};
 
 /**
 	Simular evento como fuese lanzado por el usuario
@@ -836,7 +847,7 @@ function isiToolsCallback(json){
 						if([16,18,33,34,35,36,37,38,39,45,107].indexOf(kc) != -1 || (kc == 187 && !e.shiftKey) || e.ctrlKey || e.altKey) { return false; } 
 						else if(kc == 40 && document.getElementById(e.target.id + "-" + opt.className + "-list")) return false;
 
-						var goon = (t.value.trim().length + (kc == 8 || kc == 46 ? -1: 1) < opt.minLength) || (t.value.trim().length == 1 && (kc == 8 || kc == 46) ) ? false : true;
+						var goon = ((t.value.trim().length + (kc == 8 || kc == 46 ? -1: 1)) < opt.minLength) || (t.value.trim().length == 1 && (kc == 8 || kc == 46) ) ? false : true;
 
 						clearTimeout(_timeoutAC); 
 						if(goon) {
@@ -844,6 +855,8 @@ function isiToolsCallback(json){
 						} else {
 							it.autocomplete._removeItemsList(false, opt)
 						}
+						
+						setTimeout(function(){ if(this.value == '') it.autocomplete._closeAllLists(this); }.bind(this), 50);
 					});
 
 					// Auto select all
@@ -1257,7 +1270,8 @@ function isiToolsCallback(json){
         it.autocomplete._click = function(val){
 			var id = it.autocomplete._getID(val);
 			var opt = it.autocomplete.targets[id].opt;
-			var trg = val.parentElement.previousElementSibling.previousElementSibling
+			var trg = val.parentElement.previousElementSibling;
+			if(trg.tagName != "INPUT") trg = trg.previousElementSibling;
 			
 			trg.value = val.getElementsByTagName("input")[0].value;
 			if (opt.callback) opt.callback(val.getElementsByTagName("input")[0]);
@@ -1995,7 +2009,8 @@ function isiToolsCallback(json){
                 
                 // Assure the input format
                 if (target.value.substr(4, 1) == "-" && target.value.substr(7, 1) == "-") {
-                    var date = new Date(target.value).toLocaleString().split(" ")[0].toString().split(/[\-|\/]/g);
+					var date = new Date(target.value).toLocaleString().split(" ")[0].toString().split(/[\-|\/]/g);
+					    date = this.dateToUTC(date);
 
                     for (var x = 0; x < date.length; x++) {
                         if (date[x] < 10) date[x] = "0" + date[x];
@@ -2040,10 +2055,10 @@ function isiToolsCallback(json){
                     var trigger = document.createElement('button');
                     trigger.id = 'DatePicker_trigger_' + idx;
                     trigger.type = "button";
-                    if (cfg.buttonicon.indexOf("<") != -1) {
-                        trigger.innerHTML = cfg.buttonicon;
+                    if (cfg.icon.indexOf("<") != -1) {
+                        trigger.innerHTML = cfg.icon;
                     } else {
-                        var cls = cfg.buttonicon.split(" ");
+                        var cls = cfg.icon.split(" ");
                         cls.forEach(function (val) {
                             trigger.classList.add(val)
                         });
@@ -2076,7 +2091,7 @@ function isiToolsCallback(json){
 					it.simulateEvent("change", target);
 
                     // Get current values
-                    cfg.curDate = new Date();
+                    cfg.curDate = it.datepicker.createDate();
                     cfg.curDate.setMinutes(new Date().getMinutes() - new Date().getTimezoneOffset());
                     cfg.curDate = cfg.curDate.toJSON().slice(0, 10);
                     cfg.curYear = cfg.curDate.split(/[\-|\/]/g)[0];
@@ -2107,13 +2122,15 @@ function isiToolsCallback(json){
 					it.simulateEvent("change", target);
 
 					cfg.selMName = cfg.longmonths[parseInt(cfg.selMonth - 1)];
-					var dtSel = new Date(1970 + "-" + cfg.selMonth + "-" + cfg.selDay); dtSel.setFullYear(cfg.selYear);
+					var dtSel = it.datepicker.createDate(1970 + "-" + cfg.selMonth + "-" + cfg.selDay);
+					    dtSel.setFullYear(cfg.selYear);
                     cfg.selDName = cfg.longdays[dtSel.getUTCDay()];
 
                     // Get all days from requested month
                     var x = 1, c = true, firstdate = '', lastdate = '';
                     while (c) {
-						var dt = new Date(1970 + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x) + ' 12:00:00'); dt.setFullYear(cfg.selYear);
+						var dt = it.datepicker.createDate(1970 + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x) + ' 12:00:00');
+							dt.setFullYear(cfg.selYear);
 
                         c = dt.getMonth() + 1 == cfg.selMonth;
 
@@ -2127,7 +2144,8 @@ function isiToolsCallback(json){
                     }
 					
 					// Get before days from requested month
-					var dtFirst = new Date(firstdate); dtFirst.setFullYear(cfg.selYear);
+					var dtFirst = it.datepicker.createDate(firstdate); 
+					    dtFirst.setFullYear(cfg.selYear);
 					var aux = dtFirst.getUTCDay() - cfg.weekstart, dt = 0;
 					
                     aux = (aux < 0 ? 6 : aux);
@@ -2139,7 +2157,7 @@ function isiToolsCallback(json){
                     }
 
 					// Fill after days to complete 42
-					var dtLast = new Date(lastdate); dtLast.setFullYear(cfg.selYear);
+					var dtLast = it.datepicker.createDate(lastdate); dtLast.setFullYear(cfg.selYear);
 					var aux = dtLast.getUTCDay(), dt = 0, cc = cfg.md.c.length + cfg.md.b.length;
                     for (var x = cc; x < 42; x++) {
 						dt = new Date(dtLast.getTime() + (86400000 * (x - cc + 1)));
@@ -2273,6 +2291,15 @@ function isiToolsCallback(json){
                 }
             }); // end forEach
 		}
+
+		it.datepicker.createDate = function(date){
+			date = date != undefined ? new Date(date) : new Date();
+			return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
+		}
+		
+		it.datepicker.dateToUTC = function(date){ 
+			return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); 
+		}
 		
 		it.datepicker.updateYear = function(e, v){
 			if(v == undefined) v = 0;
@@ -2353,10 +2380,14 @@ function isiToolsCallback(json){
 			mm = mm < 10 ? ('0' + mm) : mm;
 			
 			// Adjustment by nonexistent day
-			var ndate = new Date(1970,  mm-1, cfg.selDay); ndate.setFullYear(cfg.selYear);
+			var ndate = new Date(1970,  mm-1, cfg.selDay); 
+				ndate = it.datepicker.dateToUTC(ndate);
+				ndate.setFullYear(cfg.selYear);
 			
 			if(ndate.getDate() != cfg.selDay){
-				var ndate = new Date(1970, mm, 0); ndate.setFullYear(cfg.selYear);
+				var ndate = new Date(1970, mm, 0); 
+					ndate = it.datepicker.dateToUTC(ndate);
+					ndate.setFullYear(cfg.selYear);
 
 				cfg.selDay = ndate.getDate();
 				cfg.selDay = cfg.selDay < 10 ? ('0' + cfg.selDay) : cfg.selDay;
@@ -2478,7 +2509,7 @@ function isiToolsCallback(json){
         };
 
         it.datepicker.config = {
-            buttonicon: '<i class="fa fa-calendar"></i>',
+            icon: '<i class="fa fa-calendar"></i>',
             shortdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
             longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
             shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
@@ -4108,6 +4139,7 @@ function isiToolsCallback(json){
 
 			return p;
 		}
+		
 		it.mask._customEvent = function(e, config){
 			var kc = e.keyCode, k = e.key[0], aok;
 
@@ -4118,10 +4150,12 @@ function isiToolsCallback(json){
 
 			// Check if char coincidence with mask
 			var m = config.mask.charAt(this.getPositionCursor(e));
-			if(config.target.selectionEnd - config.target.selectionStart == 0 && !/[9ADMYHIS#]/g.test(m)){ 
-				e.target.value += m; 
-				m = config.mask.charAt(this.getPositionCursor(e));
-			}
+			if(config.target.selectionEnd - config.target.selectionStart == 0 && 
+				!/[9ADMYHIS#]/g.test(m) && 
+				config.target.value.substr(config.target.selectionStart, 1) != m){ 
+					 e.target.value += m; 
+					 m = config.mask.charAt(this.getPositionCursor(e));
+			 }
 
 			var isSep = config.mask.replace(/[9ADMYHIS#]/mg, '').indexOf(k) != -1;
 			if(isSep){
@@ -4133,25 +4167,25 @@ function isiToolsCallback(json){
 			var reg, tmp = m, mg = true;
 			switch (m) {
 				case "D":
-					reg = /(0[1-9]|1[0-9]|2[0-9]|3[0-1])/;
+					reg = it.mask.reDay;
 					break;
 				case "M":
-					reg = /(0[1-9]|1[0-2])/;
+					reg = it.mask.reMonth;
 					break;
 				case "Y":
-					reg = /\d{4}/;
+					reg = it.mask.reYear;
 					break;
 				case "H":
-					reg = /(0[0-9]|1[0-9]|2[0-3])/;
+					reg = it.mask.reHour;
 					break;
 				case "I":
-					reg = /(0[0-9]|[1-5][0-9])/;
+					reg = it.mask.minute;
 					break;
 				case "S":
-					reg = /(0[0-9]|[1-5][0-9])/;
+					reg = it.mask.reSecond;
 					break;
 				case "#":
-					reg = /./;
+					reg = it.mask.reAny;
 					break;
 				default:
 					mg = false;
@@ -4172,6 +4206,7 @@ function isiToolsCallback(json){
 
 			return aok;
 		}
+
 		it.mask.fullFormat = function(e){
 			var cfg  = this.config[e.target.id];
 			var v = e.target.value;
@@ -4190,6 +4225,7 @@ function isiToolsCallback(json){
 				if(!st) break;
 			}
 		}
+
 		it.mask._check = function(f, reg, e){
 			var cfg  = this.config[e.target.id];
 			var p    = cfg.mask.indexOf(f)
@@ -4254,10 +4290,25 @@ function isiToolsCallback(json){
 				v = v < 10 ? ("0" + v) : (v + "");
 
 				b = new RegExp(reg).test(v);
+
+				var aux = e.target.value.substring(0, 4)+k;
+				if(f == "II" && aux.length == e.target.maxLength){
+					var msk = cfg.mask.replace("HH", it.mask.reHour).replace("II", it.mask.reMinute).replace("SS", it.mask.reSecond).replace(/\//g, '');
+					b = new RegExp("^" + msk + "$").test(aux);
+				}
 			}
 
 			return b;
 		}
+
+		it.mask.reDay = /(0[1-9]|1[0-9]|2[0-9]|3[0-1])/;
+		it.mask.reMonth = /(0[1-9]|1[0-2])/
+		it.mask.reYear = /\d{4}/
+		it.mask.reHour = /(0[0-9]|1[0-9]|2[0-3])/;
+		it.mask.reMinute = /(0[0-9]|[1-5][0-9])/;
+		it.mask.reSecond = it.mask.Minute;
+		it.mask.reAny = /./;
+
 		it.mask._rollbackEvent = function(e){
 			e.preventDefault();
 			e.stopImmediatePropagation();
@@ -5215,6 +5266,7 @@ function isiToolsCallback(json){
 					data: null,
 					expandedIcon: !cfg.hasOwnProperty('expandedIcon') ? '\u25BC' : cfg.expandedIcon,
 					leafIcon: !cfg.hasOwnProperty('leafIcon') ? '' : cfg.leafIcon,
+					label: !cfg.hasOwnProperty('label') ? 'label' : cfg.label,
 					branchIcon: !cfg.hasOwnProperty('branchIcon') ? '' : cfg.branchIcon,
 					onSelectNode: !cfg.hasOwnProperty('onSelectNode') ? null : cfg.onSelectNode,
 					onCheckNode: !cfg.hasOwnProperty('onCheckNode') ? null : cfg.onCheckNode,
@@ -5280,6 +5332,7 @@ function isiToolsCallback(json){
 						var chk = document.createElement("input");
 						chk.setAttribute("type", "checkbox");
 						chk.setAttribute("name", "twNode" + (level + "" + i));
+						chk.setAttribute("id", "tw" + item.id); 
 						if (item.hasOwnProperty("id")) chk.setAttribute("data-id", item.id);
 						chk.checked = item.hasOwnProperty('checked') ? item.checked : false;
 
@@ -5292,13 +5345,14 @@ function isiToolsCallback(json){
 					if (item.hasOwnProperty('href')) {
 						var a = document.createElement("a");
 						a.setAttribute("href", item.href);
-						a.innerHTML = '<span rel="label" ' + (item.hasOwnProperty("id") ? ('data-id="' + item.id + '"') : '') + '>' + item.label + '</span>';
+						a.innerHTML = '<label rel="label" ' + (item.hasOwnProperty("id") ? ('data-id="' + item.id + '"') : '') + '>' + item.label + '</label>';
 
 						li.appendChild(a);
 					} else {
-						var s = document.createElement("span");
+						var s = document.createElement("label");
 						s.setAttribute("rel", "label");
-						s.innerHTML = item.label;
+						s.setAttribute("for", "tw" + item.id);
+						s.innerHTML = item[opt.label];
 
 						if (item.hasOwnProperty("selectable") && !item.selectable) s.classList.add("no-select");
 						if (item.hasOwnProperty("id")) s.setAttribute("data-id", item.id);
@@ -5348,24 +5402,24 @@ function isiToolsCallback(json){
 
 				// Event to set active node when this is focused
 				if (opt.selectable) {
-					var items = opt.target.querySelectorAll("span");
+					var items = opt.target.querySelectorAll("label");
 					for (var i = 0; i < items.length; i++) {
 						var item = items[i];
 
 						if(item.classList.contains("no-select")) continue;
 						
 						item.addEventListener("click", function (e) {
-							var span = e.target;
+							var lbl = e.target;
 
 							// Reset active items
-							var items = opt.target.querySelectorAll("span");
+							var items = opt.target.querySelectorAll("label");
 							for (var i = 0; i < items.length; i++) {
 								items[i].classList.remove("active");
 							}
 
-							span.classList.toggle("active");
+							lbl.classList.toggle("active");
 
-							if (opt.onSelectNode) opt.onSelectNode(span);
+							if (opt.onSelectNode) opt.onSelectNode(lbl);
 						});
 					}
 				}
@@ -5383,14 +5437,15 @@ function isiToolsCallback(json){
 				// Filter elements from Treeview
 				if (opt.searchable) {
 					opt.target.querySelector('[type=search]').addEventListener("input", function (e) {
-						var items = e.target.parentElement.nextElementSibling.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
+						var items = e.target.parentElement.parentElement.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
 
 						for (var x = 0; x < items.length; x++) {
 							var item = items[x];
 
 							item.style.display = "";
-							if (str.length > 0 && item.querySelector("span").innerHTML.toLowerCase().indexOf(str.toLowerCase()) != -1) {
-								var aux = item.parentElement
+							if (str.length > 0 && item.querySelector("label").innerHTML.toLowerCase().indexOf(str.toLowerCase()) != -1) {
+								
+								var aux = item.parentElement;
 								while (!aux.classList.contains("treeview")) {
 									if (item.tagName.toLowerCase() == "li") {
 										aux.style.display = "";
@@ -5432,7 +5487,7 @@ function isiToolsCallback(json){
 					AddCSSRule('', "ul.treeview li ul", "transition: 0.3s; max-height: 10000px; overflow: hidden;");
 					AddCSSRule('', "ul.treeview li.collapsed ul", "max-height: 0;");
 					AddCSSRule('', "ul.treeview li a", "color: " + opt.styles.linkColor + "; background: " + opt.styles.linkBg + ";");
-					AddCSSRule('', "ul.treeview li span", "padding: 2px 5px; display: inline-block;");
+					AddCSSRule('', "ul.treeview li label", "padding: 2px 5px; display: inline-block;");
 					AddCSSRule('', "ul.treeview li i.icon", "margin-right: 8px;");
 					AddCSSRule('', "ul.treeview li.search-box input", "width: 100%; background: " + opt.styles.searchBg + "; color: " + opt.styles.searchColor + "; border: 1px solid rgba(0,0,0,0.1)");
 					AddCSSRule('', "ul.treeview li .active", "background: " + opt.styles.activeBg + "; color: " + opt.styles.activeColor + ";");
