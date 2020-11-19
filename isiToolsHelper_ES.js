@@ -5,13 +5,12 @@ var WikiHelper = {}
    @version: 1.10																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 04/04/2019																			
+   @Last update: 04/04/2019
  **/
 
 if(it.enabledModules.AddCSSRule){
-	WikiHelper.AddCSSRule = {
+	WikiHelper.Addcssrule = {
 		general: {
-			version: 1.0,
 			name: 'AddCSSRule',
 			description: "Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.",
 		},
@@ -43,12 +42,11 @@ if(it.enabledModules.AddCSSRule){
    @version: 1.3.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 29/05/2020																			
+   @Last update: 29/05/2020
  **/
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
 		general: {
-			version: 1.0,
 			name: 'Alert',
 			description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.",
 		},
@@ -148,7 +146,7 @@ function alertAccepted(data){\n\
 
 /**
    Autocomplete Helper
-   @version: 1..4.0
+   @version: 1.4.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2020 Islavisual.
    @Last update: 30/04/2020
@@ -156,7 +154,6 @@ function alertAccepted(data){\n\
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
 		general: {
-			version: 1.4,
 			name: 'Autocomplete',
 			description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
 Tambien permite realizar búsquedas mediante caracteres comodin como son las comillas dobles, el símbolo más o el símbolo asterisco.\n\n\
@@ -596,7 +593,6 @@ it("#inputTextID").autocomplete({\n\
 if(it.enabledModules.Benchmark){
 	WikiHelper.Benchmark = {
 		general: {
-			version: 1.0,
 			name: 'Benchmark',
 			help: 1,
 			description: "Este plugin permite comprobar la calidad y el rendimiento de un código pasado a través de una función.",
@@ -639,7 +635,6 @@ if(it.enabledModules.Benchmark){
 if(it.enabledModules.Constraint){
 	WikiHelper.Constraint = {
 		general: {
-			version: 1.1,
 			name: 'Constraint',
 			help: 1,
 			description: "Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.\nUna vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.",
@@ -743,7 +738,6 @@ it("#inputTextID").constraint.decrement();'
 if(it.enabledModules.Counter){
 	WikiHelper.Counter = {
 		general: {
-			version: 1.1,
 			name: 'Counter',
 			description: "Este componente permite crear contadores ascendentes y descendentes y proveerlos de algunas opciones de personalización.",
 		},
@@ -863,50 +857,54 @@ forma: "MM min",\n\
 if(it.enabledModules.Datepicker){
 	WikiHelper.Datepicker = {
 		general: {
-			version: 1.2,
 			name: 'Datepicker',
 			help: 1,
 			description: 'Datepicker es un control que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks.'
 		},
+		icon: {
+			type: 'String',
+			description: 'El atributo "icon" establece el icono que se desea utilizar como disparador para abrir el selector de fechas.',
+			example: 'it("#birth-date").datepicker({icon: <i class="fas fa-calendar-alt"></i>});'
+		},
 		shortdays: {
 			type: 'Object',
-			description: 'El attributo "shortdays" establece la abreviatura de los días de la semana. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").Datepicker({shortdays: ["L", "M", "X", "J", "V", "S", "D"]});'
+			description: 'El atributo "shortdays" establece la abreviatura de los días de la semana. Se puede utilizar para cambiar el idioma.',
+			example: 'it("#birth-date").datepicker({shortdays: ["L", "M", "X", "J", "V", "S", "D"]});'
 		},
 		longdays: {
 			type: 'Object',
-			description: 'El attributo "longdays" establece los identificadores completos de los días de la semana. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").Datepicker({shortdays: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]});'
+			description: 'El atributo "longdays" establece los identificadores completos de los días de la semana. Se puede utilizar para cambiar el idioma.',
+			example: 'it("#birth-date").datepicker({shortdays: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]});'
 		},
 		shortmonths: {
 			type: 'Object',
-			description: 'El attributo "shortmonths" establece la abreviatura de los meses del año. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").Datepicker({shortmonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]});'
+			description: 'El atributo "shortmonths" establece la abreviatura de los meses del año. Se puede utilizar para cambiar el idioma.',
+			example: 'it("#birth-date").datepicker({shortmonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]});'
 		},
 		longmonths: {
 			type: 'Object',
-			description: 'El attributo "longmonths" establece los identificadores completos de los meses del año. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").Datepicker({longmonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]});'
+			description: 'El atributo "longmonths" establece los identificadores completos de los meses del año. Se puede utilizar para cambiar el idioma.',
+			example: 'it("#birth-date").datepicker({longmonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]});'
 		},
 		weekstart: {
 			type: 'Integer',
-			description: 'El attributo "weekstart" establece si la semana debe empezar en 0 (Domingo) o 1 (Lunes). Por defecto es 1.',
-			example: 'it("#birth-date").Datepicker({weekstart: 0});'
+			description: 'El atributo "weekstart" establece si la semana debe empezar en 0 (Domingo) o 1 (Lunes). Por defecto es 1.',
+			example: 'it("#birth-date").datepicker({weekstart: 0});'
 		},
 		textToday: {
 			type: 'String',
 			description: 'Indica el texto del botón que establece la fecha de hoy.',
-			example: 'it("#birth-date").Datepicker({textToday: "Today"});'
+			example: 'it("#birth-date").datepicker({textToday: "Today"});'
 		},
 		textRemove: {
 			type: 'Integer',
 			description: 'Indica el texto del botón que borra la fecha del campo de texto destino.',
-			example: 'it("#birth-date").Datepicker({textToday: "Remove"});'
+			example: 'it("#birth-date").datepicker({textToday: "Remove"});'
 		},
 		format: {
 			type: 'String',
 			description: 'Indica el formato para la introducción de la fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)',
-			example: 'it("#birth-date").Datepicker({format: "DD-MM-YYYY", background: "#0066a8", foreground: "#fff"});'
+			example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0066a8", foreground: "#fff"});'
 		},
 	}
 }
@@ -921,7 +919,6 @@ if(it.enabledModules.Datepicker){
 if(it.enabledModules.Debugger){
 	WikiHelper.Debugger = {
 		general: {
-			version: 1.0,
 			name: 'Debugger',
 			help: 1,
 			description: 'Depurador automático para ayudarte a saber todo lo que sucede en tu página. Desde cuando un usuario hace un clic hasta conocer qué llamadas ajax se ejecutan en segundo plano.'
@@ -987,9 +984,8 @@ if(it.enabledModules.Debugger){
    @Last update: 27/02/2019																			
  **/
 if(it.enabledModules.DOM){
-	WikiHelper.DOM = {
+	WikiHelper.Dom = {
 		general: {
-			version: 1.0,
 			name: 'DOM.ready',
 			description: "Funcionalidad para la gestión de eventos, acciones,... una vez que la página esté completamente cargada.",
 		},
@@ -1009,9 +1005,8 @@ if(it.enabledModules.DOM){
    @Last update: 27/01/2019																			
  **/
 if(it.enabledModules.GetBrowser){
-	WikiHelper.GetBrowser = {
+	WikiHelper.Getbrowser = {
 		general: {
-			version: 1.0,
 			name: 'GetBrowser',
 			description: "Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.",
 		},
@@ -1056,9 +1051,8 @@ if(it.enabledModules.GetBrowser){
    @Last update: 13/03/2019																			
  **/
 if(it.enabledModules.GetParam){
-	WikiHelper.GetParam = {
+	WikiHelper.Getparam = {
 		general: {
-			version: 1.0,
 			name: 'GetParam',
 			description: "Función para obtener todos los valores de los parámetros recibidos en la URL.",
 		},
@@ -1079,9 +1073,8 @@ if(it.enabledModules.GetParam){
    @Last update: 27/02/2019																			
  **/
 if(it.enabledModules.HttpRequest){
-	WikiHelper.HttpRequest = {
+	WikiHelper.Httprequest = {
 		general: {
-			version: 1.0,
 			name: 'HttpRequest',
 			description: "HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.",
 		},
@@ -1093,11 +1086,11 @@ if(it.enabledModules.HttpRequest){
 		callback: {
 			type: 'function',
 			description: 'Función que se debe llamar cuando se reciba la respuesta..',
-			example: 'new HttpRequest({callback: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
+			example: 'new HttpRequest({callback: callback});\nfunction callback(json){\n\tconsole.log(json);\n}'
 		},
 		contentType: {
 			type: 'function',
-			description: 'Tipo de contenido de los datos recibidos. Por defecto, este attributo es <b>application/x-www-form-urlencoded</b>.\nLos valores más comunes son:\n\t● <b>application/x-www-form-urlencoded</b> (responsiveType debe ser "text")\n\t● <b>text/html; charset=utf-8</b> (responsiveType debe ser "text")\n\t● <b>application/json; charset=utf-8</b> (responsiveType debe ser "json")\n\t● <b>application/octet-stream</b> (responsiveType debe ser "blob")\n\t● <b>application/pdf</b> (responsiveType debería ser "blob")',
+			description: 'Tipo de contenido de los datos recibidos. Por defecto, este atributo es <b>application/x-www-form-urlencoded</b>.\nLos valores más comunes son:\n\t● <b>application/x-www-form-urlencoded</b> (responsiveType debe ser "text")\n\t● <b>text/html; charset=utf-8</b> (responsiveType debe ser "text")\n\t● <b>application/json; charset=utf-8</b> (responsiveType debe ser "json")\n\t● <b>application/octet-stream</b> (responsiveType debe ser "blob")\n\t● <b>application/pdf</b> (responsiveType debería ser "blob")',
 			example: 'new HttpRequest({url: "getData.json", contentType: "application/json; charset=utf-8"})'
 		},
 		onAbort: {
@@ -1183,7 +1176,6 @@ if(it.enabledModules.HttpRequest){
 if(it.enabledModules.Include){
 	WikiHelper.Include = {
 		general: {
-			version: 1.0,
 			name: 'Include',
 			description: "Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.",
 		},
@@ -1218,9 +1210,8 @@ if(it.enabledModules.Include){
 	 @Last update: 19/03/2019
  **/
 if(it.enabledModules.IntelliForm){
-	WikiHelper.IntelliForm = {
+	WikiHelper.Intelliform = {
 		general: {
-			version: 1.0,
 			name: 'IntelliForm',
 			help: 1,
 			description: 'IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.'
@@ -1296,9 +1287,8 @@ if(it.enabledModules.IntelliForm){
    @Last update: 11/03/2019																			
  **/
 if(it.enabledModules.IsMobile){
-	WikiHelper.IsMobile = {
+	WikiHelper.Ismobile = {
 		general: {
-			version: 1.0,
 			name: 'IsMobile',
 			description: "Este método indica si el dispositivo actual es \"mobile\" o no.",
 		},
@@ -1321,7 +1311,6 @@ if(it.enabledModules.IsMobile){
 if(it.enabledModules.Language){
 	WikiHelper.Language = {
 		general: {
-			version: 1.0,
 			name: 'Language',
 			help: 1,
 			description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
@@ -1359,7 +1348,6 @@ if(it.enabledModules.Language){
 if(it.enabledModules.Mask){
 	WikiHelper.Mask = {
 		general: {
-			version: 1.0,
 			name: 'Mask',
 			help: 1,
 			description: 'Herramienta para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.'
@@ -1385,7 +1373,6 @@ it("#code").mask("99A-99#A-####-999A");'
 if(it.enabledModules.Nstate){
 	WikiHelper.Nstate = {
 		general: {
-			version: 1.0,
 			name: 'Nstate',
 			help: 1,
 			description: "Este script le permite crear componentes de tipo Switch para selección de valores binarios y/o de tipo multi selección de más de dos valores.",
@@ -1415,7 +1402,6 @@ if(it.enabledModules.Nstate){
 if(it.enabledModules.Password){
 	WikiHelper.Password = {
 		general: {
-			version: 1.0,
 			help: 1,
 			name: 'Password',
 			description: "El script de contraseña es una herramienta que le permite administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, el script de contraseña penaliza las acciones como insertar varias minúsculas consecutivas, insertar varias mayúsculas consecutivas, insertar varios dígitos consecutivos o repetir tres o más veces el mismo carácter.",
@@ -1507,7 +1493,6 @@ if(it.enabledModules.Password){
 if(it.enabledModules.Selectpicker){
 	WikiHelper.Selectpicker = {
 		general: {
-			version: 1.2,
 			help: 1,
 			name: 'Selectpicker',
 			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.",
@@ -1642,9 +1627,8 @@ if(it.enabledModules.Selectpicker){
 	 @status PENDING to UPDATE
  **/
 if(it.enabledModules.SendForm){
-	WikiHelper.SendForm = {
+	WikiHelper.Sendform = {
 		general: {
-			version: 1.0,
 			name: 'SendForm',
 			description: "SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.",
 		},
@@ -1669,9 +1653,8 @@ if(it.enabledModules.SendForm){
    @Last update: 13/03/2019																			
  **/
 if(it.enabledModules.StripTags){
-	WikiHelper.StripTags = {
+	WikiHelper.Striptags = {
 		general: {
-			version: 1.0,
 			name: 'StripTags',
 			description: "Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.",
 		},
@@ -1694,7 +1677,6 @@ if(it.enabledModules.StripTags){
 if(it.enabledModules.Treeview){
 	WikiHelper.Treeview = {
 		general: {
-			version: 1.0,
 			name: 'Treeview',
 			description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).",
 		},
@@ -1798,7 +1780,6 @@ if(it.enabledModules.Treeview){
 if(it.enabledModules.Validator){
 	WikiHelper.Validator = {
 		general: {
-			version: 1.0,
 			name: 'Validator',
 			help: 1,
 			description: "Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.",
@@ -1839,26 +1820,26 @@ if(it.enabledModules.Validator){
 
 /**
    Helper functionality
-   @version: 1.00																					
+   @version: 1.10																					
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2019 Islavisual.
-   @Last update: 01/03/2019
+   @Last update: 19/11/2020
  **/
 
 this.Helper = it.Helper = function (func, cfg) {
 	// if func is "index" or empty, build the object
-	if(typeof func == "undefined") func = "index";
+	if(typeof func == "undefined") func = "Index";
 	
 	// if configuration is undefined, set by default
 	if(typeof cfg == "undefined" || cfg == null) cfg = { theme: 'DARK', printOnScreen: true };
 
 	// If index helper not exists, build it!
-	if (typeof WikiHelper.index == "undefined") {
-		var idx = "index";
+	if (typeof WikiHelper.Index == "undefined") {
+		var idx = "Index";
 		WikiHelper[idx] = {
 			general: {
 				name: 'Index',
-				version: 1.00,
+				version: it.version,
 				description: "Index of scripts into isiTools"
 			}
 		}
@@ -1895,8 +1876,8 @@ this.Helper = it.Helper = function (func, cfg) {
 	}
 
 	// Get object with the info
-	var sourceHelper = WikiHelper[func];
-
+	var sourceHelper = WikiHelper[it.ucwords(func)];
+	
 	// Extract general data
 	var help = Object.assign({}, sourceHelper);
 	var general = sourceHelper.general;
@@ -1941,8 +1922,8 @@ this.Helper = it.Helper = function (func, cfg) {
 
 	// Set HTML template
 	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
-	<a href="#" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
-	<h2>Pantalla de ayuda para ' + general.name + " " + general.version.toFixed(2) + '</h2>\
+	<a href="#" onclick="Helper(\'Index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
+	<h2>Pantalla de ayuda para ' + general.name + " " + (general.name == "Index" ? general.version : '') + '</h2>\
 	<p style="margin-top: 80px">'+ general.description + '</p>\
 	<p>Parámetros y opciones:</p>\
 	__TEXT__\
@@ -1967,14 +1948,15 @@ this.Helper = it.Helper = function (func, cfg) {
 	if (general.name.toLowerCase() == "index") {
 		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
 		<nav>\
-			<a href="#"><i class="btn-bars" onclick="this.parentElement.classList.toggle(\'on\')"></i></a>\
+			<a href="#"><i class="btn-bars" onclick="it.Helper.toggleMenu(this)"></i></a>\
 			<ul>\
+				<li style="height: 45px; margin: -20px 0 -20px 0;"><input type="search" placeholder="Buscar componente..." oninput="it.Helper.filterh31p3r(this)" /></li>\
 				__ITEMS_HELP__\
 			</ul>\
 		</nav>\
-		<h2>Tabla de contenidos de isiTools ' +  general.version.toFixed(2) + '</h2>\
-		<div style="margin-top: 64px">\
-		IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
+		<h2>Tabla de contenidos de isiTools ' +  general.version + '</h2>\
+		<div style="margin-top: 64px; font-family: Verdana; font-size: 13px;">\
+		IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el atributo SRC.\
 		<br/>\
 		<br/>\
 		Instalación<br/>\
@@ -1992,11 +1974,12 @@ this.Helper = it.Helper = function (func, cfg) {
 
 	if (opt.printOnScreen) {
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-		AddCSSRule('', "#h31p3r", 'font-family: inherit; font-size: 14px; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: break-spaces; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
-		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -15px;border-bottom: 1px solid rgba(255,255,255,.1);')
-		AddCSSRule('', "#h31p3r h3", 'background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0rem; padding: 64px 5px 5px 5px; color: ' + opt.keyColor + ';');
+		AddCSSRule('', "#h31p3r", 'font-family: inherit; font-size: 14px; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: break-spaces; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; scroll-behavior: smooth;');
+		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: 0;border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
+		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0em; padding: 64px 5px 5px 5px; color: ' + opt.keyColor + ' !important;');
 		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
-		AddCSSRule('', "#h31p3r ul, #h31p3r p ", 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
+		AddCSSRule('', "#h31p3r ul li, #h31p3r p ", 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
+		AddCSSRule('', "#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p { font-size: 1rem; }");
 		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', "#h31p3r field.des, #h31p3r field.exa", "display: block; width: 100%;");
 		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
@@ -2018,12 +2001,15 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r .btn-times::before', 'transform: rotate(45deg);');
 		AddCSSRule('', '#h31p3r .btn-times::after', 'transform: rotate(-45deg);');
 		AddCSSRule('', '#h31p3r nav', 'position: fixed; right: 70px; top: 15px; width: 22px; height: 24px; z-index: 9; cursor: pointer; text-align: center;');
-		AddCSSRule('', '#h31p3r nav .btn-bars', 'display: block; width: 24px; height: 20px; font-size: 25px; visibility: initial; float: right; border-bottom: 1px solid ' + opt.background + ';');
-		AddCSSRule('', '#h31p3r nav .btn-bars:before', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 4px');
-		AddCSSRule('', '#h31p3r nav .btn-bars:after', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; height: 12px;');
-		AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px;');
-		AddCSSRule('', '#h31p3r nav > a + ul', 'display: none; background: ' + opt.color + '; width: 150px; height: 150px; color: ' + opt.background + '; position: absolute; top: 38px; right: -15px; list-style: none; padding: 0; text-align: left;');
-		AddCSSRule('', '#h31p3r nav > a.on + ul', 'display:block; overflow-x: hidden; overflow-y: auto');
+		AddCSSRule('', '#h31p3r nav .btn-bars', 'display: block; width: 24px; height: 20px; font-size: 25px; visibility: initial; float: right; border-bottom: 1px solid ' + opt.background + '; transition: all 0.3s ease;');
+		AddCSSRule('', '#h31p3r nav .btn-bars:before', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 3px; transition: all 0.3s ease 0s;');
+		AddCSSRule('', '#h31p3r nav .btn-bars:after', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; height: 11px; transition: all 0.3s ease 0s;');
+		AddCSSRule('', '#h31p3r nav a.on .btn-bars:before', 'width: 50%;');
+		AddCSSRule('', '#h31p3r nav a.on .btn-bars:after', 'width: 75%; transition: all 0.3s ease;');
+		AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: fixed; padding: 4px; top: 12px; right: 70px;');
+		AddCSSRule('', '#h31p3r nav > a + ul', 'height: 0; background: ' + opt.color + '; width: 200px; color: ' + opt.background + '; position: fixed; top: 56px; right: 56px; list-style: none; padding: 0; text-align: left; transition: all 0.3s ease; overflow-x: hidden; overflow-y: auto;');
+		AddCSSRule('', '#h31p3r nav > a + ul input', 'margin: 0; width: calc(100% - 10px); padding: 0 5px;');
+		AddCSSRule('', '#h31p3r nav > a.on + ul', 'height: 150px;');
 		AddCSSRule('', '#h31p3r nav > a + ul li', 'padding: 5px 10px;');
 		AddCSSRule('', '#h31p3r nav > a + ul li:hover', 'background: ' + opt.highlight + '; padding: 5px 10px;');
 		AddCSSRule('', '#h31p3r nav > a + ul li a', ' color: ' + opt.background + '; ');
@@ -2033,7 +2019,7 @@ this.Helper = it.Helper = function (func, cfg) {
 		} else {
 			AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
 		}
-
+		
 		var text = '', additional = '', items_help = '';
 		var idx = 0;
 		for (var prop in help) {
@@ -2042,8 +2028,9 @@ this.Helper = it.Helper = function (func, cfg) {
 				text += '<h3>' + ((type == "function" ? 'Método ' : 'Propiedad ') + prop) + '</h3>';
 			} else if (general.name.toLowerCase() == "index") {
 				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop;
-				
-				text += '<h3 id="' + wprop + '" onclick="' + WikiHelper[wprop].general.help.split("\n")[1] + '">' + wprop + '</h3>';
+					wprop = it.ucwords(wprop);
+
+				text += '<h3 id="' + wprop + '" onclick="Helper(\'' + wprop.trim() + '\')">' + wprop + '</h3>';
 				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
 			}
 
@@ -2079,7 +2066,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			.replace(/__TEXT__/ig, text)
 			.replace(/__ADDITIONAL__/ig, additional)
 			.replace(/__ITEMS_HELP__/ig, items_help)
-			.replace(/__HELPEROPTIONS__/ig, typeof WikiHelper['index'][func] != "undefined" ? ("<code>" + WikiHelper['index'][func].example + '</code>') : '')
+			.replace(/__HELPEROPTIONS__/ig, typeof WikiHelper['Index'][func] != "undefined" ? ("<code>" + WikiHelper['Index'][func].example + '</code>') : '')
 			.replace(/\\"/ig, '"')
 			.replace(/\\n/ig, '<br/>');
 
@@ -2284,4 +2271,24 @@ this.Helper.getParameters = function (cfg) {
 	});
 
 	return vars;
+}
+
+this.Helper.toggleMenu = function(el){
+	el.parentElement.classList.toggle('on'); 
+	
+	if(el.parentElement.classList.contains("on")){
+		setTimeout(function(){ el.parentElement.nextElementSibling.children[0].children[0].focus()}, 100);
+	}
+}
+
+this.Helper.filterh31p3r = function(el){
+	var childs = el.parentElement.parentElement.querySelectorAll("a");
+	for(var x = 0; x < childs.length; x++){
+		var child = childs[x];
+
+		child.parentElement.style.display = "";
+		if(child.innerText.toLowerCase().indexOf(el.value.toLowerCase()) == -1){
+			child.parentElement.style.display = "none";
+		}
+	}
 }
