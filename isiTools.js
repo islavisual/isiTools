@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.0",
+it.version = "1.8.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "19/11/2020",
+it.lastupdate = "24/11/2020",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -280,13 +280,6 @@ function isiToolsCallback(json){
 	if(json.AddCSSRule){
 		this.AddCSSRule = it.addCSSRule = function (cfg, selector, styles, index) {
 			var s, r, itS = document.getElementById("isiToolsStyles");
-
-			if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
-				if (typeof showHelper != "undefined") showHelper("AddCSSRule", cfg);
-				else alert("Helper not available!")
-				return;
-			}
-
 			var sheet = cfg;
 
 			// Get style sheet
@@ -330,6 +323,15 @@ function isiToolsCallback(json){
 			} else if ("addRule" in s) {
 				s.addRule(selector, styles, index);
 			}
+		}
+
+		it.addCSSRule.help = function (cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("AddCSSRule", cfg);
+			else alert("Helper no disponible!")
+			return;
 		}
 	}
 	
@@ -635,7 +637,7 @@ function isiToolsCallback(json){
 	
 	if(json.Autocomplete){
 		window._timeoutAC = null, window._continueAC = false;
-		it.autocomplete = function (cfg) {
+		this.Autocomplete = it.autocomplete = function (cfg) {
 			if(typeof cfg == "undefined") cfg = {};
 
 			// If method was called by HTMLSelectElement
@@ -643,12 +645,6 @@ function isiToolsCallback(json){
 
 			for(var x = 0; x < this.targets.length; x++){
 				cfg.target = this.targets[x];
-
-				if ((typeof cfg == "string" && cfg == "help") || cfg.hasOwnProperty("help")) {
-					if (typeof showHelper != "undefined") showHelper("Autocomplete", cfg);
-					else alert("Helper not available!")
-					return;
-				}
 
 				// If target is a select tag, rebuild element and create data
 				if(cfg.target.tagName.toLowerCase() == "select"){
@@ -2528,7 +2524,12 @@ function isiToolsCallback(json){
         }
 
         it.datepicker.help = function (cfg) {
-            it.help('Datepicker', cfg);
+            if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("Datepicker", cfg);
+			else alert("Helper no disponible!")
+			return;
         }
 	}
 	
@@ -2989,12 +2990,6 @@ function isiToolsCallback(json){
 			var SELF = this;
 
 			SELF.ready = function (callback) {
-				if (typeof callback == "string" && callback == "help" || callback.hasOwnProperty("help")) {
-					if (typeof showHelper != "undefined") showHelper("DOM", callback);
-					else alert("Helper not available!")
-					return;
-				}
-
 				//check to see if we're already finished
 				if (IS_READY === true && typeof callback === 'function') {
 					callback();
@@ -3073,6 +3068,15 @@ function isiToolsCallback(json){
 			//since we have the function declared, start listening
 			listenForDocumentReady();
 		};
+
+		it.DOM.help = function (cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("DOM", cfg);
+			else alert("Helper no disponible!")
+			return;
+		}
 	}
 
 	/**
@@ -4068,7 +4072,7 @@ function isiToolsCallback(json){
 		@Last update: 21/06/2020
 	**/
 	if(json.Mask){
-		it.mask = function(cfg){
+		this.Mask = it.mask = function(cfg){
 			if (!cfg || cfg == "") { alert("Mask not defined!"); return false; }
 
 			this.targets = it.checkTargets(this);
@@ -4807,7 +4811,7 @@ function isiToolsCallback(json){
 		@Last update: 23/06/2020
 	**/
 	if(json.Selectpicker){
-		it.selectpicker = function(cfg){
+		this.Selectpicker = it.selectpicker = function(cfg){
 			if(typeof cfg == "undefined") cfg = {};
 			else if(typeof cfg == 'string' && cfg == "destroy") return this.selectpicker.destroy(this.targets)
 
