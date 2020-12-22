@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.1",
+it.version = "1.8.2",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "24/11/2020",
+it.lastupdate = "22/12/2020",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -337,10 +337,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 Custom alerts functionality
-		@version: 1.3.1
+		@version: 1.3.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 29/05/2020
+		@Last update: 22/12/2020
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -380,8 +380,8 @@ function isiToolsCallback(json){
 
 			// Default Actions
 			var defaultActions = {
-				accept: { enabled: true, text: 'Accept', class: 'btn-accept', alignment: 'right', callback: null },
-				cancel: { enabled: false, text: 'Cancel', class: 'btn-cancel', alignment: 'left', callback: null }
+				accept: { enabled: true, text: 'Accept', class: 'btn-accept', alignment: 'right', callback: null, addtocallback: {} },
+				cancel: { enabled: false, text: 'Cancel', class: 'btn-cancel', alignment: 'left', callback: null, addtocallback: {} }
 			}
 
 			// Create JSON with current opt
@@ -409,6 +409,7 @@ function isiToolsCallback(json){
 				if (!opt.actions.accept.hasOwnProperty('class')) opt.actions.accept.class = defaultActions.accept.class;
 				if (!opt.actions.accept.hasOwnProperty('alignment')) opt.actions.accept.alignment = defaultActions.accept.alignment;
 				if (!opt.actions.accept.hasOwnProperty('callback')) opt.actions.accept.callback = defaultActions.accept.callback;
+				if (!opt.actions.accept.hasOwnProperty('addtocallback')) opt.actions.accept.addtocallback = defaultActions.accept.addtocallback;
 			}
 			if (!opt.actions.hasOwnProperty('cancel')) {
 				opt.actions.cancel = defaultActions.cancel;
@@ -418,6 +419,7 @@ function isiToolsCallback(json){
 				if (!opt.actions.cancel.hasOwnProperty('class')) opt.actions.cancel.class = defaultActions.cancel.class;
 				if (!opt.actions.cancel.hasOwnProperty('alignment')) opt.actions.cancel.alignment = defaultActions.cancel.alignment;
 				if (!opt.actions.cancel.hasOwnProperty('callback')) opt.actions.cancel.callback = defaultActions.cancel.callback;
+				if (!opt.actions.accept.hasOwnProperty('addtocallback')) opt.actions.cancel.addtocallback = defaultActions.cancel.addtocallback;
 			}
 
 			// Set individual styles by default
@@ -527,10 +529,27 @@ function isiToolsCallback(json){
 
 					if(item.validationMessage) return {invalidMessage: item.validationMessage };
 
-					for (var x = 0, atts = item.attributes, n = atts.length, arr = []; x < n; x++){
+					for (var x = 0, atts = item.attributes; x < atts.length; x++){
 						aux[atts[x].nodeName] = atts[x].nodeValue;
 					}
 					aux.value = item.value || item.innerHTML;
+					json.elements.push(aux);
+				}
+				
+				for(var arg in opt.actions.accept.addtocallback){
+					item = opt.actions.accept.addtocallback[arg];
+					if(item instanceof HTMLElement){
+						if(item.id == "") item.id = arg;
+						for (var x = 0, atts = item.attributes; x < atts.length; x++){
+							aux = {};
+							aux._id = arg;
+							aux[atts[x].nodeName] = atts[x].nodeValue;
+						}
+						aux.node = item;
+					} else {
+						aux = {arg: item}
+					}
+
 					json.elements.push(aux);
 				}
 
@@ -606,10 +625,8 @@ function isiToolsCallback(json){
 					AddCSSRule('', ".Alert header i", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
 					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
 					AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
-					if(opt.actions.accept.class == defaultActions.cancel.class){
-						AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
-						AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
-					}
+					AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
+					AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
 				}
 
 				try { document.querySelector(".Alert-overlay").remove(); } catch (e) { }
