@@ -41,10 +41,10 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.3.1																					
+   @version: 1.3.2																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 29/05/2020																			
+   @Last update: 22/12/2020																			
  **/
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
@@ -138,11 +138,100 @@ function alertAccepted(data){\n\
 // 			value: "28012"\n\
 // 		}\n\
 // 	]\n\
-// }'	},
+// }'
+		},
+		addtocallback: {
+			type: 'object',
+			description: 'Permite agregar elementos y/o valores a la devolución de llamada asociada a la acción de aceptar o de cancelar.',
+			example: 'new Alert({\n\
+title: "Precaución!",\n\
+body: "El campo se encuentra vacío.",\n\
+styles:{\n\
+	title: {\n\
+		background: "#f0f0f0",\n\
+		color: "#2f2f2f",\n\
+		extra: ""\n\
+	},\n\
+	body: {\n\
+		background: "#fff",\n\
+		color: "#000",\n\
+		extra: ""\n\
+	},\n\
+	actions:{\n\
+		accept: {\n\
+			enabled: true,\n\
+			text: "Accept",\n\
+			class: "btn btn-primary",\n\
+			alignment: "right",\n\
+			callback: function(e){\n\
+				console.log(e)\n\
+			},\n\
+			addtocallback: {\n\
+				el0: "Botón pulsado!!",\n\
+				el1: document.querySelector("#inputID")\n\
+			}\n\
+		},\n\
+		cancel: {\n\
+			enabled: true,\n\
+			text: "Cancel",\n\
+			class: "btn btn-secondary",\n\
+			alignment: "left",\n\
+			callback: function(e){\n\
+				console.log(e)\n\
+			}\n\
+		}\n\
+	}\n\
+}\n\
+});\n\
+\n\
+function alertAccepted(data){\n\
+console.log(data)\n\
+}\n\
+// Cuando el usuario pulse en el botón de aceptar, por consola algo similar a:\n\
+// {\n\
+// 	general:{\n\
+// 		accepted: true\n\
+// 		title: "Precaución!"\n\
+// 	}\n\
+// 	elements: [\n\
+// 		{\n\
+// 			arg: "Botón pulsado!!"\n\
+// 		},\n\
+// 		{\n\
+// 			_id: "el"\n\
+// 			id: "el"\n\
+// 			node: input#inputID\n\
+// 		}\n\
+// 	]\n\
+// }'
+		},
 		styles: {
 			type: 'object',
-			description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".',
-			example: 'new Alert({\n\ttitle: "Precaución!",\n\tbody: "El campo se encuentra vacío.",\n\tstyles:{\n\t\ttitle: {\n\t\t\tbackground: "#f0f0f0",\n\t\t\tcolor: "#2f2f2f",\n\t\t\textra: ""\n\t\t},\n\t\tbody: {\n\t\t\tbackground: "#fff",\n\t\t\tcolor: "#000",\n\t\t\textra: ""\n\t\t},\n\t\tactions: {\n\t\t\taccept: {\n\t\t\t\tbackground: "#e0e0e0",\n\t\t\t\tcolor: "#000",\n\t\t\t\textra: ""\n\t\t\t},\n\t\t\tcancel: {\n\t\t\t\tbackground: "rgba(0,0,0,0)",\n\t\t\t\tcolor: "#000",\n\t\t\t\textra: ""\n\t\t\t}\n\t\t}\n\t}\n});'
+			description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".\n<ul><li><b>background</b>: Establece el color del fondo</li><li><b>color</b>: Establece el color del texto</li><li><b>extra</b>: Establece otras propiedades CSS.</li></ul>',
+			example: '// Ejemplo de mensaje de alerta sin botón cancelar\n\
+new Alert({\n\
+	title: "Precaución!",\n\
+	body: "El campo se encuentra vacío.",\n\
+	styles:{\n\
+		title: {\n\
+			background: "#f0f0f0",\n\
+			color: "#2f2f2f",\n\
+			extra: ""\n\
+		},\n\
+		body: {\n\
+			background: "#fff",\n\
+			color: "#000",\n\
+			extra: ""\n\
+		},\n\
+		actions: {\n\
+			accept: {\n\
+				background: "#e0e0e0",\n\
+				color: "#000",\n\
+				extra: "padding:15px"\n\
+			}\n\
+		}\n\
+	}\n\
+});'
 		},
 	}
 }
