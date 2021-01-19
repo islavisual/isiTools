@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.2",
+it.version = "1.8.4",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "22/12/2020",
+it.lastupdate = "19/01/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -1979,10 +1979,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.2.1
+		@version: 1.2.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 18/06/2020
+		@Last update: 19/01/2021
 	**/
 	if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
@@ -2022,9 +2022,9 @@ function isiToolsCallback(json){
                 
                 // Assure the input format
                 if (target.value.substr(4, 1) == "-" && target.value.substr(7, 1) == "-") {
-					var date = new Date(target.value).toLocaleString().split(" ")[0].toString().split(/[\-|\/]/g);
-					    date = this.dateToUTC(date);
-
+					var date = new Date(target.value);
+						date = it.datepicker.dateToUTC(date).toLocaleString().split(" ")[0].toString().split(/[\-|\/]/g);
+					
                     for (var x = 0; x < date.length; x++) {
                         if (date[x] < 10) date[x] = "0" + date[x];
                     }
@@ -2095,7 +2095,7 @@ function isiToolsCallback(json){
                 cfg = cfg.custom[id];
 
                 if (!loading) {
-                    // Close all previous datepickers
+					// Close all previous datepickers
                     var items = document.querySelectorAll(".datepicker-close");
                     for (var x = 0; x < items.length; x++) {
                         items[x].click();
@@ -2140,21 +2140,21 @@ function isiToolsCallback(json){
                     cfg.selDName = cfg.longdays[dtSel.getUTCDay()];
 
                     // Get all days from requested month
-                    var x = 1, c = true, firstdate = '', lastdate = '';
-                    while (c) {
-						var dt = it.datepicker.createDate(1970 + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x) + ' 12:00:00');
-							dt.setFullYear(cfg.selYear);
+					var x = 1, c = true, firstdate = '', lastdate = '';
+					while (c) {
+						var dt = new Date(cfg.selYear, cfg.selMonth-1, (x < 10 ? ('0' + x) : x), 12,00,00);
 
-                        c = dt.getMonth() + 1 == cfg.selMonth;
+						c = dt.getMonth() + 1 == cfg.selMonth;
 
-                        if (x == 1) firstdate = 1970 + '-' + cfg.selMonth + '-01';
+                        if (x == 1) firstdate = cfg.selYear + '-' + cfg.selMonth + '-01';
 
                         if (c) {
                             cfg.md.c[x - 1] = (x < 10 ? ('0' + x) : x) + '-' + cfg.selMonth + '-' + cfg.selYear;
-                            lastdate = 1970 + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
+                            lastdate = cfg.selYear + '-' + cfg.selMonth + '-' + (x < 10 ? ('0' + x) : x);
                         }
-                        x++;
-                    }
+						x++;
+						if(x > 31) break;
+					}
 					
 					// Get before days from requested month
 					var dtFirst = it.datepicker.createDate(firstdate); 
@@ -2393,8 +2393,9 @@ function isiToolsCallback(json){
 			mm = mm < 10 ? ('0' + mm) : mm;
 			
 			// Adjustment by nonexistent day
-			var ndate = new Date(1970,  mm-1, cfg.selDay); 
+			var ndate = new Date(cfg.selYear,  mm-1, cfg.selDay, 12,0,0); 
 				ndate = it.datepicker.dateToUTC(ndate);
+			
 				ndate.setFullYear(cfg.selYear);
 			
 			if(ndate.getDate() != cfg.selDay){
@@ -5251,10 +5252,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 TreeView functionality
-		@version: 1.1.0																					
+		@version: 1.1.1																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
-		@Last update: 09/03/2019
+		@Last update: 12/01/2021
 	**/
 	if(json.Treeview){
 		this.Treeview = it.treeview = function (cfg) {
@@ -5352,8 +5353,8 @@ function isiToolsCallback(json){
 					if (item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() == '') {
 						var chk = document.createElement("input");
 						chk.setAttribute("type", "checkbox");
-						chk.setAttribute("name", "twNode" + (level + "" + i));
-						chk.setAttribute("id", "tw" + item.id); 
+						chk.setAttribute("name", opt.target.id + "_twNode" + (level + "" + i));
+						chk.setAttribute("id", opt.target.id + "_tw" + (level + "" + i)); 
 						if (item.hasOwnProperty("id")) chk.setAttribute("data-id", item.id);
 						chk.checked = item.hasOwnProperty('checked') ? item.checked : false;
 
@@ -5442,6 +5443,13 @@ function isiToolsCallback(json){
 
 							if (opt.onSelectNode) opt.onSelectNode(lbl);
 						});
+					}
+				} else {
+					var items = opt.target.querySelectorAll("label");
+					for (var i = 0; i < items.length; i++) {
+						var item = items[i];
+
+						item.setAttribute("for", item.previousElementSibling.id);
 					}
 				}
 
