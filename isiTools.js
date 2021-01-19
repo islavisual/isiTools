@@ -43,7 +43,7 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.4",
+it.version = "1.8.5",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2020 Islavisual",
 it.lastupdate = "19/01/2021",
@@ -4823,10 +4823,10 @@ function isiToolsCallback(json){
 
 	/**
 		Dropdown select
-		@version: 1.4.1
+		@version: 1.4.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2020 Islavisual.
-		@Last update: 23/06/2020
+		@Last update: 19/01/2021
 	**/
 	if(json.Selectpicker){
 		this.Selectpicker = it.selectpicker = function(cfg){
@@ -4848,7 +4848,6 @@ function isiToolsCallback(json){
 				if(typeof cfg == "string") cfg = { target: cfg };
 				
 				// select needs searcher
-				cfg.liveSearch = false;
 				if((cfg.hasOwnProperty("liveSearch") && cfg.liveSearch) ||
 				   (trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "true")) cfg.liveSearch = true; else cfg.liveSearch = false; 
 
