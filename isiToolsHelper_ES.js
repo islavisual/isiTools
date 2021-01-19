@@ -1597,15 +1597,15 @@ if(it.enabledModules.Password){
 
 /**
 	 Create and send forms in real time.
-	 @version: 1.2
+	 @version: 1.4.1
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2020 Islavisual.
-	 @Last update: 05/06/2020
+	 @Last update: 19/01/2021
  **/
 if(it.enabledModules.Selectpicker){
 	WikiHelper.Selectpicker = {
 		general: {
-			version: 1.2,
+			version: 1.4,
 			help: 1,
 			name: 'Selectpicker',
 			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.",
