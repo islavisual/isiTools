@@ -41,10 +41,10 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.3.2																					
+   @version: 1.3.3																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 22/12/2020																			
+   @Last update: 19/01/2021
  **/
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
@@ -99,7 +99,7 @@ new Alert({title: "Precaución!", body:"url(./templates/dialog.html)"});'
 El parámetro "callback" es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado. A continuación se muestra un ejemplo que visualiza por consola el contenido de este JSON devuelto.',
 			example: 'new Alert({\n\
 	title: "Introduzca un código!",\n\
-	body:"&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>",\n\
+	body:\'&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>\',\n\
 	actions:{\n\
 		accept: {\n\
 			enabled: true,\n\
