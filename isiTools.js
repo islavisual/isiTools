@@ -31,7 +31,7 @@ var it = function(t, f){
 		if(typeof t == "string"){
 			it.targets = document.querySelectorAll(t) || t;
 		} else {
-			it.targets = t;
+			if(t.length == undefined) it.targets = [t]; else it.targets = t;
 		}
 	} else if(typeof f == "object"){
 		it.targets = f.querySelectorAll(t);
@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.5",
+it.version = "1.8.6",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
-it.copyright = "2017-2020 Islavisual",
-it.lastupdate = "19/01/2021",
+it.copyright = "2017-2021 Islavisual",
+it.lastupdate = "26/01/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -135,32 +135,72 @@ it.get = function(index){ if(index == undefined) index = 0; return this.targets[
 
 /**
 	Función para calcular el ancho de un elemento en base a un texto dado
-	@version: 1.0.0
+	@version: 1.2
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
-	@Last update: 10/06/2020
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 26/01/2021
 **/
-it.getTextWidth = function(obj, fontname, fontsize){
-	if(typeof obj != 'string'){
-		obj = obj.reduce(function (a, b) { return a.text.length > b.text.length ? a : b; }).innerText;
+it.getTextWidth = function(obj, fontFamily, fontSize, padding){
+	var text = "";
+
+	// Si es un SELECT, recuperamos los OPTION
+	if(obj.tagName == "SELECT"){
+		obj = Array.prototype.slice.call($0.querySelectorAll("option"), 0);
 	}
+
+	if(typeof obj == "object" && obj.length != undefined){
+		// Si es un array de elementos NodeList
+		try { 
+			obj = obj.reduce(function (a, b) { return a.text.length > b.text.length ? a : b; });
+			text = obj.innerText;
+		} catch(e){
+			console.log("No se puede recuperar el elemento de mayor lonfitud del array")
+		}
+
+	} else if(typeof obj.innerText != undefined || typeof obj.value != undefined) {
+		// Si es un elemento con texto, lo recuperamos
+		text = obj.innerText || obj.value;
+
+	} else {
+		text = obj;
+	}
+
+	var offset = 0;
+	if(typeof obj == "object" && text != obj){
+		if(!fontFamily){ fontFamily = getComputedStyle(obj).fontFamily }
+		if(!fontSize){ fontSize = getComputedStyle(obj).fontSize }
+		if(!padding){ 
+			if(obj.tagName == "OPTION") obj = obj.parentElement;
+			offset =  parseInt(getComputedStyle(obj).paddingLeft) + parseInt(getComputedStyle(obj).paddingRight); 
+		}
+
+	} else if(typeof obj == "string" && (!fontFamily || !fontSize)){
+		return "Los parámetros fontFamily y fontSize son necesarios";
+	}
+
+	if(padding != undefined) offset = padding;
+	
 	var canvas = document.createElement('canvas');
     var ctx    = canvas.getContext('2d');
-	ctx.font   = fontsize + ' ' + fontname;
+	ctx.font   = fontSize + ' ' + fontFamily;
 	
-    return ctx.measureText(obj).width;
+    return Math.ceil(ctx.measureText(text).width) + offset;
 }
 
 /**
-	Función para mover el scroll vertical hasta un elemento
-	@version: 1.0.0
+	Función para mover el scroll vertical hasta una posición determinada
+	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
-	@Last update: 10/06/2020
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 26/01/2021
 **/
 it.scrollTo = function(offset){
-	var pos = this.targets[0].getBoundingClientRect();
-	document.documentElement.scrollTop = document.documentElement.scrollTop + pos.top + offset;
+	if(this.targets[0].tagName == "BODY"){
+		var pos = this.targets[0].getBoundingClientRect();
+		document.documentElement.scrollTop += pos.top + offset;
+	} else  {
+		this.targets[0].scrollTop = offset;
+	}
 	return this.targets[0];
 }
 
@@ -168,20 +208,9 @@ it.scrollTo = function(offset){
 	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
 	@version: 1.0.2
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
+	@Copyright 2017-2021 Islavisual.
 	@Last update: 18/06/2020
 	@Examples 
-	it('input, textarea, select').each(function(index){
-		console.log('índice', index)
-		this.classList.toggle("focused")
-	});
-
-	it('input').each({
-		style: 'opacity: 0.5', 
-		onclick: function(e){
-			console.log(e, 'tomó el foco')
-		}
-	});
 **/
 it.each = function(){
 	var trgs = this.targets;
@@ -208,7 +237,7 @@ it.each = function(){
 	Devolver el primer elemento de los elementos recuperados por la función constructora
 	@version: 1.0.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
+	@Copyright 2017-2021 Islavisual.
 	@Last update: 10/06/2020
 **/
 it.first = function(){ return this.targets[0] }
@@ -217,27 +246,40 @@ it.first = function(){ return this.targets[0] }
 	Devolver el último elemento de los elementos recuperados por la función constructora
 	@version: 1.0.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
+	@Copyright 2017-2021 Islavisual.
 	@Last update: 10/06/2020
 **/
 it.last = function(){ return this.targets[this.targets.length - 1] }
 
 /**
 	Convertir el primer carácter a mayúscula y, el resto, minúsculas.
-	@version: 1.0.0
+	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
-	@Last update: 13/09/2020
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 26/01/2021
 **/
-it.ucwords = function(txt) {
-return txt.toLowerCase().charAt(0).toUpperCase() + txt.toLowerCase().slice(1);
+it.ucwords = function(txt, all) {
+	if(all == undefined) all = true;
+
+	if(all){
+		txt = txt.split(" ");
+		var s = '';
+		for(var i = 0; i < txt.length; i++){
+			var item = txt[i]
+			s += item.toLowerCase().charAt(0).toUpperCase() + item.toLowerCase().slice(1) + " ";
+		}
+	} else {
+		s = txt.toLowerCase().charAt(0).toUpperCase() + txt.toLowerCase().slice(1);
+	}
+	
+	return s.trim();
 };
 
 /**
 	Simular evento como fuese lanzado por el usuario
 	@version: 1.0.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
+	@Copyright 2017-2021 Islavisual.
 	@Last update: 18/09/2019
 **/
 it.simulateEvent = function(evt, el){
@@ -274,7 +316,7 @@ function isiToolsCallback(json){
 		 AddCSSRule functionality																		
 		@version: 1.1																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
-		@Copyright 2017-2020 Islavisual. 																	
+		@Copyright 2017-2021 Islavisual. 																	
 		@Last update: 13/03/2019																			
 	**/
 	if(json.AddCSSRule){
@@ -337,10 +379,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 Custom alerts functionality
-		@version: 1.3.2
+		@version: 1.5
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
-		@Last update: 22/12/2020
+		@Copyright 2017-2021 Islavisual.
+		@Last update: 26/01/2021
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -386,6 +428,7 @@ function isiToolsCallback(json){
 
 			// Create JSON with current opt
 			var opt = {
+				ajaxmethod: !cfg.hasOwnProperty('ajaxmethod') ? 'GET' : cfg.ajaxmethod,
 				class: !cfg.hasOwnProperty('class') ? '' : cfg.class,
 				actions: !cfg.hasOwnProperty('actions') ? defaultActions : cfg.actions,
 				body: !cfg.hasOwnProperty('body') ? "This is example!" : cfg.body,
@@ -394,6 +437,8 @@ function isiToolsCallback(json){
 				title: !cfg.hasOwnProperty('title') ? '' : cfg.title,
 				theme: !cfg.hasOwnProperty('theme') ? 'light' : cfg.theme,
 				styles: !cfg.hasOwnProperty('styles') ? defaultStylesLight : cfg.styles,
+				onshow: !cfg.hasOwnProperty('onshow') ? null : cfg.onshow,
+				onhide: !cfg.hasOwnProperty('onhide') ? null : cfg.onhide,
 			}
 
 			// Set theme
@@ -517,6 +562,7 @@ function isiToolsCallback(json){
 
 			function closeAlert(e) {
 				e.target.parentElement.parentElement.parentElement.remove();
+				if(opt.onhide){ opt.onhide(); }
 			}
 
 			function getData(e, accepted){
@@ -612,7 +658,7 @@ function isiToolsCallback(json){
 						}
 					}
 
-					xhttp.open("GET", file, true);
+					xhttp.open(opt.ajaxmethod, file, true);
 					xhttp.send();
 			}
 
@@ -633,6 +679,8 @@ function isiToolsCallback(json){
 
 				render();
 				assignEvents();
+
+				if(opt.onshow){ opt.onshow(); }
 			}
 
 			var aux = opt.body.match(/^url\((.*)\)$/i);
@@ -648,7 +696,7 @@ function isiToolsCallback(json){
 		Autocomplete functionality
 		@version: 1.5.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 21/06/2020
 	**/
 	
@@ -1510,7 +1558,7 @@ function isiToolsCallback(json){
 		 Constraint to input functionality
 		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 19/05/2020
 	**/
 	if(json.Constraint){
@@ -1736,7 +1784,7 @@ function isiToolsCallback(json){
 		Create counters.
 		@version: 1.1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 19/05/2020
 	**/
 	if(json.Counter){
@@ -1981,7 +2029,7 @@ function isiToolsCallback(json){
 		Datepicker functionality
 		@version: 1.2.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 19/01/2021
 	**/
 	if (json.Datepicker) {
@@ -2555,7 +2603,7 @@ function isiToolsCallback(json){
 		 Debugger functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 15/03/2019
 	**/
 	if(json.Debugger){
@@ -2998,7 +3046,7 @@ function isiToolsCallback(json){
 		 Simple DOM ready() detection in pure JS.
 		@version: 1.00
 		@author: Carl Danley.
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 04/03/2019
 	**/
 	if(json.DOM){
@@ -3101,7 +3149,7 @@ function isiToolsCallback(json){
 		 Get Browser Plugin
 		@version: 1.02
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 05/03/2019
 	**/
 	if(json.GetBrowser){
@@ -3122,7 +3170,7 @@ function isiToolsCallback(json){
 		 Get parameter from url
 		@version: 1.03
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 07/04/2019
 	**/
 	if(json.GetParam){
@@ -3154,7 +3202,7 @@ function isiToolsCallback(json){
 		 HttpRequest functionality																		
 		@version: 2.00																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
-		@Copyright 2017-2020 Islavisual. 																	
+		@Copyright 2017-2021 Islavisual. 																	
 		@Last update: 27/02/2019																			
 	**/
 	if(json.HttpRequest){
@@ -3250,7 +3298,7 @@ function isiToolsCallback(json){
 		 Include files in HTML through Ajax
 		@version: 1.3.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 27/05/2020
 	**/
 	if(json.Include){
@@ -3375,7 +3423,7 @@ function isiToolsCallback(json){
 		 IntelliForm functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 19/03/2019
 	**/
 	if(json.IntelliForm){
@@ -3941,7 +3989,7 @@ function isiToolsCallback(json){
 		 Function to detect if a device is mobile or tablet.
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 30/07/2019
 	**/
 	if(json.IsMobile){
@@ -3982,7 +4030,7 @@ function isiToolsCallback(json){
 		Multi-Language functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 31/03/2019
 	**/
 	
@@ -4356,7 +4404,7 @@ function isiToolsCallback(json){
 		N-State
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 11/06/2019
 	**/
 	if(json.Nstate){
@@ -4578,7 +4626,7 @@ function isiToolsCallback(json){
 		Password tools
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 22/05/2019
 	**/
 	if(json.Password){
@@ -4825,7 +4873,7 @@ function isiToolsCallback(json){
 		Dropdown select
 		@version: 1.4.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 19/01/2021
 	**/
 	if(json.Selectpicker){
@@ -5183,7 +5231,7 @@ function isiToolsCallback(json){
 		Create and send forms in real time.
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 11/03/2019
 		@status PENDING to UPDATE
 	**/
@@ -5546,7 +5594,7 @@ function isiToolsCallback(json){
 		 Validator functionality
 		@version: 1.00
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2017-2020 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 17/03/2019
 	**/
 	if(json.Validator){
