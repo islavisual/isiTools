@@ -1,10 +1,156 @@
 var WikiHelper = {}
 
+WikiHelper.Each = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'each',
+		help: 1,
+		description: 'Permite ecorrer todos los elementos devueltos por isiTools y asignarle propiedades, comportamientos o eventos.',
+		example: '// Mostrar el índice/posición de los elementos selecciondos y añadirles la clase "focused"\n\
+it("input, textarea, select").each(function(index){\n\
+	console.log("índice", index)\n\
+	this.classList.toggle("focused")\n\
+});\n\
+\n\
+// Añadirles, a los elementos selecciondos, un evento click que muestre un mensaje por consola y les establezca un estilo en línea con una opacidad del 50%\n\
+it("input").each({\n\
+	style: "opacity: 0.5",\n\
+	onclick: function(e){\n\
+		console.log(e, "recibió el foco")\n\
+	}\n\
+});',
+	},
+}
+
+WikiHelper.First = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'first',
+		help: 1,
+		description: 'Devuelve el primer elemento de los elementos recuperados por la función constructora.',
+		example: 'it("input").first();',
+	},
+}
+
+WikiHelper.Get = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'get',
+		help: 1,
+		description: 'Recuperar el enésimo elemento devuelto por la función constructora it().\n\
+	Si el valor del parámetro no está establecido, o es 0, se devolverá el primer elemento.\n\
+	Si el valor del parámetro es mayor que 0, se devolverá el elemento referenciado por la posición indicada.',
+		example: '// El siguiente ejemplo devuelve el elemento body de la página. Equivalente a hacer un document.querySelector("body");\n\
+it("body").get();\n\
+\n\
+// Recuperar el primer elemento que tenga la clase "hasDatePicker"\n\
+it(".hasDatePicker").get(0);\n\
+\n\
+// Recuperar el tercer elemento que tenga la clase "form-input"\n\
+it(".form-input").get(2);',
+	},
+}
+
+WikiHelper.Gettextwidth = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'gettextwidth',
+		help: 1,
+		description: 'Función para calcular el ancho de un elemento en base a un texto dado.\n\
+	Se alimenta de los parámetros "obj", "fontFamily" y "fontSize". No obstante, los dos últimos son opcionales.\n\
+	Si los parámetros "fontFamily" y "fontSize" se omiten, se recuperará del elemento referenciado por el parámetro "obj".\n\
+	Si el valor del parámetro es mayor que 0, se devolverá el elemento referenciado por la posición indicada.',
+		example: '// Longitud en pixels de la cadena "Contenido textual" cen Arial a 13 píxeles de tamaño y con un padding de 10 píxeles\n\
+it.getTextWidth("Contenido textual", "Arial", "13px", 10);\n\
+\n\
+// Longitud en píxeles del texto contenido en el elemento con ID establecido a "name". En el siguiente ejemplo, se supone que el elemento "name" es un elemento de formulario o contiene un texto\n\
+it.getTextWidth(document.getElementById("name"));\n\
+\n\
+// Longitud en píxeles del texto contenido en el elemento previamente seleccionado desde la consola del navegador\n\
+it.getTextWidth($0, "Open Sans", "13px");\n\
+\n\
+// Longitud en píxeles del texto más largo contenido en el elemento SELECT previamente seleccionado desde la consola del navegador\n\
+it.getTextWidth(Array.prototype.slice.call($0.querySelectorAll("option"), 0));',
+	},
+}
+
+WikiHelper.Last = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'last',
+		help: 1,
+		description: 'Devuelve el último elemento de los elementos recuperados por la función constructora.',
+		example: 'it("input").last();',
+	},
+}
+
+WikiHelper.Leftpad = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'leftpad',
+		help: 1,
+		description: 'Añadir ceros por la izquierda a valores numéricos.\nSe alimenta de un único parámetro que indica el número de ceros a añadir si el número no tiene la longitud indicada.',
+		example: '// Devolver 0012 desde un valor de tipo cadena.\n\
+"12".leftPad(4);\n\
+// Devolver 0012 desde un valor de tipo número.\n\
+(12).leftPad(4);',
+	},
+}
+
+WikiHelper.Scrollto = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'scrollto',
+		help: 1,
+		description: 'Función para mover el scroll vertical de un determinado elemento hasta una posición determinada.',
+		example: '// Mover la barra de desplazamiento de la página hasta la posición 100\n\
+it("body").scrollTo(100);\n\
+\n\
+// Mover la barra de desplazamiento un elemento FIELDSET ubicado en el BODY\n\
+iit(document.querySelector("fieldset")).scrollTo(56);',
+	},
+}
+
+WikiHelper.Simulateevent = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'simulateevent',
+		help: 1,
+		description: 'Simula un evento como si fuese lanzado por el usuario.\nSe alimenta de dos parámetros. El primero es el evento a simular. El segundo, el elemento dónde disparar dicho evento',
+		example: '// Lanzar el evento CHANGE en el primer elemento INPUT que se encuentre en la página.\n\
+it.simulateEvent("change", it("input").get());\n\
+// Lanzar el evento INPUT en el primer elemento INPUT de tipo texto que se encuentre en la página.\n\
+it.simulateEvent("change", it("input[type=text]").get());',
+	},
+}
+
+WikiHelper.Ucwords = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'ucwords',
+		help: 1,
+		description: 'Convierte el primer carácter de un texto a mayúscula y, el resto, minúsculas.',
+		example: '// Convertir todas las palabras a Upper Camel Case, es decir, la primera a mayúscula y, el resto, minúsculas.\n\
+it.ucwords("framework de isiTools");\n\
+// Convertir el texto como si fuese una frase.\n\
+it.ucwords("framework de isiTools", false);',
+	},
+}
+
 /**
    AddCSSRule Helper																		
    @version: 1.10																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 04/04/2019																			
  **/
 
@@ -41,10 +187,10 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.3.3																					
+   @version: 1.5
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
-   @Last update: 19/01/2021
+   @Copyright 2017-2021 Islavisual. 																	
+   @Last update: 26/01/2021
  **/
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
@@ -79,6 +225,28 @@ if(it.enabledModules.Alert){
 			description: 'Título de la alerta.',
 			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});'
 		},
+		onshow: {
+			type: 'function',
+			description: 'Título de la alerta.',
+			example: 'new Alert({\n\
+	title: "Precaución!",\n\
+	body:"El campo se encuentra vacío.",\n\
+	onshow: function(){\n\
+		document.querySelector(".Alert header").style.background="red";\n\
+	}\n\
+});'
+		},
+		onhide: {
+			type: 'function',
+			description: 'Título de la alerta.',
+			example: 'new Alert({\n\
+	title: "Precaución!",\n\
+	body:"El campo se encuentra vacío.",\n\
+	onhide: function(){\n\
+		console.log("Alerta ocultada!");\n\
+	}\n\
+})'
+		},
 		body: {
 			type: 'string',
 			description: 'Representa el contenido de la alerta o diálogo. Puede contener texto plano, texto HTML o la función url() de CSS.',
@@ -92,6 +260,11 @@ new Alert({title: "Precaución!", body:"&lt;span>Esto es una prueba&lt;/span> of
 new Alert({title: "Precaución!", body: document.querySelector("custom-dialog").innerHTML});\n\n\
 // Alerta con contenido cargado a través de URL\n\
 new Alert({title: "Precaución!", body:"url(./templates/dialog.html)"});'
+		},
+		ajaxmethod: {
+			type: 'string',
+			description: 'Indica el tipo de llamada al servidor cuando el cuerpo de la alerta se recupera a través de una URL.',
+			example: 'new Alert({title: "Precaución!", body:"url(./templates/dialog.html)", ajaxmethod: "post"});'
 		},
 		actions: {
 			type: 'object',
@@ -240,7 +413,7 @@ new Alert({\n\
    Autocomplete Helper
    @version: 1.4.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
-   @Copyright 2017-2020 Islavisual.
+   @Copyright 2017-2021 Islavisual.
    @Last update: 30/04/2020
  **/
 if(it.enabledModules.Autocomplete){
@@ -724,7 +897,7 @@ if(it.enabledModules.Benchmark){
    Constraint to input Helper
    @version: 1.2
    @author: Pablo E. Fernández (islavisual@gmail.com).
-   @Copyright 2017-2020 Islavisual.
+   @Copyright 2017-2021 Islavisual.
    @Last update: 20/05/2020
  **/
 if(it.enabledModules.Constraint){
@@ -828,7 +1001,7 @@ it("#inputTextID").constraint.decrement();'
    Counter Helper																		
    @version: 1.1.0																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 19/05/2020																			
  **/
 if(it.enabledModules.Counter){
@@ -949,7 +1122,7 @@ forma: "MM min",\n\
 	 Datepicker functionality
 	 @version: 1.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 11/07/2019
  **/
 if(it.enabledModules.Datepicker){
@@ -1012,7 +1185,7 @@ if(it.enabledModules.Datepicker){
 	 Debugger functionality
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 15/03/2019
  **/
 if(it.enabledModules.Debugger){
@@ -1080,7 +1253,7 @@ if(it.enabledModules.Debugger){
    DOM Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/02/2019																			
  **/
 if(it.enabledModules.DOM){
@@ -1103,7 +1276,7 @@ if(it.enabledModules.DOM){
    GetBrowser Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/01/2019																			
  **/
 if(it.enabledModules.GetBrowser){
@@ -1150,7 +1323,7 @@ if(it.enabledModules.GetBrowser){
    GetParam Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 13/03/2019																			
  **/
 if(it.enabledModules.GetParam){
@@ -1173,7 +1346,7 @@ if(it.enabledModules.GetParam){
    HttpRequest Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/02/2019																			
  **/
 if(it.enabledModules.HttpRequest){
@@ -1275,7 +1448,7 @@ if(it.enabledModules.HttpRequest){
    Include Helper																		
    @version: 1.2.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
-   @Copyright 2017-2020 Islavisual.
+   @Copyright 2017-2021 Islavisual.
    @Last update: 12/05/2020
  **/
 if(it.enabledModules.Include){
@@ -1312,7 +1485,7 @@ if(it.enabledModules.Include){
 	 IntelliForm functionality
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 19/03/2019
  **/
 if(it.enabledModules.IntelliForm){
@@ -1390,7 +1563,7 @@ if(it.enabledModules.IntelliForm){
    IsMobile Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 11/03/2019																			
  **/
 if(it.enabledModules.IsMobile){
@@ -1413,7 +1586,7 @@ if(it.enabledModules.IsMobile){
    Language Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 31/03/2019																			
  **/
 if(it.enabledModules.Language){
@@ -1451,7 +1624,7 @@ if(it.enabledModules.Language){
 	 Masking functionality
 	 @version: 1.1.0
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 07/05/2020
  **/
 if(it.enabledModules.Mask){
@@ -1477,7 +1650,7 @@ it("#code").mask("99A-99#A-####-999A");'
    Nstate Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 14/06/2019																			
  **/
 if(it.enabledModules.Nstate){
@@ -1507,7 +1680,7 @@ if(it.enabledModules.Nstate){
 	Password tools
 	@version: 1.00
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2020 Islavisual.
+	@Copyright 2017-2021 Islavisual.
 	@Last update: 22/05/2019
 **/
 if(it.enabledModules.Password){
@@ -1599,7 +1772,7 @@ if(it.enabledModules.Password){
 	 Create and send forms in real time.
 	 @version: 1.4.1
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 19/01/2021
  **/
 if(it.enabledModules.Selectpicker){
@@ -1735,7 +1908,7 @@ if(it.enabledModules.Selectpicker){
 	 Create and send forms in real time.
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 11/03/2019
 	 @status PENDING to UPDATE
  **/
@@ -1763,7 +1936,7 @@ if(it.enabledModules.SendForm){
    StripTags Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2020 Islavisual. 																	
+   @Copyright 2017-2021 Islavisual. 																	
    @Last update: 13/03/2019																			
  **/
 if(it.enabledModules.StripTags){
@@ -1890,7 +2063,7 @@ if(it.enabledModules.Treeview){
 	 Validator functionality
 	 @version: 1.00
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
-	 @Copyright 2017-2020 Islavisual.
+	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 17/03/2019
  **/
 if(it.enabledModules.Validator){
@@ -1972,7 +2145,10 @@ this.Helper = it.Helper = function (func, cfg) {
 			if(typeof aux.general != "undefined") delete aux.general;
 			if(typeof aux.additional != "undefined") delete aux.additional;
 
-			if(typeof WikiHelper[key].general.help != "undefined" && WikiHelper[key].general.help == 1){
+			if(WikiHelper[key].general.intern){
+				WikiHelper[key].general.helpText = WikiHelper[key].general.example;
+
+			} else if(typeof WikiHelper[key].general.help != "undefined" && WikiHelper[key].general.help == 1){
 				WikiHelper[key].general.helpText = '<comm>// Para obtener ayuda general sobre el script/plugin</comm>\n' + WikiHelper[key].general.name + '.help();\n';
 				WikiHelper[key].general.helpText += WikiHelper[key].general.name + ".help({theme: '" + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + "'});\n";
 				if(typeof Object.keys(aux)[0] != "undefined"){
@@ -1986,7 +2162,10 @@ this.Helper = it.Helper = function (func, cfg) {
 				}
 			}
 
-			WikiHelper[idx][WikiHelper[key].general.name].description = WikiHelper[key].general.description + '\n<a onclick="' + WikiHelper[key].general.helpText.split("\n")[1] + "\"><b>Click here for obtein help about " + WikiHelper[key].general.name + "</b>.</a>";
+			WikiHelper[idx][WikiHelper[key].general.name].description = WikiHelper[key].general.description
+			if(WikiHelper[key].general.intern){
+				WikiHelper[idx][WikiHelper[key].general.name].description += '\n<a onclick="' + WikiHelper[key].general.helpText.split("\n")[1] + "\"><b>Pulsa aquí para obtener ayuda sobre " + WikiHelper[key].general.name + "</b>.</a>";
+			}
 			WikiHelper[idx][WikiHelper[key].general.name].example =  WikiHelper[key].general.helpText;
 			WikiHelper[idx][WikiHelper[key].general.name].example = WikiHelper[idx][WikiHelper[key].general.name].example.replace(new RegExp (WikiHelper[key].general.name, 'ig'), function($0){ return "<name>" + $0 + "</name>"; })
 		}
