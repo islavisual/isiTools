@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.6",
+it.version = "1.8.7",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "26/01/2021",
+it.lastupdate = "02/02/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -151,7 +151,7 @@ it.getTextWidth = function(obj, fontFamily, fontSize, padding){
 	if(typeof obj == "object" && obj.length != undefined){
 		// Si es un array de elementos NodeList
 		try { 
-			obj = obj.reduce(function (a, b) { return a.text.length > b.text.length ? a : b; });
+			obj = obj.reduce(function (a, b) { return a.innerText.length > b.innerText.length ? a : b; });
 			text = obj.innerText;
 		} catch(e){
 			console.log("No se puede recuperar el elemento de mayor lonfitud del array")
@@ -5271,6 +5271,366 @@ function isiToolsCallback(json){
 			document.getElementsByTagName('body')[0].appendChild(f);
 
 			s.click();
+		}
+	}
+
+	/**
+		Sort tables functionality																		
+		@version: 1.0																					
+		@author: Pablo E. Fernández (islavisual@gmail.com).												
+		@Copyright 2017-2021 Islavisual. 																	
+		@Last update: 02/02/2021
+	**/
+	if(json.Sorter){
+		this.Sorter = it.sorter = function (cfg) {
+			if(cfg == undefined) cfg = {};
+
+			// Recorremos todos los resultados que devuelve la función constructora
+			Array.prototype.slice.call(this.targets).forEach(function (target, idx) {
+				// Rescumeramos el ID de la tabla
+				var id = target.id;
+				
+				// Si el atributo id no está configurado, por defecto, lo asignamos
+				if(id == ""){
+					id = 'Sorter_' + idx;
+					target.id = id;
+				}
+				target.classList.add("sortable");
+				
+				// Establecemos la configuración requerida para la tabla
+				var opt = {
+					icons: {
+						sort: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('sort') ? 'fa fa-sort' : cfg.icons.sort,
+						asc: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('asc') ? 'fa fa-sort-alpha-asc' : cfg.icons.asc,
+						desc: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('desc') ? 'fa fa-sort-alpha-desc' : cfg.icons.desc,
+					},
+					selector: !cfg.hasOwnProperty('selector') ? false : cfg.selector,
+					table: target,
+					rows: target.rows.length,
+					cols: target.querySelectorAll("tbody tr:first-child td").length
+				}
+				if(!it.sorter.config) it.sorter.config = [];
+
+				// Establecemos la ordenación actual (ninguna sin ordenar)
+				opt.sorting = [];
+				for(var i = 0; i < opt.cols; i++){
+					opt.sorting.push('');
+				}
+
+				it.sorter.config[id] = opt;
+				
+
+				// Añadimos la funcionalidad de ordenar
+				it.sorter._remove(opt);
+				it.sorter._addIndexes(opt);
+				it.sorter._addIcons(opt);
+				
+				if(opt.selector) it.sorter._addSelector(opt);
+
+				it.sorter._addStyles(opt);
+				it.sorter.sort(0, '', target);
+			});
+
+		}
+
+		it.sorter._addSelector = function(opt){
+			// Añadimos una capa envolvente para meter todos los elementos
+			var div = document.createElement("div");
+				div.classList.add("sortable-layer");
+				div.innerHTML = opt.table.outerHTML;
+
+			opt.table.parentElement.append(div)
+			opt.table.remove();
+			opt.table = div.querySelector("table");
+
+			// Añadimos el selector para ordenación múltiple
+			var tbl = document.createElement("table");
+				tbl.classList.add("sortable-selector");
+				tbl.style.display = 'none';
+
+			// Creamos la cabecera de la tabla
+			var thead = document.createElement("thead");
+			var tr = document.createElement("tr");
+			var th1 = document.createElement("th");
+			var th2 = document.createElement("th");
+			var th3 = document.createElement("th");
+			var th4 = document.createElement("th");
+			
+			th1.innerHTML = "Columna"
+			th2.innerHTML = 'Asc';
+			th3.innerHTML = 'Desc';
+			th4.innerHTML = 'No';
+
+			tr.append(th1);
+			tr.append(th2);
+			tr.append(th3);
+			tr.append(th4);
+
+			thead.append(tr);
+			tbl.append(thead);
+
+			// Creamos la cabecera de la tabla
+			var tbody = document.createElement("tbody");
+				
+			var ths = opt.table.querySelectorAll("thead tr:last-child th");
+			var maxWidth = 0;
+			for (var i = 0; i < ths.length; i++) {
+				if(ths[i].innerText.trim() != ""){
+					var tr = document.createElement("tr");
+
+					var td1 = document.createElement("td");
+					var td2 = document.createElement("td");
+					var td3 = document.createElement("td");
+					var td4 = document.createElement("td");
+					
+					td1.innerHTML = ths[i].innerText;
+					td2.innerHTML = '<input type="radio" name="sorter_ri' + i + '" data-index="' + i + '" data-order="asc" onchange="it.sorter.selectorClick(this, 1)" />';
+					td3.innerHTML = '<input type="radio" name="sorter_ri' + i + '" data-index="' + i + '" data-order="desc" onchange="it.sorter.selectorClick(this, -1)" />';
+					td4.innerHTML = '<input type="radio" name="sorter_ri' + i + '" checked data-index="' + i + '" data-order="none" onchange="it.sorter.selectorClick(this, 0)" />';
+
+					tr.append(td1);
+					tr.append(td2);
+					tr.append(td3);
+					tr.append(td4);
+
+					tbody.append(tr);
+				}
+			}
+
+			tbl.append(tbody);
+			
+			opt.table.insertAdjacentElement('beforebegin', tbl);
+
+			// Añadimos el label para desplegar la lista de ordenación múltiple
+			var lbl = document.createElement("label");
+				lbl.classList.add("sortable-label");
+				lbl.onclick = function(e){
+					e.target.nextElementSibling.classList.toggle("open");
+					e.target.classList.toggle("open");
+				}
+				lbl.innerHTML = "Ordenación";
+			
+			tbl.insertAdjacentElement('beforebegin', lbl);
+		}
+
+		it.sorter.selectorClick = function(el, ord){
+			ord = ord == 0 ? '' : (ord == 1 ? 'asc' : 'desc');
+			it.sorter.sort(el.dataset.index, ord, el.parentElement.parentElement.parentElement.parentElement.nextElementSibling)
+		}
+
+		it.sorter._addIndexes = function(opt){
+			// Establecemos el orden inicial
+			var rows = opt.table.querySelectorAll("tbody tr");
+			for (var i = 0; i < rows.length; i++) {
+				rows[i].dataset.index = i;
+			}
+		}
+
+		it.sorter._addIcons = function(opt){
+			var ths = opt.table.querySelectorAll('table tr:last-child th')
+			for(var i = 0; i < ths.length; i++){
+				ths[i].innerHTML += '<i class="' + opt.icons.sort + '"></i>';
+				ths[i].setAttribute("onclick", "it.sorter.sort(" + i + ", 'toggle', this)");
+			}
+		}
+
+		it.sorter.sort = function(col, ord, trg){
+			if(col == undefined) col = 0;
+			   col = col.toString();
+			if(ord == undefined) ord = 'asc';
+			else if(ord == 'none') ord = '';
+
+			// Recuperamos la tabla a reordenar
+			var table = trg;
+			if(trg == undefined) table = it.targets[0];
+			else if(trg.tagName == "TH") table = trg.parentElement.parentElement.parentElement;
+			var opt = this.config[table.id];
+			
+			// Recuperamos la tabla a ordenar
+			var rows = opt.table.rows;
+
+			// Recuperamos la ordenación actual de la tabla
+			var sorting = opt.sorting;
+
+			// Actualizamos la ordenación de la columna solicitada
+			if(ord == 'toggle'){
+				ord = sorting[col] == '' ? 'asc' : (sorting[col] == 'asc' ? 'desc' : '')
+			}
+			sorting[col] = ord;
+
+			// Ordenamos por la columna indicada respetando
+			// el orden de las columnas anateriores
+			var i, x, y, exchange, cond, switching = true, xCount = 0;
+			while (switching) {
+				switching = false;
+
+				for (i = 1; i < (rows.length - 1); i++) {
+					exchange = false;
+					for (var k = 1; k < sorting.length; k++) {
+						cond = [];
+
+						for (var j = 0; j < k; j++) {
+
+							if(sorting[j] == '' && col != j) continue;
+
+							for (var z = 0; z < cond.length; z++) {
+								if(cond[z].indexOf("=") == -1) cond[z] = cond[z].replace(">", '>=').replace("<", '<=')
+							}
+
+							if(sorting[j] == ''){
+								x = rows[i].dataset.index;
+								y = rows[i + 1].dataset.index;
+							
+								cond.push("'" + x + "' > '" + y + "'");
+							
+							} else if(sorting[j] == 'asc'){
+								x = it.sorter._get(opt, i, j);
+								y = it.sorter._get(opt, i + 1, j);
+
+								cond.push("'" + x.toLowerCase() + "' > '" + y.toLowerCase() + "'");
+
+							} else {
+								x = it.sorter._get(opt, i, j);
+								y = it.sorter._get(opt, i + 1, j);
+
+								cond.push("'" + x.toLowerCase() + "' < '" + y.toLowerCase() + "'");
+							}
+						}
+					
+
+						cond = cond.join(" && ");
+
+						if(cond != "") eval('exchange = ' + cond + ";");
+
+						if(exchange) break;
+					}
+					if(exchange) break;
+				}
+
+				if (exchange) {
+					rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+					switching = true;
+				}
+
+				xCount++;
+				if(xCount > 1000) switching = false;
+			}
+
+			//console.log("TOTAL: ", xCount)
+
+			// Recuperamos todos los iconos de cada celda
+			var ic = table.querySelectorAll("thead tr:last-child th i");
+			if(ic){
+				// Eliminamos todas las clases que hacen referencia los iconos de ordenación
+				var icc = opt.icons.sort.split(' ').concat(opt.icons.asc.split(' ')).concat(opt.icons.desc.split(' '));
+				for(var i = 0; i < ic.length; i++){
+					for(var j = 0; j < icc.length; j++){
+						ic[i].classList.remove(icc[j]); 
+					}
+				}
+
+				// Asignamos los iconos correspondientes en cada celda de la cabecera
+				for(var i = 0; i < sorting.length; i++){
+					icc = sorting[i] == '' ? opt.icons.sort.split(' ') : (sorting[i] == 'asc' ? opt.icons.asc.split(' ') : opt.icons.desc.split(' '));
+					for(var j = 0; j < icc.length; j++){
+						ic[i].classList.add(icc[j]);
+					}
+					if(opt.selector){
+						var item = opt.table.previousElementSibling.querySelector('input[name="sorter_ri' + i + '"][data-order="' + (sorting[i] == "" ? 'none' : sorting[i]) + '"]');
+						if(item) item.checked = true;
+					}
+				}
+			}
+		}
+
+		it.sorter._get = function(opt, row, col){
+			return opt.table.rows[row].querySelectorAll("td")[col].innerText;
+		}
+
+		it.sorter._addStyles = function(opt){
+			setTimeout(function(){
+			if(it.addCSSRule != undefined){
+				it.addCSSRule('', '.sortable th', 'cursor: pointer; position: relative; ');
+				it.addCSSRule('', '.sortable th ' + "." + opt.icons.sort.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 3px; right: 0; font-size: 1em; color: #aaa;');
+				it.addCSSRule('', '.sortable th ' + "." + opt.icons.asc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 0; font-size: 1em; color: #000;');
+				it.addCSSRule('', '.sortable th ' + "." + opt.icons.desc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 0; font-size: 1em; color: #000;');
+
+				it.addCSSRule('', '.sortable-layer', 'position: relative;');
+				it.addCSSRule('', '.sortable-layer .sortable-label', 'border: 1px solid #ccc; cursor: pointer; float: right; min-width: auto; height: 28px; text-align: right; line-height: 26px; padding: 0 25px 0 5px; margin: 5px 0; position: relative; z-index: 2;');
+				it.addCSSRule('', '.sortable-layer .sortable-label::before', 'content: ""; border: 1px solid #000; border-width: 8px; border-color: #000 transparent transparent transparent; position: absolute; top: 10px; right: 6px; ');
+				it.addCSSRule('', '.sortable-layer .sortable-label::after', 'content: ""; border: 1px solid #000; border-width: 6px; border-color: #fff transparent transparent transparent; position: absolute; top: 10px; right: 8px; ');
+				it.addCSSRule('', '.sortable-layer .sortable-label.open::before', 'transform: rotate(180deg); top: 0;');
+				it.addCSSRule('', '.sortable-layer .sortable-label.open::after',  'transform: rotate(180deg); top: 4px;');
+				
+				if(opt.selector){
+					it.addCSSRule('', '.sortable-selector', 'max-height: 0; overflow: hidden; display:block; position: absolute; top: 32px; right: 0; background: #fff; border: 1px solid transparent; padding: 0 5px; z-index: 1; transition: max-height 0.25s ease; ');
+					it.addCSSRule('', '.sortable-selector.open', 'max-height: 200px; padding: 5px; border-color: #ccc; overflow-y: scroll; overflow-x: hidden; ');
+					it.addCSSRule('', '.sortable-selector td, .sortable-selector th', 'border: 1px solid #ccc; padding: 2px 5px; text-align: center; position: relative; min-width: 48px; font-size: 1rem;');
+					it.addCSSRule('', '.sortable-selector input[type=radio]', 'position: relative; left: 0; top: 2px; float: none; margin: 0 auto;');
+				}
+			}
+			if(opt.selector) opt.table.previousElementSibling.style.display = '';
+		}, 150);
+		}
+
+		it.sorter._remove = function(opt){
+			var trg = opt.table;
+
+			// Eliminamos los iconos y eventos de las celdas de cabecera
+			var ics = trg.querySelectorAll("thead th i, th");
+			for(var i = 0; i < ics.length; i++){
+				if(ics[i].tagName == "I"){
+					ics[i].remove();
+				} else {
+					ics[i].removeAttribute('onclick');
+				}
+			}
+
+			// Eliminamos la lista
+			if(trg.previousElementSibling) trg.previousElementSibling.remove();
+
+			// Eliminamos el label
+			if(trg.previousElementSibling) trg.previousElementSibling.remove();
+
+			// Ordenamos por la columna indicada por el parámetro "data-index"
+			// en orden ascendente
+			var i, x, y, switching = true;
+			while (switching) {
+				switching = false;
+
+				var rows = opt.table.rows;
+				for (i = 1; i < (rows.length - 1); i++) {
+					exchange = false;
+					
+					x = rows[i].dataset.index;
+					y = rows[i + 1].dataset.index;
+					
+					if (x > y) {
+						exchange = true;
+						break;
+					}
+				}
+
+				if (exchange) {
+					rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+					switching = true;
+				}
+			}
+
+			// Eliminamos los índices añadidos por el componente
+			var els = opt.table.rows;
+			for(var i = 0; i < els.length; i++){
+				delete els[i].dataset.index;
+			}
+		}
+
+		it.sorter.help = function(cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("Sorter", cfg);
+			else alert("Helper not available!");
+			return;
 		}
 	}
 
