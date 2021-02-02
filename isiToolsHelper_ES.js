@@ -1933,6 +1933,70 @@ if(it.enabledModules.SendForm){
 }
 
 /**
+   Sorter Helper																		
+   @version: 1.00																					
+   @author: Pablo E. Fernández (islavisual@gmail.com).												
+   @Copyright 2017-2021 Islavisual. 																	
+   @Last update: 02/02/2021																			
+ **/
+if(it.enabledModules.Sorter){
+	WikiHelper.Sorter = {
+		general: {
+			version: 1.0,
+			name: 'Sorter',
+			description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
+		},
+		icons: {
+			type: 'object',
+			description: 'Define las clases que representarán los iconos de ordenación. Este parámetro es opcional.',
+			example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
+it("table").sorter({\n\
+	icons: {\n\
+		sort: "fa fa-sort",\n\
+		asc: "fa fa-sort-alpha-asc",\n\
+		desc: "fa fa-sort-alpha-desc"\n\
+	}\n\
+});\n\
+\n\
+// Que es lo mismo que el siguiente ejemplo debido a que, los iconos anteriores, son los por defecto.\n\
+it("table").sorter();'
+		},
+		selector: {
+			type: 'boolean',
+			description: 'Añade un botón que muestra un diálogo con todas las columnas y su orden actual.',
+			example: '// Habilitar el selector de columnas para ordenar\n\
+it("table").sorter({selector: true});'
+		},
+		sort: {
+			type: 'boolean',
+			description: 'Permite ordenar por una columna específica. Requiere de tres parámetros, el número de columna empezando desde CERO, el tipo de ordenación y la tabla donde aplicar la ordenación.',
+			example: '// Ordenar la segunda columna de forma ascendente en la tabla con ID "table01"\n\
+it.sorter.sort(1, "asc", document.getElementById("table01"));\n\
+// Ordenar la cuarta columna de forma descendente en la tabla con ID "table01"\n\
+it.sorter.sort(3, "desc", document.getElementById("table01"));\n\
+// Dejar la columna de la tabla con ID "table01" como estaba antes de ser ordenada"\n\
+it.sorter.sort(3, "none", it.sorter.config.table01);'
+		},
+		additional: [
+			{
+				description: 'Es posible acceder a la consiguración de la tabla a partir de su ID.',
+				example: '// Si suponemos que la tabla tiene el atributo ID asignado a "table01", podríamos acceder mediante:\n\
+console.log(it.sorter.config.table01);\n\n\
+// Esta instrucción debería mostrar un objeto JSON similar al siguiente:\n\
+{\n\
+	cols: 5,\n\
+	icons: {sort: "fa la-sort", asc: "fa la-sort-alpha-up", desc: "fa la-sort-alpha-down"}\n\
+	rows: 25\n\
+	selector: true\n\
+	sorting: ["desc", "asc", "", "", ""]\n\
+	table: table#table01.sortable\n\
+}'
+			},
+		]
+	}
+}
+
+/**
    StripTags Helper																		
    @version: 1.00																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
