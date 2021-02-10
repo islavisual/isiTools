@@ -43,11 +43,15 @@ Los componentes que ofrece son:
  Primero Descarga / copia las librerías en tu carpeta javascript de tu proyecto. Después, inserta el código necesario para activar isiTools de alguna de las siguientes formas: 
  ```javascript
 // Carga selectiva a través del objeto itEnabledModules
-<script src="isitools.js" />
-<script src="isitoolsHerlper.js" />
+<script src="js/isiTools/isiTools.js" />
+<script src="js/isiTools/isiToolsHelper_ES.js" />
 // Cargar selectiva por parámetro en URL
-<script src="isitools.js?modules=AddCSSRule+Alert+Autocomplete+DOM" />
-<script src="isitoolsHerlper_ES.js" />
+<script src="js/isiTools/isiTools.js?modules=AddCSSRule+Alert+Autocomplete+DOM" />
+<script src="js/isiTools/isiToolsHelper_ES.js" />
+// Aunque también es posible insertarlo en las páginas a través de las siguientes intrucciones
+<script src="https://raw.githubusercontent.com/islavisual/isiTools/master/isiTools.js" />
+<script src="https://raw.githubusercontent.com/islavisual/isiTools/master/isiToolsHelper_ES.js" />
+
 ```
 
 # Información adicional
