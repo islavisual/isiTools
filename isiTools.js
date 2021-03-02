@@ -16,7 +16,7 @@ var itEnabledModules = {
 	IsMobile: false,
 	Language: false,
 	Mask: true,
-	Now: false,
+	Now: true,
 	Nstate: false,
 	Password: false,
 	Selectpicker: true,
@@ -44,10 +44,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.7",
+it.version = "1.8.8",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "02/02/2021",
+it.lastupdate = "02/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -253,6 +253,25 @@ it.first = function(){ return this.targets[0] }
 it.last = function(){ return this.targets[this.targets.length - 1] }
 
 /**
+	Recuperar un determinado padre establecido por nombre de etiqueta o todos los padres de un elemento
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 02/03/2021
+**/
+it.parents = function(e){
+    var r = [], el = it.targets[0];
+
+    for (var p = el && el.parentElement;
+             e ? (p && p.tagName.toLowerCase() != e.toLowerCase()) : p;
+             p = p.parentElement) {
+        r.push(p);
+    }
+
+    if(e) return p; else return r;
+}
+
+/**
 	Convertir el primer carácter a mayúscula y, el resto, minúsculas.
 	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -380,10 +399,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 Custom alerts functionality
-		@version: 1.5
+		@version: 1.6
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 26/01/2021
+		@Last update: 02/03/2021
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -423,8 +442,8 @@ function isiToolsCallback(json){
 
 			// Default Actions
 			var defaultActions = {
-				accept: { enabled: true, text: 'Accept', class: 'btn-accept', alignment: 'right', callback: null, addtocallback: {} },
-				cancel: { enabled: false, text: 'Cancel', class: 'btn-cancel', alignment: 'left', callback: null, addtocallback: {} }
+				accept: { enabled: true, text: 'Accept', class: '', alignment: 'right', callback: null, addtocallback: {} },
+				cancel: { enabled: false, text: 'Cancel', class: '', alignment: 'left', callback: null, addtocallback: {} }
 			}
 
 			// Create JSON with current opt
@@ -582,9 +601,18 @@ function isiToolsCallback(json){
 					aux.value = item.value || item.innerHTML;
 					json.elements.push(aux);
 				}
+
+				var addcb = opt.actions.accept.addtocallback;
+				if(accepted){
+					addcb = opt.actions.accept.addtocallback;
+				} else {
+					addcb = opt.actions.cancel.addtocallback;
+				}
 				
-				for(var arg in opt.actions.accept.addtocallback){
-					item = opt.actions.accept.addtocallback[arg];
+				if(addcb && addcb.length == undefined) addcb = [addcb];
+
+				for(var arg in addcb){
+					item = addcb[arg];
 					if(item instanceof HTMLElement){
 						if(item.id == "") item.id = arg;
 						for (var x = 0, atts = item.attributes; x < atts.length; x++){
@@ -669,11 +697,16 @@ function isiToolsCallback(json){
 					AddCSSRule('', ".Alert", 'max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; overflow: hidden; color: ' + opt.styles.body.color + ';');
 					AddCSSRule('', ".Alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
 					AddCSSRule('', ".Alert header h3", 'font-size: 14px; margin: 0; color: ' + opt.styles.title.color + '; display: inline-block');
-					AddCSSRule('', ".Alert header i", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
+					AddCSSRule('', ".Alert header .close-btn", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
 					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
 					AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
-					AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
-					AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
+					if(opt.actions.accept.class == ""){
+						AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
+					}
+
+					if(opt.actions.accept.class == ""){
+						AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
+					}
 				}
 
 				try { document.querySelector(".Alert-overlay").remove(); } catch (e) { }
@@ -3148,7 +3181,7 @@ function isiToolsCallback(json){
 
 	/**
 		 Get Browser Plugin
-		@version: 1.02
+		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
 		@Last update: 05/03/2019
@@ -3169,7 +3202,7 @@ function isiToolsCallback(json){
 
 	/**
 		 Get parameter from url
-		@version: 1.03
+		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
 		@Last update: 07/04/2019
@@ -4410,7 +4443,7 @@ function isiToolsCallback(json){
 	**/
 	if(json.Nstate){
 		this.Nstate = it.nstate = {
-			version: '1.0',
+			version: 1.0,
 			config: { type: 'switch', style: '', id: '' },
 			help: function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
@@ -4625,7 +4658,7 @@ function isiToolsCallback(json){
 
 	/**
 		Password tools
-		@version: 1.00
+		@version: 1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
 		@Last update: 22/05/2019
@@ -5230,7 +5263,7 @@ function isiToolsCallback(json){
 
 	/**
 		Create and send forms in real time.
-		@version: 1.00
+		@version: 1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
 		@Last update: 11/03/2019
@@ -5277,10 +5310,10 @@ function isiToolsCallback(json){
 
 	/**
 		Sort tables functionality																		
-		@version: 1.0																					
+		@version: 1.1																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2021 Islavisual. 																	
-		@Last update: 02/02/2021
+		@Last update: 02/03/2021
 	**/
 	if(json.Sorter){
 		this.Sorter = it.sorter = function (cfg) {
@@ -5552,9 +5585,9 @@ function isiToolsCallback(json){
 			setTimeout(function(){
 			if(it.addCSSRule != undefined){
 				it.addCSSRule('', '.sortable th', 'cursor: pointer; position: relative; ');
-				it.addCSSRule('', '.sortable th ' + "." + opt.icons.sort.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 3px; right: 0; font-size: 1em; color: #aaa;');
-				it.addCSSRule('', '.sortable th ' + "." + opt.icons.asc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 0; font-size: 1em; color: #000;');
-				it.addCSSRule('', '.sortable th ' + "." + opt.icons.desc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 0; font-size: 1em; color: #000;');
+				it.addCSSRule('', '.sortable th ' + "." + opt.icons.sort.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 3px; right: 5px; font-size: 1em; color: #aaa; width: auto;');
+				it.addCSSRule('', '.sortable th ' + "." + opt.icons.asc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
+				it.addCSSRule('', '.sortable th ' + "." + opt.icons.desc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
 
 				it.addCSSRule('', '.sortable-layer', 'position: relative;');
 				it.addCSSRule('', '.sortable-layer .sortable-label', 'border: 1px solid #ccc; cursor: pointer; float: right; min-width: auto; height: 28px; text-align: right; line-height: 26px; padding: 0 25px 0 5px; margin: 5px 0; position: relative; z-index: 2;');
@@ -5637,7 +5670,7 @@ function isiToolsCallback(json){
 
 	/**
 		 StripTags functionality
-		@version: 1.00																					
+		@version: 1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
 		@Last update: 09/02/2019
@@ -5953,7 +5986,7 @@ function isiToolsCallback(json){
 
 	/**
 		 Validator functionality
-		@version: 1.00
+		@version: 1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
 		@Last update: 17/03/2019
