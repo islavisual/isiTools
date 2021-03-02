@@ -103,6 +103,25 @@ WikiHelper.Leftpad = {
 	},
 }
 
+WikiHelper.Parents = {
+	general: {
+		version: 1.0,
+		intern: true,
+		name: 'parents',
+		help: 1,
+		description: 'Devuelve el elemento padre establecido por su nombre de etiqueta o, en su defecto, todos los padres del elemento recuperado por la función constructora.',
+		example: '// Devolver el elemento TABLE de un TD previamente seleccionado por la variable $0.\n\
+it($0).parents("table");\n\
+// Su resultado podría ser algo como:\n\
+&lt;table class="cebrada"&gt;&lt;/table&gt;\n\
+\n\
+// Devolver todos los padres de un elemento dado en un array.\n\
+it($0).parents();\n\
+// Su resultado podría ser algo como:\n\
+[tr, thead, table, section, main, body, html]',
+	},
+}
+
 WikiHelper.Scrollto = {
 	general: {
 		version: 1.0,
@@ -157,7 +176,7 @@ it.ucwords("framework de isiTools", false);',
 if(it.enabledModules.AddCSSRule){
 	WikiHelper.Addcssrule = {
 		general: {
-			version: 1.0,
+			version: 1.10,
 			name: 'AddCSSRule',
 			help: 1,
 			description: "Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.",
@@ -187,7 +206,7 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.5
+   @version: 1.6
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 26/01/2021
@@ -195,7 +214,7 @@ if(it.enabledModules.AddCSSRule){
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
 		general: {
-			version: 1.3,
+			version: 1.6,
 			name: 'Alert',
 			description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.",
 		},
@@ -411,7 +430,7 @@ new Alert({\n\
 
 /**
    Autocomplete Helper
-   @version: 1.4.0
+   @version: 1.5.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
    @Last update: 30/04/2020
@@ -419,7 +438,7 @@ new Alert({\n\
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
 		general: {
-			version: 1.4,
+			version: 1.5,
 			name: 'Autocomplete',
 			help: 1,
 			description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
@@ -903,7 +922,7 @@ if(it.enabledModules.Benchmark){
 if(it.enabledModules.Constraint){
 	WikiHelper.Constraint = {
 		general: {
-			version: 1.1,
+			version: 1.2,
 			name: 'Constraint',
 			help: 1,
 			description: "Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.\nUna vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.",
@@ -999,7 +1018,7 @@ it("#inputTextID").constraint.decrement();'
 
 /**
    Counter Helper																		
-   @version: 1.1.0																					
+   @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 19/05/2020																			
@@ -1120,7 +1139,7 @@ forma: "MM min",\n\
 
 /**
 	 Datepicker functionality
-	 @version: 1.2
+	 @version: 1.2.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 11/07/2019
@@ -1274,7 +1293,7 @@ if(it.enabledModules.DOM){
 
 /**
    GetBrowser Helper																		
-   @version: 1.00																					
+   @version: 1.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/01/2019																			
@@ -1282,7 +1301,7 @@ if(it.enabledModules.DOM){
 if(it.enabledModules.GetBrowser){
 	WikiHelper.Getbrowser = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'GetBrowser',
 			description: "Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.",
 		},
@@ -1321,7 +1340,7 @@ if(it.enabledModules.GetBrowser){
 
 /**
    GetParam Helper																		
-   @version: 1.00																					
+   @version: 1.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 13/03/2019																			
@@ -1329,7 +1348,7 @@ if(it.enabledModules.GetBrowser){
 if(it.enabledModules.GetParam){
 	WikiHelper.Getparam = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'GetParam',
 			description: "Función para obtener todos los valores de los parámetros recibidos en la URL.",
 		},
@@ -1344,7 +1363,7 @@ if(it.enabledModules.GetParam){
 
 /**
    HttpRequest Helper																		
-   @version: 1.00																					
+   @version: 2.0																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/02/2019																			
@@ -1352,7 +1371,7 @@ if(it.enabledModules.GetParam){
 if(it.enabledModules.HttpRequest){
 	WikiHelper.Httprequest = {
 		general: {
-			version: 1.0,
+			version: 2.0,
 			name: 'HttpRequest',
 			description: "HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.",
 		},
@@ -1446,7 +1465,7 @@ if(it.enabledModules.HttpRequest){
 
 /**
    Include Helper																		
-   @version: 1.2.0
+   @version: 1.3
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
    @Last update: 12/05/2020
@@ -1454,7 +1473,7 @@ if(it.enabledModules.HttpRequest){
 if(it.enabledModules.Include){
 	WikiHelper.Include = {
 		general: {
-			version: 1.0,
+			version: 1.3,
 			name: 'Include',
 			description: "Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.",
 		},
@@ -1622,7 +1641,7 @@ if(it.enabledModules.Language){
 
 /**
 	 Masking functionality
-	 @version: 1.1.0
+	 @version: 1.1.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 07/05/2020
@@ -1630,7 +1649,7 @@ if(it.enabledModules.Language){
 if(it.enabledModules.Mask){
 	WikiHelper.Mask = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'Mask',
 			help: 1,
 			description: 'Herramienta para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.'
@@ -1770,7 +1789,7 @@ if(it.enabledModules.Password){
 
 /**
 	 Create and send forms in real time.
-	 @version: 1.4.1
+	 @version: 1.4.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 19/01/2021
@@ -1906,7 +1925,7 @@ if(it.enabledModules.Selectpicker){
 
 /**
 	 Create and send forms in real time.
-	 @version: 1.00
+	 @version: 1.0
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 11/03/2019
@@ -1934,7 +1953,7 @@ if(it.enabledModules.SendForm){
 
 /**
    Sorter Helper																		
-   @version: 1.00																					
+   @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 02/02/2021																			
@@ -1942,7 +1961,7 @@ if(it.enabledModules.SendForm){
 if(it.enabledModules.Sorter){
 	WikiHelper.Sorter = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'Sorter',
 			description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
 		},
@@ -1998,7 +2017,7 @@ console.log(it.sorter.config.table01);\n\n\
 
 /**
    StripTags Helper																		
-   @version: 1.00																					
+   @version: 1.0
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 13/03/2019																			
@@ -2021,7 +2040,7 @@ if(it.enabledModules.StripTags){
 
 /**
    TreeView Helper
-   @version: 1.00																					
+   @version: 1.1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2019 Islavisual.
    @Last update: 23/11/2020
@@ -2029,7 +2048,7 @@ if(it.enabledModules.StripTags){
 if(it.enabledModules.Treeview){
 	WikiHelper.Treeview = {
 		general: {
-			version: 1.0,
+			version: 1.1,
 			name: 'Treeview',
 			description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).",
 		},
@@ -2125,7 +2144,7 @@ if(it.enabledModules.Treeview){
 
 /**
 	 Validator functionality
-	 @version: 1.00
+	 @version: 1.0
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 17/03/2019
@@ -2174,7 +2193,7 @@ if(it.enabledModules.Validator){
 
 /**
    Helper functionality
-   @version: 1.00																					
+   @version: 1.0																					
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2019 Islavisual.
    @Last update: 01/03/2019
@@ -2317,7 +2336,7 @@ this.Helper = it.Helper = function (func, cfg) {
 				__ITEMS_HELP__\
 			</ul>\
 		</nav>\
-		<h2>Tabla de contenidos de isiTools ' +  general.version.toFixed(2) + '</h2>\
+		<h2>Tabla de contenidos de isiTools ' +  it.version + '</h2>\
 		<div style="margin-top: 64px">\
 		IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
 		<br/>\
