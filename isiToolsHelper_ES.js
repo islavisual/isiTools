@@ -2193,10 +2193,10 @@ if(it.enabledModules.Validator){
 
 /**
    Helper functionality
-   @version: 1.0																					
+   @version: 1.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2019 Islavisual.
-   @Last update: 01/03/2019
+   @Last update: 04/03/2021
  **/
 
 this.Helper = it.Helper = function (func, cfg) {
