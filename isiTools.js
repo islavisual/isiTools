@@ -399,7 +399,7 @@ function isiToolsCallback(json){
 	
 	/**
 		 Custom alerts functionality
-		@version: 1.6
+		@version: 1.6.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
 		@Last update: 02/03/2021
@@ -5310,10 +5310,10 @@ function isiToolsCallback(json){
 
 	/**
 		Sort tables functionality																		
-		@version: 1.1																					
+		@version: 1.2																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2021 Islavisual. 																	
-		@Last update: 02/03/2021
+		@Last update: 04/03/2021
 	**/
 	if(json.Sorter){
 		this.Sorter = it.sorter = function (cfg) {
@@ -5339,30 +5339,24 @@ function isiToolsCallback(json){
 						desc: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('desc') ? 'fa fa-sort-alpha-desc' : cfg.icons.desc,
 					},
 					selector: !cfg.hasOwnProperty('selector') ? false : cfg.selector,
+					columns: !cfg.hasOwnProperty('columns') ? Array(target.querySelectorAll("thead tr:last-child th").length).fill('') : cfg.columns,
 					table: target,
 					rows: target.rows.length,
 					cols: target.querySelectorAll("tbody tr:first-child td").length
 				}
 				if(!it.sorter.config) it.sorter.config = [];
-
-				// Establecemos la ordenación actual (ninguna sin ordenar)
-				opt.sorting = [];
-				for(var i = 0; i < opt.cols; i++){
-					opt.sorting.push('');
-				}
-
 				it.sorter.config[id] = opt;
 				
-
 				// Añadimos la funcionalidad de ordenar
 				it.sorter._remove(opt);
 				it.sorter._addIndexes(opt);
+				it.sorter._setOrder(opt);
 				it.sorter._addIcons(opt);
 				
 				if(opt.selector) it.sorter._addSelector(opt);
 
 				it.sorter._addStyles(opt);
-				it.sorter.sort(0, '', target);
+				it.sorter.sort(0, target);
 			});
 
 		}
@@ -5449,7 +5443,7 @@ function isiToolsCallback(json){
 
 		it.sorter.selectorClick = function(el, ord){
 			ord = ord == 0 ? '' : (ord == 1 ? 'asc' : 'desc');
-			it.sorter.sort(el.dataset.index, ord, el.parentElement.parentElement.parentElement.parentElement.nextElementSibling)
+			it.sorter.sort(el.dataset.index, el.parentElement.parentElement.parentElement.parentElement.nextElementSibling, ord)
 		}
 
 		it.sorter._addIndexes = function(opt){
@@ -5462,35 +5456,80 @@ function isiToolsCallback(json){
 
 		it.sorter._addIcons = function(opt){
 			var ths = opt.table.querySelectorAll('table tr:last-child th')
-			for(var i = 0; i < ths.length; i++){
-				ths[i].innerHTML += '<i class="' + opt.icons.sort + '"></i>';
-				ths[i].setAttribute("onclick", "it.sorter.sort(" + i + ", 'toggle', this)");
+			for(var i = 0; i < opt.sorting.length; i++){
+				var item = opt.sorting[i], th = ths[i];
+				
+				if(item.orderable){
+					th.innerHTML += '<i class="' + opt.icons[item.setto == '' ? 'sort' : item.setto] + '"></i>';
+					th.setAttribute("onclick", "it.sorter.sort(" + i + ", this, 'toggle')");
+
+					if(th.style.width) th.style.width = "calc(" + th.style.width + " + 12px)";
+				} 
 			}
 		}
 
-		it.sorter.sort = function(col, ord, trg){
-			if(col == undefined) col = 0;
-			   col = col.toString();
-			if(ord == undefined) ord = 'asc';
-			else if(ord == 'none') ord = '';
+		it.sorter._setOrder = function(opt){
+			if(opt.columns.length == 0) return;
 
+			opt.sorting = [];
+
+			for(var i = 0; i < opt.columns.length; i++){
+				var ord = opt.columns[i];
+
+				if(typeof ord == "string"){
+					if(ord != "none"){
+						opt.sorting.push({id: 'sorterCol' + i, orderable: true, setto: ord, type: 'string'})
+					} else {
+						opt.sorting.push({id: 'sorterCol' + i, orderable: false})
+					}
+					
+				} else if(typeof ord == "object"){
+					var id, orderable, setto, type;
+					id        = ord.hasOwnProperty("id") ? ord.id : 'sorterCol' + i;
+					orderable = ord.hasOwnProperty("orderable") ? ord.orderable : true;
+					setto     = ord.hasOwnProperty("setto") ? ord.setto : '';
+					type      = ord.hasOwnProperty("type") ? ord.type : 'string';
+					if(orderable){
+						opt.sorting.push({id: id, orderable: orderable, setto: setto, type: type})	
+					} else {
+						opt.sorting.push({id: id, orderable: orderable})
+					}
+				}
+			}
+		}
+
+		it.sorter.sort = function(col, trg, ord){
 			// Recuperamos la tabla a reordenar
 			var table = trg;
 			if(trg == undefined) table = it.targets[0];
 			else if(trg.tagName == "TH") table = trg.parentElement.parentElement.parentElement;
 			var opt = this.config[table.id];
 			
+			if(!ord) ord = opt.columns[col].setto;
+
+			it.sorter.sort_string(col, ord, table)
+		}
+
+		it.sorter.sort_string = function(col, ord, table){
+			if(col == undefined) col = 0;
+			   col = col.toString();
+			if(ord == undefined) ord = 'asc';
+			else if(ord == 'none') ord = '';
+
+			// Recuperamos la configuración de la tabla
+			var opt = this.config[table.id];
+			
 			// Recuperamos la tabla a ordenar
 			var rows = opt.table.rows;
 
-			// Recuperamos la ordenación actual de la tabla
-			var sorting = opt.sorting;
+			// Recuperamos la ordenación actual de la tabla, tipo y formato
+			var sorting = opt.sorting, type = opt.columns[col].type, mask = opt.columns[col].hasOwnProperty("format") ? opt.columns[col].format : opt.columns[col].enum;
 
 			// Actualizamos la ordenación de la columna solicitada
 			if(ord == 'toggle'){
-				ord = sorting[col] == '' ? 'asc' : (sorting[col] == 'asc' ? 'desc' : '')
+				ord = sorting[col].setto == '' ? 'asc' : (sorting[col].setto == 'asc' ? 'desc' : '')
 			}
-			sorting[col] = ord;
+			sorting[col].setto = ord;
 
 			// Ordenamos por la columna indicada respetando
 			// el orden de las columnas anateriores
@@ -5505,33 +5544,32 @@ function isiToolsCallback(json){
 
 						for (var j = 0; j < k; j++) {
 
-							if(sorting[j] == '' && col != j) continue;
+							if(sorting[j].setto == '' && col != j) continue;
 
 							for (var z = 0; z < cond.length; z++) {
 								if(cond[z].indexOf("=") == -1) cond[z] = cond[z].replace(">", '>=').replace("<", '<=')
 							}
 
-							if(sorting[j] == ''){
+							if(sorting[j].setto == ''){
 								x = rows[i].dataset.index;
 								y = rows[i + 1].dataset.index;
 							
-								cond.push("'" + x + "' > '" + y + "'");
+								cond.push(x + " > " + y);
 							
-							} else if(sorting[j] == 'asc'){
-								x = it.sorter._get(opt, i, j);
-								y = it.sorter._get(opt, i + 1, j);
+							} else if(sorting[j].setto == 'asc'){
+								x = it.sorter._get(opt, i, j, type, mask);
+								y = it.sorter._get(opt, i + 1, j, type, mask);
 
-								cond.push("'" + x.toLowerCase() + "' > '" + y.toLowerCase() + "'");
+								cond.push(x + " > " + y);
 
 							} else {
-								x = it.sorter._get(opt, i, j);
-								y = it.sorter._get(opt, i + 1, j);
+								x = it.sorter._get(opt, i, j, type, mask);
+								y = it.sorter._get(opt, i + 1, j, type, mask);
 
-								cond.push("'" + x.toLowerCase() + "' < '" + y.toLowerCase() + "'");
+								cond.push(x + " < " + y);
 							}
 						}
 					
-
 						cond = cond.join(" && ");
 
 						if(cond != "") eval('exchange = ' + cond + ";");
@@ -5550,7 +5588,7 @@ function isiToolsCallback(json){
 				if(xCount > 1000) switching = false;
 			}
 
-			//console.log("TOTAL: ", xCount)
+			//console.log("TOTAL: ", xCount, "SORTING:", sorting)
 
 			// Recuperamos todos los iconos de cada celda
 			var ic = table.querySelectorAll("thead tr:last-child th i");
@@ -5565,20 +5603,51 @@ function isiToolsCallback(json){
 
 				// Asignamos los iconos correspondientes en cada celda de la cabecera
 				for(var i = 0; i < sorting.length; i++){
-					icc = sorting[i] == '' ? opt.icons.sort.split(' ') : (sorting[i] == 'asc' ? opt.icons.asc.split(' ') : opt.icons.desc.split(' '));
+					if(!sorting[i].orderable) continue;
+
+					icc = sorting[i].setto == '' ? opt.icons.sort.split(' ') : (sorting[i].setto == 'asc' ? opt.icons.asc.split(' ') : opt.icons.desc.split(' '));
 					for(var j = 0; j < icc.length; j++){
 						ic[i].classList.add(icc[j]);
 					}
+
 					if(opt.selector){
-						var item = opt.table.previousElementSibling.querySelector('input[name="sorter_ri' + i + '"][data-order="' + (sorting[i] == "" ? 'none' : sorting[i]) + '"]');
+						var item = opt.table.previousElementSibling.querySelector('input[name="sorter_ri' + i + '"][data-order="' + (sorting[i].setto == "" ? 'none' : sorting[i].setto) + '"]');
 						if(item) item.checked = true;
 					}
 				}
 			}
 		}
 
-		it.sorter._get = function(opt, row, col){
-			return opt.table.rows[row].querySelectorAll("td")[col].innerText;
+		it.sorter._get = function(opt, row, col, type, mask){
+			function toTS(v, m){
+				var dd   = v.substr(m.indexOf("DD"), 2)
+				var mm   = v.substr(m.indexOf("MM"), 2)
+				var yy   = v.substr(m.indexOf("YYYY"), 4)
+
+				return Math.floor(Date.UTC(yy, mm-1, dd) / 1000);
+			}
+
+			function toIdx(v, m){
+				return m.indexOf(v);
+			}
+
+			function toStr(v){
+				return v.toLowerCase();
+			}
+
+			var v = opt.table.rows[row].querySelectorAll("td")[col].innerText;
+
+			if(type == 'string'){
+				return toStr(v);
+			} else if(type == 'number'){
+				return parseFloat(v)
+			} else if(type == 'date'){
+				return toTS(v, mask);
+			} else if(type == 'enum'){
+				return toIdx(v, mask);
+			}
+
+			return v;
 		}
 
 		it.sorter._addStyles = function(opt){
