@@ -44,10 +44,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.8",
+it.version = "1.8.9",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "02/03/2021",
+it.lastupdate = "04/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -521,7 +521,7 @@ function isiToolsCallback(json){
 				}
 			}
 
-			var tmpl = '<div class="Alert ' + opt.class + '">\
+			var tmpl = '<article class="Alert ' + opt.class + '">\
 					<header>\
 						<h3>__TITLE__</h3>\
 						<i class="close-btn">&times;</i>\
@@ -530,10 +530,10 @@ function isiToolsCallback(json){
 						__DATA__\
 					</div>\
 					<footer>\
-						__ACCEPT__\
 						__CANCEL__\
+						__ACCEPT__\
 					</footer>\
-				</div>';
+				</article>';
 
 			function alertDragStart(e) { var style = window.getComputedStyle(opt.target, null); e.dataTransfer.setData("text/html", (style.left.replace(/[^0-9]/ig, '') - e.clientX) + ',' + (style.top.replace(/[^0-9]/ig, '') - e.clientY)); } 
 			function alertDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
