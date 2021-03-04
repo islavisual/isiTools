@@ -214,7 +214,7 @@ if(it.enabledModules.AddCSSRule){
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
 		general: {
-			version: 1.6,
+			version: "1.6.1",
 			name: 'Alert',
 			description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.",
 		},
@@ -1961,9 +1961,32 @@ if(it.enabledModules.SendForm){
 if(it.enabledModules.Sorter){
 	WikiHelper.Sorter = {
 		general: {
-			version: 1.1,
+			version: 1.2,
 			name: 'Sorter',
 			description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
+		},
+		columns: {
+			type: 'object',
+			description: 'Define la ordenación de las columnas. Los posibles tipos son "string", "number", "date" y "enum". Este parámetro es opcional.\n\
+Cosas a tener en cuenta:\n\
+\t\u2022 Si orderable es false, las propiedades "setto" y "type" no es necesario establecerlas porque serán ignoradas.\n\
+\t\u2022 Si no se establece la propiedad ID, se asignará automáticamente a "sorterColN", donde N es el número de columna\n\
+\t\u2022 Si no se especifica tipo de ordenación, se asignará como alfanumérica, es decir, de tipo "string".\n\
+\t\u2022 Si se especifica la ordenación de tipo fecha (date), se deberá asignar también el formato a través de la propiedad "format".\n\
+\t\u2022 Si se especifica la ordenación de tipo numeral (enum), se deberá asignar también el array de datos numerales a través de la propiedad "enum".',
+			example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
+it("table").sorter(\n\
+	{\n\
+		columns: [\n\
+			{id: "c1", orderable: true, setto: "asc", type: "string"},\n\
+			{id: "c2", orderable: true, setto: "",    type: "number"},\n\
+			{id: "c3", orderable: true,               type: "date", format: "DD-MM-YYYY"},\n\
+			{id: "c4", orderable: true,               type: "enum", enum: ["Alto", "Medio", "Bajo"]},\n\
+			"",\n\
+			{id: "actions", orderable: false}\n\
+		]\n\
+	}\n\
+);'
 		},
 		icons: {
 			type: 'object',
@@ -2413,8 +2436,9 @@ this.Helper = it.Helper = function (func, cfg) {
 			} else if (general.name.toLowerCase() == "index") {
 				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop;
 					wprop = it.ucwords(wprop);
+				var clk = '" onclick="' + WikiHelper[wprop].general.helpText.split("\n")[1] + '"';
 				
-				text += '<h3 id="' + wprop + '" onclick="' + WikiHelper[wprop].general.helpText.split("\n")[1] + '">' + wprop + '</h3>';
+				text += '<h3 id="' + wprop + clk + '>' + wprop + '</h3>';
 				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
 			}
 
