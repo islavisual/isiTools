@@ -2302,7 +2302,7 @@ this.Helper = it.Helper = function (func, cfg) {
 	// Set HTML template
 	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
 	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
-	<h2>Pantalla de ayuda para ' + general.name + " " + general.version.toFixed(2) + '</h2>\
+	<h2>Pantalla de ayuda para ' + general.name + " " + general.version + '</h2>\
 	<p style="margin-top: 64px">'+ general.description + '</p>\
 	<p>Parámetros y opciones:</p>\
 	__TEXT__\
