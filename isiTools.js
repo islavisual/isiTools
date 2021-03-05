@@ -560,6 +560,7 @@ function isiToolsCallback(json){
 				// Create overlay and add to body
 				var a = document.createElement("div");
 					a.setAttribute("class", "Alert-overlay");
+					a.onclick= function(e){ if(e.target.classList.contains("Alert-overlay")) e.target.querySelector(".close-btn").click() }
 					a.innerHTML = aux;
 
 				document.body.appendChild(a);
@@ -2076,10 +2077,10 @@ function isiToolsCallback(json){
 
 	/**
 		Datepicker functionality
-		@version: 1.2.2
+		@version: 1.2.3
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 19/01/2021
+		@Last update: 05/03/2021
 	**/
 	if (json.Datepicker) {
         this.Datepicker = it.datepicker = function (cfg) {
@@ -2284,13 +2285,17 @@ function isiToolsCallback(json){
 					cal.setAttribute("tabindex", "0");
 					cal.setAttribute("onkeydown", "it.datepicker.onkeydown()");
 					cal.setAttribute("onclick", "it.datepicker.click(this)");
+					cal.setAttribute("role", "dialog");
+					cal.setAttribute("aria-modal", "true");
+					cal.setAttribute("aria.labelledby", 'cal_'+ Math.random().toString(36).substr(2, 5));
 					
                     var cclose = document.createElement("i");
                     cclose.classList.add("datepicker-close");
                     cclose.innerHTML = "Cerrar";
 
                     var lcal = document.createElement("div");
-                    lcal.classList.add("l-cal");
+					lcal.classList.add("l-cal");
+					lcal.id = cal.getAttribute("aria-labelledby");
                     var aux = '<span>' + cfg.selDay + '</span>';
                     aux += '<span>' + cfg.selDName + '</span>';
                     aux += '<span>' + cfg.selMName + '</span>';
@@ -2307,7 +2312,7 @@ function isiToolsCallback(json){
                     rcal.classList.add("r-cal");
 
                     // Fill years select 
-                    rcal.innerHTML = '<div class="datepicker-years"><input id="datepicker-year" maxlength="4" value="' + cfg.selYear + '" /><span class="dt-up"></span><span class="dt-down"></span></div>';
+                    rcal.innerHTML = '<div class="datepicker-years"><input id="datepicker-year" aria-label="' + cfg.textYear + '" maxlength="4" value="' + cfg.selYear + '" /><span class="dt-up"></span><span class="dt-down"></span></div>';
 					
 					rcal.querySelector(".dt-up").setAttribute("onmousedown", "window.interval_ = setInterval(function(){ it.datepicker.updateYear(event, 1)}, 50)");
 					rcal.querySelector(".dt-up").setAttribute("onmouseup", "clearInterval(window.interval_)");
@@ -2318,7 +2323,7 @@ function isiToolsCallback(json){
                     var aux = "";
                     for (var x = 0; x < cfg.shortmonths.length; x++) {
                         var active = x == cfg.selMonth - 1 ? ' active' : '';
-                        aux += '<span data-id="' + x + '" class="month' + active + '">' + cfg.shortmonths[x] + '</span>';
+                        aux += '<button aria-label="' + cfg.longmonths[x] + '" data-id="' + x + '" class="month' + active + '">' + cfg.shortmonths[x] + '</button>';
                     }
                     rcal.innerHTML += '<div class="datepicker-months">' + aux + '</div>';
 
@@ -2606,8 +2611,8 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input ~ span.dt-up", 'display: block; position: absolute; right: 8px; top: 0; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px;');
 			it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-years input ~ span.dt-up::before", 'display: block; position: absolute; right: 2px; top: 2px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: "";');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months", 'border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px;');
-            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box;');
-            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id + " .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal; padding: 0;');
+            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month", 'cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; background: ' + fg + '; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box;');
+            it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-months .month.active, #datepicker-layer-" + id + " .datepicker-months .month:hover", ' background: ' + bg + '; color: ' + fg + '; border-color: rgba(0,0,0,0.1); font-weight: normal;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week", 'padding: 0 5px; display: table;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .r-cal .datepicker-week-names .datepicker-week", 'padding: 5px; background: ' + bg + '; color: ' + fg + ';');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-week .dayname, #datepicker-layer-" + id + " .datepicker-week .day", 'cursor: pointer; font-size: 14px; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0);');
@@ -2626,6 +2631,7 @@ function isiToolsCallback(json){
             shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
             longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 			weekstart: 1,
+			textYear: 'Año',
 			textToday: 'Hoy',
             textRemove: 'Eliminar',
 			autoClose: true,
