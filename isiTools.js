@@ -399,10 +399,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 Custom alerts functionality
-		@version: 1.6.1
+		@version: 1.6.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 02/03/2021
+		@Last update: 05/03/2021
 	**/
 	if(json.Alert){
 		this.Alert = it.alert = function (cfg) {
@@ -521,9 +521,9 @@ function isiToolsCallback(json){
 				}
 			}
 
-			var tmpl = '<article class="Alert ' + opt.class + '">\
+			var tmpl = '<it-dialog class="Alert ' + opt.class + '" aria-labelledby="__ID__" aria-modal="true" role="dialog">\
 					<header>\
-						<h3>__TITLE__</h3>\
+						<h3 id="__ID__">__TITLE__</h3>\
 						<i class="close-btn">&times;</i>\
 					</header>\
 					<div class="Alert-body">\
@@ -533,7 +533,7 @@ function isiToolsCallback(json){
 						__CANCEL__\
 						__ACCEPT__\
 					</footer>\
-				</article>';
+				</it-dialog>';
 
 			function alertDragStart(e) { var style = window.getComputedStyle(opt.target, null); e.dataTransfer.setData("text/html", (style.left.replace(/[^0-9]/ig, '') - e.clientX) + ',' + (style.top.replace(/[^0-9]/ig, '') - e.clientY)); } 
 			function alertDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
@@ -552,6 +552,7 @@ function isiToolsCallback(json){
 
 				// Create template
 				var aux = tmpl.replace("__TITLE__", opt.title)
+				    .replace(/__ID__/g, 'dlg_'+ Math.random().toString(36).substr(2, 5))
 					.replace("__DATA__", opt.body)
 					.replace("__ACCEPT__", opt.actions.accept.enabled ? ('<button ' + opt.actions.accept.form + ' class="' + opt.actions.accept.class + '" ' + (opt.actions.accept.alignment == "" ? '' : (opt.actions.accept.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.accept.text + '</button>') : '')
 					.replace("__CANCEL__", opt.actions.cancel.enabled ? ('<button class="' + opt.actions.cancel.class + '" ' + (opt.actions.cancel.alignment == "" ? '' : (opt.actions.cancel.alignment == "left" ? 'style="float: left;"' : 'style="float: right;"')) + '>' + opt.actions.cancel.text + '</button>') : '');
@@ -646,7 +647,9 @@ function isiToolsCallback(json){
 				});
 
 				if (opt.actions.accept.enabled) {
-					document.querySelector(".Alert footer ." + opt.actions.accept.class.replace(/\s/g, '.')).addEventListener("click", function (e) {
+					var cls = "." + opt.actions.accept.class.replace(/\s/g, '.');
+						cls = cls == "." ? 'button' : cls;
+					document.querySelector(".Alert footer " + cls).addEventListener("click", function (e) {
 						var aux = getData(e, true);
 						if(!aux.hasOwnProperty("invalidMessage")){
 							if (opt.actions.accept.callback) opt.actions.accept.callback(aux);
@@ -694,12 +697,14 @@ function isiToolsCallback(json){
 			function init() {
 				if(typeof it.addCSSRule != "undefined"){
 					AddCSSRule('', ".Alert-overlay", 'position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999');
-					AddCSSRule('', ".Alert", 'max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; overflow: hidden; color: ' + opt.styles.body.color + ';');
+					AddCSSRule('', ".Alert", 'display: block; max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; border: 1px solid rgba(0,0,0,0.75); overflow: hidden; color: ' + opt.styles.body.color + ';');
 					AddCSSRule('', ".Alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
 					AddCSSRule('', ".Alert header h3", 'font-size: 14px; margin: 0; color: ' + opt.styles.title.color + '; display: inline-block');
 					AddCSSRule('', ".Alert header .close-btn", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
 					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
 					AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
+					AddCSSRule('', ".Alert footer button", 'background: #fff; color: #000; border: 1px solid #000;');
+
 					if(opt.actions.accept.class == ""){
 						AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
 					}
@@ -728,10 +733,10 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.5.0
+		@version: 1.5.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 21/06/2020
+		@Last update: 05/03/2021
 	**/
 	
 	if(json.Autocomplete){
@@ -861,7 +866,15 @@ function isiToolsCallback(json){
 				it.autocomplete.targets[opt.target.id] = {};
 				it.autocomplete.targets[opt.target.id].opt = opt;
 				opt.target.dataset.helper = "Autocomplete";
-				
+
+				// Assign aria controls
+				opt.target.setAttribute("role", "combobox");
+				opt.target.setAttribute("aria-autocomplete", "both");
+				opt.target.setAttribute("aria-expanded", "false");
+				opt.target.setAttribute("aria-haspopup", "true");
+				opt.target.setAttribute("aria-owns", opt.target.id + "-" + opt.className + "-list");
+				opt.target.setAttribute("aria-activedescendant", "");
+								
 				// Remove duplicating events for body element
 				document.body.removeEventListener('click', it.autocomplete._checkFocus);
 				document.body.addEventListener('click', it.autocomplete._checkFocus);
@@ -990,7 +1003,7 @@ function isiToolsCallback(json){
 						a.setAttribute("id", opt.target.id + "-" + opt.className + "-list");
 						a.setAttribute("class", opt.className + "-items display");
 						a.classList.add(opt.format);
-
+						e.target.setAttribute("aria-expanded", 'true')
 						
 						document.body.addEventListener("click", function (e) {
 							if(e.path.filter(function(e){ return e != document && e!= window && e.classList.contains("expand-layer")}).length == 0){
@@ -1353,7 +1366,8 @@ function isiToolsCallback(json){
         it.autocomplete._removeItemsList = function(reset, opt) {
             var item = opt.target.parentElement.querySelector("." + opt.className + "-items");
             if(item) item.remove();
-            if (reset) opt.target.value = "";
+			if (reset) opt.target.value = "";
+			opt.target.setAttribute("aria-expanded", "false");
 
             item = null;
         }
@@ -1383,6 +1397,7 @@ function isiToolsCallback(json){
 			for (var i = 0; i < x.length; i++) {
 				if (elmnt != x[i] && elmnt != opt.target) {
 					x[i].parentNode.removeChild(x[i]);
+					x[i].setAttribute("aria-expanded", "false");
 				}
 			}
 		}
@@ -5313,7 +5328,7 @@ function isiToolsCallback(json){
 		@version: 1.2																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2021 Islavisual. 																	
-		@Last update: 04/03/2021
+		@Last update: 05/03/2021
 	**/
 	if(json.Sorter){
 		this.Sorter = it.sorter = function (cfg) {
@@ -5762,10 +5777,10 @@ function isiToolsCallback(json){
 	
 	/**
 		 TreeView functionality
-		@version: 1.1.1																					
+		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2019 Islavisual.
-		@Last update: 12/01/2021
+		@Last update: 05/03/2021
 	**/
 	if(json.Treeview){
 		this.Treeview = it.treeview = function (cfg) {
@@ -5819,6 +5834,7 @@ function isiToolsCallback(json){
 			function render(items, target, level) {
 				if (level == 0) {
 					target.classList.add("treeview");
+					target.setAttribute("role", "tree")
 
 					if (opt.searchable) {
 						var input = document.createElement("input");
@@ -5846,6 +5862,8 @@ function isiToolsCallback(json){
 					// Create li item 
 					var li = document.createElement("li");
 					li.classList.add(item.expanded ? 'expanded' : 'collapsed');
+					li.setAttribute("aria-expanded", item.expanded ? 'true' : 'false')
+					li.setAttribute("role", "treeitem")
 					li.classList.add('level-' + (level + 1));
 
 					target.appendChild(li);
@@ -5864,9 +5882,11 @@ function isiToolsCallback(json){
 						var chk = document.createElement("input");
 						chk.setAttribute("type", "checkbox");
 						chk.setAttribute("name", opt.target.id + "_twNode" + (level + "" + i));
-						chk.setAttribute("id", opt.target.id + "_tw" + (level + "" + i)); 
+						chk.setAttribute("id", "tw_" + Math.random().toString(36).substr(2, 9)); 
 						if (item.hasOwnProperty("id")) chk.setAttribute("data-id", item.id);
 						chk.checked = item.hasOwnProperty('checked') ? item.checked : false;
+						chk.setAttribute("aria-label", item.label);
+						console.log(item)
 
 						li.appendChild(chk);
 					} else if (item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() != "") {
@@ -5877,12 +5897,11 @@ function isiToolsCallback(json){
 					if (item.hasOwnProperty('href')) {
 						var a = document.createElement("a");
 						a.setAttribute("href", item.href);
-						a.innerHTML = '<label rel="label" ' + (item.hasOwnProperty("id") ? ('data-id="' + item.id + '"') : '') + '>' + item.label + '</label>';
+						a.innerHTML = '<label ' + (item.hasOwnProperty("id") ? ('data-id="' + item.id + '"') : '') + '>' + item.label + '</label>';
 
 						li.appendChild(a);
 					} else {
 						var s = document.createElement("label");
-						s.setAttribute("rel", "label");
 						s.setAttribute("for", "tw" + item.id);
 						s.innerHTML = item[opt.label];
 
@@ -5894,6 +5913,7 @@ function isiToolsCallback(json){
 
 					if (item.hasOwnProperty('children')) {
 						var ul = document.createElement("ul");
+						ul.setAttribute("role", "group");
 						if (opt.hasOwnProperty('branchIcon')) {
 							li.innerHTML = '<i class="icon">' + opt.branchIcon + "</i>" + li.innerHTML;
 						}
@@ -5928,6 +5948,11 @@ function isiToolsCallback(json){
 						}
 
 						trg.parentElement.classList.toggle("collapsed");
+						if(trg.parentElement.classList.contains("collapsed")){
+							trg.parentElement.setAttribute("aria-expanded", 'false');
+						} else {
+							trg.parentElement.setAttribute("aria-expanded", 'true');
+						}
 						trg.innerHTML = trg.parentElement.classList.contains("collapsed") ? opt.collapsedIcon : opt.expandedIcon;
 					});
 				}
@@ -5991,6 +6016,7 @@ function isiToolsCallback(json){
 										if (aux.classList.contains("collapsed")) {
 											aux.classList.remove("collapsed");
 											aux.classList.add("expanded");
+											aux.setAttribute("aria-expanded", 'true');
 											if (!aux.classList.contains("leaf-node")) aux.querySelector(".toggler").innerHTML = opt.expandedIcon;
 										}
 									}
@@ -6002,6 +6028,7 @@ function isiToolsCallback(json){
 								if (item.classList.contains("expanded")) {
 									item.classList.remove("expanded");
 									item.classList.add("collapsed");
+									item.setAttribute("aria-expanded", 'false');
 									if (!item.classList.contains("leaf-node")) item.querySelector(".toggler").innerHTML = opt.collapsedIcon;
 								}
 							} else {
@@ -6009,6 +6036,7 @@ function isiToolsCallback(json){
 								if (item.classList.contains("collapsed")) {
 									item.classList.remove("collapsed");
 									item.classList.add("expanded");
+									item.setAttribute("aria-expanded", 'true');
 									if (!item.classList.contains("leaf-node")) item.querySelector(".toggler").innerHTML = opt.expandedIcon;
 								}
 							}
@@ -6030,6 +6058,8 @@ function isiToolsCallback(json){
 					AddCSSRule('', "ul.treeview li i.icon", "margin-right: 8px;");
 					AddCSSRule('', "ul.treeview li.search-box input", "width: 100%; background: " + opt.styles.searchBg + "; color: " + opt.styles.searchColor + "; border: 1px solid rgba(0,0,0,0.1)");
 					AddCSSRule('', "ul.treeview li .active", "background: " + opt.styles.activeBg + "; color: " + opt.styles.activeColor + ";");
+					AddCSSRule('', 'ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:not(.switch-input):not(.clean-switch-input):focus::before', 'border-color: #000;');
+					AddCSSRule('', 'ul.treeview input[type="checkbox"]:focus + label', 'background: #000;color: #fff;');
 				}
 			}
 
