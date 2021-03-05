@@ -2,7 +2,7 @@ var WikiHelper = {}
 
 WikiHelper.Each = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'each',
 		help: 1,
@@ -25,7 +25,7 @@ it("input").each({\n\
 
 WikiHelper.First = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'first',
 		help: 1,
@@ -36,7 +36,7 @@ WikiHelper.First = {
 
 WikiHelper.Get = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'get',
 		help: 1,
@@ -56,7 +56,7 @@ it(".form-input").get(2);',
 
 WikiHelper.Gettextwidth = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'gettextwidth',
 		help: 1,
@@ -80,7 +80,7 @@ it.getTextWidth(Array.prototype.slice.call($0.querySelectorAll("option"), 0));',
 
 WikiHelper.Last = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'last',
 		help: 1,
@@ -91,7 +91,7 @@ WikiHelper.Last = {
 
 WikiHelper.Leftpad = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'leftpad',
 		help: 1,
@@ -105,7 +105,7 @@ WikiHelper.Leftpad = {
 
 WikiHelper.Parents = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'parents',
 		help: 1,
@@ -124,7 +124,7 @@ it($0).parents();\n\
 
 WikiHelper.Scrollto = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'scrollto',
 		help: 1,
@@ -139,7 +139,7 @@ iit(document.querySelector("fieldset")).scrollTo(56);',
 
 WikiHelper.Simulateevent = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'simulateevent',
 		help: 1,
@@ -153,7 +153,7 @@ it.simulateEvent("change", it("input[type=text]").get());',
 
 WikiHelper.Ucwords = {
 	general: {
-		version: 1.0,
+		version: '1.0',
 		intern: true,
 		name: 'ucwords',
 		help: 1,
@@ -176,7 +176,7 @@ it.ucwords("framework de isiTools", false);',
 if(it.enabledModules.AddCSSRule){
 	WikiHelper.Addcssrule = {
 		general: {
-			version: 1.10,
+			version: '1.1',
 			name: 'AddCSSRule',
 			help: 1,
 			description: "Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.",
@@ -206,7 +206,7 @@ if(it.enabledModules.AddCSSRule){
 
 /**
    Alert Helper																		
-   @version: 1.6
+   @version: 1.6.1
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 26/01/2021
@@ -214,14 +214,27 @@ if(it.enabledModules.AddCSSRule){
 if(it.enabledModules.Alert){
 	WikiHelper.Alert = {
 		general: {
-			version: "1.6.1",
+			version: "1.6.2",
 			name: 'Alert',
 			description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.",
 		},
 		additional: [
 			{
 				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '_CSS_// styles.css (de tu sitio web)\n.Alert .btn-cancel { padding: 5px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n.Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n.Alert footer { position: relative; top: 5px; padding: 10px 10px 8px; height: auto; display: inline-block; width: 100%; margin: 0px; }\n.Alert .Alert-body { background-color: rgb(240, 0, 32); color: rgb(255, 255, 255); display: inline-block; width: 100%; padding: 10px; min-height: 100px; font-weight: 600; }\n.Alert header i { float: right; color: rgb(240, 240, 240); cursor: pointer; padding: 0px 2px; }\n.Alert header h3 { font-size: 14px; margin: 0px; color: rgb(240, 240, 240); display: inline-block; }\n.Alert header { padding: 10px 8px; background-color: rgb(208, 0, 16); border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: rgb(240, 240, 240); }\n.Alert { width: 400px; margin: 100px auto 0px; background-color: rgb(240, 0, 32); overflow: hidden; color: rgb(255, 255, 255); }\n.Alert-overlay { position: fixed; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; left: 0px; top: 0px; display: block; z-index: 999999; }\nbody.fixed { position: fixed; width: 100%; }\nbody.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }_CSS_'
+				example: '_CSS_\n\
+// styles.css (de tu sitio web)\n\
+.Alert-overlay { position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999; }\n\
+.Alert { display: block; max-width: 360px; margin: 100px auto 0; background-color: rgb(240, 0, 32); border: 1px solid rgba(0,0,0,0.75); overflow: hidden; color: rgb(255, 255, 255); }\n\
+.Alert header { padding: 10px 8px; background-color: rgb(208, 0, 16); border-bottom: 1px solid rgba(0,0,0,0.1); color: rgb(240, 240, 240); }\n\
+.Alert header h3 { font-size: 14px; margin: 0; color: rgb(240, 240, 240); display: inline-block; }\n\
+.Alert header .close-btn { float: right; color: rgb(240, 240, 240); cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0; }\n\
+.Alert .Alert-body { background-color: rgb(240, 0, 32); color: rgb(255, 255, 255); display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; }\n\
+.Alert footer { position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0; }\n\
+.Alert footer button { background: #fff; color: #000; border: 1px solid #000; }\n\
+.Alert .btn-cancel { padding: 5px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
+.Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
+body.fixed { position: fixed; width: 100%; }\n\
+body.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }_CSS_'
 			}
 		],
 		theme: {
@@ -430,7 +443,7 @@ new Alert({\n\
 
 /**
    Autocomplete Helper
-   @version: 1.5.0
+   @version: 1.5.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
    @Last update: 30/04/2020
@@ -438,7 +451,7 @@ new Alert({\n\
 if(it.enabledModules.Autocomplete){
 	WikiHelper.Autocomplete = {
 		general: {
-			version: 1.5,
+			version: '1.5.1',
 			name: 'Autocomplete',
 			help: 1,
 			description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
@@ -879,7 +892,7 @@ it("#inputTextID").autocomplete({\n\
 if(it.enabledModules.Benchmark){
 	WikiHelper.Benchmark = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'Benchmark',
 			help: 1,
 			description: "Este plugin permite comprobar la calidad y el rendimiento de un código pasado a través de una función.",
@@ -922,7 +935,7 @@ if(it.enabledModules.Benchmark){
 if(it.enabledModules.Constraint){
 	WikiHelper.Constraint = {
 		general: {
-			version: 1.2,
+			version: '1.2',
 			name: 'Constraint',
 			help: 1,
 			description: "Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.\nUna vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.",
@@ -1026,7 +1039,7 @@ it("#inputTextID").constraint.decrement();'
 if(it.enabledModules.Counter){
 	WikiHelper.Counter = {
 		general: {
-			version: 1.1,
+			version: '1.1',
 			name: 'Counter',
 			help: 1,
 			description: "Este componente permite crear contadores ascendentes y descendentes y proveerlos de algunas opciones de personalización.",
@@ -1147,7 +1160,7 @@ forma: "MM min",\n\
 if(it.enabledModules.Datepicker){
 	WikiHelper.Datepicker = {
 		general: {
-			version: 1.2,
+			version: '1.2.2',
 			name: 'Datepicker',
 			help: 1,
 			description: 'Datepicker es un control que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks.'
@@ -1210,7 +1223,7 @@ if(it.enabledModules.Datepicker){
 if(it.enabledModules.Debugger){
 	WikiHelper.Debugger = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'Debugger',
 			help: 1,
 			description: 'Depurador automático para ayudarte a saber todo lo que sucede en tu página. Desde cuando un usuario hace un clic hasta conocer qué llamadas ajax se ejecutan en segundo plano.'
@@ -1278,7 +1291,7 @@ if(it.enabledModules.Debugger){
 if(it.enabledModules.DOM){
 	WikiHelper.Dom = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'DOM',
 			help: 1,
 			description: "Funcionalidad para la gestión de eventos, acciones,... una vez que la página esté completamente cargada.",
@@ -1301,7 +1314,7 @@ if(it.enabledModules.DOM){
 if(it.enabledModules.GetBrowser){
 	WikiHelper.Getbrowser = {
 		general: {
-			version: 1.1,
+			version: '1.1',
 			name: 'GetBrowser',
 			description: "Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.",
 		},
@@ -1348,7 +1361,7 @@ if(it.enabledModules.GetBrowser){
 if(it.enabledModules.GetParam){
 	WikiHelper.Getparam = {
 		general: {
-			version: 1.1,
+			version: '1.1',
 			name: 'GetParam',
 			description: "Función para obtener todos los valores de los parámetros recibidos en la URL.",
 		},
@@ -1371,7 +1384,7 @@ if(it.enabledModules.GetParam){
 if(it.enabledModules.HttpRequest){
 	WikiHelper.Httprequest = {
 		general: {
-			version: 2.0,
+			version: '2.0',
 			name: 'HttpRequest',
 			description: "HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.",
 		},
@@ -1473,7 +1486,7 @@ if(it.enabledModules.HttpRequest){
 if(it.enabledModules.Include){
 	WikiHelper.Include = {
 		general: {
-			version: 1.3,
+			version: '1.3',
 			name: 'Include',
 			description: "Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.",
 		},
@@ -1510,7 +1523,7 @@ if(it.enabledModules.Include){
 if(it.enabledModules.IntelliForm){
 	WikiHelper.Intelliform = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'IntelliForm',
 			help: 1,
 			description: 'IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.'
@@ -1588,7 +1601,7 @@ if(it.enabledModules.IntelliForm){
 if(it.enabledModules.IsMobile){
 	WikiHelper.Ismobile = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'IsMobile',
 			description: "Este método indica si el dispositivo actual es \"mobile\" o no.",
 		},
@@ -1611,7 +1624,7 @@ if(it.enabledModules.IsMobile){
 if(it.enabledModules.Language){
 	WikiHelper.Language = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'Language',
 			help: 1,
 			description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
@@ -1649,7 +1662,7 @@ if(it.enabledModules.Language){
 if(it.enabledModules.Mask){
 	WikiHelper.Mask = {
 		general: {
-			version: 1.1,
+			version: '1.1.2',
 			name: 'Mask',
 			help: 1,
 			description: 'Herramienta para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.'
@@ -1675,7 +1688,7 @@ it("#code").mask("99A-99#A-####-999A");'
 if(it.enabledModules.Nstate){
 	WikiHelper.Nstate = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'Nstate',
 			help: 1,
 			description: "Este script le permite crear componentes de tipo Switch para selección de valores binarios y/o de tipo multi selección de más de dos valores.",
@@ -1705,7 +1718,7 @@ if(it.enabledModules.Nstate){
 if(it.enabledModules.Password){
 	WikiHelper.Password = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			help: 1,
 			name: 'Password',
 			description: "El script de contraseña es una herramienta que le permite administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, el script de contraseña penaliza las acciones como insertar varias minúsculas consecutivas, insertar varias mayúsculas consecutivas, insertar varios dígitos consecutivos o repetir tres o más veces el mismo carácter.",
@@ -1797,7 +1810,7 @@ if(it.enabledModules.Password){
 if(it.enabledModules.Selectpicker){
 	WikiHelper.Selectpicker = {
 		general: {
-			version: 1.4,
+			version: '1.4.2',
 			help: 1,
 			name: 'Selectpicker',
 			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.",
@@ -1934,7 +1947,7 @@ if(it.enabledModules.Selectpicker){
 if(it.enabledModules.SendForm){
 	WikiHelper.Sendform = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'SendForm',
 			description: "SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.",
 		},
@@ -1953,15 +1966,15 @@ if(it.enabledModules.SendForm){
 
 /**
    Sorter Helper																		
-   @version: 1.1
+   @version: 1.2
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 02/02/2021																			
+   @Last update: 05/03/2021																			
  **/
 if(it.enabledModules.Sorter){
 	WikiHelper.Sorter = {
 		general: {
-			version: 1.2,
+			version: '1.2',
 			name: 'Sorter',
 			description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
 		},
@@ -2048,7 +2061,7 @@ console.log(it.sorter.config.table01);\n\n\
 if(it.enabledModules.StripTags){
 	WikiHelper.Striptags = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'StripTags',
 			description: "Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.",
 		},
@@ -2063,22 +2076,37 @@ if(it.enabledModules.StripTags){
 
 /**
    TreeView Helper
-   @version: 1.1.1
+   @version: 1.2
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2019 Islavisual.
-   @Last update: 23/11/2020
+   @Last update: 05/03/2021
  **/
 if(it.enabledModules.Treeview){
 	WikiHelper.Treeview = {
 		general: {
-			version: 1.1,
+			version: '1.2',
 			name: 'Treeview',
 			description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).",
 		},
 		additional: [
 			{
 				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '_CSS_// styles.css (from your site)\nul.treeview li .active { background: lightgray; color: rgb(51, 51, 51); }\nul.treeview li.search-box input { width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); }\nul.treeview li i.icon { margin-right: 8px; }\nul.treeview li span { padding: 2px 5px; display: inline-block; }\nul.treeview li a { color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\nul.treeview li.collapsed ul { max-height: 0px; }\nul.treeview li ul { transition: all 0.3s ease 0s; max-height: 10000px; overflow: hidden; }\nul.treeview li i { cursor: pointer; }\nul.treeview li { color: rgb(0, 0, 0); }\nul.treeview, ul.treeview ul { list-style: none; }\nul.treeview { background: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }_CSS_'
+				example: '_CSS_\n\
+// styles.css (from your site)\n\
+ul.treeview{ background: color: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }\n\
+ul.treeview, ul.treeview ul{ list-style: none; }\n\
+ul.treeview li{ color: color: rgb(51, 51, 51); }\n\
+ul.treeview li i{ cursor: pointer; }\n\
+ul.treeview li ul{ transition: 0.3s; max-height: 10000px; overflow: hidden; }\n\
+ul.treeview li.collapsed ul{ max-height: 0; }\n\
+ul.treeview li a{ color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\n\
+ul.treeview li label{ padding: 2px 5px; display: inline-block; }\n\
+ul.treeview li i.icon{ margin-right: 8px; }\n\
+ul.treeview li.search-box input{ width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0,0,0,0.1) }\n\
+ul.treeview li .active{ background: lightgray; color: rgb(51, 51, 51); }\n\
+ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:not(.switch-input):not(.clean-switch-input):focus::before{ border-color: #000; }\n\
+ul.treeview input[type="checkbox"]:focus + label{ background: #000;color: #fff; }\n\
+_CSS_'
 			}
 		],
 		classLeaf: {
@@ -2175,7 +2203,7 @@ if(it.enabledModules.Treeview){
 if(it.enabledModules.Validator){
 	WikiHelper.Validator = {
 		general: {
-			version: 1.0,
+			version: '1.0',
 			name: 'Validator',
 			help: 1,
 			description: "Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.",
@@ -2222,7 +2250,7 @@ if(it.enabledModules.Validator){
    @Last update: 04/03/2021
  **/
 
-this.Helper = it.Helper = function (func, cfg) {
+this.Helper = it.helper = function (func, cfg) {
 	// if func is "index" or empty, build the object
 	if(typeof func == "undefined") func = "Index";
 	
@@ -2269,7 +2297,7 @@ this.Helper = it.Helper = function (func, cfg) {
 			}
 
 			WikiHelper[idx][WikiHelper[key].general.name].description = WikiHelper[key].general.description
-			if(WikiHelper[key].general.intern){
+			if(!WikiHelper[key].general.intern){
 				WikiHelper[idx][WikiHelper[key].general.name].description += '\n<a onclick="' + WikiHelper[key].general.helpText.split("\n")[1] + "\"><b>Pulsa aquí para obtener ayuda sobre " + WikiHelper[key].general.name + "</b>.</a>";
 			}
 			WikiHelper[idx][WikiHelper[key].general.name].example =  WikiHelper[key].general.helpText;
@@ -2284,7 +2312,15 @@ this.Helper = it.Helper = function (func, cfg) {
 	var help = Object.assign({}, sourceHelper);
 	var general = sourceHelper.general;
 	delete help.general;
-
+	
+	// Hack to intern functions
+	if(WikiHelper[it.ucwords(func)].general.hasOwnProperty("intern") && WikiHelper[it.ucwords(func)].general.intern){
+		help[func] = []
+		help[func].push({description: 'Método ' + func})
+		help[func].push({example: general.example})
+		
+	}
+		
 	// if exists another Helper, is removed
 	if (document.querySelector("#h31p3r")) {
 		document.querySelector("#h31p3r").remove();
@@ -2350,10 +2386,10 @@ this.Helper = it.Helper = function (func, cfg) {
 	if (general.name.toLowerCase() == "index") {
 		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
 		<nav>\
-			<a href="#"><i class="btn-bars" onclick="it.Helper.toggleMenu(this)"></i></a>\
+			<a href="#"><i class="btn-bars" onclick="it.helper.toggleMenu(this)"></i></a>\
 			<ul>\
 				<li style="height: 40px; margin: 0; position: relative;">\
-					<input type="search" placeholder="Buscar componente..." oninput="it.Helper.filterh31p3r(this)" />\
+					<input type="search" placeholder="Buscar componente..." oninput="it.helper.filterh31p3r(this)" />\
 					<i></i>\
 				</li>\
 				__ITEMS_HELP__\
@@ -2420,6 +2456,8 @@ this.Helper = it.Helper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r input[type=search]', 'padding: 0 26px 0 6px;'); 
 		AddCSSRule('', '#h31p3r input[type=search] + i ', 'position: absolute; right: 20px; top: 12px; z-index: 2; filter: saturate(0); border: 2px solid #ccc; width: 12px; height: 12px; border-radius: 100%;'); 
 		AddCSSRule('', '#h31p3r input[type="search"] + i::after ', ' content: ""; position: absolute; top: 6px; left: 9px; width: 1px; height: 8px; border: 1px solid #ccc; transform: rotate(-45deg);'); 
+		AddCSSRule('', 'h3+#additionalH31p3r', 'margin: 0 !important;');
+		AddCSSRule('', 'h3+#additionalH31p3r > h3', 'margin: 0 !important; padding: 0; display: none;');
 
 		if(Helper.getParameters("f") == '.me'){
 			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
@@ -2430,15 +2468,16 @@ this.Helper = it.Helper = function (func, cfg) {
 		var text = '', additional = '', items_help = '';
 		var idx = 0;
 		for (var prop in help) {
+			var intern = general.hasOwnProperty("intern") && general.intern;
 			if (prop != "additional" && general.name.toLowerCase() != "index") {
 				var type = help[prop].hasOwnProperty("type") ? help[prop].type : '';
-				text += '<h3>' + ((type == "function" ? 'Método ' : 'Propiedad ') + prop) + '</h3>';
+				text += '<h3>' + (((type == "function" || intern ) ? 'Método ' : 'Propiedad ') + prop) + '</h3>';
 			} else if (general.name.toLowerCase() == "index") {
 				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop;
-					wprop = it.ucwords(wprop);
-				var clk = '" onclick="' + WikiHelper[wprop].general.helpText.split("\n")[1] + '"';
-				
+				var clk   = '" onclick="' + 'it.helper(\'' + wprop + '\')' + '"';
+
 				text += '<h3 id="' + wprop + clk + '>' + wprop + '</h3>';
+				
 				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
 			}
 
