@@ -34,6 +34,33 @@ WikiHelper.First = {
 	},
 }
 
+WikiHelper.Formatdate = {
+	general: {
+		version: '1.0',
+		intern: true,
+		name: 'formatdate',
+		help: 1,
+		description: 'Devuelve la fecha formateada en base al formato y valor enviados. El primer parámtero se corresponde con el formato, que puede ser un código BCP-47 como (en-US, en-GB ó es-PA) y el segundo es el valor de fecha a formatear.\n\
+\t\u2022 Si el primer parámetro es omitido o es vacío, se devolverá en formato Little Endian (DD-MM-YYYY).\n\
+\t\u2022 Si el segundo parámetro es omitido, se tomará como valor la fecha actual.',
+		example: '// Fecha actual en Big Endian\n\
+it.formatedDate("yyyy-mm-dd")\n\
+// Devolverá 2021-03-06\n\
+\n\
+// Fecha actual en Medium Endian\n\
+it.formatedDate("mm-dd-yyyy")\n\
+// Devolverá 03-06-2021\n\
+\n\
+// Fecha actual en Little Endian\n\
+it.formatedDate("dd-mm-yyyy")\n\
+// Devolverá 03-06-2021\n\
+\n\
+// Fecha actual BCP 47\n\
+it.formatedDate("ru-RU")\n\
+// Devolverá 06.03.2021',
+	},
+}
+
 WikiHelper.Get = {
 	general: {
 		version: '1.0',
@@ -1680,30 +1707,282 @@ it("#code").mask("99A-99#A-####-999A");'
 
 /**
    Nstate Helper																		
-   @version: 1.00																					
+   @version: 2.0																					
    @author: Pablo E. Fernández (islavisual@gmail.com).												
    @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 14/06/2019																			
+   @Last update: 06/03/2021
  **/
 if(it.enabledModules.Nstate){
 	WikiHelper.Nstate = {
 		general: {
-			version: '1.0',
+			version: '2.0',
 			name: 'Nstate',
 			help: 1,
-			description: "Este script le permite crear componentes de tipo Switch para selección de valores binarios y/o de tipo multi selección de más de dos valores.",
+			description: 'Este componente permite crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.',
 		},
-		set: {
-			type: 'function',
-			description: 'Permite crear nuevos componentes de Nstate a través de un ID en el HTML y una llamada JavaScript. Los tipos admitidos son "switch" que se comporta como un checkbox de HTML y "multiple" que se comporta como un range de HTML.',
-			exampleSwitch: '// Definición básica de un switch\nNstate.set({\n\ttarget: "sw1",\n\tlabelOn: "On",\n\tlabelOff: "Off"});\n\n// Definición de un switch con estilos y colores personalizados\nNstate.set({\n\ttarget: "sw2",\n\tlabelOn: "On",\n\tlabelOff: "Off",\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});',
-			exampleMultple: '// Definición básica de un selector múltiple\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Bajo", value: 0},\n\t\t{label: "Medio", value: 1},\n\t\t{label: "Alto", value: 2}\n\t],\n\tselected: 1\n});\n\n// Definición con estilos y colores personalizados\nNstate.set({\n\ttype: "multiple",\n\ttarget: "sw1",\n\tvalues:[\n\t\t{label: "Bajo", value: 0},\n\t\t{label: "Medio", value: 1},\n\t\t{label: "Alto", value: 2}\n\t],\n\tselected: 1,\n\tcolors: {\n\t\tbackground: "#ff0000",\n\t\ttextColor: "#ffff00",\n\t\ttrackColor: "#0000ff"\n\t},\n\tstyle:"margin-top: 15px"\n});'
-		},
+		additional: [
+			{
+				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+				example: '_CSS_\n\
+// styles.css (de tu sitio web)\n\
+// Estilos para un Slider de tipo SWITCH\n\
+nstate[type=switch]{ border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0; }\N\
+nstate[type=switch] input{ cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; }\n\
+nstate[type=switch] label{ color: #000; font-size: 12px; background: #EAEAEA none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s; }\n\
+nstate[type=switch] label::before, nstate[type=switch] label::after{ font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit; }\n\
+nstate[type=switch] label::before{ color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; }\n\
+nstate[type=switch] label::after{ color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; }\n\
+nstate[type=switch] input ~ label{ background: linear-gradient(to bottom, #E8E8E8 0%, #F0F0F0 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; }\n\
+nstate[type=switch] input:checked ~ label::before{ opacity: 0; }\n\
+nstate[type=switch] input:checked ~ label::after{ opacity: 1; }\n\
+nstate[type=switch] handle{ background: linear-gradient(to bottom, #FFFFFF 0%, #EAEAEA 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0; }\n\
+nstate[type=switch] handle::before{ background: linear-gradient(to bottom, #EAEAEA 0%, #FFFFFF 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ""; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px; }\n\
+nstate[type=switch] input:checked ~ handle{ box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 4px); }\n\
+\n\
+// Estilos para un Slider de tipo RANGE\n\
+nstate[type=range] values{ width: 100%; display: table; height: auto; }\n\
+nstate[type=range] values span{ color: " + this.config.colors.textColor + "; width: calc(100% / 3); text-align: center; float: left; margin-top: 5px; cursor: pointer; }\n\
+nstate[type=range] values span:first-child{ text-align: left; }\n\
+nstate[type=range] values span:last-child{ text-align: right; }\n\
+nstate[type=range] values span.selected{ font-weight: 600; }\n\
+nstate[type=range] input[type=range]{ position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none; }\n\
+nstate[type=range] input[type=range]:focus{ border: 0 none !important; outline: none; background: #F0F0F0 !important; }\n\
+nstate[type=range] input[type=range]::-webkit-slider-runnable-track{ width: 100%; height: 8.4px; cursor: pointer; background: #F0F0F0; border: 0.2px solid #E8E8E8; border-radius: 0; }\n\
+nstate[type=range] input[type=range]::-webkit-slider-thumb{ border: 1px solid #EAEAEA; height: 24px; width: 24px; background: #FFFFFF; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0; }\n\
+nstate[type=range] input[type=range]:focus::-webkit-slider-runnable-track{ background: #FFFFFF; border: 0 none !important; }\n\
+nstate[type=range] input[type=range]::-moz-range-track{ width: 100%; height: 8.4px; cursor: pointer; background: #F0F0F0; border: 0.2px solid #E8E8E8; border-radius: 0; }\n\
+nstate[type=range] input[type=range]::-moz-range-thumb{ border: 1px solid #EAEAEA; height: 24px; width: 24px; background: #FFFFFF; cursor: pointer; border-radius: 0; }\n\
+nstate[type=range] input[type=range]::-ms-track{ width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: #F0F0F0; border-width: 0; color: transparent; border-radius: 0; }\n\
+nstate[type=range] input[type=range]::-ms-fill-lower{ background: #F0F0F0; border: 0.2px solid #E8E8E8; }\n\
+nstate[type=range] input[type=range]::-ms-fill-upper{ background: #F0F0F0; border: 0.2px solid #E8E8E8; }\n\
+nstate[type=range] input[type=range]::-ms-thumb{ border: 1px solid #EAEAEA; height: 24px; width: 24px; background: #FFFFFF; cursor: pointer; border-radius: 0; }\n\
+nstate[type=range] input[type=range]:focus::-ms-fill-lower{ background: #FFFFFF; border: 0 none !important; }\n\
+nstate[type=range] input[type=range]:focus::-ms-fill-upper{ background: #FFFFFF; border: 0 none !important; }\n\
+nstate[type=range] input[type=range]::-ms-tooltip{ display: none; }\n\
+@media all and (-ms-high-contrast:none){ nstate[type=range] { position:relative; top: 6px; } nstate[type=range] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=range] input[type=range]:focus { background: rgba(0,0,0,0) !important; } }\n\_CSS_'
+			}
+		],
 		autoDraw: {
 			type: 'function',
-			description: 'Permite que los componentes se definan a través de HTML5 y, más tarde, con este método generarlos.',
-			exampleSwitch: '// HTML Code\n&lt;nstate\tid="switch1"\n\ttype="switch"\n\tlabel-on="On"\n\tlabel-off="Off"\n\tselected="0"\n\tbackground="#ffffff" text-color="#000000" track-color="#f0f0f0"\n\tstyle="width: 200px;"\n\tonclick="console.log(\'cambiado!\')">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>',
-			exampleMultiple: '// HTML Code\n&lt;nstate\tid="subtype"\n\ttype="multiple"\n\tvalues="Moto:0, Coche:1, Quad:2"\n\tselected="2"\n\tbackground="#226699" text-color="#000000" track-color="#f0f0f0"\n\tstyle="display: inline-block; width: calc(100% - 128px);">\n&lt;/nstate>\n\n// Javascript to generate the components\n&lt;script>\n\tNstate.autoDraw();\n&lt;/script>'
+			description: 'Permite definir etiquetas NSTATE para generar los componentes de Switch o Slider. Es útil cuando se quieren generar los componentes en tiempo de ejecución.\n\
+<name>NOTA: Este método se ejecuta automáticamente al cargar la página si el componenente está precargado. </name>',
+			exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+&lt;nstate\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	checked="true"\n\
+	background="#ffffff"\n\
+	text-color="#000000"\n\
+	track-color="#f0f0f0"\n\
+	style="width: 200px;"\n\
+	onclick="console.log(\'cambiado!\')">\n\
+&lt;/nstate>',
+			exampleMultiple: '// Definición de un slider bajo HTML5\n\
+&lt;nstate\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	selected="2"\n\
+	background="#226699"\n\
+	text-color="#000000"\n\
+	track-color="#f0f0f0"\n\
+	style="display: inline-block; width: calc(100% - 128px);">\n\
+&lt;/nstate>'
+		},
+		id: {
+			type: 'string',
+			description: 'Permite asignar y operar con todas las capas necesarias para generar el componente. Sólo si estamos si se está definiendo a través de una etiqueta NSTATE dentro de un documento web.',
+			exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+&lt;nstate\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	checked="true">\n\
+&lt;/nstate>\n',
+			exampleMultiple: '// Definición de un slider bajo HTML5\n\
+&lt;nstate\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	selected="2">\n\
+&lt;/nstate>'
+		},
+		type: {
+			type: 'string',
+			description: 'Permite definir el tipo de slider. Sus posibles valores son "switch" o "range"',
+			exampleSwitch: '// Definición básica de un switch\n\
+it("#activado").nstate(({\n\
+	type: "switch"\n\
+	labelOn: "Sí",\n\
+	labelOff: "No"\n\
+});',
+			exampleMultple: '// Definición básica de un selector múltiple\n\
+it("#nivel").nstate({\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Bajo", value: 0},\n\
+		{label: "Medio", value: 1},\n\
+		{label: "Alto", value: 2}\n\
+	],\n\
+});'
+		},
+		labelOn: {
+			type: 'string',
+			description: 'Permite definir el valor de un switch cuando está activado.',
+			exampleSwitch: 'it("#mode").nstate(({\n\
+	type: "switch"\n\
+	labelOn: "Lectura",\n\
+	labelOff: "Escritura"\n\
+});',
+		},
+		labelOff: {
+			type: 'string',
+			description: 'Permite definir el valor de un switch cuando está desactivado.',
+			exampleSwitch: 'it("#mode").nstate(({\n\
+	type: "switch"\n\
+	labelOn: "Lectura",\n\
+	labelOff: "Escritura"\n\
+});',
+		},
+		colors: {
+			type: 'object',
+			description: 'Permite definir o especificar los colores que se utilizarán para crear el slider, tanto binario o de tipo switch, como múltiple o de tipo rango.',
+			exampleSwitch: '// Definición de un slider de tipo switch con colores personallizados mediante JavaScript\n\
+it("#activado").nstate({\n\
+	type: "switch",\n\
+	labelOn: "Sí",\n\
+	labelOff: "No",\n\
+	checked: false,\n\
+	colors: {\n\
+		background: "#fff",\n\
+		extColor: "#000",\n\
+		trackColor: "#f0f0f0"\n\
+	}\n\
+});\n\
+\n\
+// Definición de un slider de tipo switch con colores personallizados mediante HTML5\n\
+&lt;nstate\n\
+	id="activado"\n\
+	type="switch"\n\
+	label-on="Sí"\n\
+	label-off="No"\n\
+	checked="false"\n\
+	background="#fff"\n\
+	text-color="#000"\n\
+	track-color="#f0f0f0">\n\
+&lt;/nstate>',
+			exampleMultple: '// Definición de un slider de tipo rango con colores personallizados mediante JavaScript\n\
+it("#nivel").nstate.set({\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Bajo", value: 0},\n\
+		{label: "Medio", value: 1},\n\
+		{label: "Alto", value: 2}\n\
+	],\n\
+	selected: 1,\n\
+	colors: {\n\
+		background: "#fff",\n\
+		textColor: "#000",\n\
+		trackColor: "#f0f0f0"\n\
+	}\n\
+});\n\
+\n\
+// Definición de un slider de tipo switch con colores personallizados mediante HTML5\n\
+&lt;nstate\n\
+	id="nivel"\n\
+	type="range"\n\
+	values="Bajo:0, Medio:1, Alto:2"\n\
+	selected="1"\n\
+	background="#fff"\n\
+	text-color="#000"\n\
+	track-color="#f0f0f0">\n\
+&lt;/nstate>'
+		},
+		checked: {
+			type: 'boolean',
+			description: 'Permite definir si el switch, o slider binario, está activado o chequeado.',
+			exampleSwitch: '// Definición de un slider de tipo switch con la opción de chequeado mediante JavaScript\n\
+it("#interruptor").nstate({\n\
+	type: "switch",\n\
+	labelOn: "Encendido",\n\
+	labelOff: "Apagado",\n\
+	checked: true,\n\
+});\n\
+\n\
+// Definición de un slider de tipo switch con la opción de chequeado mediante HTML5\n\
+&lt;nstate\n\
+	id="interruptor"\n\
+	type="switch"\n\
+	label-on="Encendido"\n\
+	label-off="Apagado"\n\
+	checked="true"\n\
+&lt;/nstate>',
+		},
+		selected: {
+			type: 'string',
+			description: 'Permite definir el valor u opción activada del selector de tipo rango.',
+			exampleSwitch: '// Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante JavaScript\n\
+it("#nivel").nstate.set({\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Bajo", value: 0},\n\
+		{label: "Medio", value: 1},\n\
+		{label: "Alto", value: 2}\n\
+	],\n\
+	selected: 2,\n\
+});\n\
+\n\
+// Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante HTML5\n\
+&lt;nstate\n\
+	id="nivel"\n\
+	type="range"\n\
+	values="Bajo:0, Medio:1, Alto:2"\n\
+	selected="2"\n\
+&lt;/nstate>',
+		},
+		values: {
+			type: 'object',
+			description: 'Permite definir los valores del slider.',
+			exampleMultple: '// Definición de un slider de tipo rango mediante JavaScript\n\
+it("#valoracion").nstate({\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Muy Mala", value: 0}\n\
+		{label: "Mala", value: 1},\n\
+		{label: "Media", value: 2},\n\
+		{label: "Buena", value: 3}\n\
+		{label: "Muy Buena", value: 4}\n\
+	],\n\
+});\n\
+\n\
+// Definición de un slider de tipo rango mediante HTML5\n\
+&lt;nstate\n\
+	id="valoracion"\n\
+	type="range"\n\
+	values="Muy Mala:0, Mala:1, Media:2, Buena:3, Muy Buena: 4">\n\
+&lt;/nstate>'
+		},
+		style: {
+			type: 'string',
+			description: 'Permite asignar al elemento padre del componente (etiqueta NSTATE) unos estilos en línea.',
+			exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+&lt;nstate\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	style="margin-top 30px">\n\
+&lt;/nstate>\n',
+			exampleMultiple: '// Definición de un slider bajo HTML5\n\
+&lt;nstate\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	style="margin-top 30px">\n\
+&lt;/nstate>'
 		},
 	}
 }
@@ -2307,6 +2586,10 @@ this.Helper = it.helper = function (func, cfg) {
 
 	// Get object with the info
 	var sourceHelper = WikiHelper[it.ucwords(func)];
+	if(!sourceHelper){
+		console.error("IsiTools dice: Componente no habilitado o cargado");
+		return;
+	}
 
 	// Extract general data
 	var help = Object.assign({}, sourceHelper);
