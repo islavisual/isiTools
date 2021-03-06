@@ -46,13 +46,14 @@ Los componentes que ofrece son:
 // Carga selectiva a través del objeto itEnabledModules
 <script src="js/isiTools/isiTools.js"></script>
 <script src="js/isiTools/isiToolsHelper_ES.js"></script>
+
 // Cargar selectiva por parámetro en URL
 <script src="js/isiTools/isiTools.js?modules=AddCSSRule+Alert+Autocomplete+DOM"></script>
 <script src="js/isiTools/isiToolsHelper_ES.js"></script>
+
 // Aunque también es posible insertarlo en las páginas a través de las siguientes intrucciones
 <script src="https://raw.githubusercontent.com/islavisual/isiTools/master/isiTools.js"></script>
 <script src="https://raw.githubusercontent.com/islavisual/isiTools/master/isiToolsHelper_ES.js"></script>
-
 ```
 
 # Información adicional
