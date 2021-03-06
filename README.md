@@ -2,7 +2,6 @@ IsiTools 2.0 es un conjunto de herramientas para ayudar a los desarrolladores du
 
 Los componentes que ofrece son:
 ## Globales
-* Now: Funcionalidad para recuperar la fecha actual.
 * First: Devuelve el primer elemento de los elementos recuperados por la función constructora
 * Formatdate: Devuelve la fecha formateada en base al formato y valor enviados. El primer parámtero se corresponde con el formato, que puede ser un código BCP-47 como (en-US, en-GB ó es-PA), y el segundo es el valor de fecha a formatear. Ambos parámetros son opcionales.
 * Get: Recuperar el enésimo elemento devuelto por la función constructora it().
