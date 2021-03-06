@@ -16,8 +16,7 @@ var itEnabledModules = {
 	IsMobile: false,
 	Language: false,
 	Mask: true,
-	Now: true,
-	Nstate: false,
+	Nstate: true,
 	Password: false,
 	Selectpicker: true,
 	SendForm: false,
@@ -44,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.8.9",
+it.version = "1.9.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "04/03/2021",
+it.lastupdate = "06/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -127,12 +126,85 @@ it.autoload = function(){
 	}
 }
 
-it.set = function(){
-	if(this.so != null)	
-		this[this.so].set.call(this[this.so])
+/**
+	Devolver el primer elemento de los elementos recuperados por la función constructora
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 10/06/2020
+**/
+it.first = function(){ return this.targets[0] }
+
+/**
+	Formatear las fechas a Big Endian (YYYY-MM-DD), Medium Endian (MM-DD-YYYY) o Little Endian (DD-MM-YYYY)
+	@version: 1.00																					
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2019 Islavisual.
+	@Last update: 14/03/2019
+**/
+it.formatedDate = function(fmt, dt) {
+	if(!fmt || fmt == "") fmt = 'DD-MM-YYYY';
+	fmt = fmt.toLowerCase();
+
+	var lang, notISO = fmt.indexOf("d") != -1 && fmt.indexOf("m") != -1 && fmt.indexOf("y") != -1;
+	
+	Date.prototype.now = (function () { var local = new Date(this); local.setMinutes(this.getMinutes() - this.getTimezoneOffset()); return local.toJSON().slice(0, 10); });
+
+	if(!dt) dt = new Date().now();
+
+	if(notISO){
+		var sep1 = fmt.replace(/[a-zA-Z]/g, '').substr(0, 1);
+		var sep2 = fmt.replace(/[a-zA-Z]/g, '').substr(1, 2);
+		var aux = fmt.replace(/[^a-zA-Z]/g, '-').toLowerCase();
+		lang = 'en-GB';
+
+		switch (aux){
+			case 'mm-dd-yyyy':
+				lang = 'es-PA';
+				break;
+			case 'yyyy-mm-dd':
+				lang = 'en-CA';
+				break;
+		}
+
+		dt = new Intl.DateTimeFormat(lang).format(new Date(dt)).split(/[^0-9]/);
+		return dt[0] + sep1 + dt[1] + sep2 + dt[2];
+
+	} else {
+		return new Intl.DateTimeFormat(fmt).format(new Date(dt));
+	}
 }
 
 it.get = function(index){ if(index == undefined) index = 0; return this.targets[index]; }
+
+/**
+	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
+	@version: 1.0.2
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 18/06/2020
+	@Examples 
+**/
+it.each = function(){
+	var trgs = this.targets;
+	for(var i = 0; i < trgs.length; i++){
+		var item = trgs[i];
+
+		for(var j = 0; j < arguments.length; j++){
+			var arg = arguments[j], targ = typeof arg;
+			if(targ == 'object'){
+				for(var key in arg){
+					item[key] = arg[key];
+				}
+			} else if(targ == 'function'){
+				var res = arg.call(item, i)
+				if(res != undefined) return res;
+			}
+		}
+	}
+
+	return trgs;
+}
 
 /**
 	Función para calcular el ancho de un elemento en base a un texto dado
@@ -189,61 +261,6 @@ it.getTextWidth = function(obj, fontFamily, fontSize, padding){
 }
 
 /**
-	Función para mover el scroll vertical hasta una posición determinada
-	@version: 1.1
-	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
-	@Last update: 26/01/2021
-**/
-it.scrollTo = function(offset){
-	if(this.targets[0].tagName == "BODY"){
-		var pos = this.targets[0].getBoundingClientRect();
-		document.documentElement.scrollTop += pos.top + offset;
-	} else  {
-		this.targets[0].scrollTop = offset;
-	}
-	return this.targets[0];
-}
-
-/**
-	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
-	@version: 1.0.2
-	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
-	@Last update: 18/06/2020
-	@Examples 
-**/
-it.each = function(){
-	var trgs = this.targets;
-	for(var i = 0; i < trgs.length; i++){
-		var item = trgs[i];
-
-		for(var j = 0; j < arguments.length; j++){
-			var arg = arguments[j], targ = typeof arg;
-			if(targ == 'object'){
-				for(var key in arg){
-					item[key] = arg[key];
-				}
-			} else if(targ == 'function'){
-				var res = arg.call(item, i)
-				if(res != undefined) return res;
-			}
-		}
-	}
-
-	return trgs;
-}
-
-/**
-	Devolver el primer elemento de los elementos recuperados por la función constructora
-	@version: 1.0.0
-	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
-	@Last update: 10/06/2020
-**/
-it.first = function(){ return this.targets[0] }
-
-/**
 	Devolver el último elemento de los elementos recuperados por la función constructora
 	@version: 1.0.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -272,6 +289,44 @@ it.parents = function(e){
 }
 
 /**
+	Función para mover el scroll vertical hasta una posición determinada
+	@version: 1.1
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 26/01/2021
+**/
+it.scrollTo = function(offset){
+	if(this.targets[0].tagName == "BODY"){
+		var pos = this.targets[0].getBoundingClientRect();
+		document.documentElement.scrollTop += pos.top + offset;
+	} else  {
+		this.targets[0].scrollTop = offset;
+	}
+	return this.targets[0];
+}
+
+
+it.set = function(){ if(this.so != null) this[this.so].set.call(this[this.so]) }
+
+/**
+	Simular evento como fuese lanzado por el usuario
+	@version: 1.0.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 18/09/2019
+**/
+it.simulateEvent = function(evt, el){
+
+	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
+	el.dispatchEvent(event);
+
+	if(evt == "change"){
+		var event = new Event('input', {'bubbles': true, 'cancelable': true});
+		el.dispatchEvent(event);
+	}
+}
+
+/**
 	Convertir el primer carácter a mayúscula y, el resto, minúsculas.
 	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -294,24 +349,6 @@ it.ucwords = function(txt, all) {
 	
 	return s.trim();
 };
-
-/**
-	Simular evento como fuese lanzado por el usuario
-	@version: 1.0.0
-	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
-	@Last update: 18/09/2019
-**/
-it.simulateEvent = function(evt, el){
-
-	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
-	el.dispatchEvent(event);
-
-	if(evt == "change"){
-		var event = new Event('input', {'bubbles': true, 'cancelable': true});
-		el.dispatchEvent(event);
-	}
-}
 
 Number.prototype.leftPad = function(w){
     var n1 = Array.from(this + "");
@@ -4442,151 +4479,114 @@ function isiToolsCallback(json){
 	}
 
 	/**
-		Now functionality
-		@version: 1.00																					
-		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2019 Islavisual.
-		@Last update: 14/03/2019
-	**/
-	if(json.Now){
-		Date.prototype.currentDate = (function () { var local = new Date(this); local.setMinutes(this.getMinutes() - this.getTimezoneOffset()); return local.toJSON().slice(0, 10); });
-		this.now = it.now = function () {
-			return new Date().currentDate();
-		}
-	}
-
-	/**
 		N-State
-		@version: 1.00
+		@version: 2.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 11/06/2019
+		@Last update: 06/03/2021
 	**/
 	if(json.Nstate){
-		this.Nstate = it.nstate = {
-			version: 1.0,
-			config: { type: 'switch', style: '', id: '' },
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
-
-				if (typeof showHelper != "undefined") showHelper("Nstate", cfg);
-				else alert("Helper not available!")
-				return;
-			},
-			addRules: function(type, cfg){
-				if(typeof type == "undefined") type = "switch";
-
-				this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
-
-				if(type == "switch"){
-					it.addCSSRule('', "nstate[type=switch]", "border-radius: 5px; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
-					it.addCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: 100%; left: 0; opacity: 0; position: absolute; top: 0; height: 20px !important; z-index: 1; ");
-					it.addCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
-					it.addCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
-					it.addCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
-					it.addCSSRule('', "nstate[type=switch] label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
-					it.addCSSRule('', "nstate[type=switch] input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 5px;");
-					it.addCSSRule('', "nstate[type=switch] input:checked ~ label::before", "opacity: 0;");
-					it.addCSSRule('', "nstate[type=switch] input:checked ~ label::after", "opacity: 1;");
-					it.addCSSRule('', "nstate[type=switch] handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 5px;");
-					it.addCSSRule('', "nstate[type=switch] handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
-					it.addCSSRule('', "nstate[type=switch] input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 5px);");
-
-				} else if(type == "multiple") {
-					it.addCSSRule('', "nstate[type=multiple] values", "width: 100%; display: table; height: auto;");
-					it.addCSSRule('', "nstate[type=multiple] values span", "color: " + this.config.colors.textColor + "; width: 33.3333%; text-align: left; float: left; margin-top: 5px; cursor: pointer;");
-					it.addCSSRule('', "nstate[type=multiple] values span:nth-child(2)", "text-align: center;");
-					it.addCSSRule('', "nstate[type=multiple] values span:nth-child(3)", "text-align: right;");
-					it.addCSSRule('', "nstate[type=multiple] values span.selected", "font-weight: 600;");
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus", 'border: 0 none !important; outline: none; background: ' + this.config.colors.trackColor + ' !important;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-					it.addCSSRule('', "nstate[type=multiple] input[type=range]::-ms-tooltip", 'display: none;');
-					it.addCSSRule('', "@media all and (-ms-high-contrast:none)", 'nstate[type=multiple] { position:relative; top: 6px; } nstate[type=multiple] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=multiple] input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
-				}
-			},
-			set: function(cfg){
+		this.Nstate = it.nstate = function (cfg){
+			for(var xTrg = 0; xTrg < this.targets.length; xTrg++){
+				cfg.target = this.targets[xTrg].id;
+				
 				// If it.target has value, set to cfg object
 				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 				
 				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
-
+				
 				// Configure execution
 				this.target       = document.getElementById(cfg.target);
-				this.config.type  = cfg.hasOwnProperty('type') ? cfg.type : 'switch';
-				this.config.style = cfg.hasOwnProperty('style') ? cfg.style.trim() : '';
-				this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
+				this.nstate.config.id = cfg.target;
+				this.nstate.config.type  = cfg.hasOwnProperty('type') ? cfg.type : 'switch';
+				this.nstate.config.style = cfg.hasOwnProperty('style') ? cfg.style.trim() : '';
+				this.nstate.config.colors= (cfg.hasOwnProperty('colors') && Object.keys(cfg.colors).length !== 0 && cfg.colors.constructor === Object) ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
+				
+				var colors = this.nstate.config.colors; 
+				
+				// If colors has three-digit
+				if(colors.background.indexOf('#') == 0 && colors.background.length == 4){
+					colors.background = "#" + colors.background.replace("#", '').split('').map(function (hex) { return hex + hex; }).join('');
+				}
+				if(colors.trackColor.indexOf('#') == 0 && colors.trackColor.length == 4){
+					colors.trackColor = "#" + colors.trackColor.replace("#", '').split('').map(function (hex) { return hex + hex; }).join('');
+				}
 				
 				// Calculate background color to gradient
-				var bg2 = (parseInt(this.config.colors.background.replace("#", '0x')) - 0x101010).toString(16);
+				var bg2 = (parseInt(colors.background.replace("#", '0x')) - 0x101010).toString(16);
 				if(bg2 <= 0) {
-					bg2 = (parseInt(this.config.colors.background.replace("#", '0x')) + 0x151515).toString(16);
-					this.config.colors.background2 = this.config.colors.background;
-					this.config.colors.background = "#"+bg2;
+					bg2 = (parseInt(colors.background.replace("#", '0x')) + 0x151515).toString(16);
+					colors.background2 = colors.background;
+					colors.background = "#"+bg2;
 				} else {
-					this.config.colors.background2 = "#"+bg2;
+					colors.background2 = "#"+bg2;
 				}
 
 				// Calculate track color to gradient and border
-				var tc2 = (parseInt(this.config.colors.trackColor.replace("#", '0x')) - 0x101010).toString(16);
+				var tc2 = (parseInt(colors.trackColor.replace("#", '0x')) - 0x101010).toString(16);
 				if(tc2 <= 0) {
-					tc2 = (parseInt(this.config.colors.trackColor.replace("#", '0x')) + 0x151515).toString(16);
-					this.config.colors.trackColor2 = this.config.colors.trackColor;
-					this.config.colors.trackColor = "#"+tc2;
+					tc2 = (parseInt(colors.trackColor.replace("#", '0x')) + 0x151515).toString(16);
+					colors.trackColor2 = colors.trackColor;
+					colors.trackColor = "#"+tc2;
 				} else {
-					this.config.colors.trackColor2 = "#"+tc2;
+					colors.trackColor2 = "#"+tc2;
 				}
 				
 				// Create main element container
 				var cont = document.createElement('nstate');
-					cont.setAttribute("type", this.config.type);
+					cont.setAttribute("type", this.nstate.config.type);
 				
 				// Add styles
 				if(cfg.hasOwnProperty('style')) cont.setAttribute('style', cfg.style);
 				
 				["onblur", "onfocus", "onfocusin", "onfocusout", 
-				 "onmousedown", "onmouseup", "onmouseover", "onmouseout",  
-				 "oninput", "onclick", "onchange", 
-				 "ontouchcancel", "ontouchend", "ontouchmove", "ontouchstart"].forEach(function (event) {
+				"onmousedown", "onmouseup", "onmouseover", "onmouseout",  
+				"oninput", "onclick", "onchange", 
+				"ontouchcancel", "ontouchend", "ontouchmove", "ontouchstart"].forEach(function (event) {
 					if(cfg.hasOwnProperty(event)) cont.setAttribute(event, cfg[event]);
 				});
 				
-				// Add rules
-				this.addRules(this.config.type, this.config);
-
 				// Add rule styles
-				if(this.config.type == "switch"){
+				if(this.nstate.config.type == "switch"){
+					// If not selected parameter
+					cfg.checked = !cfg.checked ? true : cfg.checked;
+
 					var input = document.createElement("input");
 						input.id = this.target.id;
 						input.name = this.target.id;
 						input.checked = cfg.selected=="0" || cfg.checked == "true" || cfg.checked == true ? true : false;
 						input.type = "checkbox";
+
 					var label = document.createElement("label");
 						label.setAttribute("data-on", cfg.labelOn);
 						label.setAttribute("data-off", cfg.labelOff);
+
 					var handle = document.createElement("handle");
 					
 					cont.appendChild(input);
 					cont.appendChild(label);
 					cont.appendChild(handle);
+
+					var ariaLbl = document.querySelector('[for="' + input.id + '"]') || this.target.parentElement.querySelector("label");
+						ariaLbl = !ariaLbl ? (input.id + ' sin label asociado') : ariaLbl.innerText;
+					cont.setAttribute("aria-label", ariaLbl);
+					cont.setAttribute("role", "switch");
+					cont.setAttribute("aria-checked", input.checked);
 					
 					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
 					this.target.parentNode.removeChild(this.target);
 
 					this.target = cont;
 
-				} else if(this.config.type == "multiple") {
+					input.addEventListener("change", function(e){
+						e.target.parentElement.setAttribute("aria-checked", e.target.checked)
+					});
+
+				} else if(this.nstate.config.type == "range") {
+					// If not selected parameter
+					this.nstate.config.values = cfg.values;
+					cfg.selected = !cfg.selected ? 0 : cfg.selected;
+
 					var input = document.createElement("input");
 						input.id = this.target.id;
 						input.name = this.target.id;
@@ -4610,6 +4610,16 @@ function isiToolsCallback(json){
 
 					cont.appendChild(input);
 					cont.appendChild(labels);
+
+					var ariaLbl = document.querySelector('[for="' + input.id + '"]') || this.target.parentElement.querySelector("label");
+						ariaLbl = !ariaLbl ? (input.id + ' sin label asociado') : ariaLbl.innerText;
+					
+					cont.setAttribute("role", 'slider');
+					cont.setAttribute("aria-label", ariaLbl);
+					cont.setAttribute("aria-valuemin", 0);
+					cont.setAttribute("aria-valuemax", cfg.values.length - 1);
+					cont.setAttribute("aria-valuenow", cfg.selected);
+					cont.setAttribute("aria-valuetext", cfg.values[cfg.selected].label);
 					
 					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
 					this.target.parentNode.removeChild(this.target);
@@ -4623,6 +4633,9 @@ function isiToolsCallback(json){
 						}
 			
 						e.target.nextElementSibling.querySelectorAll("span")[e.target.value].classList.add("selected");
+						
+						e.target.parentElement.setAttribute("aria-valuenow", e.target.value)
+						e.target.parentElement.setAttribute("aria-valuetext", e.target.parentElement.querySelector('values [data-value="' + e.target.value + '"]').innerText)
 					});
 
 					var items = labels.querySelectorAll("span");
@@ -4637,44 +4650,102 @@ function isiToolsCallback(json){
 					}
 				}
 
-				if(this.config.style != "") this.target.style = this.config.style;
-			},
-			autoDraw: function(){
-				var items = document.querySelectorAll("nstate");
-				for(var x = 0; x < items.length; x++){
-					var item = items[x], arr = {}, colors = {};
+				// Add rules
+				this.nstate.addRules(this.nstate.config.type, this.nstate.config);
 
-					for (var i = 0, atts = item.attributes, n = atts.length, arr = []; i < n; i++){
-						var key = atts[i].nodeName, value = atts[i].value;
-							key = key.replace(/\-[a-z]/, function(v) { return v.toUpperCase(); }).replace("-", '');
-						
-						if(key == "id"){
-							key = 'target';
+				if(this.nstate.config.style != "") this.target.style = this.nstate.config.style;
+			} // end for
+		}
 
-						} else if(key == "values"){
-							var aux = [], values = value.split(",");
-							for(var y=0; y < values.length; y++){
-								var v = values[y].split(":");
-								aux.push({label: v[0], value: v[1]});
-							}
-							value = aux;
+		it.nstate.version = 1.1;
+		it.nstate.config = { type: 'switch', style: '', id: '' };
+		it.nstate.help = function(cfg){
+				if(typeof cfg == "undefined") cfg = {help: ''};
+				if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-						} else if(key == "background" || key.toLowerCase().indexOf("color") != -1 ){
-							colors[key] = value;
-							continue;
+				if (typeof showHelper != "undefined") showHelper("Nstate", cfg);
+				else alert("Helper not available!")
+				return;
+		};
+		it.nstate.addRules = function(type, cfg){
+			if(typeof type == "undefined") type = "switch";
+
+			this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
+
+			it.addCSSRule('', "nstate", 'display: block; width: 100%;');
+
+			if(type == "switch"){
+				it.addCSSRule('', "nstate[type=switch]", "border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
+				it.addCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; ");
+				it.addCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+				it.addCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+				it.addCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
+				it.addCSSRule('', "nstate[type=switch] label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
+				it.addCSSRule('', "nstate[type=switch] input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
+				it.addCSSRule('', "nstate[type=switch] input:checked ~ label::before", "opacity: 0;");
+				it.addCSSRule('', "nstate[type=switch] input:checked ~ label::after", "opacity: 1;");
+				it.addCSSRule('', "nstate[type=switch] handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
+				it.addCSSRule('', "nstate[type=switch] handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
+				it.addCSSRule('', "nstate[type=switch] input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 4px);");
+
+			} else if(type == "range") {
+				it.addCSSRule('', "nstate[type=range] values", "width: 100%; display: table; height: auto;");
+				it.addCSSRule('', "nstate[type=range] values span", "color: " + this.config.colors.textColor + "; width: calc(100% / " + this.config.values.length + "); text-align: center; float: left; margin-top: 5px; cursor: pointer;");
+				it.addCSSRule('', "nstate[type=range] values span:first-child", "text-align: left;");
+				it.addCSSRule('', "nstate[type=range] values span:last-child", "text-align: right;");
+				it.addCSSRule('', "nstate[type=range] values span.selected", "font-weight: 600;");
+				it.addCSSRule('', "nstate[type=range] input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]:focus", 'border: 0 none !important; outline: none; background: ' + this.config.colors.trackColor + ' !important;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-tooltip", 'display: none;');
+				it.addCSSRule('', "@media all and (-ms-high-contrast:none)", 'nstate[type=range] { position:relative; top: 6px; } nstate[type=range] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=range] input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
+			}
+		};
+		it.nstate.autoDraw = function(){
+			var items = document.querySelectorAll("nstate");
+			for(var x = 0; x < items.length; x++){
+				var item = items[x], arr = {}, colors = {};
+
+				for (var i = 0, atts = item.attributes, n = atts.length, arr = {}; i < n; i++){
+					var key = atts[i].nodeName, value = atts[i].value;
+						key = key.replace(/\-[a-z]/, function(v) { return v.toUpperCase(); }).replace("-", '');
+					
+					if(key == "id"){
+						key = 'target';
+
+					} else if(key == "values"){
+						var aux = [], values = value.split(",");
+						for(var y=0; y < values.length; y++){
+							var v = values[y].split(":");
+							aux.push({label: v[0].trim(), value: v[1].trim()});
 						}
+						value = aux;
 
-						arr[key] = value;
+					} else if(key == "background" || key.toLowerCase().indexOf("color") != -1 ){
+						colors[key] = value;
+						continue;
 					}
-					arr.colors = colors;
 
-					// Generate new component
-					this.set(arr);
+					arr[key] = value;
 				}
+				arr.colors = colors;
+
+				// Generate new component
+				it('#' + arr.target).nstate(arr);
 			}
 		}
 
-		this.Nstate.autoDraw();
+		it('nstate').nstate.autoDraw();
 	}
 
 	/**
@@ -5275,7 +5346,7 @@ function isiToolsCallback(json){
 		it.selectpicker.destroy = function(targets){
 			for(var i = 0; i < targets.length; i++){
 				var item = targets[i];
-				console.log(item)
+				
 				item.nextElementSibling.remove()
 				item.style = item.dataset.style
 			}
