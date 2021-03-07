@@ -16,7 +16,7 @@ var itEnabledModules = {
 	IsMobile: false,
 	Language: false,
 	Mask: true,
-	Nstate: true,
+	Slider: true,
 	Password: false,
 	Selectpicker: true,
 	SendForm: false,
@@ -258,6 +258,29 @@ it.getTextWidth = function(obj, fontFamily, fontSize, padding){
 	ctx.font   = fontSize + ' ' + fontFamily;
 	
     return Math.ceil(ctx.measureText(text).width) + offset;
+}
+
+/**
+	Convertir valor hexadecimal en RGB con un valor de alfa determinado
+	@version: 1.0
+	@author: Pablo E. Fernández (islavisual@gmail.com).
+	@Copyright 2017-2021 Islavisual.
+	@Last update: 07/03/2021
+**/
+it.hex2rgba = function(hex, alpha){
+	var c;
+	
+	if(alpha == undefined) alpha = 1;
+
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',' + alpha + ')';
+    }
+    console.error('Código hexadecimal inválido. Sólo se permiten valores en formato de 3 o 6 dígitos');
 }
 
 /**
@@ -1078,29 +1101,46 @@ function isiToolsCallback(json){
 					});
 				}
 
-				// Add helper button
-				if(opt.helper){
-					it.addCSSRule('', "input[data-helper]", "padding-right: 28px;");
-					it.addCSSRule('', ".Autocomplete-helper-icon","cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
-					it.addCSSRule('', ".Autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 10vw; display: block; width: 80vw; max-height: 550px; overflow: auto; z-index: 99;");
-					it.addCSSRule('', ".Autocomplete-helper::after", 'content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;');
-					it.addCSSRule('', ".Autocomplete-helper ul","background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;");
-					it.addCSSRule('', ".Autocomplete-helper ul b","font-weight: bold;");
-					it.addCSSRule('', ".Autocomplete-helper code", "padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px;");
-					it.addCSSRule('', ".Autocomplete-helper button", "cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px;");
-					it.addCSSRule('', ".Autocomplete-helper h3", "background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px;");
-					it.addCSSRule('', ".Autocomplete-helper .hidden","display: none !important");
-					it.addCSSRule('', "@media all and (max-width: 640px)",".Autocomplete-helper{ width: 100%; left: 0; top: 0;}");
+				if(it.addCSSRule != undefined){
+					it.addCSSRule('', '.autocomplete-items', 'position: absolute; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; ');
+					it.addCSSRule('', '.autocomplete-items div.value', 'line-height: normal; padding: 4px 10px; cursor: pointer; background-color: #fff; border-bottom: 0px solid #d4d4d4; text-transform: capitalize;');
+					it.addCSSRule('', '.autocomplete-items div.value:hover, .autocomplete-active', 'background-color: #006699 !important; color: #ffffff;');
+					it.addCSSRule('', '.autocomplete-items .header, .autocomplete-items .error', 'background: #fff; border-bottom: 1px solid #bfbfbf; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none;');
+					it.addCSSRule('', '.autocomplete-items .header span, .autocomplete-items .value span', 'width: 100%; display: inline-block; vertical-align: top;');
+					it.addCSSRule('', '.autocomplete-items .header span, .autocomplete-items .error span', 'display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase;');
+					it.addCSSRule('', '.autocomplete-items .error span', 'color: #f01223; ');
+					it.addCSSRule('', '.autocomplete-items .error.not-found span', 'color: #a0a0a0; text-transform: none;');
+					it.addCSSRule('', '.autocomplete-items .error + .value', 'color: #000; font-weight: bold;');
+					it.addCSSRule('', '.autocomplete-items.table .header', 'display: table; ');
+					it.addCSSRule('', '.autocomplete-items.cluster .header, .autocomplete-items .error', 'border-bottom: 0 none; margin-top: 15px; text-transform: uppercase; font-size: 0.85rem; font-weight: 600;');
+					it.addCSSRule('', '.autocomplete-items.cluster .header span', 'color: #bbb;');
+					it.addCSSRule('', '.autocomplete-items .value.highlighted', 'font-weight: bold; background: transparent; color: #008bb2;');
+					it.addCSSRule('', '.autocomplete-items .value.disabled', 'font-weight: 100; background: #eee; color: #aaa;');
 
-					var icon = document.createElement("i");
-						icon.classList.add("Autocomplete-helper-icon");
-						icon.onclick = function(){
-							//document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
-							it.autocomplete.showHelper(this);
-						}
-						icon.innerHTML ='?';
+					// Add helper button
+					if(opt.helper){
+						it.addCSSRule('', "input[data-helper]", "padding-right: 28px;");
+						it.addCSSRule('', ".Autocomplete-helper-icon","cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
+						it.addCSSRule('', ".Autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 10vw; display: block; width: 80vw; max-height: 550px; overflow: auto; z-index: 99;");
+						it.addCSSRule('', ".Autocomplete-helper::after", 'content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;');
+						it.addCSSRule('', ".Autocomplete-helper ul","background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;");
+						it.addCSSRule('', ".Autocomplete-helper ul b","font-weight: bold;");
+						it.addCSSRule('', ".Autocomplete-helper code", "padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px;");
+						it.addCSSRule('', ".Autocomplete-helper button", "cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px;");
+						it.addCSSRule('', ".Autocomplete-helper h3", "background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px;");
+						it.addCSSRule('', ".Autocomplete-helper .hidden","display: none !important");
+						it.addCSSRule('', "@media all and (max-width: 640px)",".Autocomplete-helper{ width: 100%; left: 0; top: 0;}");
 
-					opt.target.parentNode.insertBefore(icon, opt.target.nextSibling);
+						var icon = document.createElement("i");
+							icon.classList.add("Autocomplete-helper-icon");
+							icon.onclick = function(){
+								//document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
+								it.autocomplete.showHelper(this);
+							}
+							icon.innerHTML ='?';
+
+						opt.target.parentNode.insertBefore(icon, opt.target.nextSibling);
+					}
 				}
 
 				if(opt.autoFocus){ opt.target.focus(); }
@@ -1159,7 +1199,8 @@ function isiToolsCallback(json){
 
 						if(opt.row.return_value) cval = optData[opt.row.return_value];
 						
-                        b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
+						b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
+						b.id="ac-" + opt.target.id + '-' + i;
 
                     } else if(opt.format == "table"){
                         var highlighting = opt.highlight ? true : false;
@@ -1411,7 +1452,12 @@ function isiToolsCallback(json){
         }
 
         it.autocomplete._getID = function(e){
-			return e.id || e.querySelector("[data-id]").dataset.id;
+			var aux = e.id || e.querySelector("[data-id]").dataset.id;
+			if(e.classList.contains("value")){
+				aux = e.querySelector("[data-id]").dataset.id;
+			}
+
+			return aux;
 		}
 
         it.autocomplete._click = function(val){
@@ -1424,6 +1470,7 @@ function isiToolsCallback(json){
 			if (opt.callback) opt.callback(val.getElementsByTagName("input")[0]);
 			it.autocomplete._closeAllLists(val);
 
+			trg.setAttribute("aria-activedescendant", val.id);
 			trg.focus();
 		}
 
@@ -2202,7 +2249,8 @@ function isiToolsCallback(json){
                     // Add and configure trigger button
                     var trigger = document.createElement('button');
                     trigger.id = 'DatePicker_trigger_' + idx;
-                    trigger.type = "button";
+					trigger.type = "button";
+					trigger.setAttribute("aria-lbel", cfg.textTrigger)
                     if (cfg.icon.indexOf("<") != -1) {
                         trigger.innerHTML = cfg.icon;
                     } else {
@@ -2668,6 +2716,7 @@ function isiToolsCallback(json){
             shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
             longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 			weekstart: 1,
+			textTrigger: 'Mostrar el calendario',
 			textYear: 'Año',
 			textToday: 'Hoy',
             textRemove: 'Eliminar',
@@ -4483,10 +4532,10 @@ function isiToolsCallback(json){
 		@version: 2.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 06/03/2021
+		@Last update: 07/03/2021
 	**/
-	if(json.Nstate){
-		this.Nstate = it.nstate = function (cfg){
+	if(json.Slider){
+		this.Slider = it.slider = function (cfg){
 			for(var xTrg = 0; xTrg < this.targets.length; xTrg++){
 				cfg.target = this.targets[xTrg].id;
 				
@@ -4497,12 +4546,12 @@ function isiToolsCallback(json){
 				
 				// Configure execution
 				this.target       = document.getElementById(cfg.target);
-				this.nstate.config.id = cfg.target;
-				this.nstate.config.type  = cfg.hasOwnProperty('type') ? cfg.type : 'switch';
-				this.nstate.config.style = cfg.hasOwnProperty('style') ? cfg.style.trim() : '';
-				this.nstate.config.colors= (cfg.hasOwnProperty('colors') && Object.keys(cfg.colors).length !== 0 && cfg.colors.constructor === Object) ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
+				this.slider.config.id = cfg.target;
+				this.slider.config.type  = cfg.hasOwnProperty('type') ? cfg.type : 'switch';
+				this.slider.config.style = cfg.hasOwnProperty('style') ? cfg.style.trim() : '';
+				this.slider.config.colors= (cfg.hasOwnProperty('colors') && Object.keys(cfg.colors).length !== 0 && cfg.colors.constructor === Object) ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
 				
-				var colors = this.nstate.config.colors; 
+				var colors = this.slider.config.colors; 
 				
 				// If colors has three-digit
 				if(colors.background.indexOf('#') == 0 && colors.background.length == 4){
@@ -4513,28 +4562,42 @@ function isiToolsCallback(json){
 				}
 				
 				// Calculate background color to gradient
-				var bg2 = (parseInt(colors.background.replace("#", '0x')) - 0x101010).toString(16);
-				if(bg2 <= 0) {
-					bg2 = (parseInt(colors.background.replace("#", '0x')) + 0x151515).toString(16);
-					colors.background2 = colors.background;
-					colors.background = "#"+bg2;
-				} else {
-					colors.background2 = "#"+bg2;
-				}
+				var bg2 = '', alfa;
+				if(colors.background.indexOf("#") != -1){
+					var aux = it.hex2rgba(colors.background, 0.4).replace(/[^0-9,\.]/ig, '').split(",")
+					for(var i = 0; i < aux.length-1; i++){
+						bg2 += ((parseInt(aux[i]) - 32) + ",").trim(",")
+					}
+					colors.background2 = "rgb(" + bg2.substr(0, bg2.length-1) + ")";
 
-				// Calculate track color to gradient and border
-				var tc2 = (parseInt(colors.trackColor.replace("#", '0x')) - 0x101010).toString(16);
-				if(tc2 <= 0) {
-					tc2 = (parseInt(colors.trackColor.replace("#", '0x')) + 0x151515).toString(16);
-					colors.trackColor2 = colors.trackColor;
-					colors.trackColor = "#"+tc2;
 				} else {
-					colors.trackColor2 = "#"+tc2;
+					bg2 = colors.background.replace(/[^0-9,\.]/ig, '').split(",").map(function(el){ return parseInt(el) - 32; }).filter(function(el){ return parseFloat(el) > 1.0 }).join(",");
+					alfa= colors.background.replace(/[^0-9,\.]/ig, '').split(",");
+					alfa= parseFloat(alfa[alfa.length -1]);
+
+					colors.background2 = "rgba(" + bg2 + ')';
+				}
+				
+				// Calculate track color to gradient and border
+				if(colors.trackColor.indexOf("#") != -1){
+					var aux = it.hex2rgba(colors.trackColor, 0.4).replace(/[^0-9,\.]/ig, '').split(",")
+					for(var i = 0; i < aux.length-1; i++){
+						bg2 += ((parseInt(aux[i]) - 32) + ",").trim(",")
+					}
+					colors.trackColor2 = "rgb(" + bg2.substr(0, bg2.length-1) + ")";
+
+				} else {
+					bg2 = colors.trackColor.replace(/[^0-9,\.]/ig, '').split(",").map(function(el){ return parseInt(el) - 32; }).filter(function(el){ return parseFloat(el) > 1.0 }).join(",");
+					alfa= colors.trackColor.replace(/[^0-9,\.]/ig, '').split(",");
+					alfa= parseFloat(alfa[alfa.length -1]);
+
+					colors.trackColor2 = "rgba(" + bg2 + ')';
 				}
 				
 				// Create main element container
-				var cont = document.createElement('nstate');
-					cont.setAttribute("type", this.nstate.config.type);
+				var cont = document.createElement('it-slider');
+					cont.setAttribute("type", this.slider.config.type);
+					cont.id = "slider-" + this.target.id;
 				
 				// Add styles
 				if(cfg.hasOwnProperty('style')) cont.setAttribute('style', cfg.style);
@@ -4547,7 +4610,7 @@ function isiToolsCallback(json){
 				});
 				
 				// Add rule styles
-				if(this.nstate.config.type == "switch"){
+				if(this.slider.config.type == "switch"){
 					// If not selected parameter
 					cfg.checked = !cfg.checked ? true : cfg.checked;
 
@@ -4582,9 +4645,9 @@ function isiToolsCallback(json){
 						e.target.parentElement.setAttribute("aria-checked", e.target.checked)
 					});
 
-				} else if(this.nstate.config.type == "range") {
+				} else if(this.slider.config.type == "range") {
 					// If not selected parameter
-					this.nstate.config.values = cfg.values;
+					this.slider.config.values = cfg.values;
 					cfg.selected = !cfg.selected ? 0 : cfg.selected;
 
 					var input = document.createElement("input");
@@ -4651,68 +4714,68 @@ function isiToolsCallback(json){
 				}
 
 				// Add rules
-				this.nstate.addRules(this.nstate.config.type, this.nstate.config);
+				this.slider.addRules(this.slider.config.type, this.slider.config);
 
-				if(this.nstate.config.style != "") this.target.style = this.nstate.config.style;
+				if(this.slider.config.style != "") this.target.style = this.slider.config.style;
 			} // end for
 		}
 
-		it.nstate.version = 1.1;
-		it.nstate.config = { type: 'switch', style: '', id: '' };
-		it.nstate.help = function(cfg){
+		it.slider.version = 2.0;
+		it.slider.config = { type: 'switch', style: '', id: '' };
+		it.slider.help = function(cfg){
 				if(typeof cfg == "undefined") cfg = {help: ''};
 				if(!cfg.hasOwnProperty("help")) cfg.help = '';
 
-				if (typeof showHelper != "undefined") showHelper("Nstate", cfg);
+				if (typeof showHelper != "undefined") showHelper("Slider", cfg);
 				else alert("Helper not available!")
 				return;
 		};
-		it.nstate.addRules = function(type, cfg){
+		it.slider.addRules = function(type, cfg){
 			if(typeof type == "undefined") type = "switch";
 
 			this.config.colors= cfg.hasOwnProperty('colors') ? cfg.colors : { background: '#02a5a5', textColor: '#000000', trackColor: '#f0f0f0' };
 
-			it.addCSSRule('', "nstate", 'display: block; width: 100%;');
+			it.addCSSRule('', "#slider-" + cfg.id, 'display: block; width: 100%;');
 
 			if(type == "switch"){
-				it.addCSSRule('', "nstate[type=switch]", "border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
-				it.addCSSRule('', "nstate[type=switch] input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; ");
-				it.addCSSRule('', "nstate[type=switch] label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
-				it.addCSSRule('', "nstate[type=switch] label::before, nstate[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
-				it.addCSSRule('', "nstate[type=switch] label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
-				it.addCSSRule('', "nstate[type=switch] label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
-				it.addCSSRule('', "nstate[type=switch] input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
-				it.addCSSRule('', "nstate[type=switch] input:checked ~ label::before", "opacity: 0;");
-				it.addCSSRule('', "nstate[type=switch] input:checked ~ label::after", "opacity: 1;");
-				it.addCSSRule('', "nstate[type=switch] handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
-				it.addCSSRule('', "nstate[type=switch] handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
-				it.addCSSRule('', "nstate[type=switch] input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 4px);");
+				it.addCSSRule('', "#slider-" + cfg.id, "border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
+				it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; ");
+				it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+				it.addCSSRule('', "#slider-" + cfg.id + " label::before, it-slider[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+				it.addCSSRule('', "#slider-" + cfg.id + " label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
+				it.addCSSRule('', "#slider-" + cfg.id + " label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
+				it.addCSSRule('', "#slider-" + cfg.id + " input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
+				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ label::before", "opacity: 0;");
+				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ label::after", "opacity: 1;");
+				it.addCSSRule('', "#slider-" + cfg.id + " handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
+				it.addCSSRule('', "#slider-" + cfg.id + " handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
+				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 4px);");
 
 			} else if(type == "range") {
-				it.addCSSRule('', "nstate[type=range] values", "width: 100%; display: table; height: auto;");
-				it.addCSSRule('', "nstate[type=range] values span", "color: " + this.config.colors.textColor + "; width: calc(100% / " + this.config.values.length + "); text-align: center; float: left; margin-top: 5px; cursor: pointer;");
-				it.addCSSRule('', "nstate[type=range] values span:first-child", "text-align: left;");
-				it.addCSSRule('', "nstate[type=range] values span:last-child", "text-align: right;");
-				it.addCSSRule('', "nstate[type=range] values span.selected", "font-weight: 600;");
-				it.addCSSRule('', "nstate[type=range] input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]:focus", 'border: 0 none !important; outline: none; background: ' + this.config.colors.trackColor + ' !important;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
-				it.addCSSRule('', "nstate[type=range] input[type=range]::-ms-tooltip", 'display: none;');
-				it.addCSSRule('', "@media all and (-ms-high-contrast:none)", 'nstate[type=range] { position:relative; top: 6px; } nstate[type=range] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } nstate[type=range] input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
+				it.addCSSRule('', "#slider-" + cfg.id + " values", "width: 100%; display: table; height: auto;");
+				it.addCSSRule('', "#slider-" + cfg.id + " values span", "color: " + this.config.colors.textColor + "; width: calc(100% / " + this.config.values.length + "); text-align: center; float: left; margin-top: 5px; cursor: pointer;");
+				it.addCSSRule('', "#slider-" + cfg.id + " values span:first-child", "text-align: left;");
+				it.addCSSRule('', "#slider-" + cfg.id + " values span:last-child", "text-align: right;");
+				it.addCSSRule('', "#slider-" + cfg.id + " values span.selected", "font-weight: 600;");
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]", 'position:relative; -o-appearance: none; -ms-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; margin: 18px 0; width: 100%; outline: none;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]:focus", 'border: 0 none !important; outline: none; background: transparent !important;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-webkit-slider-runnable-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-webkit-slider-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; -webkit-appearance: none; margin-top: -8px; border-radius: 0;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]:focus::-webkit-slider-runnable-track", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-moz-range-track", 'width: 100%; height: 8.4px; cursor: pointer; background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + '; border-radius: 0;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-moz-range-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-ms-track", 'width: 100%; height: 8.4px; cursor: pointer; background: rgba(0,0,0,0); border-color: ' + this.config.colors.trackColor + '; border-width: 0; color: transparent; border-radius: 0;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-ms-fill-lower", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-ms-fill-upper", 'background: ' + this.config.colors.trackColor + '; border: 0.2px solid ' + this.config.colors.trackColor2 + ';');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-ms-thumb", 'border: 1px solid ' + this.config.colors.background2 + '; height: 24px; width: 24px; background: ' + this.config.colors.background + '; cursor: pointer; border-radius: 0;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
+				it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-ms-tooltip", 'display: none;');
+				it.addCSSRule('', "@media all and (-ms-high-contrast:none)", "#slider-" + cfg.id + ' { position:relative; top: 6px; } #slider' + cfg.id + ' input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } #slider' + cfg.id + ' input[type=range]:focus { background: rgba(0,0,0,0) !important; }');
 			}
 		};
-		it.nstate.autoDraw = function(){
-			var items = document.querySelectorAll("nstate");
+		it.slider.autoDraw = function(){
+			var items = document.querySelectorAll("it-slider");
 			for(var x = 0; x < items.length; x++){
 				var item = items[x], arr = {}, colors = {};
 
@@ -4741,11 +4804,11 @@ function isiToolsCallback(json){
 				arr.colors = colors;
 
 				// Generate new component
-				it('#' + arr.target).nstate(arr);
+				it('#' + arr.target).slider(arr);
 			}
 		}
 
-		it('nstate').nstate.autoDraw();
+		it('it-slider').slider.autoDraw();
 	}
 
 	/**
@@ -5035,6 +5098,12 @@ function isiToolsCallback(json){
 				// Add layer will contents button and list
 				var div = document.createElement("div");
 				div.setAttribute("class", "select-picker");
+				div.setAttribute("role", "combobox");
+				div.setAttribute("aria-autocomplete", "both");
+				div.setAttribute("aria-expanded", "false");
+				div.setAttribute("aria-haspopup", "true");
+				div.setAttribute("aria-owns", "it-sp-options-" + trg.id);
+				div.setAttribute("aria-activedescendant", "");
 				
 				// Add button will contents the selected text
 				var btn = document.createElement("button");
@@ -5070,7 +5139,8 @@ function isiToolsCallback(json){
 
 					// Set aria attributes
 					t.setAttribute("aria-expanded", t.getAttribute("aria-expanded") == "false" ? "true": "false");
-
+					t.parentElement.setAttribute("aria-expanded", t.getAttribute("aria-expanded"));
+					
 					// Set focus into input search
 					var t = t.parentElement;
 					if(t.classList.contains("open") && t.querySelectorAll("input").length != 0)
@@ -5101,6 +5171,7 @@ function isiToolsCallback(json){
 				var diC = document.createElement("div");
 				diC.setAttribute("class", "dropdown-container");
 				diC.setAttribute("style", "display: none");
+				diC.id = "it-sp-options-" + trg.id;
 
 				// Add list with possibles values
 				var lst = document.createElement("ul");
@@ -5233,12 +5304,15 @@ function isiToolsCallback(json){
 
 					var li = document.createElement("li");
 					li.setAttribute("rel", i);
+					li.id = trg.id + '_option_' + i;
 					li.setAttribute("data-value", item.value);
 					li.innerHTML = item.innerText;
 					li.setAttribute("onclick", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
 					if(item.getAttribute("selected") != null && item.getAttribute("disabled") == null){
 						li.setAttribute("class", "selected");
 						btn.innerText = trg.options[trg.selectedIndex].innerText;
+
+						div.setAttribute("aria-activedescendant", li.id)
 					}
 					
 					lst.appendChild(li);
@@ -5260,7 +5334,10 @@ function isiToolsCallback(json){
 					}
 					trg.dataset.style = str;
 				}
-				trg.style = 'border: 0 none; width: 0; height: 0; overflow: hidden; opacity: 0; padding: 0; margin: 0;';
+				// Add styles to select element
+				//trg.style.display = "none";
+				trg.style = 'border: 0 none; width: 0; height: 0; overflow: hidden !important; opacity: 0; padding: 0; margin: 0; position: absolute;';
+
 				trg.addEventListener("change", function(e){
 					var btn = e.target.nextElementSibling.children[0];
 					btn.innerHTML = e.target.options[e.target.selectedIndex].text;
@@ -5272,15 +5349,15 @@ function isiToolsCallback(json){
 				AddCSSRule('', ".select-picker", 'position: relative; width: 100%;');
 				AddCSSRule('', ".select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 30px; width: 100%; z-index: 99999;');
 				AddCSSRule('', ".select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
-				AddCSSRule('', ".select-picker button", 'background: #f4f4f4; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 32px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 10px;');
-				AddCSSRule('', ".select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 14px;');
+				AddCSSRule('', ".select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 10px;');
+				AddCSSRule('', ".select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px;');
 				AddCSSRule('', ".select-picker button:hover", 'border-color: #adadad;');
 				AddCSSRule('', ".select-picker.open button", ' background: #000; color: #ffffff;');
-				AddCSSRule('', ".select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 5px; line-height: normal; margin: 0;');
+				AddCSSRule('', ".select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); padding: 4px 5px; line-height: normal; margin: 0;');
 				AddCSSRule('', ".select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
-				AddCSSRule('', ".select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); min-height: 30px; padding: 0px; position: relative; width: 100%;');
-				AddCSSRule('', ".select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; min-height: 30px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
-				AddCSSRule('', ".select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 7px; fill: #aaa;');
+				AddCSSRule('', ".select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%;');
+				AddCSSRule('', ".select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; height: auto; min-height: 26px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
+				AddCSSRule('', ".select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 5px; fill: #aaa; width: 15px');
 				AddCSSRule('', ".select-picker-active", 'background: #000; color: #fff;');
 				AddCSSRule('', ".select-picker > button:focus, select:focus + .select-picker > button", 'border: 1px solid red;');
 			}
@@ -5288,7 +5365,7 @@ function isiToolsCallback(json){
 			return div
 		}
 
-		it.selectpicker.version = 1.1;
+		it.selectpicker.version = '1.4.2';
 		it.selectpicker._curIndex = {};
 		it.selectpicker.all = [];
 
@@ -5305,14 +5382,16 @@ function isiToolsCallback(json){
 			// update HTML select
 			e = document.getElementById(e);
 			e.selectedIndex = i;
+			var sp = e.nextElementSibling;
 			
 			// update selectpicker
-			e.nextElementSibling.children[0].innerText = e[i].innerText;
+			sp.children[0].innerText = e[i].innerText;
 			
 			// Close selectpicker list
-			e.nextElementSibling.classList.remove("open");
-			e.nextElementSibling.children[1].style.display = "none";
-			e.nextElementSibling.children[0].setAttribute("aria-expanded", "false");
+			sp.classList.remove("open");
+			sp.children[1].style.display = "none";
+			sp.children[0].setAttribute("aria-expanded", "false");
+			sp.setAttribute("aria-activedescendant", sp.querySelector('li:nth-child(' + e[i].innerText + ')').id);
 
 			e.dispatchEvent(new Event('change'));
 			e.focus();
