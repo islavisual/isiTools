@@ -16,7 +16,7 @@ var itEnabledModules = {
 	IsMobile: false,
 	Language: false,
 	Mask: true,
-	Slider: true,
+	Slider: false,
 	Password: false,
 	Selectpicker: true,
 	SendForm: false,
@@ -46,7 +46,7 @@ it.name = "isiTools";
 it.version = "1.9.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "06/03/2021",
+it.lastupdate = "07/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -4973,7 +4973,7 @@ function isiToolsCallback(json){
 				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
 
 				this.target.addEventListener("keyup", function(e){
-					Password.check({target: cfg.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
+					Password.check({target: e.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
 				});
 
 				this.target.form.setAttribute("onsubmit", "return " + Password.config.onerror.name + "('')");
@@ -5481,10 +5481,10 @@ function isiToolsCallback(json){
 
 	/**
 		Sort tables functionality																		
-		@version: 1.2																					
+		@version: 1.2.1																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).												
 		@Copyright 2017-2021 Islavisual. 																	
-		@Last update: 05/03/2021
+		@Last update: 07/03/2021
 	**/
 	if(json.Sorter){
 		this.Sorter = it.sorter = function (cfg) {
@@ -5519,7 +5519,7 @@ function isiToolsCallback(json){
 				it.sorter.config[id] = opt;
 				
 				// Añadimos la funcionalidad de ordenar
-				it.sorter._remove(opt);
+				try{ it.sorter._remove(opt); } catch(e) {}
 				it.sorter._addIndexes(opt);
 				it.sorter._setOrder(opt);
 				it.sorter._addIcons(opt);
