@@ -6,6 +6,7 @@ Los componentes que ofrece son:
 * Formatdate: Devuelve la fecha formateada en base al formato y valor enviados. El primer parámtero se corresponde con el formato, que puede ser un código BCP-47 como (en-US, en-GB ó es-PA), y el segundo es el valor de fecha a formatear. Ambos parámetros son opcionales.
 * Get: Recuperar el enésimo elemento devuelto por la función constructora it().
 * GetTextWidth: Función para calcular el ancho de un elemento en base a un texto dado.
+* hex2rgba: Convierte un color en formato hexadecimal en un valor RGB con canal alfa personalizable.
 * Last: Devuelve el último elemento de los elementos recuperados por la función constructora.
 * LeftPad: Añadir ceros por la izquierda a valores numéricos.\nSe alimenta de un único parámetro que indica el número de ceros a añadir si el número no tiene la longitud indicada.
 * ScrollTo: Mover el scroll vertical de un determinado elemento hasta una posición determinada.
@@ -31,10 +32,10 @@ Los componentes que ofrece son:
 * IsMobile: Funcionalidad para saber si el dispositivo actual es o no móvil.
 * Language: Funcionalidad para activar y administrar la opción de multilenguaje en las páginas.
 * Mask: Funcionalidad para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.
-* Nstate: Funcionalidad para crear componentes de tipo Switch (para selección de valores binarios) y/o de tipo multi selección de más de dos valores.
 * Password: Funcionalidad para administrar la creación de contraseñas y sus fortalezas.
 * Selectpicker: Funcionalidad para gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.
 * SendForm: Funcionalidad para crear y enviar formularios en tiempo real a través de Ajax en modo POST.
+* Slider: Funcionalidad para crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.
 * Sorter: Funcionalidad para ordenar tablas por múltiples columnas.
 * Treeview: Funcionalidad para mostrar vistas jerárquizadas de información.
 * Validator: Funcionalidad para establecer mensajes de validez personalizados en los elementos de entrada de datos de los formularios. 
