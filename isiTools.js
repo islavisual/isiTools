@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.9.0",
+it.version = "1.9.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "07/03/2021",
+it.lastupdate = "10/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -2025,6 +2025,13 @@ function isiToolsCallback(json){
 				}
 			}
 
+			if(it.addCSSRule != undefined){
+				it.addCSSRule('', '.counter', 'position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; border: 1px solid rgba(255,255,255, 0.8); box-shadow: 0 0 0 2px rgb(0 0 0) inset;');
+				it.addCSSRule('', '.counter::before', 'content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #000; height: 100%; padding: 0; line-height: 24px; font-size: 0.9rem; z-index: 1;');
+				it.addCSSRule('', '.counter::after', 'content: ""; background: rgba(0, 0 , 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0;');
+				it.addCSSRule('', '.counter span.progress', 'width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: rgba(0,64,128, 1); position: relative; top: auto; right: auto; z-index: 0;');
+			}
+
 			this.so = "counter";
 		}
 
@@ -2118,6 +2125,7 @@ function isiToolsCallback(json){
 			t = h = m = s = null;
 		}
 		it.counter.renew = function(el){
+			el = el.parentElement;
 			var cfg = it.counter.config[el.id].config;
 			cfg.start = cfg.mode == 'timer' ? Math.floor(new Date().getTime() / 1000) : 0;
 			cfg.showvalue = true;
@@ -2983,7 +2991,6 @@ function isiToolsCallback(json){
 				
 				// Show messages on error
 				window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
-					console.log(errorObj);
 					alert('Error: ' + errorMsg + '\n' + 'Script: ' + url + '\n' + 'Line: ' + lineNumber + '\n' + 'Column: ' + column);
 					return true;
 				}
@@ -4738,7 +4745,7 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#slider-" + cfg.id, 'display: block; width: 100%;');
 
 			if(type == "switch"){
-				it.addCSSRule('', "#slider-" + cfg.id, "border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0;");
+				it.addCSSRule('', "#slider-" + cfg.id, "border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0;");
 				it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; ");
 				it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
 				it.addCSSRule('', "#slider-" + cfg.id + " label::before, it-slider[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
@@ -4813,248 +4820,397 @@ function isiToolsCallback(json){
 
 	/**
 		Password tools
-		@version: 1.0
+		@version: 2.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 22/05/2019
+		@Last update: 10/03/2021
 	**/
 	if(json.Password){
-		this.Password = it.password = {
-			version: '1.0',
-			config: { autoDraw: true, colorok : 'rgba(255,255,255,0.75)', colornok : '#e0e0e0', onerror: null },
-			minFeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },
-			features: { allowed: false, complexity: 0, extra: 0, length: 0, lowers: 0, numbers: 0, special: 0, uppers: 0 },
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+		this.Password = it.password = function(cfg) {
+			if(this.targets.length == 0) console.log("Password: Nada que tratar")
 
-				if (typeof showHelper != "undefined") showHelper("Password", cfg);
-				else alert("Helper not available!")
-				return;
-			},
-			check: function(cfg){
-				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
-				
-				if (document.getElementById(cfg.target) == null) { alert("The element with ID '" + cfg.target + "' not exists!"); return false; }
-
-				// Configure execution
-				if(cfg.hasOwnProperty('autoDraw')) this.config.autoDraw = cfg.autoDraw;
-				if(cfg.hasOwnProperty('colorok')) this.config.colorok = cfg.colorok;
-				if(cfg.hasOwnProperty('colornok')) this.config.colornok = cfg.colornok;
-				if(cfg.hasOwnProperty('onerror')) this.config.onerror = cfg.onerror;
-
-				// Get target
-				this.setTarget(cfg.target);
-				var val = this.target.value;
-
-				// If length lower than three, update values and return false
-				if(val.length < this.minFeatures.length){
-					this.features.complexity = 0;
-					this.features.allowed = false;
-
-				} else {
-					this._checkComplexity(val);
-				}
-				
-				if(!this.features.allowed){
-					if(!this.target.form.getAttribute("data-updated")){
-						if(this.target.form.getAttribute("onsubmit")){
-							this.target.form.setAttribute("data-onsubmit", this.target.form.getAttribute("onsubmit"));
-							this.target.form.setAttribute("data-updated", "true");
-						} 
-
-						var str = '';
-						if(this.config.onerror){
-							str += 'Password.getError(); ';
-						}
-						this.target.form.setAttribute("onsubmit", str + "return false;");
-						this.target.form.setAttribute("data-updated", "true");
-					}
-
-				} else {
-					if(this.target.form.getAttribute("data-updated")){
-						if(this.target.form.getAttribute("data-onsubmit")){
-							this.target.form.setAttribute("onsubmit", this.target.form.getAttribute("data-onsubmit"))
-							this.target.form.removeAttribute("data-onsubmit");
-
-						} else {
-							this.target.form.removeAttribute("onsubmit");
-						}
-						this.target.form.removeAttribute("data-updated");
-					}
-				}
-
-				// Auto draw strength chart
-				if(this.config.autoDraw) this.draw(this.features.complexity);
-			},
-			sameLike: function(e){
-				if(this.target.value.trim() != e.trim()) return false; else return true;
-			},
-			isEmpty: function(e){
-				if(e.trim() != "") return false; else return true;
-			},
-			generate: function(length){
-				if(typeof length == "undefined") length = this.minFeatures.length;
-				if(length < this.minFeatures.length) return false;
-
-				var val, charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!·$%&()*+_-";
-
-				this.features.allowed = false;
-				while(!this.features.allowed){
-					this.features.complexity = 0;
-					this.features.length = 0;
-					val = '';
-					for (var i = 0, n = charset.length; i < length; ++i) {
-						val += charset.charAt(Math.floor(Math.random() * n));
-					}
-					
-					this._checkComplexity(val);
-					if(this.features.length != length) this.features.allowed = false;
-				}
-				
-				return val;
-			},
-			draw: function(c){
-				// Add CSS Rules
-				if(typeof it.addCSSRule != "undefined"){
-					it.addCSSRule('', ".strength", "width: 100%; height: 10px; position: absolute; bottom: -2px; left: 0; z-index: 99; padding: 2px 1px 1px 1px; border: 0 none; margin: 0 0 5px 0; display: none");
-					it.addCSSRule('', ".strength::after", "content: attr(data-label); display: block; position: absolute; left: 0; top: -5px; width: 100%; padding: 3px 5px 2px; font-size: 12px; line-height: 12px;");
-					it.addCSSRule('', ".strength > div", "background: rgba(0,0,0,0.1); width: calc(16.667% - 4px); float: left; height: 6px; padding: 0; margin: 0px 2px; position: relative;");
-					it.addCSSRule('', ".strength[data-label] > div", "display: none;");
-					it.addCSSRule('', ".strength > div.spotlight", "background: " + this.config.colorok + ";");
-					it.addCSSRule('', "input:focus ~ .strength", "background: " + this.config.colornok + "; display: block;");
-				}
-
-				// Define layers
-				var cont = document.createElement("div");
-					cont.classList.add("strength");
-				
-				var str = '';
-				for(var x = 0; x < 6; x++){
-					if(x <= c - 1){
-						str += '<div class="spotlight"></div>';
-					} else {
-						str += '<div></div>';
-					}
-				}
-
-				cont.innerHTML = str;
-
-				// Add/Remove layers
-				var child = this.target.parentElement.children;
-					child = child[child.length - 1];
-
-				if(child && child.classList.contains("strength")) child.remove();
-				this.target.parentNode.insertBefore(cont, this.target.previousElementSibling);
-			},
-			getError: function(e){
-				if(this.config.onerror){
-					var msg = '';
-
-					if(this.target.value.trim() == "") msg = "empty";
-					else if(!this.features.allowed) msg = "not_allowed";
-
-					eval(this.config.onerror.name + '("' + msg + '")');
-				}
-			},
-			setError: function(e){
-				this.config.onerror = e;
-			},
-			setAutodraw: function(e){
-				this.config.autoDraw = e;
-			},
-			setAutocheck: function(cfg){
-				if(typeof cfg == "undefined") cfg = {};
-				
-				for(var aux in cfg){ this[aux] = cfg[aux]; }
-				
-				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
-
-				this.target.addEventListener("keyup", function(e){
-					Password.check({target: e.target.id, colorok: Password.config.colorok, colornok: Password.config.colornok});
-				});
-
-				this.target.form.setAttribute("onsubmit", "return " + Password.config.onerror.name + "('')");
-			},
-			setColors: function(ok, nok){
-				this.config.colorok = ok;
-				this.config.colornok = nok;
-			},
-			setMinimals: function(cfg){
-				for(var aux in cfg){
-					this.minFeatures[aux] = cfg[aux];
-				}
-			},
-			setTarget: function(e){
-				this.target = document.getElementById(e);
-				if(!this.target.getAttribute("name")) this.target.setAttribute("name", this.target.id);
-			},
-			_checkComplexity: function(val){
-				// Get features
-				this.features.length  = val ? val.length : 0;
-				this.features.uppers  = val.match(/[A-Z]/g) ? val.match(/[A-Z]/g).length : 0;
-				this.features.lowers  = val.match(/[a-z]/g) ? val.match(/[a-z]/g).length : 0;
-				this.features.numbers = val.match(/[0-9]/g) ? val.match(/[0-9]/g).length : 0;
-				this.features.special = this.features.length - this.features.uppers - this.features.lowers - this.features.numbers
-				this.features.extra   = this.features.length >= this.minFeatures.extra ? 1 : 0;
-
-				// Get initial complexity
-				this.features.complexity = (this.features.length >= this.minFeatures.length ? 1 : 0) + (this.features.numbers >= this.minFeatures.numbers ? 1 : 0) + (this.features.uppers >= this.minFeatures.uppers ? 1 : 0) + (this.features.lowers >= this.minFeatures.lowers ? 1 : 0) + (this.features.special >= this.minFeatures.special ? 1 : 0) + this.features.extra;
-
-				// Penalties by consecutive types
-				var consecutive = this._consecutive(val, 'uppers', val.length < this.minFeatures.length ? 2 : 4);
-				this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
-				
-				var consecutive = this._consecutive(val, 'lowers', val.length < this.minFeatures.length ? 2 : 4);
-				this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
-				
-				var consecutive = this._consecutive(val, 'numbers', val.length < this.minFeatures.length ? 2 : 4);
-				this.features.complexity = consecutive ? (this.features.complexity - 1) : this.features.complexity;
-
-				// Penalties by repeated characters
-				var repeated = this._repeated(val, val.length < this.minFeatures.length ? 2 : 3);
-				this.features.complexity = repeated ? (this.features.complexity - 1) : this.features.complexity;
-				
-				// Update allowed flag and form
-				this.features.allowed = (this.features.length >= this.minFeatures.length ? true : false) && (this.features.numbers >= this.minFeatures.numbers ? true : false) && (this.features.uppers >= this.minFeatures.uppers ? true : false) && (this.features.lowers >= this.minFeatures.lowers ? true : false) && (this.features.special >= this.minFeatures.special ? true : false);
-			},
-			_consecutive: function(value, pattern, len){
-				var value = value.split(''), total = 0;
-
-				// If the value length is greater, ignore validation
-				if(value.length >= 15) len = (len-1) * 2;
-
-				// Check consecutive characters
-				for(var x = 0; x < value.length; x++){
-					var code = value[x].charCodeAt(0);
-
-					if(pattern == "uppers"){
-						if(code >= 65 && code <= 90) total++; else total = 0;
-					} else if(pattern == "lowers"){
-						if(code >= 97 && code <= 122) total++; else total = 0;
-					} else if(pattern == "numbers"){
-						if(code >= 48 && code <= 57) total++; else total = 0;
-					}
-
-					if(total == len) return true;
-				}
-
-				return false;
-			},
-			_repeated: function(value, len){
-				var total = 1, charAnt = '';
-
-				for(var x = 0; x < value.length; x++){
-					var char = value[x];
-
-					if(charAnt == char) total++; else charAnt = char;
-					if(total == len) return true;
-				}
-
-				return false;
+			// Recuperamos la configuración para el elemento
+			for(var attr in it.password.config){
+				if(cfg.hasOwnProperty(attr)) it.password.config[attr] = cfg[attr];
 			}
+
+			cfg = it.password.config;
+
+			for(var xTrg = 0; xTrg < this.targets.length; xTrg++){
+				cfg.target = this.targets[xTrg].cloneNode(false), id = cfg.target.id;
+				
+				// Creamos el contenedor para la password
+				var div = document.createElement("div");
+					div.id = 'it-password-' + id;
+					div.classList.add("password-layer");
+
+				var pwdmeter = document.createElement("span");
+					pwdmeter.id = 'it-password-' + id + '-meter';
+					pwdmeter.classList.add("password-meters", !cfg.autodraw ? 'not-draw' : 'draw');
+
+				var pwdmsg = document.createElement("span");
+					pwdmsg.id = 'it-password-' + id + '-message';
+					pwdmsg.classList.add("it-password-messages");
+					pwdmsg.setAttribute("aria-live", "polite");
+
+				cfg.target.setAttribute("aria-label", cfg.text);
+				cfg.target.setAttribute("placeholder", cfg.placeholder);
+				cfg.target.type = "password";
+				
+				div.appendChild(cfg.target);
+				div.appendChild(pwdmeter);
+				div.appendChild(pwdmsg);
+
+				if(cfg.showbutton){
+					var sbtn = document.createElement("button");
+						sbtn.id = 'it-password-' + cfg.target.id + '-show';
+						sbtn.type = "button";
+						sbtn.classList.add('it-password-show-button');
+						sbtn.setAttribute("onclick", 'it.password.changeMode(this)');
+						sbtn.setAttribute("aria-labelledby", cfg.target.id);
+						sbtn.innerHTML = '<i class="' + cfg.showicon + '"></i>';
+						
+					div.appendChild(sbtn);
+				}
+
+				it.password._setEvents(cfg.target, cfg);
+
+				this.targets[xTrg].insertAdjacentElement("beforebegin", div);
+
+				// Creamos el contenedor para la confirmación de password, si procede
+				if(cfg.confirmby){
+					var divC = document.createElement("div");
+						divC.id = 'it-password-' + cfg.confirmby;
+						divC.classList.add("password-layer");
+
+						var pwdmsgC = document.createElement("span");
+							pwdmsgC.id = 'it-password-' + cfg.confirmby + '-message';
+							pwdmsgC.classList.add("it-password-messages");
+							pwdmsgC.setAttribute("aria-live", "polite");
+
+					var trgConfirm = this.targets[xTrg].cloneNode(false);
+					for (var i = 0; i < cfg.target.attributes.length; i++) {
+						trgConfirm[cfg.target.attributes[i].name] = cfg.target.attributes[i].value
+					}
+
+					trgConfirm.setAttribute("aria-label", cfg.textconfirm);
+					trgConfirm.setAttribute("placeholder", cfg.placeholderconfirm);
+					trgConfirm.id = cfg.confirmby;
+					trgConfirm.name = cfg.confirmby;
+					trgConfirm.type = "password";
+					
+					divC.appendChild(trgConfirm);
+					divC.appendChild(pwdmsgC);
+
+					if(cfg.showbutton){
+						var sbtnC = document.createElement("button");
+							sbtnC.id = 'it-password-' + cfg.confirmby + '-show';
+							sbtnC.type = "button";
+							sbtnC.classList.add('it-password-show-button');
+							sbtnC.setAttribute("onclick", 'it.password.changeMode(this)');
+							sbtnC.setAttribute("aria-labelledby", cfg.confirmby);
+							sbtnC.innerHTML = innerHTML = '<i class="' + cfg.showicon + '"></i>';
+						
+						divC.appendChild(sbtnC);
+					}
+
+					div.insertAdjacentElement("afterend", divC);
+
+					it.password._setEvents(trgConfirm, cfg);
+				}
+
+				this.targets[xTrg].remove();
+				
+
+				// Llamamos al evento check por si vienen rellenos y, así, comprobar los posibles errores.
+				it.password.check(cfg.target);
+
+				// Añadimos las reglas CSS necesarias
+				if(typeof it.addCSSRule != "undefined"){
+					it.addCSSRule('', "#it-password-" + cfg.target.id + (cfg.confirmby ? (", #it-password-" + cfg.confirmby) : ''), "position: relative");
+					it.addCSSRule('', "#" + pwdmeter.id, "width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0; border: 0 none; margin: 0 0 5px 0; display: none");
+					it.addCSSRule('', "#" + pwdmeter.id + " > div", "background: " + it.hex2rgba(cfg.colorok, 0.1)  + "; width: calc(16.667% - 1px); float: left; height: 5px; padding: 0; margin: 0px 1px 0 0; position: relative;");
+					it.addCSSRule('', "#" + pwdmeter.id + ".not-draw", "display: none !important");
+					it.addCSSRule('', "#" + pwdmeter.id + " > div.spotlight", "background: " + cfg.colorok + ";");
+					it.addCSSRule('', "input:focus ~ #" + pwdmeter.id, "background: " + cfg.colornok + "; display: block;");
+					it.addCSSRule('', '.it-password-messages', 'padding: 5px; display: block; background: #ffecec; border: 1px solid rgba(0,0,0,0.1); margin: 5px 0; font-size: 1em; font-weight: 600;');
+					it.addCSSRule('', '.it-password-messages:empty', 'height: 0; padding: 0; border: 0 none; width: 100%;');
+					it.addCSSRule('', '.it-password-show-button', 'position: absolute; top: 0; right: 0; background: transparent; border: 0 none; color: #000; width: 32px; height: ' + cfg.target.offsetHeight + 'px; z-index: 2;');
+					it.addCSSRule('', '.it-password-show-button i', 'pointer-events: none;');
+				}
+
+				it.password.assigned = true;
+			}
+		}
+		it.password.version = 2.0;
+		it.password.config = { 
+			autocheck: false,
+			autodraw: true, 
+			colorok : 'rgba(255,255,255,0.75)', 
+			colornok : '#e0e0e0',
+			confirmby: null,
+			features: { allowed: false, complexity: 0, extra: 0, length: 0, lowers: 0, numbers: 0, special: 0, uppers: 0 },
+			minfeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },
+			minfeaturesLang: { 
+				minfeatures: 'Debe tener al menos',
+				length: 'Longitud', 
+				uppers: 'Mayúsculas', 
+				lowers: 'Minúsculas', 
+				numbers: 'Números', 
+				special: 'Especiales' 
+			},
+			onerror: null,
+			messages: {
+				confirm_empty: "El campo de contraseña de confirmación no puede estar vacío",
+				empty: "La contraseña está vacía",
+				not_allowed: "Contraseña no permitida.",
+				not_length: "Contraseña no tiene la longitud requerida",
+				not_match: "Las contraseñas no coinciden"
+			},
+			text: 'Introducción de la contraseña',
+			textconfirm: 'Confirmación de la contraseña',
+			placeholder: 'Contraseña',
+			placeholderconfirm: 'Confirmar contraseña',
+			showbutton: false,
+			showicon: 'la la-eye',
+		}
+
+		it.password._setEvents = function(trg, cfg){
+			trg.setAttribute("oninput", "it.password.check(" + (trg.id == cfg.target.id ? 'this' : 'document.getElementById("' + cfg.target.id + '")') + ")");
+		}
+
+		it.password.check = function(el){
+			// Get target
+			var val = el.value, cfg = it.password.config;
+			cfg.errorType = '';
+
+			// If length lower than three, update values and return false
+			if(it.password.isEmpty(val)){
+				cfg.features.complexity = 0;
+				cfg.features.allowed = false;
+				cfg.errorType = 'empty';
+
+			} else if(val.length < cfg.minfeatures.length){
+				cfg.features.complexity = 0;
+				cfg.features.allowed = false;
+				cfg.errorType = 'not_length';
+
+			} else {
+				it.password._checkComplexity(cfg, val);
+
+				if(cfg.features.allowed && cfg.confirmby){
+					if(it.password.isEmpty(document.getElementById(cfg.confirmby).value)){
+						cfg.features.allowed = false;
+						cfg.errorType = 'confirm_empty';
+
+					} else if(!it.password.sameLike(cfg.target, document.getElementById(cfg.confirmby))){
+						cfg.features.allowed = false;
+						cfg.errorType = 'not_match';
+					}
+				}
+			}
+
+			if(cfg.autocheck) it.password.getError();
+
+			if(!cfg.features.allowed){
+				if(!cfg.target.form.getAttribute("data-updated")){
+					if(cfg.target.form.getAttribute("onsubmit")){
+						cfg.target.form.setAttribute("data-onsubmit", cfg.target.form.getAttribute("onsubmit"));
+						cfg.target.form.setAttribute("data-updated", "true");
+					} 
+					
+					cfg.target.form.setAttribute("onsubmit", 'return it.password.getError(); ');
+					cfg.target.form.setAttribute("data-updated", "true");
+				}
+
+			} else {
+				if(cfg.target.form.getAttribute("data-updated")){
+					if(cfg.target.form.getAttribute("data-onsubmit")){
+						cfg.target.form.setAttribute("onsubmit", cfg.target.form.getAttribute("data-onsubmit"))
+						cfg.target.form.removeAttribute("data-onsubmit");
+
+					} else {
+						cfg.target.form.removeAttribute("onsubmit");
+					}
+					cfg.target.form.removeAttribute("data-updated");
+				}
+			}
+
+			// Auto draw strength chart
+			if(cfg.autodraw) it.password.draw();
+		}
+
+		it.password.changeMode = function(el){
+			el = el.parentElement.querySelector("input");
+			if (el.type === "password") { el.type = "text"; } else { el.type = "password"; }
+
+			el.focus();
+		}
+
+		it.password.draw = function(){
+			var cfg = it.password.config
+			// Define layers
+			var cont = cfg.target.nextElementSibling;
+				cont.innerHTML = '';
+			
+			var str = '';
+			for(var x = 0; x < 6; x++){
+				if(x <= cfg.features.complexity - 1){
+					str += '<div class="spotlight"></div>';
+				} else {
+					str += '<div></div>';
+				}
+			}
+
+			cont.innerHTML = str;
+		}
+
+		it.password._checkComplexity = function(cfg, val){
+			// Get features
+			cfg.features.length  = val ? val.length : 0;
+			cfg.features.uppers  = val.match(/[A-Z]/g) ? val.match(/[A-Z]/g).length : 0;
+			cfg.features.lowers  = val.match(/[a-z]/g) ? val.match(/[a-z]/g).length : 0;
+			cfg.features.numbers = val.match(/[0-9]/g) ? val.match(/[0-9]/g).length : 0;
+			cfg.features.special = cfg.features.length - cfg.features.uppers - cfg.features.lowers - cfg.features.numbers
+			cfg.features.extra   = cfg.features.length >= cfg.minfeatures.extra ? 1 : 0;
+
+			// Get initial complexity
+			cfg.features.complexity = (cfg.features.length >= cfg.minfeatures.length ? 1 : 0) + (cfg.features.numbers >= cfg.minfeatures.numbers ? 1 : 0) + (cfg.features.uppers >= cfg.minfeatures.uppers ? 1 : 0) + (cfg.features.lowers >= cfg.minfeatures.lowers ? 1 : 0) + (cfg.features.special >= cfg.minfeatures.special ? 1 : 0) + cfg.features.extra;
+
+			// Penalties by consecutive types
+			var consecutive = it.password._consecutive(val, 'uppers', val.length < cfg.minfeatures.length ? 2 : 4);
+			cfg.features.complexity = consecutive ? (cfg.features.complexity - 1) : cfg.features.complexity;
+			
+			var consecutive = it.password._consecutive(val, 'lowers', val.length < cfg.minfeatures.length ? 2 : 4);
+			cfg.features.complexity = consecutive ? (cfg.features.complexity - 1) : cfg.features.complexity;
+			
+			var consecutive = it.password._consecutive(val, 'numbers', val.length < cfg.minfeatures.length ? 2 : 4);
+			cfg.features.complexity = consecutive ? (cfg.features.complexity - 1) : cfg.features.complexity;
+
+			// Penalties by repeated characters
+			var repeated = it.password._repeated(val, val.length < cfg.minfeatures.length ? 2 : 3);
+			cfg.features.complexity = repeated ? (cfg.features.complexity - 1) : cfg.features.complexity;
+
+			// Update allowed flag and form
+			cfg.features.allowed = (cfg.features.length >= cfg.minfeatures.length ? true : false) && (cfg.features.numbers >= cfg.minfeatures.numbers ? true : false) && (cfg.features.uppers >= cfg.minfeatures.uppers ? true : false) && (cfg.features.lowers >= cfg.minfeatures.lowers ? true : false) && (cfg.features.special >= cfg.minfeatures.special ? true : false);
+
+			if(cfg.features.allowed < cfg.minfeatures.numbers)	cfg.errorType = 'not_allowed';
+		}
+
+		it.password.getError = function(){
+			var cfg = it.password.config, msgPwd, msgRep;
+
+			msgPwd = cfg.target.parentElement.querySelector('[id$="message"]')
+			if(cfg.confirmby) msgRep = document.getElementById(cfg.confirmby).parentElement.querySelector('[id$="message"]')
+
+			// Show messages
+			if(cfg.errorType == "not_length"){
+				msgPwd.innerHTML = cfg.messages.not_length;
+
+			} else if(cfg.errorType == "empty"){
+				msgPwd.innerHTML = cfg.messages.empty;
+
+			} else if(cfg.errorType == "not_allowed"){
+				var str = " " + it.password.config.minfeaturesLang.minfeatures + " ";
+					str += it.password.config.minfeaturesLang.length.toLowerCase() + ' ' + it.password.config.minfeatures.length + ", ";
+					str += it.password.config.minfeatures.uppers + ' ' + it.password.config.minfeaturesLang.uppers.toLowerCase() + ", ";
+					str += it.password.config.minfeatures.lowers + ' ' + it.password.config.minfeaturesLang.lowers.toLowerCase() + ", ";
+					str += it.password.config.minfeatures.numbers + ' ' + it.password.config.minfeaturesLang.numbers.toLowerCase() + ", ";
+					str += it.password.config.minfeatures.special + ' ' + it.password.config.minfeaturesLang.special.toLowerCase() + ". ";
+
+				msgPwd.innerHTML = cfg.messages.not_allowed + str;
+			} else {
+				msgPwd.innerHTML = '';
+			}
+
+			if(cfg.errorType == "confirm_empty"){
+				msgRep.innerHTML = cfg.messages.confirm_empty;
+
+			} else if(cfg.errorType == "not_match"){
+				msgRep.innerHTML = cfg.messages.not_match;
+			} else {
+				msgRep.innerHTML = '';
+			}
+
+			return false;
+		}
+
+		it.password._consecutive = function(value, pattern, len){
+			var value = value.split(''), total = 0;
+
+			// If the value length is greater, ignore validation
+			if(value.length >= 15) len = (len-1) * 2;
+
+			// Check consecutive characters
+			for(var x = 0; x < value.length; x++){
+				var code = value[x].charCodeAt(0);
+
+				if(pattern == "uppers"){
+					if(code >= 65 && code <= 90) total++; else total = 0;
+				} else if(pattern == "lowers"){
+					if(code >= 97 && code <= 122) total++; else total = 0;
+				} else if(pattern == "numbers"){
+					if(code >= 48 && code <= 57) total++; else total = 0;
+				}
+
+				if(total == len) return true;
+			}
+
+			return false;
+		}
+
+		it.password.sameLike = function(trg, cfrm){
+			if(trg.value.trim() != cfrm.value.trim()) return false; else return true;
+		}
+		
+		it.password.isEmpty = function(e){
+			if(e.trim() != "") return false; else return true;
+		}
+
+		it.password._repeated = function(value, len){
+			var total = 1, charAnt = '';
+
+			for(var x = 0; x < value.length; x++){
+				var char = value[x];
+
+				if(charAnt == char) total++; else charAnt = char;
+				if(total == len) return true;
+			}
+
+			return false;
+		}
+
+		it.password.help = function(cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("Password", cfg);
+			else alert("Helper not available!")
+			return;
+		}
+
+		it.password.generate = function(length){
+			var cfg = it.password.config;
+
+			if(typeof length == "undefined") length = cfg.minfeatures.length;
+			if(length < cfg.minfeatures.length) return false;
+
+			var val, charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!·$%&()*+_-";
+
+			cfg.features.allowed = false;
+			while(!cfg.features.allowed){
+				cfg.features.complexity = 0;
+				cfg.features.length = 0;
+				val = '';
+				for (var i = 0, n = charset.length; i < length; ++i) {
+					val += charset.charAt(Math.floor(Math.random() * n));
+				}
+				
+				it.password._checkComplexity(cfg, val);
+				if(cfg.features.length != length) cfg.features.allowed = false;
+			}
+			
+			return val;
 		}
 	}
 
@@ -5527,9 +5683,29 @@ function isiToolsCallback(json){
 				if(opt.selector) it.sorter._addSelector(opt);
 
 				it.sorter._addStyles(opt);
-				it.sorter.sort(0, target);
+
+				it.sorter.sort(it.sorter._getFirstOrderableColumn(opt), target);
 			});
 
+		}
+
+		it.sorter._getColSpan = function(opt, col){
+			var offset = 0
+			for(var i = 0; i < col; i++){
+				offset += opt.columns[i].colspan > 1 ? (opt.columns[i].colspan - 1) : 0
+			}
+			return offset;
+		}
+
+		it.sorter._getFirstOrderableColumn = function(opt){
+			var offset, res = 0;
+			for(var i = 0; i < opt.columns.length; i++){
+				var col = opt.columns[i];
+
+				if(!col.orderable) res++;
+			}
+
+			return res;
 		}
 
 		it.sorter._addSelector = function(opt){
@@ -5646,12 +5822,15 @@ function isiToolsCallback(json){
 
 			for(var i = 0; i < opt.columns.length; i++){
 				var ord = opt.columns[i];
-
+			
 				if(typeof ord == "string"){
 					if(ord != "none"){
 						opt.sorting.push({id: 'sorterCol' + i, orderable: true, setto: ord, type: 'string'})
+						opt.columns[i] = {id: 'sorterCol' + i, orderable: true, type: 'string'}
+
 					} else {
 						opt.sorting.push({id: 'sorterCol' + i, orderable: false})
+						opt.columns[i] = {id: 'sorterCol' + i, orderable: false}
 					}
 					
 				} else if(typeof ord == "object"){
@@ -5666,6 +5845,8 @@ function isiToolsCallback(json){
 						opt.sorting.push({id: id, orderable: orderable})
 					}
 				}
+
+				opt.columns[i].colspan = opt.table.querySelector("thead tr:last-child th:nth-child(" + (i + 1) + ")").colSpan;
 			}
 		}
 
@@ -5694,7 +5875,7 @@ function isiToolsCallback(json){
 			var rows = opt.table.rows;
 
 			// Recuperamos la ordenación actual de la tabla, tipo y formato
-			var sorting = opt.sorting, type = opt.columns[col].type, mask = opt.columns[col].hasOwnProperty("format") ? opt.columns[col].format : opt.columns[col].enum;
+			var sorting = opt.sorting;
 
 			// Actualizamos la ordenación de la columna solicitada
 			if(ord == 'toggle'){
@@ -5710,10 +5891,11 @@ function isiToolsCallback(json){
 
 				for (i = 1; i < (rows.length - 1); i++) {
 					exchange = false;
-					for (var k = 1; k < sorting.length; k++) {
-						cond = [];
+					for (var k = 0; k < sorting.length; k++) {
+						if(!sorting[k].orderable) continue;
 
-						for (var j = 0; j < k; j++) {
+						cond = [];
+						for (var j = k; j < sorting.length; j++) {
 
 							if(sorting[j].setto == '' && col != j) continue;
 
@@ -5728,14 +5910,14 @@ function isiToolsCallback(json){
 								cond.push(x + " > " + y);
 							
 							} else if(sorting[j].setto == 'asc'){
-								x = it.sorter._get(opt, i, j, type, mask);
-								y = it.sorter._get(opt, i + 1, j, type, mask);
+								x = it.sorter._get(opt, i, j);
+								y = it.sorter._get(opt, i + 1, j);
 
 								cond.push(x + " > " + y);
 
 							} else {
-								x = it.sorter._get(opt, i, j, type, mask);
-								y = it.sorter._get(opt, i + 1, j, type, mask);
+								x = it.sorter._get(opt, i, j);
+								y = it.sorter._get(opt, i + 1, j);
 
 								cond.push(x + " < " + y);
 							}
@@ -5743,7 +5925,7 @@ function isiToolsCallback(json){
 					
 						cond = cond.join(" && ");
 
-						if(cond != "") eval('exchange = ' + cond + ";");
+						if(cond != "") eval('exchange = ' + cond + ";"); else continue;
 
 						if(exchange) break;
 					}
@@ -5762,23 +5944,25 @@ function isiToolsCallback(json){
 			//console.log("TOTAL: ", xCount, "SORTING:", sorting)
 
 			// Recuperamos todos los iconos de cada celda
-			var ic = table.querySelectorAll("thead tr:last-child th i");
+			var ic = table.querySelectorAll("thead tr:last-child th");
 			if(ic){
 				// Eliminamos todas las clases que hacen referencia los iconos de ordenación
 				var icc = opt.icons.sort.split(' ').concat(opt.icons.asc.split(' ')).concat(opt.icons.desc.split(' '));
 				for(var i = 0; i < ic.length; i++){
+					if(!sorting[i].orderable || !ic[i].querySelector("i")) continue;
+					
 					for(var j = 0; j < icc.length; j++){
-						ic[i].classList.remove(icc[j]); 
+						ic[i].querySelector('i').classList.remove(icc[j]); 
 					}
 				}
 
 				// Asignamos los iconos correspondientes en cada celda de la cabecera
 				for(var i = 0; i < sorting.length; i++){
-					if(!sorting[i].orderable) continue;
+					if(!sorting[i].orderable || !ic[i].querySelector("i")) continue;
 
 					icc = sorting[i].setto == '' ? opt.icons.sort.split(' ') : (sorting[i].setto == 'asc' ? opt.icons.asc.split(' ') : opt.icons.desc.split(' '));
 					for(var j = 0; j < icc.length; j++){
-						ic[i].classList.add(icc[j]);
+						ic[i].querySelector('i').classList.add(icc[j]);
 					}
 
 					if(opt.selector){
@@ -5789,7 +5973,13 @@ function isiToolsCallback(json){
 			}
 		}
 
-		it.sorter._get = function(opt, row, col, type, mask){
+		it.sorter._get = function(opt, row, col){
+			// Recuperamos el tipo y máscara
+			var type = opt.columns[col].type ? opt.columns[col].type : 'string', mask = opt.columns[col].hasOwnProperty("format") ? opt.columns[col].format : (opt.columns[col].enum ? opt.columns[col].enum : '');
+			
+			// Si tiene establecidas columnas unidas con colSpan
+			col += it.sorter._getColSpan(opt, col)
+			
 			function toTS(v, m){
 				var dd   = v.substr(m.indexOf("DD"), 2)
 				var mm   = v.substr(m.indexOf("MM"), 2)
@@ -5806,6 +5996,7 @@ function isiToolsCallback(json){
 				return v.toLowerCase();
 			}
 
+			// Recuperamos el valor y lo convertimos a un valor ordenable
 			var v = opt.table.rows[row].querySelectorAll("td")[col].innerText;
 
 			if(type == 'string'){
@@ -6042,7 +6233,6 @@ function isiToolsCallback(json){
 						if (item.hasOwnProperty("id")) chk.setAttribute("data-id", item.id);
 						chk.checked = item.hasOwnProperty('checked') ? item.checked : false;
 						chk.setAttribute("aria-label", item.label);
-						console.log(item)
 
 						li.appendChild(chk);
 					} else if (item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() != "") {
