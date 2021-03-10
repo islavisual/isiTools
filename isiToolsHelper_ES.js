@@ -1077,11 +1077,12 @@ if(it.enabledModules.Counter){
 			{
 				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 				example: '_CSS_// styles.css (de tu sitio web)\n\
-<p>Ejemplo de estilo formato batería</p>\
-.nexus-app>header .nexus-profile .counter { position: relative; float: right; width: 64px; height: 27px; margin: 10px 0 10px 10px; border-radius: 4px; padding: 3px; background: rgba(var(--color-shadow), 1); border: 1px solid rgba(var(--color-lighting), 0.8); box-shadow: 0 0 0 2px #000 inset; }\n\
-.nexus-app>header .nexus-profile .counter::before { content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #fff; height: 100%; padding: 0; line-height: 26px; font-size: 1.1rem; }\n\
-.nexus-app>header .nexus-profile .counter::after { content: ""; background: rgba(var(--color-lighting), 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0; }\n\
-.nexus-app>header .nexus-profile .counter span.progress{ width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: #7d7a7d; }\n\_CSS_'
+// Ejemplo de estilo formato batería\n\
+.counter{ position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; border: 1px solid rgba(255,255,255, 0.8); box-shadow: 0 0 0 2px rgb(0 0 0) inset; }\n\
+.counter::before{ content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #000; height: 100%; padding: 0; line-height: 24px; font-size: 0.9rem; z-index: 1; }\n\
+.counter::after{ content: ""; background: rgba(0, 0 , 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0; }\n\
+.counter span.progress{ width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: rgba(0,64,128, 1); position: relative; top: auto; right: auto; z-index: 0; }\n\
+_CSS_'
 			}
 		],
 		callback: {
@@ -1103,10 +1104,19 @@ if(it.enabledModules.Counter){
 		format: {
 	type: 'integer',
 	description: 'Establece una máscara para la visualización de valores. Sólo es aplicable en modo "timer". Por defecto es "HH:MM:SS".',
-	example: 'it("#counter").counter({\n\
-from: 10,\n\
-forma: "MM min",\n\
-})'		},
+	example: '// Contador marcha atrás de diez segundos\n\
+it("#counter").counter({\n\
+	from: 10,\n\
+	format: "SS seg",\n\
+});\n\
+\n\
+// Contador marcha atrás de una hora con formato minutos\n\
+it("#counter").counter({\n\
+	from: 3600,\n\
+	format: "MM Min",\n\
+});\n\
+'
+		},
 		from: {
 			type: 'integer',
 			description: 'Permite definir una cuenta atrás del valor indicado.',
@@ -1124,10 +1134,18 @@ forma: "MM min",\n\
 		mode: {
 			type: 'string',
 			description: 'Indica el modo de visualiación del contador. Si el modo es "timer" (el modo por defecto) se presentará como una marca de tiempo, por lo que aunque el intervalo sea menor que un segundo, la duración será la misma qu para el intervalo por defecto\nEn otras palabras, si el modo es "timer", el parámetro interval no tendrá efecto si es menor que uno. Si el modo es "count", se presentará como un contador normal.',
-			example: 'it(".session").counter({\n\
-	from: 3600,\n\
+			example: '// Contador marcha atrás\n\
+it(".session").counter({\n\
+	from: 30,\n\
 	mode: "timer",\n\
-});'	},
+});\n\
+\n\
+// Contador marcha atrás\n\
+it(".session").counter({\n\
+	from: 30,\n\
+	mode: "count",\n\
+});'
+		},
 		notify: {
 			type: 'object',
 			description: 'Muestra un mensaje de alerta cuando se cumpla un valor determinado. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
@@ -1171,7 +1189,7 @@ forma: "MM min",\n\
 		to: {
 			type: 'integer',
 			description: 'Permite definir un contador que cuenta hacia adelante hasta el valor indicado.',
-			example: 'it(".nexus-profile .session").counter({\n\
+			example: 'it(".profile .session").counter({\n\
 	to: 10,\n\
 	interval: 0.2\n\
 	mode: "count"\n\
@@ -1802,7 +1820,7 @@ if(it.enabledModules.Slider){
 it-slider { display: block; width: 100%;}\n\
 \n\
 // Estilos para un Slider de tipo SWITCH\n\
-it-slider[type=switch]{ border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: 86px; margin: 0; top: 0; }\N\
+it-slider[type=switch]{ border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0; }\N\
 it-slider[type=switch] input{ cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; }\n\
 it-slider[type=switch] label{ color: #000; font-size: 12px; background: #EAEAEA none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s; }\n\
 it-slider[type=switch] label::before, it-slider[type=switch] label::after{ font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit; }\n\
@@ -2065,92 +2083,177 @@ it("#valoracion").slider({\n\
 
 /**
 	Password tools
-	@version: 1.00
+	@version: 2.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2021 Islavisual.
-	@Last update: 22/05/2019
+	@Last update: 10/03/2021
 **/
 if(it.enabledModules.Password){
 	WikiHelper.Password = {
 		general: {
-			version: '1.0',
+			version: '2.0',
 			help: 1,
 			name: 'Password',
-			description: "El script de contraseña es una herramienta que le permite administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, el script de contraseña penaliza las acciones como insertar varias minúsculas consecutivas, insertar varias mayúsculas consecutivas, insertar varios dígitos consecutivos o repetir tres o más veces el mismo carácter.",
+			description: 'Este componente es una herramienta que ofrece la posibilidad de administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, posee un sistema de detección y penalización por consecución de minúsculas, mayúsculas y dígitos consecutivos o la repeción de tres o más veces sobre un mismo carácter.\n\
+\n\
+// En todos los siguientes casos supondremos que tenemos un elemento o código como el siguiente:\n\
+<code>&lt;input id="pwd" name="pwd" type="password" maxlength="50" autocomplete="off" /></code>',
 		},
 		additional: [
 			{
 				description: 'Conocer la complejidad de la contraseña introducida:',
-				example: 'Password.features.complexity;'
+				example: 'it.password.config.features.complexity;'
 			},
 			{
 				description: 'Saber si se cumplen los requisitos mínimos para poder enviar/guardar la contraseña:',
-				example: 'Password.allowed;'
+				example: 'it.password.config.features.allowed;'
 			},
 			{
-				description: 'Conguración de estilos por defecto:',
-				example: '// Password crea estos estilos de manera automática, pero, se puede añadir a la hoja de estilos principal y modificarlos como se quieran.\n.strength{\n\twidth: 100%;\n\theight: 10px;\n\tposition: absolute;\n\tbottom: -2px;\n\tleft: 0;\n\tz-index: 99;\n\tpadding: 2px 1px 1px 1px;\n\tborder: 0 none;\n\tmargin: 0 0 5px 0;\n\tdisplay: none;\n}\n.strength::after{\n\tcontent: attr(data-label);\n\tdisplay: block;\n\tposition: absolute;\n\tleft: 0;\n\ttop: -5px;\n\twidth: 100%;\n\tpadding: 3px 5px 2px;\n\tfont-size: 12px;\n\tline-height: 12px;\n}\n.strength > div{\n\tbackground: rgba(0,0,0,0.1);\n\twidth: calc(16.667% - 4px);\n\tfloat: left;\n\theight: 6px;\n\tpadding: 0;\n\tmargin: 0px 2px;\n\tposition: relative;\n}\n.strength[data-label] > div{\n\tdisplay: none;\n}\n.strength > div.spotlight{\n\tbackground: lightblue;\n}\ninput:focus ~ .strength{\n\tbackground: blue;\n\tdisplay: block;\n}'
+				description: 'Cambiar el idioma y gran cantidad de opciones a través del objeto <name>config</name>:',
+				example: 'it.password.config = {\n\
+	autocheck: false,\n\
+	autodraw: true,\n\
+	colorok : "rgba(255,255,255,0.75)",\n\
+	colornok : "#e0e0e0",\n\
+	confirmby: null,\n\
+	features: { allowed: false, complexity: 0, extra: 0, length: 0, lowers: 0, numbers: 0, special: 0, uppers: 0 },\n\
+	minfeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },\n\
+	minfeaturesLang: { \n\
+		minfeatures: "Debe tener al menos",\n\
+		length: "Longitud",\n\
+		uppers: "Mayúsculas",\n\
+		lowers: "Minúsculas",\n\
+		numbers: "Números",\n\
+		special: "Especiales"\n\
+	},\n\
+	onerror: null,\n\
+	messages: {\n\
+		confirm_empty: "El campo de contraseña de confirmación no puede estar vacío",\n\
+		empty: "La contraseña está vacía",\n\
+		not_allowed: "Contraseña no permitida.",\n\
+		not_length: "Contraseña no tiene la longitud requerida",\n\
+		not_match: "Las contraseñas no coinciden"\n\
+	},\n\
+	text: "Introducción de la contraseña2,\n\
+	textconfirm: "Confirmación de la contraseña",\n\
+	placeholder: "Contraseña",\n\
+	placeholderconfirm: "Confirmar contraseña",\n\
+	showbutton: false,\n\
+	showicon: "la la-eye",\n\
+}'
+			},
+			{
+				description: 'Personalización de los estilos a través de las reglas CSS. Por ejemplo:',
+				example: '// Password crea los estilos en tiempo de ejecución de manera automática, pero es posible añadirlos a la hoja de estilos principal para modificarlos como se deseen.\n\
+_CSS_\n\
+#it-password-pwd, #it-password-pwdc { position: relative; }\n\
+#it-password-pwd-meter{ width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0; border: 0 none; margin: 0 0 5px 0; display: none; }\n\
+#it-password-pwd-meter{ > div", "background: rgba(255,255,255,0.1); width: calc(16.667% - 1px); float: left; height: 5px; padding: 0; margin: 0px 1px 0 0; position: relative; }\n\
+#it-password-pwd-meter.not-draw", "display: none !important }\n\
+#it-password-pwd-meter{ > div.spotlight", "background: #fff; }\n\
+#input:focus ~ #it-password-pwd-meter{ background: #000; display: block; }\n\
+.it-password-messages{ padding: 5px; display: block; background: #ffecec; border: 1px solid rgba(0,0,0,0.1); margin: 5px 0; font-size: 1em; font-weight: 600; }\n\
+.it-password-messages:empty{ height: 0; padding: 0; border: 0 none; width: 100%; }\n\
+.it-password-show-button{ position: absolute; top: 0; right: 0; background: transparent; border: 0 none; color: #000; width: 32px; height: 48px; z-index: 2; }\n\
+.it-password-show-button i{ pointer-events: none; }\n\
+_CSS_'
 			}
 		],
+		autocheck: {
+			type: 'boolean',
+			description: 'Permite activar la comprobación automática de la contraseña en cada pulsación o entrada de datos.',
+			example:'it("#pwd").password({\n\
+	autocheck: false,\n\
+})'
+		},
+		autodraw: {
+			type: 'boolean',
+			description: 'Permite activar o desactivar la capa que muestra gráficamente la fortaleza de la contraseña',
+			example:'it("#pwd").password({\n\
+	autodraw: false,\n\
+})'
+		},
 		check: {
 			type: 'function',
 			description: 'Permite comprobar la seguridad de la contraseña. Puede definir la longitud mínima y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, puede definir los colores utilizados para indicar cuándo la contraseña es correcta y cuándo no.',
-			example: '&lt;script>\n\tfunction check(){\n\t\tPassword.check({\n\t\t\ttarget: this.id,\n\t\t\tcolorok: \'rgba(255,255,255,0.75)\',\n\t\t\tcolornok: \'#A12123\'\n\t\t});\n\t}\n&lt;/script>\n\n&lt;input\tid="pwd"\n\tname="pwd"\n\ttype="password"\n\tvalue=""\n\tplaceholder="Contraseña"\n\tonkeyup="check();" />'
+			example: '// Para este ejemplo, primero se debe añadir un evento onkeyup en el INPUT propuesto al principio de este documento de ayuda\n\
+&lt;input\n\
+	id="pwd"\n\
+	name="pwd"\n\
+	type="password"\n\
+	maxlength="50"\n\
+	autocomplete="off"\n\
+	onkeyup="it.password.check(this);" />'
 		},
-		draw: {
-			type: 'function',
-			description: 'Permite llamar a la función de dibujar el gráfico de fortaleza para mostrarlo en un momento determinado.',
-			example: 'Password.draw(Password.features.complexity);'
+		confirmby: {
+			type: 'string',
+			description: 'Permite añadir un segundo elemento de contraseña para poder realizar la accción de confirmación de contraseñas.',
+			example: 'it("#pwd").password({\n\
+	autocheck: false,\n\
+	autodraw: false,\n\
+	colorok: "#fff",\n\
+	colornok: "#000",\n\
+	confirmby: "pwdc"\n\
+	showbutton: true,\n\
+	showicon: "la la-eye",\n\
+});'
+		},
+		colornok: {
+			type: 'string',
+			description: 'Permite establecer el color de la barra de fortaleza que indica que no cumple el nivel de seguridad. Por defecto, hay seis niveles de complejidad. Cada vez que se cumpla un criterio concreto, se sumará uno al nivel de complejidad, lo que indicará si la contraseña es o no fácil de reconocer o descubrir.',
+			example:'it("#pwd").password({\n\
+	autocheck: false,\n\
+	autodraw: false,\n\
+	colorok: "#fff",\n\
+	colornok: "#000",\n\
+	showbutton: true,\n\
+	showicon: "la la-eye",\n\
+});'
+		},
+		colorok: {
+			type: 'string',
+			description: 'Permite establecer el color de la barra de fortaleza que indica que cumple el nivel de seguridad. Por defecto, hay seis niveles de complejidad. Cada vez que se cumpla un criterio concreto, se sumará uno al nivel de complejidad, lo que indicará si la contraseña es o no fácil de reconocer o descubrir.',
+			example:'it("#pwd").password({\n\
+	autocheck: false,\n\
+	autodraw: false,\n\
+	colorok: "#fff",\n\
+	colornok: "#000",\n\
+	showbutton: true,\n\
+	showicon: "la la-eye",\n\
+});'
 		},
 		generate: {
 			type: 'function',
 			description: 'Permite crear una contraseña aleatoria de una longitud concreta que cumpla los requisitos mínimos.',
-			example: 'Password.generate(8);'
+			example: 'it.password.generate(8);'
 		},
 		getError: {
 			type: 'function',
 			description: 'Permite comprobar si se ha producido algún error de validación en el campo de texto asociado a la contraseña. Si la función setError está establecida, se enviará el resultado de la evaluación a la función asociada.',
-			example: '// Establecemos la configuración básica\nPassword.setError(showMessage);\nPassword.setTarget("pwd");\nPassword.setAutocheck();\n\n// Definimos la función de callback para el Password\n// Cada vez que pulsemos una tecla o se pulse el botón de "submit" se evaluará\nfunction showMessage(e){\n\tif(e == "not_allowed"){\n\t\tconsole.log("La contraseña no es válida!");\n\t} else if(e == "empty"){\n\t\tconsole.log("El campo password está vacío!");\n\t} else if(!Password.sameLike(document.getElementById("confirm_password").value)){\n\t\tconsole.log("Las contraseñas son distintas!");\n\t}\n});'
+			example: 'it.password.getError();\n\
+// Esto podría mostrar abajo del campo de contraseña un mensaje como:\n\
+// "Contraseña no permitida. Debe tener al menos longitud 6, 1 mayúsculas, 1 minúsculas, 1 números, 1 especiales."'
 		},
-		isEmpty: {
-			type: 'function',
-			description: 'Permite verificar si el valor introducido es una cadena vacía.',
-			example: 'if(Password.isEmpty(document.getElementById("password").value)){\n\tconsole.log("La contraseña está vacía!");\n}'
+		showbutton: {
+			type: 'boolean',
+			description: 'Permite establecer un botón para que se pueda mostrar la contraseña. Por defecto, la contraseña aparecerá como puntos o asteriscos. Si se pulsa este botón el elemento de entrada de datos asociado se tranformará en un elemento de entrada de datos de texto, mostrando así, su contenido.\n\
+<name><bool>NOTA</bool>: Este parámetro está asociado al parámetro <field style="padding:0">showicon</field>, el cual indica el icono a utilizar.',
+			example:'it("#pwd").password({\n\
+	colorok: "#fff",\n\
+	colornok: "#0a3263",\n\
+	showbutton: true,\n\
+	showicon: "icon eye",\n\
+});'
 		},
-		sameLike: {
-			type: 'function',
-			description: 'Permite verificar si la contraseña es igual que el valor enviado por parámetro.',
-			example: 'if(Password.sameLike(document.getElementById("confirm_password").value)){\n\tconsole.log("Contraseñas identicas!");\n}'
-		},
-		setAutocheck: {
-			type: 'function',
-			description: 'Permite establecer el control de los eventos de teclado y submit para poder gestionar la contraseña. Este método añade el evento keyup para el campo de texto asociado a la contraseña y el evento submit al formulario.',
-			example: 'Password.setAutocheck();'
-		},
-		setAutoDraw: {
-			type: 'function',
-			description: 'Permite definir si se debe pintar el gráfico de fortaleza de la contraseña o no.',
-			example: 'Password.setAutoDraw(false);'
-		},
-		setColors: {
-			type: 'function',
-			description: 'Permite definir los colores para personalizar el CSS asociado a la fortaleza de la contraseña.',
-			example: 'Password.setColors("rgba(255,255,255,0.51)", "#00a55a");'
-		},
-		setError: {
-			type: 'function',
-			description: 'Permite añadir una función de error personalizada.',
-			example: 'Password.setError(showMessage);\n\nfunction showMessage(e){\n\tif(e == "not_allowed"){\n\t\tconsole.log("La contraseña no es válida!");\n\t} else if(e == "empty"){\n\t\tconsole.log("El campo password está vacío!");\n\t} else if(!Password.sameLike(document.getElementById("confirm_password").value)){\n\t\tconsole.log("Las contraseñas son distintas!");\n\t}\n});'
-		},
-		setMinimals: {
-			type: 'function',
-			description: 'Permite establecer los requerimientos mínimos de seguridad de las contraseñas. Es resultado de esta evaluación se devolverá en Password.allowed. Sólo si esta variable es igual a "true", el formulario se podrá enviar/guardar.',
-			example: 'Password.setMinimals({\n\tlength: 8,\n\tuppers:1,\n\tlowers: 1,\n\tnumbers: 0,\n\tspecial: 0\n});'
-		},
-		setTarget: {
-			type: 'function',
-			description: 'Permite establecer elemento dónde inicializar la funcionalidad "Password" a través de su ID.',
-			example: 'Password.setTarget("INPUT_ID");'
+		showicon: {
+			type: 'string',
+			description: 'Permite establecer el icono asociado al botón de mostrar la contraseña referenciado por el parámetro <field style="padding:0">showbutton</field>. Por defecto, este icono está establecido a <field>fa fa-eye</field>.',
+			example:'it("#pwd").password({\n\
+	colorok: "#fff",\n\
+	colornok: "#0a3263",\n\
+	showbutton: true,\n\
+	showicon: "la la-eye",\n\
+});'
 		}
 	}
 }
