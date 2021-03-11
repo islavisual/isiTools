@@ -14,7 +14,7 @@ Los componentes que ofrece son:
 * **StripTags**: Funcionalidad para limpiar de HTML una cadena proporcionada por parámetro.
 * **Ucwords**: Convertir el primer carácter de un texto o palabra a mayúscula y, el resto, minúsculas.
 
-## Habilitados por parámetro
+## Módulos habilitados por parámetro
 * **AddCSSRule**: Funcionalidad para crear y/o modificar reglas en las hojas de estilo.
 * **Alert**: Funcionalidad para crear alertas y diálogos de forma rápida y eficiente. 
 * **Autocomplete**: Funciuonalidad para seleccionar valores de una lista de previamente rellenada a medida que se escribe.
