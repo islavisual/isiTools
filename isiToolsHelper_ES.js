@@ -6,7 +6,7 @@ WikiHelper.Each = {
 		intern: true,
 		name: 'each',
 		help: 1,
-		description: 'Permite ecorrer todos los elementos devueltos por isiTools y asignarle propiedades, comportamientos o eventos.',
+		description: 'Permite recorrer todos los elementos devueltos por isiTools y asignarle propiedades, comportamientos o eventos.',
 		example: '// Mostrar el índice/posición de los elementos selecciondos y añadirles la clase "focused"\n\
 it("input, textarea, select").each(function(index){\n\
 	console.log("índice", index)\n\
@@ -122,7 +122,8 @@ WikiHelper.Leftpad = {
 		intern: true,
 		name: 'leftpad',
 		help: 1,
-		description: 'Añadir ceros por la izquierda a valores numéricos.\nSe alimenta de un único parámetro que indica el número de ceros a añadir si el número no tiene la longitud indicada.',
+		description: 'Permite añadir ceros por la izquierda a valores numéricos.\nSe alimenta de un único parámetro que indica el número de ceros a añadir si el número no tiene la longitud indicada.\n\
+<name><bool>NOTA</bool>: Aunque este pequeño componente lo define isiTools, está disponible desde el objeto String o Number para mayor facilidad de uso y aprendizaje.',
 		example: '// Devolver 0012 desde un valor de tipo cadena.\n\
 "12".leftPad(4);\n\
 // Devolver 0012 desde un valor de tipo número.\n\
@@ -199,37 +200,35 @@ it.ucwords("framework de isiTools", false);',
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 04/04/2019																			
  **/
-
-if(it.enabledModules.AddCSSRule){
-	WikiHelper.Addcssrule = {
-		general: {
-			version: '1.1',
-			name: 'AddCSSRule',
-			help: 1,
-			description: "Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.",
-		},
-		sheet: {
-			type: 'string',
-			description: 'Este parámetro indica la hoja de estilo donde se insertará la regla. Puede tomar 3 valores:\n\t● <b>""</b>: indica que se debe crear una nueva hoja de estilo (creada al principio del encabezado de la página).\n\t● <b>Integer</b>: indica el número de índice o posición dentro del encabezado de página donde se insertó la hoja de estilo.\n\t● <b>Object</b>: indica un objeto CSSStyleSheet de JavaScript.',
-			example: '// Insertar una regla en una nueva hoja de estilo\nAddCSSRule("", ".input", "background-color: lightgray; color: #333");\n\n// Insertar una regla nueva en la primera hoja de estilo.\nAddCSSRule(0, "#name", "background-color: lightgray; color: #333");\n\n// Insertar una nueva regla en la hoja de estilo extraida del objeto CSSStyleSheet e identificada por el índice 0\nAddCSSRule(document.styleSheets[0], "input", "background-color: lightgray; color: #333");',
-		},
-		selector: {
-			type: 'string',
-			description: 'Este parámetro se utiliza para definir el nombre de la regla. Se puede usar cualquier selector válido por CSS3.',
-			example: 'AddCSSRule("", ".buttonIcon", "background-color: lightgray; color: #333");'
-		},
-		styles: {
-			type: 'string',
-			description: 'Este parámetro se utiliza para definir el contenido / estilos de la regla.',
-			example: 'AddCSSRule("", "#name", "background-color: lightgray; color: #333");'
-		},
-		index: {
-			type: 'string',
-			description: 'Este parámetro indica la posición donde se insertará. Si este valor es 0, la regla se insertará al principio de la hoja de estilo, de lo contrario, se insertará al final de la hoja de estilo.\nEste parámetro es opcional.',
-			example: 'AddCSSRule("", ".buttonIcon::after", "content:\'\'; background-color: lightgray; color: #333", 0);'
-		},
-	}
+WikiHelper.Addcssrule = {
+	general: {
+		version: '1.1',
+		name: 'AddCSSRule',
+		help: 1,
+		description: "Funcionalidad para crear y/o modificar reglas en las hojas de estilo. Esta función se alimenta de cuatro parámetros: sheet, selector, styles and index.",
+	},
+	sheet: {
+		type: 'string',
+		description: 'Este parámetro indica la hoja de estilo donde se insertará la regla. Puede tomar 3 valores:\n\t● <b>""</b>: indica que se debe crear una nueva hoja de estilo (creada al principio del encabezado de la página).\n\t● <b>Integer</b>: indica el número de índice o posición dentro del encabezado de página donde se insertó la hoja de estilo.\n\t● <b>Object</b>: indica un objeto CSSStyleSheet de JavaScript.',
+		example: '// Insertar una regla en una nueva hoja de estilo\nAddCSSRule("", ".input", "background-color: lightgray; color: #333");\n\n// Insertar una regla nueva en la primera hoja de estilo.\nAddCSSRule(0, "#name", "background-color: lightgray; color: #333");\n\n// Insertar una nueva regla en la hoja de estilo extraida del objeto CSSStyleSheet e identificada por el índice 0\nAddCSSRule(document.styleSheets[0], "input", "background-color: lightgray; color: #333");',
+	},
+	selector: {
+		type: 'string',
+		description: 'Este parámetro se utiliza para definir el nombre de la regla. Se puede usar cualquier selector válido por CSS3.',
+		example: 'AddCSSRule("", ".buttonIcon", "background-color: lightgray; color: #333");'
+	},
+	styles: {
+		type: 'string',
+		description: 'Este parámetro se utiliza para definir el contenido / estilos de la regla.',
+		example: 'AddCSSRule("", "#name", "background-color: lightgray; color: #333");'
+	},
+	index: {
+		type: 'string',
+		description: 'Este parámetro indica la posición donde se insertará. Si este valor es 0, la regla se insertará al principio de la hoja de estilo, de lo contrario, se insertará al final de la hoja de estilo.\nEste parámetro es opcional.',
+		example: 'AddCSSRule("", ".buttonIcon::after", "content:\'\'; background-color: lightgray; color: #333", 0);'
+	},
 }
+
 
 /**
    Alert Helper																		
@@ -238,18 +237,17 @@ if(it.enabledModules.AddCSSRule){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 26/01/2021
  **/
-if(it.enabledModules.Alert){
-	WikiHelper.Alert = {
-		general: {
-			version: "1.6.2",
-			name: 'Alert',
-			description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.\n\
+WikiHelper.Alert = {
+	general: {
+		version: "1.6.2",
+		name: 'Alert',
+		description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.\n\
 <name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices-1.1/examples/dialog-modal/dialog.html</name>",
-		},
-		additional: [
-			{
-				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '_CSS_\n\
+	},
+	additional: [
+		{
+			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '_CSS_\n\
 // styles.css (de tu sitio web)\n\
 .Alert-overlay { position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999; }\n\
 .Alert { display: block; max-width: 360px; margin: 100px auto 0; background-color: rgb(240, 0, 32); border: 1px solid rgba(0,0,0,0.75); overflow: hidden; color: rgb(255, 255, 255); }\n\
@@ -263,54 +261,54 @@ if(it.enabledModules.Alert){
 .Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
 body.fixed { position: fixed; width: 100%; }\n\
 body.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }_CSS_'
-			}
-		],
-		theme: {
-			type: 'string',
-			description: 'Tema por defecto a utilizar.',
-			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", theme: "dark"});'
-		},
-		class: {
-			type: 'string',
-			description: 'Agrega una regla de CSS a la alerta. Esto es útil si se desean definir alertas personalizadas a través de selectores CSS, por ejemplo.',
-			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", class: "warning"});'
-		},
-		draggable: {
-			type: 'boolean',
-			description: 'Indica si la alert o diálogo será arrastable dentro de la página. Por defecto, su valor es <str>false</str>.',
-			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", draggable: true});'
-		},
-		title: {
-			type: 'string',
-			description: 'Título de la alerta.',
-			example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});'
-		},
-		onshow: {
-			type: 'function',
-			description: 'Título de la alerta.',
-			example: 'new Alert({\n\
-	title: "Precaución!",\n\
-	body:"El campo se encuentra vacío.",\n\
-	onshow: function(){\n\
-		document.querySelector(".Alert header").style.background="red";\n\
-	}\n\
+		}
+	],
+	theme: {
+		type: 'string',
+		description: 'Tema por defecto a utilizar.',
+		example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", theme: "dark"});'
+	},
+	class: {
+		type: 'string',
+		description: 'Agrega una regla de CSS a la alerta. Esto es útil si se desean definir alertas personalizadas a través de selectores CSS, por ejemplo.',
+		example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", class: "warning"});'
+	},
+	draggable: {
+		type: 'boolean',
+		description: 'Indica si la alert o diálogo será arrastable dentro de la página. Por defecto, su valor es <str>false</str>.',
+		example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío.", draggable: true});'
+	},
+	title: {
+		type: 'string',
+		description: 'Título de la alerta.',
+		example: 'new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});'
+	},
+	onshow: {
+		type: 'function',
+		description: 'Título de la alerta.',
+		example: 'new Alert({\n\
+title: "Precaución!",\n\
+body:"El campo se encuentra vacío.",\n\
+onshow: function(){\n\
+	document.querySelector(".Alert header").style.background="red";\n\
+}\n\
 });'
-		},
-		onhide: {
-			type: 'function',
-			description: 'Título de la alerta.',
-			example: 'new Alert({\n\
-	title: "Precaución!",\n\
-	body:"El campo se encuentra vacío.",\n\
-	onhide: function(){\n\
-		console.log("Alerta ocultada!");\n\
-	}\n\
+	},
+	onhide: {
+		type: 'function',
+		description: 'Título de la alerta.',
+		example: 'new Alert({\n\
+title: "Precaución!",\n\
+body:"El campo se encuentra vacío.",\n\
+onhide: function(){\n\
+	console.log("Alerta ocultada!");\n\
+}\n\
 })'
-		},
-		body: {
-			type: 'string',
-			description: 'Representa el contenido de la alerta o diálogo. Puede contener texto plano, texto HTML o la función url() de CSS.',
-			example: '// Alerta sencilla\n\
+	},
+	body: {
+		type: 'string',
+		description: 'Representa el contenido de la alerta o diálogo. Puede contener texto plano, texto HTML o la función url() de CSS.',
+		example: '// Alerta sencilla\n\
 Alert("El campo se encuentra vacío.");\n\n\
 // Alerta personalizada\n\
 new Alert({title: "Precaución!", body:"El campo se encuentra vacío."});\n\n\
@@ -320,40 +318,40 @@ new Alert({title: "Precaución!", body:"&lt;span>Esto es una prueba&lt;/span> of
 new Alert({title: "Precaución!", body: document.querySelector("custom-dialog").innerHTML});\n\n\
 // Alerta con contenido cargado a través de URL\n\
 new Alert({title: "Precaución!", body:"url(./templates/dialog.html)"});'
-		},
-		ajaxmethod: {
-			type: 'string',
-			description: 'Indica el tipo de llamada al servidor cuando el cuerpo de la alerta se recupera a través de una URL.',
-			example: 'new Alert({title: "Precaución!", body:"url(./templates/dialog.html)", ajaxmethod: "post"});'
-		},
-		actions: {
-			type: 'object',
-			description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".\nLos campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".<br/><br/>\n\
+	},
+	ajaxmethod: {
+		type: 'string',
+		description: 'Indica el tipo de llamada al servidor cuando el cuerpo de la alerta se recupera a través de una URL.',
+		example: 'new Alert({title: "Precaución!", body:"url(./templates/dialog.html)", ajaxmethod: "post"});'
+	},
+	actions: {
+		type: 'object',
+		description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".\nLos campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".<br/><br/>\n\
 El parámetro "callback" es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado. A continuación se muestra un ejemplo que visualiza por consola el contenido de este JSON devuelto.',
-			example: 'new Alert({\n\
-	title: "Introduzca un código!",\n\
-	body:\'&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>\',\n\
-	actions:{\n\
-		accept: {\n\
-			enabled: true,\n\
-			text: "Accept",\n\
-			class: "btn btn-primary",\n\
-			alignment: "right",\n\
-			callback: alertAccepted\n\
-		},\n\
-		cancel: {\n\
-			enabled: true,\n\
-			text: "Cancel",\n\
-			class: "btn btn-secondary",\n\
-			alignment: "left",\n\
-			callback: function(e){\n\
-				console.log(e)\n\
-			}\n\
+		example: 'new Alert({\n\
+title: "Introduzca un código!",\n\
+body:\'&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>\',\n\
+actions:{\n\
+	accept: {\n\
+		enabled: true,\n\
+		text: "Accept",\n\
+		class: "btn btn-primary",\n\
+		alignment: "right",\n\
+		callback: alertAccepted\n\
+	},\n\
+	cancel: {\n\
+		enabled: true,\n\
+		text: "Cancel",\n\
+		class: "btn btn-secondary",\n\
+		alignment: "left",\n\
+		callback: function(e){\n\
+			console.log(e)\n\
 		}\n\
 	}\n\
+}\n\
 });\n\
 function alertAccepted(data){\n\
-	console.log(data)\n\
+console.log(data)\n\
 }\n\
 // Cuando el usuario pulse en el botón de aceptar, se mostrará por la consola algo similar a la siguiente estructura:\n\
 // {\n\
@@ -372,48 +370,48 @@ function alertAccepted(data){\n\
 // 		}\n\
 // 	]\n\
 // }'
-		},
-		addtocallback: {
-			type: 'object',
-			description: 'Permite agregar elementos y/o valores a la devolución de llamada asociada a la acción de aceptar o de cancelar.',
-			example: 'new Alert({\n\
+	},
+	addtocallback: {
+		type: 'object',
+		description: 'Permite agregar elementos y/o valores a la devolución de llamada asociada a la acción de aceptar o de cancelar.',
+		example: 'new Alert({\n\
 title: "Precaución!",\n\
 body: "El campo se encuentra vacío.",\n\
 styles:{\n\
-	title: {\n\
-		background: "#f0f0f0",\n\
-		color: "#2f2f2f",\n\
-		extra: ""\n\
-	},\n\
-	body: {\n\
-		background: "#fff",\n\
-		color: "#000",\n\
-		extra: ""\n\
-	},\n\
-	actions:{\n\
-		accept: {\n\
-			enabled: true,\n\
-			text: "Accept",\n\
-			class: "btn btn-primary",\n\
-			alignment: "right",\n\
-			callback: function(e){\n\
-				console.log(e)\n\
-			},\n\
-			addtocallback: {\n\
-				el0: "Botón pulsado!!",\n\
-				el1: document.querySelector("#inputID")\n\
-			}\n\
+title: {\n\
+	background: "#f0f0f0",\n\
+	color: "#2f2f2f",\n\
+	extra: ""\n\
+},\n\
+body: {\n\
+	background: "#fff",\n\
+	color: "#000",\n\
+	extra: ""\n\
+},\n\
+actions:{\n\
+	accept: {\n\
+		enabled: true,\n\
+		text: "Accept",\n\
+		class: "btn btn-primary",\n\
+		alignment: "right",\n\
+		callback: function(e){\n\
+			console.log(e)\n\
 		},\n\
-		cancel: {\n\
-			enabled: true,\n\
-			text: "Cancel",\n\
-			class: "btn btn-secondary",\n\
-			alignment: "left",\n\
-			callback: function(e){\n\
-				console.log(e)\n\
-			}\n\
+		addtocallback: {\n\
+			el0: "Botón pulsado!!",\n\
+			el1: document.querySelector("#inputID")\n\
+		}\n\
+	},\n\
+	cancel: {\n\
+		enabled: true,\n\
+		text: "Cancel",\n\
+		class: "btn btn-secondary",\n\
+		alignment: "left",\n\
+		callback: function(e){\n\
+			console.log(e)\n\
 		}\n\
 	}\n\
+}\n\
 }\n\
 });\n\
 \n\
@@ -437,36 +435,35 @@ console.log(data)\n\
 // 		}\n\
 // 	]\n\
 // }'
-		},
-		styles: {
-			type: 'object',
-			description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".\n<ul><li><b>background</b>: Establece el color del fondo</li><li><b>color</b>: Establece el color del texto</li><li><b>extra</b>: Establece otras propiedades CSS.</li></ul>',
-			example: '// Ejemplo de mensaje de alerta sin botón cancelar\n\
+	},
+	styles: {
+		type: 'object',
+		description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".\n<ul><li><b>background</b>: Establece el color del fondo</li><li><b>color</b>: Establece el color del texto</li><li><b>extra</b>: Establece otras propiedades CSS.</li></ul>',
+		example: '// Ejemplo de mensaje de alerta sin botón cancelar\n\
 new Alert({\n\
-	title: "Precaución!",\n\
-	body: "El campo se encuentra vacío.",\n\
-	styles:{\n\
-		title: {\n\
-			background: "#f0f0f0",\n\
-			color: "#2f2f2f",\n\
-			extra: ""\n\
-		},\n\
-		body: {\n\
-			background: "#fff",\n\
+title: "Precaución!",\n\
+body: "El campo se encuentra vacío.",\n\
+styles:{\n\
+	title: {\n\
+		background: "#f0f0f0",\n\
+		color: "#2f2f2f",\n\
+		extra: ""\n\
+	},\n\
+	body: {\n\
+		background: "#fff",\n\
+		color: "#000",\n\
+		extra: ""\n\
+	},\n\
+	actions: {\n\
+		accept: {\n\
+			background: "#e0e0e0",\n\
 			color: "#000",\n\
-			extra: ""\n\
-		},\n\
-		actions: {\n\
-			accept: {\n\
-				background: "#e0e0e0",\n\
-				color: "#000",\n\
-				extra: "padding:15px"\n\
-			}\n\
+			extra: "padding:15px"\n\
 		}\n\
 	}\n\
+}\n\
 });'
-		},
-	}
+	},
 }
 
 /**
@@ -476,13 +473,13 @@ new Alert({\n\
    @Copyright 2017-2021 Islavisual.
    @Last update: 30/04/2020
  **/
-if(it.enabledModules.Autocomplete){
-	WikiHelper.Autocomplete = {
-		general: {
-			version: '1.5.1',
-			name: 'Autocomplete',
-			help: 1,
-			description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
+
+WikiHelper.Autocomplete = {
+	general: {
+		version: '1.5.1',
+		name: 'Autocomplete',
+		help: 1,
+		description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
 Tambien permite realizar búsquedas mediante caracteres comodin como son las comillas dobles, el símbolo más o el símbolo asterisco.\n\n\
 Para entender mejor el significado de los caracteres comodín, supóngase que se tiene un array con los siguientes datos <code style="display: inline; padding: 0;">[<str>"Fat Bob"</str>, <str>"Street Bob"</str>, <str>"Scout Bobber"</str>, <str>"Sportster Iron"</str>, <str>"Rockster Flat"</str>, <str>"Street Rod"</str>]</code>\
 <ul>\
@@ -495,314 +492,314 @@ Si se establece delante y detrás de una expresión buscará todas las coinciden
 </ul>\n\
 Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la página se vea poco afectado.\n\
 <name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>',
-		}, 
-		additional: [
-			{
-				description: 'Personalizar los estilos del componente:',
-				example: '_CSS_// styles.css (from your site)\n.autocomplete-items { position: absolute; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; }\n.autocomplete-items div.value { line-height: normal; padding: 10px; cursor: pointer; background-color: #fff;  border-bottom: 0px solid #d4d4d4;  text-transform: capitalize; }\n.autocomplete-items div.value:hover, \n.autocomplete-active { background-color: #006699 !important;  color: #ffffff; }\n.autocomplete-items .header,\n.autocomplete-items .error { background: #fff; border-bottom: 1px solid #bfbfbf; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none; }\n.autocomplete-items .header span, \n.autocomplete-items .value span { width: 100%; display: inline-block; vertical-align: top; }\n.autocomplete-items .header span,\n.autocomplete-items .error span { display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase; }\n.autocomplete-items .error span { color: #f01223; }\n.autocomplete-items .error.not-found span { color: #a0a0a0; text-transform: none; }\n.autocomplete-items .error + .value { color: #000; font-weight: bold; }\n.autocomplete-items.table .header { display: table; }\n.autocomplete-items.cluster .header,\n.autocomplete-items .error { border-bottom: 0 none; margin-top: 15px; text-transform: uppercase; font-size: 0.85rem; font-weight: 600; }\n.autocomplete-items.cluster .header span { color: #bbb; }\n.autocomplete-items .value.highlighted { font-weight: bold; background: transparent; color: #008bb2; }\n.autocomplete-items .value.disabled { font-weight: 100;  background: #eee; color: #aaa; }\
-				<p>Estilos para el diálogo de ayuda</p>\
-				\ninput[data-helper]{ padding-right: 28px;}\n.Autocomplete-helper-icon{cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");}\
-				\n.Autocomplete-helper{ background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 25vw; display: block; width: 50vw; max-height: 550px; overflow: auto; z-index: 99;");}\
-				\n.Autocomplete-helper::after{ content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;}\
-				\n.Autocomplete-helper ul{ background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;}\
-				\n.Autocomplete-helper ul b{ font-weight: bold; }\
-				\n.Autocomplete-helper code{ padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px; }\
-				\n.Autocomplete-helper button{ cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px; }\
-				\n.Autocomplete-helper h3{ background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px; }\
-				\n.Autocomplete-helper .hidden{ display: none !important }\
-				\n@media all and (max-width: 640px){.Autocomplete-helper╠ width: 100%; left: 0; top: 0; ╣}_CSS_'
-			}
-		],
-		ajax: {
-			type: 'boolean',
-			description: 'Indica que se van a utilizar llamadas al servidor para recuperar los datos del autocomplete. Cuándo ese parámetro está a <strong>true</strong>, supone que el filtrado de elementos lo realizará el servidor (a no ser que sea un archivo JSON), es decir, por más que escribamos en el campo de texto, no se reducirá el número de resultados.Por defecto es <str>false</str>.',
-			example: '// Autocomplete con filtrado por servidor.\n\
+	}, 
+	additional: [
+		{
+			description: 'Personalizar los estilos del componente:',
+			example: '_CSS_// styles.css (from your site)\n.autocomplete-items { position: absolute; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; }\n.autocomplete-items div.value { line-height: normal; padding: 10px; cursor: pointer; background-color: #fff;  border-bottom: 0px solid #d4d4d4;  text-transform: capitalize; }\n.autocomplete-items div.value:hover, \n.autocomplete-active { background-color: #006699 !important;  color: #ffffff; }\n.autocomplete-items .header,\n.autocomplete-items .error { background: #fff; border-bottom: 1px solid #bfbfbf; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none; }\n.autocomplete-items .header span, \n.autocomplete-items .value span { width: 100%; display: inline-block; vertical-align: top; }\n.autocomplete-items .header span,\n.autocomplete-items .error span { display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase; }\n.autocomplete-items .error span { color: #f01223; }\n.autocomplete-items .error.not-found span { color: #a0a0a0; text-transform: none; }\n.autocomplete-items .error + .value { color: #000; font-weight: bold; }\n.autocomplete-items.table .header { display: table; }\n.autocomplete-items.cluster .header,\n.autocomplete-items .error { border-bottom: 0 none; margin-top: 15px; text-transform: uppercase; font-size: 0.85rem; font-weight: 600; }\n.autocomplete-items.cluster .header span { color: #bbb; }\n.autocomplete-items .value.highlighted { font-weight: bold; background: transparent; color: #008bb2; }\n.autocomplete-items .value.disabled { font-weight: 100;  background: #eee; color: #aaa; }\
+			<p>Estilos para el diálogo de ayuda</p>\
+			\ninput[data-helper]{ padding-right: 28px;}\n.Autocomplete-helper-icon{cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");}\
+			\n.Autocomplete-helper{ background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 25vw; display: block; width: 50vw; max-height: 550px; overflow: auto; z-index: 99;");}\
+			\n.Autocomplete-helper::after{ content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;}\
+			\n.Autocomplete-helper ul{ background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;}\
+			\n.Autocomplete-helper ul b{ font-weight: bold; }\
+			\n.Autocomplete-helper code{ padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px; }\
+			\n.Autocomplete-helper button{ cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px; }\
+			\n.Autocomplete-helper h3{ background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px; }\
+			\n.Autocomplete-helper .hidden{ display: none !important }\
+			\n@media all and (max-width: 640px){.Autocomplete-helper╠ width: 100%; left: 0; top: 0; ╣}_CSS_'
+		}
+	],
+	ajax: {
+		type: 'boolean',
+		description: 'Indica que se van a utilizar llamadas al servidor para recuperar los datos del autocomplete. Cuándo ese parámetro está a <strong>true</strong>, supone que el filtrado de elementos lo realizará el servidor (a no ser que sea un archivo JSON), es decir, por más que escribamos en el campo de texto, no se reducirá el número de resultados.Por defecto es <str>false</str>.',
+		example: '// Autocomplete con filtrado por servidor.\n\
 // Cuando se utiliza este modo de filtrado, el servidor recibirá una petición POST con un parámetro llamado "q" que contendrá el texto introducido por el usuario.\n\
 it("#inputTextID").autocomplete({\n\
-	format: "table",\n\
-	ajax: true,\n\
-	url: "http://www.islavisual.com/data/getMunicipio.php",\n\
-	minLength: 3,\n\
-	disable: {\n\
-		// Nombre del campo con el flag que indica si destacado o no\n\
-		field: "disabled",\n\
-		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-		class: "disabled",\n\
-	},\n\
-	row: {\n\
-		return_value: "municipio_id",\n\
-		columns: ["provincia_id", "nombre"],\n\
-	},\n\
+format: "table",\n\
+ajax: true,\n\
+url: "http://www.islavisual.com/data/getMunicipio.php",\n\
+minLength: 3,\n\
+disable: {\n\
+	// Nombre del campo con el flag que indica si destacado o no\n\
+	field: "disabled",\n\
+	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+	class: "disabled",\n\
+},\n\
+row: {\n\
+	return_value: "municipio_id",\n\
+	columns: ["provincia_id", "nombre"],\n\
+},\n\
 })\n\n\
 // Autocomplete con AJAX y filtrado por el componente.\n\
 // Cuando se utiliza este modo de filtrado, el componente llamará al servidor para recuperar los datos, pero filtrará a través de su función integrada.\n\
 it("#inputTextID").autocomplete({,\n\
-	url: "./municipios.json",\n\
-	format: "list",\n\
-	ajax: true,\n\
-	row: {\n\
-		return_value: "nombre",\n\
-		columns: ["nombre"],\n\
-	},\n\
+url: "./municipios.json",\n\
+format: "list",\n\
+ajax: true,\n\
+row: {\n\
+	return_value: "nombre",\n\
+	columns: ["nombre"],\n\
+},\n\
 })'
-		},
-		autoFocus: {
-			type: 'boolean',
-			description: 'Indica que se establezca el foco después de que finalice la creación del autocomeplete. Por defecto es <str>false</str>.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+	},
+	autoFocus: {
+		type: 'boolean',
+		description: 'Indica que se establezca el foco después de que finalice la creación del autocomeplete. Por defecto es <str>false</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	data: arrayList,\n\
-	format: "list",\n\
-	autoFocus: true\n\
+data: arrayList,\n\
+format: "list",\n\
+autoFocus: true\n\
 })'
-		},
-		autoExpand: {
-			type: 'boolean',
-			description: 'Indica que se despliegue el autocomplete de forma automática. Por defecto es <str>false</str>.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+	},
+	autoExpand: {
+		type: 'boolean',
+		description: 'Indica que se despliegue el autocomplete de forma automática. Por defecto es <str>false</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	data: arrayList,\n\
-	format: "list",\n\
-	autoExpand: true\n\
+data: arrayList,\n\
+format: "list",\n\
+autoExpand: true\n\
 })'
-		},
-		autoSelect: {
-			type: 'boolean',
-			description: 'Indica que el valor del elemento de formulario o input seleccione el texto automáticamente. Por defecto es <str>false</str>.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+	},
+	autoSelect: {
+		type: 'boolean',
+		description: 'Indica que el valor del elemento de formulario o input seleccione el texto automáticamente. Por defecto es <str>false</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	data: arrayList,\n\
-	format: "list",\n\
-	autoSelect: true\n\
+data: arrayList,\n\
+format: "list",\n\
+autoSelect: true\n\
 })'
-		},
-		callback: {
-			type: 'function',
-			description: 'Función que se llamará cuando se seleccione un elemento de la lista de autocompletado.<br><br>\
+	},
+	callback: {
+		type: 'function',
+		description: 'Función que se llamará cuando se seleccione un elemento de la lista de autocompletado.<br><br>\
 Lo que recibirá esta función de retorno será un elemento de formulario input de tipo text con el valor solicitado en la propiedad <str>return_value</str> y la posición del item seleccionado dentro del diccionario de datos referenciado por la propiedad <str>data</str>. Por esta razón, dependiendo del tipo de auto complete utilizado, se podrá recuperar la de formas distintas.<br><br>\
 Como información adicional, si se desea acceder desde esta función de retorno a la configurción o a los datos declarados en el objeto data del autocomplete, se puede hacer a través de la expresión <name>Autocomplete</name>.<str>target.XXX</str>, donde <str>XXX</str> es el ID del input asignado al autocomplete.',
-			example: '// Ejemplo de función callback para un autocomplete de tipo list (lista)\n\
+		example: '// Ejemplo de función callback para un autocomplete de tipo list (lista)\n\
 function callback(input){\n\
-	var index = input.dataset.index;\n\
-	var id = input.dataset.id;\n\
-	var value = input.value;\n\
-	console.log("Nº Registro:", index, "Extraído del elemento con ID", id, "Valor seleccionado:", value);\n\
+var index = input.dataset.index;\n\
+var id = input.dataset.id;\n\
+var value = input.value;\n\
+console.log("Nº Registro:", index, "Extraído del elemento con ID", id, "Valor seleccionado:", value);\n\
 }\n\n\
 // Ejemplo de función callback para un autocomplete de tipo table (tabla)\n\
 function callback(input){\n\
-	var index = input.dataset.index;\n\
-	var config = Autocomplete.targets[input.dataset.id].opt;\n\
-	var item = config.data[index];\n\
+var index = input.dataset.index;\n\
+var config = Autocomplete.targets[input.dataset.id].opt;\n\
+var item = config.data[index];\n\
 \n\
-	// Desde item ya se puede acceder a cualquiera de los datos del registro original\n\
-	console.log("Nº Registro:", index, "Datos seleccionados", item);\n\
+// Desde item ya se puede acceder a cualquiera de los datos del registro original\n\
+console.log("Nº Registro:", index, "Datos seleccionados", item);\n\
 }\n\n\
 // Ejemplo de función callback para un autocomplete de tipo cluster (agrupado)\n\
 function callback(input){\n\
-    var indexes = input.dataset.index.split(",");\n\
-    var config = Autocomplete.targets[input.dataset.id].opt;\n\
-    var group = config.data[indexes[0]][config.clusterFields.groupby];\n\
-    var item = config.data[indexes[0]][config.clusterFields.items][indexes[1]];\n\
-	console.log("Elemento Seleccionado:", group, item);\n\
+var indexes = input.dataset.index.split(",");\n\
+var config = Autocomplete.targets[input.dataset.id].opt;\n\
+var group = config.data[indexes[0]][config.clusterFields.groupby];\n\
+var item = config.data[indexes[0]][config.clusterFields.items][indexes[1]];\n\
+console.log("Elemento Seleccionado:", group, item);\n\
 }'
-		},
-		className: {
-			type: 'string',
-			description: 'Clase CSS que se agregará a los elementos del complemento autocomplete. Esta clase es la que se utilizará para definir los estilos del componente.<br><br>\
+	},
+	className: {
+		type: 'string',
+		description: 'Clase CSS que se agregará a los elementos del complemento autocomplete. Esta clase es la que se utilizará para definir los estilos del componente.<br><br>\
 Por defecto, el nombre de la clase de control es <str>autocomplete</str>.<br></br>\
 <b style="display: inline-block;">NOTA:</b> Mirar la información adicional para personalizar los estilos del componente.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	data: arrayList,\n\
-	className: "auto-complete"\n\
+data: arrayList,\n\
+className: "auto-complete"\n\
 });'
-		},
-		data: {
-			type: 'object',
-			description: 'Objeto con los elementos para manejar o tratar. Este objeto puede estar en formato <str>JSON</str> o estar en formato <str>Array</str>.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+	},
+	data: {
+		type: 'object',
+		description: 'Objeto con los elementos para manejar o tratar. Este objeto puede estar en formato <str>JSON</str> o estar en formato <str>Array</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	data: arrayList\n\
+data: arrayList\n\
 });'
-		},
-		delay: {
-			type: 'integer',
-			description: 'Es el valor en milisegundos que personaliza el tiempo de espera entre que el usuario deja de escribir y se realiza la búsqueda. Por defecto está establecido a <str>300</str> milisegundos.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+	},
+	delay: {
+		type: 'integer',
+		description: 'Es el valor en milisegundos que personaliza el tiempo de espera entre que el usuario deja de escribir y se realiza la búsqueda. Por defecto está establecido a <str>300</str> milisegundos.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	data: arrayList,\n\
-	delay: 1000\n\
+data: arrayList,\n\
+delay: 1000\n\
 });'
-		},
-		disable: {
-			type: 'object',
-			description: 'Indica qué campo se utilizará como selector para indicar si está deshabilitado el elemento producto de la búsqueda. Si el resultado de la evaluación se considera verdadera, se añadirá la clase proporcionada por la propiedad <str>class</str>.<br><br>\
+	},
+	disable: {
+		type: 'object',
+		description: 'Indica qué campo se utilizará como selector para indicar si está deshabilitado el elemento producto de la búsqueda. Si el resultado de la evaluación se considera verdadera, se añadirá la clase proporcionada por la propiedad <str>class</str>.<br><br>\
 Los valores permitidos para este campo pueden ser booleanos (<str>true</str> o <str>false</str>) o de tipo binario (<str>0</str> ó <str>1</str>), donde 0 se interpreta como <str>false</str> y 1 se interpreta como <str>true</str>.',
-			example: '// Ejemplo de autocomplete en formato table (tabla) \n\
+		example: '// Ejemplo de autocomplete en formato table (tabla) \n\
 var countriesJSON = [\n\
-	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
+{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
+{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
+{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	format: "table",\n\
-	data: countriesJSON,\n\
-	disable: {\n\
-		// Nombre del campo con el flag que indica si destacado o no\n\
-		field: "disabled",\n\
-		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-		class: "disabled",\n\
-	},\n\
-	row: {\n\
-		return_value: "id",\n\
-		columns: ["country", "capital"],\n\
-		headers: ["País", "Capital"]\n\
-	}\n\
+format: "table",\n\
+data: countriesJSON,\n\
+disable: {\n\
+	// Nombre del campo con el flag que indica si destacado o no\n\
+	field: "disabled",\n\
+	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+	class: "disabled",\n\
+},\n\
+row: {\n\
+	return_value: "id",\n\
+	columns: ["country", "capital"],\n\
+	headers: ["País", "Capital"]\n\
+}\n\
 });\n\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
-	{ group: "Coches", items: [\n\
-		{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
-		{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
-		{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
-	]},\n\
-	{ group: "Motocicletas", items: [\n\
-		{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
-		{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
-		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
-	]},\n\
+{ group: "Coches", items: [\n\
+	{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
+	{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
+	{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
+]},\n\
+{ group: "Motocicletas", items: [\n\
+	{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
+	{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
+	{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
+]},\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	data: clusterList,\n\
-	minLength: 1,\n\
-	disable: {\n\
-		// Nombre del campo con el flag que indica si destacado o no\n\
-		field: "unavailable",\n\
-		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-		class: "disabled",\n\
-	},\n\
-	format: "cluster",\n\
+data: clusterList,\n\
+minLength: 1,\n\
+disable: {\n\
+	// Nombre del campo con el flag que indica si destacado o no\n\
+	field: "unavailable",\n\
+	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+	class: "disabled",\n\
+},\n\
+format: "cluster",\n\
 });'
-		},
-		format: {
-			type: 'string',
-			description: 'Es el formato en el que se presentarán los datos. Según el formato en el que se presentan los datos, el objeto <str>data</str> debe definirse de una forma u otra.\n\
+	},
+	format: {
+		type: 'string',
+		description: 'Es el formato en el que se presentarán los datos. Según el formato en el que se presentan los datos, el objeto <str>data</str> debe definirse de una forma u otra.\n\
 Este parámetro tiene como valor por defecto es "list".\n<p style="margin: 10px 0">Los posibles valores son:\n\
 <ul>\n\
 <li><name>list</name>: El objeto de datos del autocomplete está configurado como un array de cadenas.</li>\n\
 <li><name>table</name>: El objeto de datos del autocomplete está configurado como un array de objetos JSON. Para que el autocomplete pueda manjar este objeto debe seguir las normas establecidas por la propiedad <str>row</str>.</li>\n\
 <li><name>cluster</name>: El objeto de datos del autocomplete está configurado como un array de objetos JSON que dentro tiene otro array de objetos JSON. Para que el autocomplete pueda manjar este objeto debe seguir las normas establecidas por la propiedad <str>row</str>.</li>\n\
 </ul>',
-			example: '// Ejemplo de autocomplete en formato list (lista)\n\
+		example: '// Ejemplo de autocomplete en formato list (lista)\n\
 var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#inputTextID").autocomplete({\n\
-	format: "list",\n\
-	data: arrayList\n\
+format: "list",\n\
+data: arrayList\n\
 });\n\n\
 // Ejemplo de autocomplete en formato table (tabla) \n\
 var countriesJSON = [\n\
-	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
+{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
+{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
+{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	format: "table",\n\
-	data: countriesJSON,\n\
-	row: {\n\
-		return_value: "id",\n\
-		columns: ["country", "code", "capital"],\n\
-		headers: ["Country", "Code", "Capital"],\n\
-		showHeaders: true\n\
-	}\n\
+format: "table",\n\
+data: countriesJSON,\n\
+row: {\n\
+	return_value: "id",\n\
+	columns: ["country", "code", "capital"],\n\
+	headers: ["Country", "Code", "Capital"],\n\
+	showHeaders: true\n\
+}\n\
 });\n\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
-	{ group: "Coches", items: [\n\
-            { id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
-            { id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
-            { id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
-        ]},\n\
-	{ group: "Motocicletas", items: [\n\
-            { id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
-            { id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
-            { id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
-        ]},\n\
-];\n\
-it("#inputTextID").autocomplete({\n\
-	format: "cluster",\n\
-	data: brandsList\n\
-});'
-		},
-		helper: {
-			type: 'boolean',
-			description: 'Indica si se debe mostrar el botón de ayuda del autocomplete. Este es un botón que se inserta a la derecha del input que posee el comportamiento de autocomplete. Por defecto es <str>false</str>.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList, helper: false});'
-		},
-		highlight: {
-			type: 'object',
-			description: 'Indica qué campo se utilizará como selector para indicar si está destacado el elemento producto de la búsqueda. Si el resultado de la evaluación se considera verdadera, se añadirá la clase proporcionada por la propiedad <str>class</str>.<br><br>\
-Los valores permitidos para este campo pueden ser booleanos (<str>true</str> o <str>false</str>) o de tipo binario (<str>0</str> ó <str>1</str>), donde 0 se interpreta como <str>false</str> y 1 se interpreta como <str>true</str>.',
-			example: '// Ejemplo de autocomplete en formato table (tabla) \n\
-var countriesJSON = [\n\
-	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", EU: 0 },\n\
-	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  EU: 1 },\n\
-	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  EU: 1 },\n\
-];\n\
-it("#inputTextID").autocomplete({\n\
-	format: "table",\n\
-	data: countriesJSON,\n\
-	highlight: {\n\
-		// Nombre del campo con el flag que indica si destacado o no\n\
-		field: "EU",\n\
-		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-		class: "highlighted",\n\
-	},\n\
-	row: {\n\
-		return_value: "id",\n\
-		columns: ["country", "capital"],\n\
-		headers: ["País", "Capital"]\n\
-	}\n\
-});\n\n\
-// Ejemplo en formato cluster (agrupado)\n\
-var brandsList = [\n\
-	{ group: "Coches", items: [\n\
+{ group: "Coches", items: [\n\
 		{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
 		{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
 		{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
 	]},\n\
-	{ group: "Motocicletas", items: [\n\
+{ group: "Motocicletas", items: [\n\
 		{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
 		{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
 		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
 	]},\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	data: clusterList,\n\
-	minLength: 1,\n\
-	highlight: {\n\
-		// Nombre del campo con el flag que indica si destacado o no\n\
-		field: "unavailable",\n\
-		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-		class: "highlighted",\n\
-	},\n\
-	format: "cluster",\n\
+format: "cluster",\n\
+data: brandsList\n\
 });'
-		},
-		minLength: {
-			type: 'integer',
-			description: 'Indica la longitud mínima para comenzar a buscar dentro del diccionario de datos asignado por la propiedad <str>data</str>. Por defecto es <str>3</str>.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList, minLength: 4});'
-		},
-		minLengthMessage: {
-			type: 'string',
-			description: 'Es un mensaje que se muestra únicamente cuando la propiedad minLength es -1. Se puede utilizar, por ejemplo, para sacar un mensaje mientras se carga y configura el componente o para indicar el estado del autocomplete.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\n\
+	},
+	helper: {
+		type: 'boolean',
+		description: 'Indica si se debe mostrar el botón de ayuda del autocomplete. Este es un botón que se inserta a la derecha del input que posee el comportamiento de autocomplete. Por defecto es <str>false</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList, helper: false});'
+	},
+	highlight: {
+		type: 'object',
+		description: 'Indica qué campo se utilizará como selector para indicar si está destacado el elemento producto de la búsqueda. Si el resultado de la evaluación se considera verdadera, se añadirá la clase proporcionada por la propiedad <str>class</str>.<br><br>\
+Los valores permitidos para este campo pueden ser booleanos (<str>true</str> o <str>false</str>) o de tipo binario (<str>0</str> ó <str>1</str>), donde 0 se interpreta como <str>false</str> y 1 se interpreta como <str>true</str>.',
+		example: '// Ejemplo de autocomplete en formato table (tabla) \n\
+var countriesJSON = [\n\
+{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", EU: 0 },\n\
+{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  EU: 1 },\n\
+{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  EU: 1 },\n\
+];\n\
+it("#inputTextID").autocomplete({\n\
+format: "table",\n\
+data: countriesJSON,\n\
+highlight: {\n\
+	// Nombre del campo con el flag que indica si destacado o no\n\
+	field: "EU",\n\
+	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+	class: "highlighted",\n\
+},\n\
+row: {\n\
+	return_value: "id",\n\
+	columns: ["country", "capital"],\n\
+	headers: ["País", "Capital"]\n\
+}\n\
+});\n\n\
+// Ejemplo en formato cluster (agrupado)\n\
+var brandsList = [\n\
+{ group: "Coches", items: [\n\
+	{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
+	{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
+	{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
+]},\n\
+{ group: "Motocicletas", items: [\n\
+	{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
+	{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
+	{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
+]},\n\
+];\n\
+it("#inputTextID").autocomplete({\n\
+data: clusterList,\n\
+minLength: 1,\n\
+highlight: {\n\
+	// Nombre del campo con el flag que indica si destacado o no\n\
+	field: "unavailable",\n\
+	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+	class: "highlighted",\n\
+},\n\
+format: "cluster",\n\
+});'
+	},
+	minLength: {
+		type: 'integer',
+		description: 'Indica la longitud mínima para comenzar a buscar dentro del diccionario de datos asignado por la propiedad <str>data</str>. Por defecto es <str>3</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList, minLength: 4});'
+	},
+	minLengthMessage: {
+		type: 'string',
+		description: 'Es un mensaje que se muestra únicamente cuando la propiedad minLength es -1. Se puede utilizar, por ejemplo, para sacar un mensaje mientras se carga y configura el componente o para indicar el estado del autocomplete.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\n\
 it("#inputTextID").autocomplete({ data: {}, ajax: true, url: "https:\u002F<n/>\u002Fwsdeejemplo.com/get", minLength: -1, minLengthMessage: "Cargando..."} );\n\n\
 it("#inputTextID").autocomplete({ data: arrayList, minLength: -1, minLengthMessage: "Elemento desactivado..."} );'
-		},
-		row: {
-			type: 'object',
-			description: 'Objeto que permite personalizar la estructura del diccionario de datos a gestionar asignado a la propiedad <str>data</str>".<br><br>\
+	},
+	row: {
+		type: 'object',
+		description: 'Objeto que permite personalizar la estructura del diccionario de datos a gestionar asignado a la propiedad <str>data</str>".<br><br>\
 Si el formato del autocomplete es de tipo "table", los parámetros que puede recibir son:\n\
 <ul>\n\
 <li><name>columns</name>: Es un array que indica el nombre de los campos que se desea que muestren cuando se realiza una búsqueda. Por defecto, si no se establece este parámetro, devolverá el primer campo o propiedad del registro.</li>\n\
@@ -817,99 +814,98 @@ Si el formato del autocomplete es de tipo "table", los parámetros que puede rec
 <li><name>columns</name>: Es un array que indica el nombre de los campos que se desea que muestren cuando se realiza una búsqueda. Por defecto, si no se establece este parámetro, devolverá el primer campo o propiedad del registro.</li>\n\
 <li><name>return_value</name>: Indica el nombre del campo que se devolverá a la función de declarada en la propiedad <str>callback</str>. Por defecto, esta propiedad tiene asignado el valor <str>group</str>.</li>\n\
 </ul>',
-			example: '// Ejemplo de autocomplete de tipo table (tabla)\n\
+		example: '// Ejemplo de autocomplete de tipo table (tabla)\n\
 var countriesJSON = [\n\
-	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
+{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
+{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
+{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	format: "table",\n\
-	data: countriesJSON,\n\
-	row: {\n\
-		return_value: "id",\n\
-		columns: ["country", "code", "capital"],\n\
-		headers: ["País", "Código", "Capital"],\n\
-		showHeaders: false\n\
-	}\n\
+format: "table",\n\
+data: countriesJSON,\n\
+row: {\n\
+	return_value: "id",\n\
+	columns: ["country", "code", "capital"],\n\
+	headers: ["País", "Código", "Capital"],\n\
+	showHeaders: false\n\
+}\n\
 });\n\n\
 // Ejemplo de autocomplete de tipo cluster (agrupado)\n\
 var vehiclesList = [\n\
-	{ marca: "Seat", modelos: [{id: 101, modelo: "Arona", coste: 1}, {id: 102, modelo: "Ibiza", coste: 2}, {id: 103, modelo: "León", coste: 3}] },\n\
-	{ marca: "Ford", modelos: [{id: 201, modelo: "Fiesta", coste: 4}, {id: 202, modelo: "Mondeo", coste: 5}, {id: 203, modelo: "Focus", coste: 6}] },\n\
-	{ marca: "Renault", modelos: [{id: 301, modelo: "Captur", coste: 7}, {id: 302, modelo: "Clio", coste: 8}, {id: 303, modelo: "Espace", coste: 9}] },\n\
+{ marca: "Seat", modelos: [{id: 101, modelo: "Arona", coste: 1}, {id: 102, modelo: "Ibiza", coste: 2}, {id: 103, modelo: "León", coste: 3}] },\n\
+{ marca: "Ford", modelos: [{id: 201, modelo: "Fiesta", coste: 4}, {id: 202, modelo: "Mondeo", coste: 5}, {id: 203, modelo: "Focus", coste: 6}] },\n\
+{ marca: "Renault", modelos: [{id: 301, modelo: "Captur", coste: 7}, {id: 302, modelo: "Clio", coste: 8}, {id: 303, modelo: "Espace", coste: 9}] },\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	data: vehiclesList,\n\
-	format: "cluster",\n\
-	row: {\n\
-		return_value: "modelo",\n\
-		columns: ["modelo", "coste"],\n\
-		groupby: "marca",\n\
-		items: "modelos"\n\
-	}\n\
+data: vehiclesList,\n\
+format: "cluster",\n\
+row: {\n\
+	return_value: "modelo",\n\
+	columns: ["modelo", "coste"],\n\
+	groupby: "marca",\n\
+	items: "modelos"\n\
+}\n\
 });'
-		},
-		target: {
-			type: 'string',
-			description: 'ID del input de tipo texto dónde el se implementará el autocomplete.',
-			example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList});'
-		},
-		tooltips: {
-			type: 'object',
-			description: 'Este parámetro es un JSON que indica qué campos se utilizarán como fuente de los tooltip.<br><br>\
+	},
+	target: {
+		type: 'string',
+		description: 'ID del input de tipo texto dónde el se implementará el autocomplete.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList});'
+	},
+	tooltips: {
+		type: 'object',
+		description: 'Este parámetro es un JSON que indica qué campos se utilizarán como fuente de los tooltip.<br><br>\
 Si se utiliza el modo <name>cluster</name>, sólo se debe indicar el campo dónde está el texto del tooltip. Si se utiliza el modo <name>table</name>, se debe indicar el nombre del campo dónde se insertará el tooltip y el campo del tooltip.',
-			example: '// Ejemplo de autocomplete en formato table (tabla) \n\
+		example: '// Ejemplo de autocomplete en formato table (tabla) \n\
 var countriesJSON = [\n\
-	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
+{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
+{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
+{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	format: "table",\n\
-	data: countriesJSON,\n\
-	// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\
-	tooltip: [{\n\
-		//Nombre del campo donde se establecerá el tooltip\n\
-		field: "country"\n\
-		//Nombre del campo que contiene el texto utilizado por el tooltip\n\
-		text: "location"\n\
-	}],\n\
-	row: {\n\
-		return_value: "id",\n\
-		columns: ["country", "capital"],\n\
-		headers: ["País", "Capital"]\n\
-	}\n\
+format: "table",\n\
+data: countriesJSON,\n\
+// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\
+tooltip: [{\n\
+	//Nombre del campo donde se establecerá el tooltip\n\
+	field: "country"\n\
+	//Nombre del campo que contiene el texto utilizado por el tooltip\n\
+	text: "location"\n\
+}],\n\
+row: {\n\
+	return_value: "id",\n\
+	columns: ["country", "capital"],\n\
+	headers: ["País", "Capital"]\n\
+}\n\
 });\n\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
-	{ group: "Coches", items: [\n\
-		{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
-		{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
-		{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
-	]},\n\
-	{ group: "Motocicletas", items: [\n\
-		{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
-		{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
-		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
-	]},\n\
+{ group: "Coches", items: [\n\
+	{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
+	{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
+	{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
+]},\n\
+{ group: "Motocicletas", items: [\n\
+	{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
+	{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
+	{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
+]},\n\
 ];\n\
 it("#inputTextID").autocomplete({\n\
-	data: clusterList,\n\
-	minLength: 1,\n\
-	tooltips: {\n\
-		// Nombre del campo donde se encuentra el texto del tooltip\n\
-		field: "tooltip"\n\
-	},\n\
-	format: "cluster",\n\
+data: clusterList,\n\
+minLength: 1,\n\
+tooltips: {\n\
+	// Nombre del campo donde se encuentra el texto del tooltip\n\
+	field: "tooltip"\n\
+},\n\
+format: "cluster",\n\
 });'
-		},
-		voidMessage: {
-			type: 'string',
-			description: 'Indica el mensaje a mostrar cuando no hay resultados.',
-			example: 'it("#inputTextID").autocomplete({ data: {}, minLength: -1, voidMessage: "No se han encontrado coincidencias"} );'
-		},
-	};
+	},
+	voidMessage: {
+		type: 'string',
+		description: 'Indica el mensaje a mostrar cuando no hay resultados.',
+		example: 'it("#inputTextID").autocomplete({ data: {}, minLength: -1, voidMessage: "No se han encontrado coincidencias"} );'
+	},
 }
 
 /**
@@ -918,40 +914,38 @@ it("#inputTextID").autocomplete({\n\
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Last update: 15/03/2019
  **/
-if(it.enabledModules.Benchmark){
-	WikiHelper.Benchmark = {
-		general: {
-			version: '1.0',
-			name: 'Benchmark',
-			help: 1,
-			description: "Este plugin permite comprobar la calidad y el rendimiento de un código pasado a través de una función.",
-		},
-		test: {
-			type: 'function',
-			description: 'Realiza y muestra un informe con el resultado del análisis.',
-			example: '// Diferencia entre for y forEach\nvar bigArray = new Array(1000);\nBenchmark.test({name: "for", fn: function () {\n\tvar result = [];\n\tfor (var x = 0; x < bigArray.length; x++) {\n\t\tresult.push(bigArray[x]);\n\t}\n\treturn result;\n}});\r\n\nBenchmark.test({name: "forEach", fn: function () {\n\tvar result = [];\n\tbigArray.forEach(function(element) {\n\t\tresult.push(element);\n\t});\n\treturn result;\n}});\n\r\n// Resultados del ejemplo ejecutado en Chrome: \n[\n\t{\n\t\tchecks: 2\n\t\tdiff: "0%"\n\t\telapsed: 3254\n\t\tname: "forEach"\n\t\tperSecondIterations: 456395\n\t\ttotalIterations: 1485112\n\t\t},\n\t{\n\tchecks: 2\n\t\tdiff:"87.1%"\n\t\telapsed: 3284\n\t\tname: "for"\n\t\tperSecondIterations: 58865\n\t\ttotalIterations: 193313\n\t}\n]'
-		},
-		testTime:{
-			type: 'Integer',
-			description: 'Establece la duración máxima del test en milisegundos. Por defecto es 3000.',
-			example: 'Benchmark.testTime = 10000;'
-		},
-		maxIterations:{
-			type: 'Integer',
-			description: 'Establecer el número máximo operaciones por test. Por defecto es "0x3FFFFFFF" (1 Tera)',
-			example: 'Benchmark.maxIterations = 2500000;'
-		},
-		showLog:{
-			type: 'boolean',
-			description: 'Muestra un mensaje de resumen en la consola cada vez que finaliza una operación. Por defecto es false.',
-			example: 'Benchmark.showLog = true;'
-		},
-		results: {
-			type: 'Object',
-			description: 'Mostrar los resultados de todos los test realizados anteriormente.',
-			example: 'console.log(Benchmark.results);'
-		},
-	}
+WikiHelper.Benchmark = {
+	general: {
+		version: '1.0',
+		name: 'Benchmark',
+		help: 1,
+		description: "Este plugin permite comprobar la calidad y el rendimiento de un código pasado a través de una función.",
+	},
+	test: {
+		type: 'function',
+		description: 'Realiza y muestra un informe con el resultado del análisis.',
+		example: '// Diferencia entre for y forEach\nvar bigArray = new Array(1000);\nBenchmark.test({name: "for", fn: function () {\n\tvar result = [];\n\tfor (var x = 0; x < bigArray.length; x++) {\n\t\tresult.push(bigArray[x]);\n\t}\n\treturn result;\n}});\r\n\nBenchmark.test({name: "forEach", fn: function () {\n\tvar result = [];\n\tbigArray.forEach(function(element) {\n\t\tresult.push(element);\n\t});\n\treturn result;\n}});\n\r\n// Resultados del ejemplo ejecutado en Chrome: \n[\n\t{\n\t\tchecks: 2\n\t\tdiff: "0%"\n\t\telapsed: 3254\n\t\tname: "forEach"\n\t\tperSecondIterations: 456395\n\t\ttotalIterations: 1485112\n\t\t},\n\t{\n\tchecks: 2\n\t\tdiff:"87.1%"\n\t\telapsed: 3284\n\t\tname: "for"\n\t\tperSecondIterations: 58865\n\t\ttotalIterations: 193313\n\t}\n]'
+	},
+	testTime:{
+		type: 'Integer',
+		description: 'Establece la duración máxima del test en milisegundos. Por defecto es 3000.',
+		example: 'Benchmark.testTime = 10000;'
+	},
+	maxIterations:{
+		type: 'Integer',
+		description: 'Establecer el número máximo operaciones por test. Por defecto es "0x3FFFFFFF" (1 Tera)',
+		example: 'Benchmark.maxIterations = 2500000;'
+	},
+	showLog:{
+		type: 'boolean',
+		description: 'Muestra un mensaje de resumen en la consola cada vez que finaliza una operación. Por defecto es false.',
+		example: 'Benchmark.showLog = true;'
+	},
+	results: {
+		type: 'Object',
+		description: 'Mostrar los resultados de todos los test realizados anteriormente.',
+		example: 'console.log(Benchmark.results);'
+	},
 }
 
 /**
@@ -961,70 +955,69 @@ if(it.enabledModules.Benchmark){
    @Copyright 2017-2021 Islavisual.
    @Last update: 20/05/2020
  **/
-if(it.enabledModules.Constraint){
-	WikiHelper.Constraint = {
-		general: {
-			version: '1.2',
-			name: 'Constraint',
-			help: 1,
-			description: "Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.\nUna vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.",
-		},
-		base: {
-			type: 'integer',
-			description: 'El parámetro "base" establece una base numérica diferente a 10, la establecida por defecto. El tipo binario establece automáticamente la base a 2. El tipo hexadecimal establece automáticamente la base a 16.',
-			example: 'it("#inputTextID").constraint({ type: "decimal", base: 2 });\n\
+WikiHelper.Constraint = {
+	general: {
+		version: '1.2',
+		name: 'Constraint',
+		help: 1,
+		description: "Constraint es un plugin que proporciona una forma sencilla de evitar la introducción de valores que, de antemano, se sabe que no son válidos. Su funcionamiento se basa en expresiones regulares y se integra fácilmente con otros componentes de JavaScript o HTML5.\nUna vez que se define el control, se puede acceder a sus métodos a través de document.inputTextID.Constraint.",
+	},
+	base: {
+		type: 'integer',
+		description: 'El parámetro "base" establece una base numérica diferente a 10, la establecida por defecto. El tipo binario establece automáticamente la base a 2. El tipo hexadecimal establece automáticamente la base a 16.',
+		example: 'it("#inputTextID").constraint({ type: "decimal", base: 2 });\n\
 // A través del tipo binario\n\
 it("#inputTextID").constraint({type: "binary"});'
-		},
-		decimalpoint: {
-			type: 'string',
-			description: 'El parámetro "decimalpoint" indica el carácter que separará la parte entera de la parte decimal. Sólo será válido en los tipos numéricos con decimales. Por defecto el valor es "." (punto).',
-			example: 'it("#inputTextID").constraint({ type: "decimal", decimalpoint: "," });'
-		},
-		function: {
-			type: 'function',
-			description: 'El parámetro "function" define la función de validación que controlará el formato de entrada y los valores admitidos. La validación realizada por esta función se puede definir a través de expresiones regulares (en el caso del subtipo "binario", la función podría ser "return /^(0|1)*$/.test(value);") aunque no es obligatorio. Si se define este parámetro a través de una función, el parámetro "type" debe establecerse a "custom".',
-			example: '// Ejemplo de subtipo personalizado (Número en formato octal).\n\
+	},
+	decimalpoint: {
+		type: 'string',
+		description: 'El parámetro "decimalpoint" indica el carácter que separará la parte entera de la parte decimal. Sólo será válido en los tipos numéricos con decimales. Por defecto el valor es "." (punto).',
+		example: 'it("#inputTextID").constraint({ type: "decimal", decimalpoint: "," });'
+	},
+	function: {
+		type: 'function',
+		description: 'El parámetro "function" define la función de validación que controlará el formato de entrada y los valores admitidos. La validación realizada por esta función se puede definir a través de expresiones regulares (en el caso del subtipo "binario", la función podría ser "return /^(0|1)*$/.test(value);") aunque no es obligatorio. Si se define este parámetro a través de una función, el parámetro "type" debe establecerse a "custom".',
+		example: '// Ejemplo de subtipo personalizado (Número en formato octal).\n\
 it("#inputTextID").constraint({\n\
-	type: "custom",\n\
-	function: function(value) {\n\
-		return /^[0-7]*$/i.test(value);\n\
-	},\n\
-	base: 8,\n\
+type: "custom",\n\
+function: function(value) {\n\
+	return /^[0-7]*$/i.test(value);\n\
+},\n\
+base: 8,\n\
 });'
-		},
-		indicators: {
-			type: 'object',
-			description: 'El parámetro "indicators" indica si se deben mostrar los iconos de flecha hacia arriba, flecha hacia abajo y el color. Estos iconos a menudo se asocian con los controles de tipo numérico en HTML5, por lo que generalmente es una buena idea mostrarlos. Por defecto, el valor está establecido a true.\nEl parámetro "indicators" se compone de atributos "enabled" y "color".',
-			example: '// Restricción sin indicadores\n\
+	},
+	indicators: {
+		type: 'object',
+		description: 'El parámetro "indicators" indica si se deben mostrar los iconos de flecha hacia arriba, flecha hacia abajo y el color. Estos iconos a menudo se asocian con los controles de tipo numérico en HTML5, por lo que generalmente es una buena idea mostrarlos. Por defecto, el valor está establecido a true.\nEl parámetro "indicators" se compone de atributos "enabled" y "color".',
+		example: '// Restricción sin indicadores\n\
 it("#inputTextID").constraint({ type: "decimal", indicators: {enabled: false} });\n\
 // Restricción con indicadores en rojo\n\
 it("#inputTextID").constraint({ type: "decimal", indicators: {color: "red"} });'
-		},
-		target: {
-			type: 'string',
-			description: 'ID del control dónde será implementado el constraint',
-			example: 'it("#inputTextID").constraint({ type: "int" });'
-		},
-		step: {
-			type: 'float',
-			description: 'El parámetro "step" indica el incremento o decremento cuando el usuario presiona las teclas de cursor o uno de los botones asignados como "indicadores". Por defecto es 1.',
-			example: 'it("#inputTextID").constraint({ type: "decimal", step: 0.01 });'
-		},
-		type: {
-			type: 'string',
-			description: 'El parámetro "type" define el formato o el tipo de datos que permitirá el control. Los valores aceptados son:\n\t● <b>int</b>: Los valores permitidos son únicamente enteros positivos y negativos.\n\t● <b>uint</b>: Los valores permitidos son únicamente enteros positivos.\n\t● <b>float</b>: Los valores permitidos son enteros y números reales con decimales infinitos.\n\t● <b>decimal</b>: Los valores permitidos son enteros y números reales con dos decimales.\n\t● <b>percent</b>: Los valores permitidos son entre 0 y 100.\n\t● <b>binary</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso 0 y 1.\n\t● <b>hexadecimal</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso de 0 a 9 y de A a F.\n\t● <b>hour</b>: Los valores permitidos son de 00:00 a 23:59.\n\t● <b>custom</b>: Permite definir una función de tipo personalizado. El subtipo "custom" se alimenta del parámetro "function", por lo que si el control se define como "custom", será obligatorio (el parámetro "function").',
-			example: '// Example of Integer subtype\n\
+	},
+	target: {
+		type: 'string',
+		description: 'ID del control dónde será implementado el constraint',
+		example: 'it("#inputTextID").constraint({ type: "int" });'
+	},
+	step: {
+		type: 'float',
+		description: 'El parámetro "step" indica el incremento o decremento cuando el usuario presiona las teclas de cursor o uno de los botones asignados como "indicadores". Por defecto es 1.',
+		example: 'it("#inputTextID").constraint({ type: "decimal", step: 0.01 });'
+	},
+	type: {
+		type: 'string',
+		description: 'El parámetro "type" define el formato o el tipo de datos que permitirá el control. Los valores aceptados son:\n\t● <b>int</b>: Los valores permitidos son únicamente enteros positivos y negativos.\n\t● <b>uint</b>: Los valores permitidos son únicamente enteros positivos.\n\t● <b>float</b>: Los valores permitidos son enteros y números reales con decimales infinitos.\n\t● <b>decimal</b>: Los valores permitidos son enteros y números reales con dos decimales.\n\t● <b>percent</b>: Los valores permitidos son entre 0 y 100.\n\t● <b>binary</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso 0 y 1.\n\t● <b>hexadecimal</b>: Los valores permitidos son números enteros escritos y definidos a través de su base, en este caso de 0 a 9 y de A a F.\n\t● <b>hour</b>: Los valores permitidos son de 00:00 a 23:59.\n\t● <b>custom</b>: Permite definir una función de tipo personalizado. El subtipo "custom" se alimenta del parámetro "function", por lo que si el control se define como "custom", será obligatorio (el parámetro "function").',
+		example: '// Example of Integer subtype\n\
 it("#inputTextID").constraint({ type: "int"});\n\n\
 // Example of Hour subtype\n\
 it("#inputTextID").constraint({ type: "hour"});\n\n\
 // Example of Custom subtype (Number in octal format). The custom subtype needs \n\
 it("#inputTextID").constraint({\n\
-	type: "custom",\n\
-	function: function(value) {\n\
-		return /^[0-7]*$/i.test(value);\n\
-	},\n\
-	base: 8,\n\
+type: "custom",\n\
+function: function(value) {\n\
+	return /^[0-7]*$/i.test(value);\n\
+},\n\
+base: 8,\n\
 });\n\n\
 // Sólo letras con  acentos a través del bloque unicode Latin1\n\
 // \\u00C0-\\u00FF Suplemento Latin-1\n\
@@ -1032,30 +1025,29 @@ it("#inputTextID").constraint({\n\
 // \\u0180-\\u024F Latín Extendido-b\n\
 // \\u1E00-\\u1EFF Latín Extendido Adicional\n\
 it("#inputTextID").constraint({\n\
-	type: "custom",\n\
-	function: function(value) {\n\
-		return /^[a-zA-Z\s\\u00C0-\\u024F\\u1E00-\\u1EFF]*$/.test(value);\n\
-	}\n});'
-		},
-		increment: {
-			type: 'string',
-			description: 'Aumenta el valor de la entrada asociada al valor establecido en "step". El parámetro a enviar debe ser el ID del elemento que tiene la restricción.',
-			example: '// Hay dos posibilidades de realizar este incremento.\n\
+type: "custom",\n\
+function: function(value) {\n\
+	return /^[a-zA-Z\s\\u00C0-\\u024F\\u1E00-\\u1EFF]*$/.test(value);\n\
+}\n});'
+	},
+	increment: {
+		type: 'string',
+		description: 'Aumenta el valor de la entrada asociada al valor establecido en "step". El parámetro a enviar debe ser el ID del elemento que tiene la restricción.',
+		example: '// Hay dos posibilidades de realizar este incremento.\n\
 // Primera forma:\n\
 Constraint.increment("inputTextID");\n\
 // Segunda forma:\n\
 it("#inputTextID").constraint.increment();'
-		},
-		decrement: {
-			type: 'string',
-			description: 'Disminuye el valor de la entrada asociada al valor establecido en "step". El parámetro a enviar debe ser el ID del elemento que tiene la restricción.',
-			example: '// Hay dos posibilidades de realizar este decremento.\n\
+	},
+	decrement: {
+		type: 'string',
+		description: 'Disminuye el valor de la entrada asociada al valor establecido en "step". El parámetro a enviar debe ser el ID del elemento que tiene la restricción.',
+		example: '// Hay dos posibilidades de realizar este decremento.\n\
 // Primera forma:\n\
 Constraint.decrement("inputTextID");\n\
 // Segunda forma:\n\
 it("#inputTextID").constraint.decrement();'
-		},
-	}
+	},
 }
 
 /**
@@ -1065,137 +1057,136 @@ it("#inputTextID").constraint.decrement();'
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 19/05/2020																			
  **/
-if(it.enabledModules.Counter){
-	WikiHelper.Counter = {
-		general: {
-			version: '1.1',
-			name: 'Counter',
-			help: 1,
-			description: "Este componente permite crear contadores ascendentes y descendentes y proveerlos de algunas opciones de personalización.",
-		},
-		additional: [
-			{
-				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '_CSS_// styles.css (de tu sitio web)\n\
+WikiHelper.Counter = {
+	general: {
+		version: '1.1',
+		name: 'Counter',
+		help: 1,
+		description: "Este componente permite crear contadores ascendentes y descendentes y proveerlos de algunas opciones de personalización.",
+	},
+	additional: [
+		{
+			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '_CSS_// styles.css (de tu sitio web)\n\
 // Ejemplo de estilo formato batería\n\
 .counter{ position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; border: 1px solid rgba(255,255,255, 0.8); box-shadow: 0 0 0 2px rgb(0 0 0) inset; }\n\
 .counter::before{ content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #000; height: 100%; padding: 0; line-height: 24px; font-size: 0.9rem; z-index: 1; }\n\
 .counter::after{ content: ""; background: rgba(0, 0 , 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0; }\n\
 .counter span.progress{ width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: rgba(0,64,128, 1); position: relative; top: auto; right: auto; z-index: 0; }\n\
 _CSS_'
-			}
-		],
-		callback: {
-			type: 'function',
-			description: 'Función que se debe llamar cuando se termine la cuenta del contador.',
-			example: 'it("#counter").counter({\n\
-	from: 5,\n\
-	callback: function(){ console.log("Cuenta terminada!") }\n\
+		}
+	],
+	callback: {
+		type: 'function',
+		description: 'Función que se debe llamar cuando se termine la cuenta del contador.',
+		example: 'it("#counter").counter({\n\
+from: 5,\n\
+callback: function(){ console.log("Cuenta terminada!") }\n\
 });'	},
-		colors: {
-			type: 'object',
-			description: 'Permite definir los colores que se aplicarán en la barra de progreso asociada al contador. Por defecto son los que se preentan como ejemplo.',
-			example: 'it(".counter-div").counter({\n\
-	colors: {low: "rgb(128,128,128)", half: "rgb(255,255,0)", high: "rgb(255,0,0)"},\n\
-	to: 30,\n\
-	interval: 1,\n\
-	mode: "count"\n\
+	colors: {
+		type: 'object',
+		description: 'Permite definir los colores que se aplicarán en la barra de progreso asociada al contador. Por defecto son los que se preentan como ejemplo.',
+		example: 'it(".counter-div").counter({\n\
+colors: {low: "rgb(128,128,128)", half: "rgb(255,255,0)", high: "rgb(255,0,0)"},\n\
+to: 30,\n\
+interval: 1,\n\
+mode: "count"\n\
 });'	},
-		format: {
-	type: 'integer',
-	description: 'Establece una máscara para la visualización de valores. Sólo es aplicable en modo "timer". Por defecto es "HH:MM:SS".',
-	example: '// Contador marcha atrás de diez segundos\n\
+	format: {
+type: 'integer',
+description: 'Establece una máscara para la visualización de valores. Sólo es aplicable en modo "timer". Por defecto es "HH:MM:SS".',
+example: '// Contador marcha atrás de diez segundos\n\
 it("#counter").counter({\n\
-	from: 10,\n\
-	format: "SS seg",\n\
+from: 10,\n\
+format: "SS seg",\n\
 });\n\
 \n\
 // Contador marcha atrás de una hora con formato minutos\n\
 it("#counter").counter({\n\
-	from: 3600,\n\
-	format: "MM Min",\n\
+from: 3600,\n\
+format: "MM Min",\n\
 });\n\
 '
-		},
-		from: {
-			type: 'integer',
-			description: 'Permite definir una cuenta atrás del valor indicado.',
-			example: 'it("#counter").counter({\n\
-	from: 10,\n\
+	},
+	from: {
+		type: 'integer',
+		description: 'Permite definir una cuenta atrás del valor indicado.',
+		example: 'it("#counter").counter({\n\
+from: 10,\n\
 })'		},
-		interval: {
-			type: 'integer',
-			description: 'Es el el número de segundos que deben pasar para incrementar o decrementar la cuenta. Por defecto su valor es 1.',
-			example: 'it("#counter").counter({\n\
-	from: 10,\n\
-	interval: 0.2\n\
-	mode: "count"\n\
+	interval: {
+		type: 'integer',
+		description: 'Es el el número de segundos que deben pasar para incrementar o decrementar la cuenta. Por defecto su valor es 1.',
+		example: 'it("#counter").counter({\n\
+from: 10,\n\
+interval: 0.2\n\
+mode: "count"\n\
 })'		},
-		mode: {
-			type: 'string',
-			description: 'Indica el modo de visualiación del contador. Si el modo es "timer" (el modo por defecto) se presentará como una marca de tiempo, por lo que aunque el intervalo sea menor que un segundo, la duración será la misma qu para el intervalo por defecto\nEn otras palabras, si el modo es "timer", el parámetro interval no tendrá efecto si es menor que uno. Si el modo es "count", se presentará como un contador normal.',
-			example: '// Contador marcha atrás\n\
+	mode: {
+		type: 'string',
+		description: 'Indica el modo de visualiación del contador. Si el modo es "timer" (el modo por defecto) se presentará como una marca de tiempo, por lo que aunque el intervalo sea menor que un segundo, la duración será la misma qu para el intervalo por defecto\nEn otras palabras, si el modo es "timer", el parámetro interval no tendrá efecto si es menor que uno. Si el modo es "count", se presentará como un contador normal.',
+		example: '// Contador marcha atrás\n\
 it(".session").counter({\n\
-	from: 30,\n\
-	mode: "timer",\n\
+from: 30,\n\
+mode: "timer",\n\
 });\n\
 \n\
 // Contador marcha atrás\n\
 it(".session").counter({\n\
-	from: 30,\n\
-	mode: "count",\n\
+from: 30,\n\
+mode: "count",\n\
 });'
-		},
-		notify: {
-			type: 'object',
-			description: 'Muestra un mensaje de alerta cuando se cumpla un valor determinado. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
-			example: 'it(".session").counter({\n\
-	from: 3600,\n\
-	notify: {\n\
-		in: 300,\n\
-		message: "La sesión está a punto de caducar. Por favor, renuévela si desea continuar..."\n\
-		callback: enviarAlServidor()\n\
-	},\n\
+	},
+	notify: {
+		type: 'object',
+		description: 'Muestra un mensaje de alerta cuando se cumpla un valor determinado. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
+		example: 'it(".session").counter({\n\
+from: 3600,\n\
+notify: {\n\
+	in: 300,\n\
+	message: "La sesión está a punto de caducar. Por favor, renuévela si desea continuar..."\n\
+	callback: enviarAlServidor()\n\
+},\n\
 })'
-		},
-		renew: {
-			type: 'object',
-			description: 'Muestra un mensaje en el contenedor que funciona como botón de renovación de tiempo. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
-			example: 'it(".session").counter({\n\
-	from: 3600,\n\
-	renew: {\n\
-		in: 300,\n\
-		message: "Renovar"\n\
-		callback: enviarAlServidor()\n\
-	},\n\
+	},
+	renew: {
+		type: 'object',
+		description: 'Muestra un mensaje en el contenedor que funciona como botón de renovación de tiempo. Consta de tres propiedades, "in", "message" y "callback". La propiedad "in" indica cuándo se debe mostrar el mensaje declarado por la propiedad "message". La propiedad "callback" es la función a la que se devuelve el control cuando se cumple la condición.',
+		example: 'it(".session").counter({\n\
+from: 3600,\n\
+renew: {\n\
+	in: 300,\n\
+	message: "Renovar"\n\
+	callback: enviarAlServidor()\n\
+},\n\
 })'
-		},
-		showvalue: {
-			type: 'boolean',
-			description: 'Indica si se debe mostrar el valor del contador o sólo la barra de progreso. Por defecto es true.',
-			example: 'it("#counter").counter({\n\
-	from: 3600,\n\
-	showvalue: false\n\
+	},
+	showvalue: {
+		type: 'boolean',
+		description: 'Indica si se debe mostrar el valor del contador o sólo la barra de progreso. Por defecto es true.',
+		example: 'it("#counter").counter({\n\
+from: 3600,\n\
+showvalue: false\n\
 })'
-		},
-		title: {
-			type: 'string',
-			description: 'Es la propiedad title que se asignará al elemento que tenga asociado el contador. Por defecto es vacío.',
-			example: 'it("#counter").counter({\n\
-	from: 10,\n\
-	title: "Cuenta atrás hasta 10"\n\
+	},
+	title: {
+		type: 'string',
+		description: 'Es la propiedad title que se asignará al elemento que tenga asociado el contador. Por defecto es vacío.',
+		example: 'it("#counter").counter({\n\
+from: 10,\n\
+title: "Cuenta atrás hasta 10"\n\
 })'
-		},
-		to: {
-			type: 'integer',
-			description: 'Permite definir un contador que cuenta hacia adelante hasta el valor indicado.',
-			example: 'it(".profile .session").counter({\n\
-	to: 10,\n\
-	interval: 0.2\n\
-	mode: "count"\n\
+	},
+	to: {
+		type: 'integer',
+		description: 'Permite definir un contador que cuenta hacia adelante hasta el valor indicado.',
+		example: 'it(".profile .session").counter({\n\
+to: 10,\n\
+interval: 0.2\n\
+mode: "count"\n\
 })'		},
-	}
 }
+
 
 /**
 	 Datepicker functionality
@@ -1204,42 +1195,41 @@ it(".session").counter({\n\
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 11/07/2019
  **/
-if(it.enabledModules.Datepicker){
-	WikiHelper.Datepicker = {
-		general: {
-			version: '1.2.2',
-			name: 'Datepicker',
-			help: 1,
-			description: 'Datepicker es un control que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks\n\
+WikiHelper.Datepicker = {
+	general: {
+		version: '1.2.2',
+		name: 'Datepicker',
+		help: 1,
+		description: 'Datepicker es un control que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks\n\
 <name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los datepickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/dialog-modal/datepicker-dialog.html</name>',
-		},
-		additional: [
-			{
-				description: 'También es posible cambiar el idioma de manera global a través de la propiedad config del componente DatePicker.',
-				example: "it.datepicker.config = {\n\
-	icon: '<i class=\"icon-calendar\"></i>',\n\
-	shortdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],\n\
-	longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],\n\
-	shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],\n\
-	longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],\n\
-	weekstart: 1,\n\
-	textTrigger: 'Mostrar el calendario',\n\
-	textYear: 'Año',\n\
-	textToday: 'Hoy',\n\
-	textRemove: 'Eliminar',\n\
-	autoClose: true,\n\
-	curDate: null,\n\
-	selMonth: null,\n\
-	selYear: null,\n\
-	selDay: null,\n\
-	format: 'DD-MM-YYYY',\n\
-	md: {},\n\
-	custom: []\n\
+	},
+	additional: [
+		{
+			description: 'También es posible cambiar el idioma de manera global a través de la propiedad config del componente DatePicker.',
+			example: "it.datepicker.config = {\n\
+icon: '<i class=\"icon-calendar\"></i>',\n\
+shortdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],\n\
+longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],\n\
+shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],\n\
+longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],\n\
+weekstart: 1,\n\
+textTrigger: 'Mostrar el calendario',\n\
+textYear: 'Año',\n\
+textToday: 'Hoy',\n\
+textRemove: 'Eliminar',\n\
+autoClose: true,\n\
+curDate: null,\n\
+selMonth: null,\n\
+selYear: null,\n\
+selDay: null,\n\
+format: 'DD-MM-YYYY',\n\
+md: {},\n\
+custom: []\n\
 };"
-			},
-			{
-				description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <field style="padding: 0; text-transform:lowercase">"finicio"</field> podría ser:',
-				example: '_CSS_\n\
+		},
+		{
+			description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <field style="padding: 0; text-transform:lowercase">"finicio"</field> podría ser:',
+			example: '_CSS_\n\
 // styles.css (de tu sitio web)\n\
 #datepicker-layer-finicio { width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden; }\n\
 #datepicker-layer-finicio::before{ content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1; }\n\
@@ -1271,64 +1261,63 @@ if(it.enabledModules.Datepicker){
 #datepicker-layer-finicio .datepicker-buttons button{ cursor: pointer; color: #fff; background: #0066a8; border: 1px solid #0066a8; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px; }\n\
 .has-datepicker input{ width: 6.8em !important; float: left; }\n\
 .has-datepicker input + button{ cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 24px; }_CSS_'
-			},
-		],
-		icon: {
-			type: 'String',
-			description: 'El atributo "icon" establece el icono que se desea utilizar como disparador para abrir el selector de fechas.',
-			example: 'it("#birth-date").datepicker({icon: <i class="fas fa-calendar-alt"></i>});'
 		},
-		format: {
-			type: 'String',
-			description: 'Indica el formato para la introducción de la fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)',
-			example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0066a8", foreground: "#fff"});'
-		},
-		background: {
-			type: 'String',
-			description: 'Indica el color de fondo que se desea usar. En general, este color será el color corporativo primario.',
-			example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0a1631", foreground: "#ff6694"});'
-		},
-		foreground: {
-			type: 'String',
-			description: 'Indica el color de fondo que se desea usar. En general, este color será blanco o negro, aunque en ocasiones suele ser el color corporativo secundario.',
-			example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0a1631", foreground: "#000"});'
-		},
-		shortdays: {
-			type: 'Object',
-			description: 'El atributo "shortdays" establece la abreviatura de los días de la semana. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").datepicker({shortdays: ["L", "M", "X", "J", "V", "S", "D"]});'
-		},
-		longdays: {
-			type: 'Object',
-			description: 'El atributo "longdays" establece los identificadores completos de los días de la semana. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").datepicker({shortdays: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]});'
-		},
-		shortmonths: {
-			type: 'Object',
-			description: 'El atributo "shortmonths" establece la abreviatura de los meses del año. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").datepicker({shortmonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]});'
-		},
-		longmonths: {
-			type: 'Object',
-			description: 'El atributo "longmonths" establece los identificadores completos de los meses del año. Se puede utilizar para cambiar el idioma.',
-			example: 'it("#birth-date").datepicker({longmonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]});'
-		},
-		weekstart: {
-			type: 'Integer',
-			description: 'El atributo "weekstart" establece si la semana debe empezar en 0 (Domingo) o 1 (Lunes). Por defecto es 1.',
-			example: 'it("#birth-date").datepicker({weekstart: 0});'
-		},
-		textToday: {
-			type: 'String',
-			description: 'Indica el texto del botón que establece la fecha de hoy.',
-			example: 'it("#birth-date").datepicker({textToday: "Today"});'
-		},
-		textRemove: {
-			type: 'Integer',
-			description: 'Indica el texto del botón que borra la fecha del campo de texto destino.',
-			example: 'it("#birth-date").datepicker({textToday: "Remove"});'
-		},
-	}
+	],
+	icon: {
+		type: 'String',
+		description: 'El atributo "icon" establece el icono que se desea utilizar como disparador para abrir el selector de fechas.',
+		example: 'it("#birth-date").datepicker({icon: <i class="fas fa-calendar-alt"></i>});'
+	},
+	format: {
+		type: 'String',
+		description: 'Indica el formato para la introducción de la fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)',
+		example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0066a8", foreground: "#fff"});'
+	},
+	background: {
+		type: 'String',
+		description: 'Indica el color de fondo que se desea usar. En general, este color será el color corporativo primario.',
+		example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0a1631", foreground: "#ff6694"});'
+	},
+	foreground: {
+		type: 'String',
+		description: 'Indica el color de fondo que se desea usar. En general, este color será blanco o negro, aunque en ocasiones suele ser el color corporativo secundario.',
+		example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0a1631", foreground: "#000"});'
+	},
+	shortdays: {
+		type: 'Object',
+		description: 'El atributo "shortdays" establece la abreviatura de los días de la semana. Se puede utilizar para cambiar el idioma.',
+		example: 'it("#birth-date").datepicker({shortdays: ["L", "M", "X", "J", "V", "S", "D"]});'
+	},
+	longdays: {
+		type: 'Object',
+		description: 'El atributo "longdays" establece los identificadores completos de los días de la semana. Se puede utilizar para cambiar el idioma.',
+		example: 'it("#birth-date").datepicker({shortdays: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]});'
+	},
+	shortmonths: {
+		type: 'Object',
+		description: 'El atributo "shortmonths" establece la abreviatura de los meses del año. Se puede utilizar para cambiar el idioma.',
+		example: 'it("#birth-date").datepicker({shortmonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]});'
+	},
+	longmonths: {
+		type: 'Object',
+		description: 'El atributo "longmonths" establece los identificadores completos de los meses del año. Se puede utilizar para cambiar el idioma.',
+		example: 'it("#birth-date").datepicker({longmonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]});'
+	},
+	weekstart: {
+		type: 'Integer',
+		description: 'El atributo "weekstart" establece si la semana debe empezar en 0 (Domingo) o 1 (Lunes). Por defecto es 1.',
+		example: 'it("#birth-date").datepicker({weekstart: 0});'
+	},
+	textToday: {
+		type: 'String',
+		description: 'Indica el texto del botón que establece la fecha de hoy.',
+		example: 'it("#birth-date").datepicker({textToday: "Today"});'
+	},
+	textRemove: {
+		type: 'Integer',
+		description: 'Indica el texto del botón que borra la fecha del campo de texto destino.',
+		example: 'it("#birth-date").datepicker({textToday: "Remove"});'
+	},
 }
 
 /**
@@ -1338,64 +1327,62 @@ if(it.enabledModules.Datepicker){
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 15/03/2019
  **/
-if(it.enabledModules.Debugger){
-	WikiHelper.Debugger = {
-		general: {
-			version: '1.0',
-			name: 'Debugger',
-			help: 1,
-			description: 'Depurador automático para ayudarte a saber todo lo que sucede en tu página. Desde cuando un usuario hace un clic hasta conocer qué llamadas ajax se ejecutan en segundo plano.'
-		},
-		init: {
-			type: "function",
-			description: "Fácil de inicializar. Se puede inicializar en modo consola o en una ventana a parte (screen).",
-			example: '// Depurar a través de la consola\nDebugger.init("console");\n// Depurar a través de una ventana externa\nDebugger.init("window");'
-		},
-		attributesFilter: {
-			type: "Object",
-			description: 'Debugger permite depurar selectivamente los atributos de forma independiente o de forma combinada. La forma de especificar qué observar es a través de una matriz de valores que indica qué es lo que se debe depurar. Por defecto, attributesFilter está definido a vacío.',
-			example: '// Depurar todos los atributos\nDebugger.attributesFilter = [];\nDebugger.init();\n\n// Depurar únicamente los atributos cellspacing y cellspadding\nDebugger.attributesFilter = ["cellspacing", "cellspadding"];\nDebugger.init();'
-		},
-		excludedAttributesFilter: {
-			type: "Object",
-			description: 'Debugger también permite deshabilitar selectivamente los atributos que no se desean depurar. La manera de especificar lo que no se debe observar es a través de una matriz de valores que indica lo que no se debe depurar. Por defecto, excludedAttributesFilter tiene establecido únicamente el atributo "style".',
-			example: '// No depurar las propiedades de style, class, id y src. Lo demás sí\nDebugger.excludedAttributesFilter = ["style", "class", "id", "src"];\nDebugger.init();'
-		},
-		selectorsFilter: {
-			type: "Object",
-			description: 'Debugger permite depurar selectivamente las etiquetas de forma independiente o de forma combinada. La forma de especificar qué etiquetas se deben observar es a través de una matriz de valores que indica qué se debe depurar. Por defecto, selectorsFilter está definido a vacío.',
-			example: '// Depurar todas las etiquetas\nDebugger.selectorsFilter = [];\nDebugger.init();\n\n// Depurar sólo los cuadros de texto, desplegables y los botones\nDebugger.selectorsFilter = ["INPUT", "SELECT", "BUTTON"];\nDebugger.init();'
-		},
-		excludedSelectorsFilter: {
-			type: "Object",
-			description: 'Debugger también permite desactivar selectivamente las etiquetas que no se desean depurar. La manera de especificar qué no se debe observar es a través de una matriz de valores que indica lo que no se debe depurar. Por defecto, excludedSelectorsFilter está definindo a vacío.',
-			example: '// No depurar los DIV, SPAN, NAV y LEGEND. Los demás sí\nDebugger.excludedSelectorsFilter = ["DIV", "SPAN", "NAV", "LEGEND"];\nDebugger.init();'
-		},
-		eventsFilter: {
-			type: "Object",
-			description: 'Debugger permite depurar eventos de forma selectiva de forma independiente o de forma combinada. La forma de especificar qué eventos observar es a través de una matriz de valores que indica qué se debe depurar.\n\r\nLa lista de eventos permitidos son todos los de JavaScript, véase clic, mouseover, mouseout, mouseenter, mouseleave, keydown, keyup, Presionar teclas, cambiar, enfocar, enfocar, enfocar, difuminar,...\n\r\nPor defecto, si el parámetro eventFilter se deja vacío, se observarán los eventos básicos de interacción, es decir, change, clic, focusin (tomar el foco), focusout (perder el foco) y keydown ya que, este, permite controlar las teclas Ctrl, Alt y Shift (mayúsculas).\n\r\nDe forma predeterminada, eventsFilter se define como vacío.',
-			example: '// Depurar los predefinidos\nDebugger.eventsFilter = [];\nDebugger.init();\n\n// Depurar sólo el evento change.\nDebugger.eventsFilter = ["change"];\nDebugger.init();'
-		},
-		enableHistory:{
-			type: "boolean",
-			description: "Debugger permite exportar el historial de cambios a un archivo. Por defecto, enableHistory es false.",
-			example: '// Activar el historial\nDebugger.enableHistory = true;\nDebugger.init();\n// ...\n// ... Actions ...\n// ...\n// Recuperar el historial.\nDebugger.getHistory();',
-		},
-		getHistory:{
-			type: "function",
-			description: "Para exportar el historial de eventos a un archivo, se puede usar la función de guardar del navegador si está en una ventana a parte (modo screen). Sin embargo, el depurador tiene una manera más sencilla de lograr este requisito. Para extraer el historial de cambios, se puede ejecutar la función getHistory() que devuelve el historial en formato de texto plano.",
-			example: '// Activar el historial\nDebugger.enableHistory = true;\nDebugger.init();\n// ...\n// ... Actions ...\n// ...\n// Recuperar el historial.\nDebugger.getHistory();',
-		},
-		messages: {
-			type: "Object",
-			description: 'Debugger permite definir mensajes personalizados para cada tipo de cambio o mutación.',
-			example: "messages:{\n\tajaxBeforeSend:'Processing request. Method: &lt;method>. Type: &lt;type>. CrossDomain: &lt;crossDomain>.  File: &lt;url>. Content Type: &lt;contentType>',\n\tajaxComplete:'The Ajax processing request FINISHED for the &lt;url> file.',\n\tajaxSuccess:'The Ajax request was completed SUCCESSFULLY for the &lt;url> file.',\n\tajaxError:'An error occurred into Ajax processing request into &lt;url> file.',\n\tbeforeUnloadPage:'Page request unload',\n\tunloadPage:'Unloaded page',\n\terrorPage:'An error occurred into file',\n\tparsedPage:'Page loaded and parsed.',\n\tpageChangedStatus:'Page changed status:',\n\tvalueChanged: 'The &lt;selector> changed the value property to &lt;value>.',\n\tgetsFocus: '&lt;selector> gets focus.',\n\tlosesFocus: '&lt;selector> loses focus.',\n\tclick: 'User clicks into &lt;selector>.',\n\tattributeMutation: 'The &lt;attributeName> attribute has mutated from \"&lt;oldValue>\" to \"&lt;value>\" into &lt;selector> element.',\n\taddedChildren: 'Added children into &lt;selector> element. Total children: &lt;totalChildren>',\n\tremovedChildren: 'Removed children into &lt;selector> element. Total children: &lt;totalChildren>',\n\tmouseOver: 'The mouse pointer is over the &lt;selector> element.',\n\tmouseOut: 'The mouse pointer leaves the &lt;selector> element.',\n\tkeyPress: 'Keyboard event received into &lt;selector> element. Keys Combination: \"&lt;keys>\". Keys Combination Code: \"&lt;keysCode>\".',\n\tseparator: '&lt;div style=\"border: 1px solid #333; border-width: 0px 0px 1px 0px; height:5px; width:100%;margin-bottom: 5px;\">&nbsp;&lt;/div>'\n}"
-		},
-		colors: {
-			type: "Object",
-			description: 'Debugger permite definir los colores personalizados para cada tipo de cambio o mutación.',
-			example: "colors: {\n\t// For elements added in the DOM\n\tadded:\"#709050\",\n\t// For changes in attributes in the DOM\n\tattributeChanged: '#ff00ff',\n\t// Background of the Debugger window\n\tbackground:\"#000000\",\n\t// For events Blur\n\tblur:\"#907080\",\n\t// For Focus events\n\tfocus:\"#9070a0\",\n\t// For events Click\n\tclick:\"#909090\",\n\t// For Mouse Over events\n\tmouseOver:\"#a07090\",\n\t// For Mouse Out events\n\tmouseOut:\"#807090\",\n\t// For Keypress events\n\tkeyPress:\"#80a090\",\n\t// For detected errors\n\terror: '#a02020',\n\t// Header Text\n\theaderForeground:\"#ffffff\",\n\t// Header Background\n\theaderBackground:\"#333\",\n\t// For standard and unregistered changes\n\tnormal:\"#606060\",\n\t// For Ajax in mode Processing\n\tproccessing:\"#8AC007\",\n\t// For state changes of Ajax\n\treadyState:\"#8AC007\",\n\t// For deleted items in the DOM\n\tremoved:\"#a01010\",\n\t// For Ajax in Sending\n\tsending mode:\"#8AC007\",\n\t// For Ajax in Updating mode\n\tupdated:\"#80a0e0\",\n\t// For changes to the value attributes\n\tvalueChanged:\"#FE2466\"\n}"
-		}
+WikiHelper.Debugger = {
+	general: {
+		version: '1.0',
+		name: 'Debugger',
+		help: 1,
+		description: 'Depurador automático para ayudarte a saber todo lo que sucede en tu página. Desde cuando un usuario hace un clic hasta conocer qué llamadas ajax se ejecutan en segundo plano.'
+	},
+	init: {
+		type: "function",
+		description: "Fácil de inicializar. Se puede inicializar en modo consola o en una ventana a parte (screen).",
+		example: '// Depurar a través de la consola\nDebugger.init("console");\n// Depurar a través de una ventana externa\nDebugger.init("window");'
+	},
+	attributesFilter: {
+		type: "Object",
+		description: 'Debugger permite depurar selectivamente los atributos de forma independiente o de forma combinada. La forma de especificar qué observar es a través de una matriz de valores que indica qué es lo que se debe depurar. Por defecto, attributesFilter está definido a vacío.',
+		example: '// Depurar todos los atributos\nDebugger.attributesFilter = [];\nDebugger.init();\n\n// Depurar únicamente los atributos cellspacing y cellspadding\nDebugger.attributesFilter = ["cellspacing", "cellspadding"];\nDebugger.init();'
+	},
+	excludedAttributesFilter: {
+		type: "Object",
+		description: 'Debugger también permite deshabilitar selectivamente los atributos que no se desean depurar. La manera de especificar lo que no se debe observar es a través de una matriz de valores que indica lo que no se debe depurar. Por defecto, excludedAttributesFilter tiene establecido únicamente el atributo "style".',
+		example: '// No depurar las propiedades de style, class, id y src. Lo demás sí\nDebugger.excludedAttributesFilter = ["style", "class", "id", "src"];\nDebugger.init();'
+	},
+	selectorsFilter: {
+		type: "Object",
+		description: 'Debugger permite depurar selectivamente las etiquetas de forma independiente o de forma combinada. La forma de especificar qué etiquetas se deben observar es a través de una matriz de valores que indica qué se debe depurar. Por defecto, selectorsFilter está definido a vacío.',
+		example: '// Depurar todas las etiquetas\nDebugger.selectorsFilter = [];\nDebugger.init();\n\n// Depurar sólo los cuadros de texto, desplegables y los botones\nDebugger.selectorsFilter = ["INPUT", "SELECT", "BUTTON"];\nDebugger.init();'
+	},
+	excludedSelectorsFilter: {
+		type: "Object",
+		description: 'Debugger también permite desactivar selectivamente las etiquetas que no se desean depurar. La manera de especificar qué no se debe observar es a través de una matriz de valores que indica lo que no se debe depurar. Por defecto, excludedSelectorsFilter está definindo a vacío.',
+		example: '// No depurar los DIV, SPAN, NAV y LEGEND. Los demás sí\nDebugger.excludedSelectorsFilter = ["DIV", "SPAN", "NAV", "LEGEND"];\nDebugger.init();'
+	},
+	eventsFilter: {
+		type: "Object",
+		description: 'Debugger permite depurar eventos de forma selectiva de forma independiente o de forma combinada. La forma de especificar qué eventos observar es a través de una matriz de valores que indica qué se debe depurar.\n\r\nLa lista de eventos permitidos son todos los de JavaScript, véase clic, mouseover, mouseout, mouseenter, mouseleave, keydown, keyup, Presionar teclas, cambiar, enfocar, enfocar, enfocar, difuminar,...\n\r\nPor defecto, si el parámetro eventFilter se deja vacío, se observarán los eventos básicos de interacción, es decir, change, clic, focusin (tomar el foco), focusout (perder el foco) y keydown ya que, este, permite controlar las teclas Ctrl, Alt y Shift (mayúsculas).\n\r\nDe forma predeterminada, eventsFilter se define como vacío.',
+		example: '// Depurar los predefinidos\nDebugger.eventsFilter = [];\nDebugger.init();\n\n// Depurar sólo el evento change.\nDebugger.eventsFilter = ["change"];\nDebugger.init();'
+	},
+	enableHistory:{
+		type: "boolean",
+		description: "Debugger permite exportar el historial de cambios a un archivo. Por defecto, enableHistory es false.",
+		example: '// Activar el historial\nDebugger.enableHistory = true;\nDebugger.init();\n// ...\n// ... Actions ...\n// ...\n// Recuperar el historial.\nDebugger.getHistory();',
+	},
+	getHistory:{
+		type: "function",
+		description: "Para exportar el historial de eventos a un archivo, se puede usar la función de guardar del navegador si está en una ventana a parte (modo screen). Sin embargo, el depurador tiene una manera más sencilla de lograr este requisito. Para extraer el historial de cambios, se puede ejecutar la función getHistory() que devuelve el historial en formato de texto plano.",
+		example: '// Activar el historial\nDebugger.enableHistory = true;\nDebugger.init();\n// ...\n// ... Actions ...\n// ...\n// Recuperar el historial.\nDebugger.getHistory();',
+	},
+	messages: {
+		type: "Object",
+		description: 'Debugger permite definir mensajes personalizados para cada tipo de cambio o mutación.',
+		example: "messages:{\n\tajaxBeforeSend:'Processing request. Method: &lt;method>. Type: &lt;type>. CrossDomain: &lt;crossDomain>.  File: &lt;url>. Content Type: &lt;contentType>',\n\tajaxComplete:'The Ajax processing request FINISHED for the &lt;url> file.',\n\tajaxSuccess:'The Ajax request was completed SUCCESSFULLY for the &lt;url> file.',\n\tajaxError:'An error occurred into Ajax processing request into &lt;url> file.',\n\tbeforeUnloadPage:'Page request unload',\n\tunloadPage:'Unloaded page',\n\terrorPage:'An error occurred into file',\n\tparsedPage:'Page loaded and parsed.',\n\tpageChangedStatus:'Page changed status:',\n\tvalueChanged: 'The &lt;selector> changed the value property to &lt;value>.',\n\tgetsFocus: '&lt;selector> gets focus.',\n\tlosesFocus: '&lt;selector> loses focus.',\n\tclick: 'User clicks into &lt;selector>.',\n\tattributeMutation: 'The &lt;attributeName> attribute has mutated from \"&lt;oldValue>\" to \"&lt;value>\" into &lt;selector> element.',\n\taddedChildren: 'Added children into &lt;selector> element. Total children: &lt;totalChildren>',\n\tremovedChildren: 'Removed children into &lt;selector> element. Total children: &lt;totalChildren>',\n\tmouseOver: 'The mouse pointer is over the &lt;selector> element.',\n\tmouseOut: 'The mouse pointer leaves the &lt;selector> element.',\n\tkeyPress: 'Keyboard event received into &lt;selector> element. Keys Combination: \"&lt;keys>\". Keys Combination Code: \"&lt;keysCode>\".',\n\tseparator: '&lt;div style=\"border: 1px solid #333; border-width: 0px 0px 1px 0px; height:5px; width:100%;margin-bottom: 5px;\">&nbsp;&lt;/div>'\n}"
+	},
+	colors: {
+		type: "Object",
+		description: 'Debugger permite definir los colores personalizados para cada tipo de cambio o mutación.',
+		example: "colors: {\n\t// For elements added in the DOM\n\tadded:\"#709050\",\n\t// For changes in attributes in the DOM\n\tattributeChanged: '#ff00ff',\n\t// Background of the Debugger window\n\tbackground:\"#000000\",\n\t// For events Blur\n\tblur:\"#907080\",\n\t// For Focus events\n\tfocus:\"#9070a0\",\n\t// For events Click\n\tclick:\"#909090\",\n\t// For Mouse Over events\n\tmouseOver:\"#a07090\",\n\t// For Mouse Out events\n\tmouseOut:\"#807090\",\n\t// For Keypress events\n\tkeyPress:\"#80a090\",\n\t// For detected errors\n\terror: '#a02020',\n\t// Header Text\n\theaderForeground:\"#ffffff\",\n\t// Header Background\n\theaderBackground:\"#333\",\n\t// For standard and unregistered changes\n\tnormal:\"#606060\",\n\t// For Ajax in mode Processing\n\tproccessing:\"#8AC007\",\n\t// For state changes of Ajax\n\treadyState:\"#8AC007\",\n\t// For deleted items in the DOM\n\tremoved:\"#a01010\",\n\t// For Ajax in Sending\n\tsending mode:\"#8AC007\",\n\t// For Ajax in Updating mode\n\tupdated:\"#80a0e0\",\n\t// For changes to the value attributes\n\tvalueChanged:\"#FE2466\"\n}"
 	}
 }
 
@@ -1406,19 +1393,17 @@ if(it.enabledModules.Debugger){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/02/2019																			
  **/
-if(it.enabledModules.DOM){
-	WikiHelper.Dom = {
-		general: {
-			version: '1.0',
-			name: 'DOM',
-			help: 1,
-			description: "Funcionalidad para la gestión de eventos, acciones,... una vez que la página esté completamente cargada.",
-		},
-		noparams:{
-			type: "void",
-			description: "",
-			example: "// Esta funcionalidad no tiene parámetros.\n//Para su uso sólo hay que añadir lo que se desea dentro del método DOM.ready.\n//Ejemplo de caso de uso.\nDOM.ready(function () {\n\t// Ocultar loader\n\tsetTimeout(function () { document.querySelector('.loader').style.display = 'none'; }, 250);\n});"
-		}
+WikiHelper.Dom = {
+	general: {
+		version: '1.0',
+		name: 'DOM',
+		help: 1,
+		description: "Funcionalidad para la gestión de eventos, acciones,... una vez que la página esté completamente cargada.",
+	},
+	noparams:{
+		type: "void",
+		description: "",
+		example: "// Esta funcionalidad no tiene parámetros.\n//Para su uso sólo hay que añadir lo que se desea dentro del método DOM.ready.\n//Ejemplo de caso de uso.\nDOM.ready(function () {\n\t// Ocultar loader\n\tsetTimeout(function () { document.querySelector('.loader').style.display = 'none'; }, 250);\n});"
 	}
 }
 
@@ -1429,44 +1414,42 @@ if(it.enabledModules.DOM){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/01/2019																			
  **/
-if(it.enabledModules.GetBrowser){
-	WikiHelper.Getbrowser = {
-		general: {
-			version: '1.1',
-			name: 'GetBrowser',
-			description: "Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.",
+WikiHelper.Getbrowser = {
+	general: {
+		version: '1.1',
+		name: 'GetBrowser',
+		description: "Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.",
+	},
+	additional: [
+		{
+			description: 'Para recuperar el nombre del navegador:',
+			example: 'var browser = new GetBrowser(), browserName = browser.name;'
 		},
-		additional: [
-			{
-				description: 'Para recuperar el nombre del navegador:',
-				example: 'var browser = new GetBrowser(), browserName = browser.name;'
-			},
-			{
-				description: 'Para saber si el navegador es Chrome:',
-				example: 'var browser = new GetBrowser(), if(browser.chrome){ console.log("Tu navegador es is Chrome!")}'
-			},
-			{
-				description: 'Para saber si el navegador es Firefox:',
-				example: 'var browser = new GetBrowser(), if(browser.firefox){ console.log("Tu navegador es is Firefox!")}'
-			},
-			{
-				description: 'Para saber si el navegador es Internet Explorer:',
-				example: 'var browser = new GetBrowser(), if(browser.msie){ console.log("Tu navegador es Internet Explorer!")}'
-			},
-			{
-				description: 'Para saber si el navegador es Opera:',
-				example: 'var browser = new GetBrowser(), if(browser.opera){ console.log("Tu navegador es Opera!")}'
-			},
-			{
-				description: 'Obtener la versión del navegador:',
-				example: 'var browser = new GetBrowser(), console.log(browser.version);'
-			},
-			{
-				description: 'Obtener el prefijo de CSS utilizado por el navegador:',
-				example: 'var browser = new GetBrowser(), console.log(browser.prefix);'
-			},
-		],
-	}
+		{
+			description: 'Para saber si el navegador es Chrome:',
+			example: 'var browser = new GetBrowser(), if(browser.chrome){ console.log("Tu navegador es is Chrome!")}'
+		},
+		{
+			description: 'Para saber si el navegador es Firefox:',
+			example: 'var browser = new GetBrowser(), if(browser.firefox){ console.log("Tu navegador es is Firefox!")}'
+		},
+		{
+			description: 'Para saber si el navegador es Internet Explorer:',
+			example: 'var browser = new GetBrowser(), if(browser.msie){ console.log("Tu navegador es Internet Explorer!")}'
+		},
+		{
+			description: 'Para saber si el navegador es Opera:',
+			example: 'var browser = new GetBrowser(), if(browser.opera){ console.log("Tu navegador es Opera!")}'
+		},
+		{
+			description: 'Obtener la versión del navegador:',
+			example: 'var browser = new GetBrowser(), console.log(browser.version);'
+		},
+		{
+			description: 'Obtener el prefijo de CSS utilizado por el navegador:',
+			example: 'var browser = new GetBrowser(), console.log(browser.prefix);'
+		},
+	],
 }
 
 /**
@@ -1476,20 +1459,18 @@ if(it.enabledModules.GetBrowser){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 13/03/2019																			
  **/
-if(it.enabledModules.GetParam){
-	WikiHelper.Getparam = {
-		general: {
-			version: '1.1',
-			name: 'GetParam',
-			description: "Función para obtener todos los valores de los parámetros recibidos en la URL.",
+WikiHelper.Getparam = {
+	general: {
+		version: '1.1',
+		name: 'GetParam',
+		description: "Función para obtener todos los valores de los parámetros recibidos en la URL.",
+	},
+	additional: [
+		{
+			description: 'Para obtener el valor del parámetro "h":',
+			example: 'var h = GetParam()["h"];'
 		},
-		additional: [
-			{
-				description: 'Para obtener el valor del parámetro "h":',
-				example: 'var h = GetParam()["h"];'
-			},
-		]
-	}
+	]
 }
 
 /**
@@ -1499,99 +1480,97 @@ if(it.enabledModules.GetParam){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 27/02/2019																			
  **/
-if(it.enabledModules.HttpRequest){
-	WikiHelper.Httprequest = {
-		general: {
-			version: '2.0',
-			name: 'HttpRequest',
-			description: "HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.",
-		},
-		ajax: {
-			type: 'boolean',
-			description: 'Booleano que indica si la solicitud o petición debe ejecutarse de forma síncrona (false) o asíncrina (true).',
-			example: 'new HttpRequest({url: "index.html", ajax: true})'
-		},
-		callback: {
-			type: 'function',
-			description: 'Función que se debe llamar cuando se reciba la respuesta..',
-			example: 'new HttpRequest({callback: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
-		},
-		contentType: {
-			type: 'function',
-			description: 'Tipo de contenido de los datos recibidos. Por defecto, este attributo es <b>application/x-www-form-urlencoded</b>.\nLos valores más comunes son:\n\t● <b>application/x-www-form-urlencoded</b> (responsiveType debe ser "text")\n\t● <b>text/html; charset=utf-8</b> (responsiveType debe ser "text")\n\t● <b>application/json; charset=utf-8</b> (responsiveType debe ser "json")\n\t● <b>application/octet-stream</b> (responsiveType debe ser "blob")\n\t● <b>application/pdf</b> (responsiveType debería ser "blob")',
-			example: 'new HttpRequest({url: "getData.json", contentType: "application/json; charset=utf-8"})'
-		},
-		onAbort: {
-			type: 'function',
-			description: 'Función de llamada cuando la solicitud es abortada.',
-			example: 'new HttpRequest({url: "index.html", onAbort: HttpRequestOnAbort});\nfunction HttpRequestOnAbort(event){\n\tconsole.log("The request was aborted", event);\n}'
-		},
-		onError: {
-			type: 'function',
-			description: 'Función de llamada cuando la solicitud ha tenido algún tipo de error.',
-			example: 'new HttpRequest({url: "http://remoteaddress.com/data.php", onError: HttpRequestOnError});\nfunction HttpRequestOnError(event){\n\tconsole.log("An error occurred during the request", event);\n}'
-		},
-		onLoad: {
-			type: 'function',
-			description: 'Función de llamada cuando la solicitud ha sido ejecutada de forma satisfactoria.',
-			example: 'new HttpRequest({url: "document.pdf", onLoad: HttpRequestOnLoad});\nfunction HttpRequestOnLoad(event){\n\tconsole.log("Request completes successfully", event);\n}'
-		},
-		onloadEnd: {
-			type: 'function',
-			description: 'Es la función llamada cuando la solicitud se completa por cualquier motivo, sea satisfactoriamente o no.',
-			example: 'new HttpRequest({url: "document.pdf", onLoadEnd: HttpRequestOnLoadEnd});\nfunction HttpRequestOnLoadEnd(event){\n\tconsole.log("Request was completed but it may not have been successful", event);\n}'
-		},
-		onloadStart: {
-			type: 'function',
-			description: 'Es la función llamada cuando la solicitud comienza a transferir datos.',
-			example: 'new HttpRequest({url: "document.pdf", onLoadStart: HttpRequestOnLoadStart});\nfunction HttpRequestOnLoadStart(event){\n\tconsole.log("Starting to download", event);\n}'
-		},
-		onProgress: {
-			type: 'function',
-			description: 'Se llama a la función mientras la solicitud se ejecuta.',
-			example: 'new HttpRequest({url: "document.pdf", onProgress: HttpRequestOnProgress});\nfunction HttpRequestOnProgress(event){\n\tconsole.log("Download underway", event);\n}'
-		},
-		onTimeout: {
-			type: 'function',
-			description: 'Es la función llamada cuando se supera el tiempo de máximo de espera. Mira también la propiedad "timeout".',
-			example: 'new HttpRequest({url: "index.html", onTimeout: HttpRequestOnTimeout});\nfunction HttpRequestOnTimeout(event){\n\tconsole.log("Request exceeded the waiting time allowed", event);\n}'
-		},
-		method: {
-			type: 'string',
-			description: 'Sus valores posibles son <b>POST</b>, <b>GET</b>, <b>HEAD</b>, <b>PUT</b> o <b>DELETE</b>. Por defecto el atributo "method" es POST. Dependiendo del método y la configuración del servidor, podrían suceder errores 404 ó 405.',
-			example: 'new HttpRequest({url: "index.html", method: "GET"});'
-		},
-		parameters: {
-			type: 'string',
-			description: 'JSON con los parámetros en formato:\n{\n\tparameterName1: parametersValue1,\n\tparameterName2: parametersValue2,\n\t...\n}',
-			example: 'new HttpRequest({url: "getDataFromServer.asp", method: "POST", parameters: { idProduct: 3 }});'
-		},
-		responseType: {
-			type: 'string',
-			description: 'Los valores permitidos pueden ser:\n\t● <b>json</b>,\n\t● <b> texto </b>,\n\t● <b>blob</b>\n\t● <b>arrayBuffer</b>.\nNota: para HTML y JSON, no es obligatorio definir este parámetro.',
-			example: 'new HttpRequest({url: "getListProducts.json", responseType: "json", parameters: { idCategory: 3 }});'
-		},
-		returnFullResponse: {
-			type: 'boolean',
-			description: 'Indica si sólo deben devolverse los datos o el objeto completo que devolvió la llamada.',
-			example: 'new HttpRequest({url: "getDataFromServer.asp", returnFullResponse: true});'
-		},
-		timeout: {
-			type: 'integer',
-			description: 'Es la cantidad de milisegundos que puede tomar una solicitud antes de que se finalice automáticamente. Por defecto es 0.',
-			example: 'new HttpRequest({url: "http://stack.overflow.com/data", timeout: 300 });'
-		},
-		url: {
-			type: 'string',
-			description: 'URL de la solicitud.',
-			example: 'new HttpRequest({url: "getDataFromServer.xml",});'
-		},
-		withCredentials: {
-			type: 'boolean',
-			description: 'Indica si las solicitudes de "Access-Control" entre sitios deben realizarse utilizando credenciales como cookies, encabezados de autorización o certificados de cliente TLS. La configuración con las credenciales no tiene ningún efecto en las solicitudes del mismo sitio.',
-			example: 'new HttpRequest({url: "getDataFromServer.asp", withCredentials: true});'
-		},
-	}
+WikiHelper.Httprequest = {
+	general: {
+		version: '2.0',
+		name: 'HttpRequest',
+		description: "HttpRequest es un plugin que proporciona una forma sencilla de realizar solicitudes remotas o transferir datos entre un cliente y un servidor. Este complemento está creado completamente en JavaScript y está diseñado para mejorar el rendimiento de la aplicación, incluso en llamadas síncronas.",
+	},
+	ajax: {
+		type: 'boolean',
+		description: 'Booleano que indica si la solicitud o petición debe ejecutarse de forma síncrona (false) o asíncrina (true).',
+		example: 'new HttpRequest({url: "index.html", ajax: true})'
+	},
+	callback: {
+		type: 'function',
+		description: 'Función que se debe llamar cuando se reciba la respuesta..',
+		example: 'new HttpRequest({callback: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
+	},
+	contentType: {
+		type: 'function',
+		description: 'Tipo de contenido de los datos recibidos. Por defecto, este attributo es <b>application/x-www-form-urlencoded</b>.\nLos valores más comunes son:\n\t● <b>application/x-www-form-urlencoded</b> (responsiveType debe ser "text")\n\t● <b>text/html; charset=utf-8</b> (responsiveType debe ser "text")\n\t● <b>application/json; charset=utf-8</b> (responsiveType debe ser "json")\n\t● <b>application/octet-stream</b> (responsiveType debe ser "blob")\n\t● <b>application/pdf</b> (responsiveType debería ser "blob")',
+		example: 'new HttpRequest({url: "getData.json", contentType: "application/json; charset=utf-8"})'
+	},
+	onAbort: {
+		type: 'function',
+		description: 'Función de llamada cuando la solicitud es abortada.',
+		example: 'new HttpRequest({url: "index.html", onAbort: HttpRequestOnAbort});\nfunction HttpRequestOnAbort(event){\n\tconsole.log("The request was aborted", event);\n}'
+	},
+	onError: {
+		type: 'function',
+		description: 'Función de llamada cuando la solicitud ha tenido algún tipo de error.',
+		example: 'new HttpRequest({url: "http://remoteaddress.com/data.php", onError: HttpRequestOnError});\nfunction HttpRequestOnError(event){\n\tconsole.log("An error occurred during the request", event);\n}'
+	},
+	onLoad: {
+		type: 'function',
+		description: 'Función de llamada cuando la solicitud ha sido ejecutada de forma satisfactoria.',
+		example: 'new HttpRequest({url: "document.pdf", onLoad: HttpRequestOnLoad});\nfunction HttpRequestOnLoad(event){\n\tconsole.log("Request completes successfully", event);\n}'
+	},
+	onloadEnd: {
+		type: 'function',
+		description: 'Es la función llamada cuando la solicitud se completa por cualquier motivo, sea satisfactoriamente o no.',
+		example: 'new HttpRequest({url: "document.pdf", onLoadEnd: HttpRequestOnLoadEnd});\nfunction HttpRequestOnLoadEnd(event){\n\tconsole.log("Request was completed but it may not have been successful", event);\n}'
+	},
+	onloadStart: {
+		type: 'function',
+		description: 'Es la función llamada cuando la solicitud comienza a transferir datos.',
+		example: 'new HttpRequest({url: "document.pdf", onLoadStart: HttpRequestOnLoadStart});\nfunction HttpRequestOnLoadStart(event){\n\tconsole.log("Starting to download", event);\n}'
+	},
+	onProgress: {
+		type: 'function',
+		description: 'Se llama a la función mientras la solicitud se ejecuta.',
+		example: 'new HttpRequest({url: "document.pdf", onProgress: HttpRequestOnProgress});\nfunction HttpRequestOnProgress(event){\n\tconsole.log("Download underway", event);\n}'
+	},
+	onTimeout: {
+		type: 'function',
+		description: 'Es la función llamada cuando se supera el tiempo de máximo de espera. Mira también la propiedad "timeout".',
+		example: 'new HttpRequest({url: "index.html", onTimeout: HttpRequestOnTimeout});\nfunction HttpRequestOnTimeout(event){\n\tconsole.log("Request exceeded the waiting time allowed", event);\n}'
+	},
+	method: {
+		type: 'string',
+		description: 'Sus valores posibles son <b>POST</b>, <b>GET</b>, <b>HEAD</b>, <b>PUT</b> o <b>DELETE</b>. Por defecto el atributo "method" es POST. Dependiendo del método y la configuración del servidor, podrían suceder errores 404 ó 405.',
+		example: 'new HttpRequest({url: "index.html", method: "GET"});'
+	},
+	parameters: {
+		type: 'string',
+		description: 'JSON con los parámetros en formato:\n{\n\tparameterName1: parametersValue1,\n\tparameterName2: parametersValue2,\n\t...\n}',
+		example: 'new HttpRequest({url: "getDataFromServer.asp", method: "POST", parameters: { idProduct: 3 }});'
+	},
+	responseType: {
+		type: 'string',
+		description: 'Los valores permitidos pueden ser:\n\t● <b>json</b>,\n\t● <b> texto </b>,\n\t● <b>blob</b>\n\t● <b>arrayBuffer</b>.\nNota: para HTML y JSON, no es obligatorio definir este parámetro.',
+		example: 'new HttpRequest({url: "getListProducts.json", responseType: "json", parameters: { idCategory: 3 }});'
+	},
+	returnFullResponse: {
+		type: 'boolean',
+		description: 'Indica si sólo deben devolverse los datos o el objeto completo que devolvió la llamada.',
+		example: 'new HttpRequest({url: "getDataFromServer.asp", returnFullResponse: true});'
+	},
+	timeout: {
+		type: 'integer',
+		description: 'Es la cantidad de milisegundos que puede tomar una solicitud antes de que se finalice automáticamente. Por defecto es 0.',
+		example: 'new HttpRequest({url: "http://stack.overflow.com/data", timeout: 300 });'
+	},
+	url: {
+		type: 'string',
+		description: 'URL de la solicitud.',
+		example: 'new HttpRequest({url: "getDataFromServer.xml",});'
+	},
+	withCredentials: {
+		type: 'boolean',
+		description: 'Indica si las solicitudes de "Access-Control" entre sitios deben realizarse utilizando credenciales como cookies, encabezados de autorización o certificados de cliente TLS. La configuración con las credenciales no tiene ningún efecto en las solicitudes del mismo sitio.',
+		example: 'new HttpRequest({url: "getDataFromServer.asp", withCredentials: true});'
+	},
 }
 
 /**
@@ -1601,34 +1580,32 @@ if(it.enabledModules.HttpRequest){
    @Copyright 2017-2021 Islavisual.
    @Last update: 12/05/2020
  **/
-if(it.enabledModules.Include){
-	WikiHelper.Include = {
-		general: {
-			version: '1.3',
-			name: 'Include',
-			description: "Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.",
-		},
-		data: {
-			type: 'string',
-			description: 'El código HTML/texto a insertar.',
-			example: 'it("#target").include({\n\tdata: \'&lt;section class="container">\\\n\t\t&lt;article id="art_01">\\\n\t\t\t...\\\n\t\t&lt;/article>\\\n\t&lt;/section>\'\n});'
-		},
-		file: {
-			type: 'string',
-			description: 'URL del archivo a insertar en el elemento contenedor.',
-			example: 'it("#target").include({ file: "./customers/profile.html" });'
-		},
-		attribute: {
-			type: 'string',
-			description: 'Indica qué atributo de datos personalizado HTML se utilizará para recuperar la URL que incluirá datos dentro de capas de contenedor (generalmente DIV, SECCIÓN, ARTÍCULO,...).',
-			example: '// Supongamos que el siguiente código fuente con "data-include"\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({ attribute: "data-include" });'
-		},
-		callback: {
-			type: 'function',
-			description: 'Devuelve el control a la función indicada tras el proceso de inclusión. Esto es útil cuando se desea insertar dinámicamente un archivo detrás de otro en un orden preestablecido.',
-			example: 'it("#target").include({ file: "./customers/profile.html", callback: loadedFile });\n\nfunction loadedFile(){\n\tconsole.log("fichero incrustado!");\n}'
-		},
-	}
+WikiHelper.Include = {
+	general: {
+		version: '1.3',
+		name: 'Include',
+		description: "Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.",
+	},
+	data: {
+		type: 'string',
+		description: 'El código HTML/texto a insertar.',
+		example: 'it("#target").include({\n\tdata: \'&lt;section class="container">\\\n\t\t&lt;article id="art_01">\\\n\t\t\t...\\\n\t\t&lt;/article>\\\n\t&lt;/section>\'\n});'
+	},
+	file: {
+		type: 'string',
+		description: 'URL del archivo a insertar en el elemento contenedor.',
+		example: 'it("#target").include({ file: "./customers/profile.html" });'
+	},
+	attribute: {
+		type: 'string',
+		description: 'Indica qué atributo de datos personalizado HTML se utilizará para recuperar la URL que incluirá datos dentro de capas de contenedor (generalmente DIV, SECCIÓN, ARTÍCULO,...).',
+		example: '// Supongamos que el siguiente código fuente con "data-include"\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({ attribute: "data-include" });'
+	},
+	callback: {
+		type: 'function',
+		description: 'Devuelve el control a la función indicada tras el proceso de inclusión. Esto es útil cuando se desea insertar dinámicamente un archivo detrás de otro en un orden preestablecido.',
+		example: 'it("#target").include({ file: "./customers/profile.html", callback: loadedFile });\n\nfunction loadedFile(){\n\tconsole.log("fichero incrustado!");\n}'
+	},
 }
 
 /**
@@ -1638,74 +1615,72 @@ if(it.enabledModules.Include){
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 19/03/2019
  **/
-if(it.enabledModules.IntelliForm){
-	WikiHelper.Intelliform = {
-		general: {
-			version: '1.0',
-			name: 'IntelliForm',
-			help: 1,
-			description: 'IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.'
-		},
-		addElement: {
-			type: "object",
-			description: 'Esta funcionalidad permite agregar elementos a un formulario a través del objeto JSON en tiempo de ejecución. Las propiedades JSON válidas son las típicas de HTML excepto "dataset" y "validate" que tienen un formato específico.\n\t● <b>dataset</b>: Es un JSON con atributos de nombre y valor.\n\t● <b>validate</b>: Es igual al formato Validator sin parámetro de destino. Para obtener más información, se puede consultar la ayuda del Validador de isiTools ejecutando "Validator.help()".',
-			example: 'IntelliForm.addElements({\n\ttarget: "formID",\n\tdata:[\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "age",\n\t\t\tclass: "form-item",\n\t\t\ttype: "number",\n\t\t\tmin: 18,\n\t\t\tmax: 100,\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\t\t\t\tmessage: "Los posibles valores son entre 18 y 100"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "username",\n\t\t\tclass: "form-item",\n\t\t\ttype: "text",\n\t\t\tdataset: [\n\t\t\t\t{name: "id", value: "0"},\n\t\t\t\t{name: "logged", value: "true"}\n\t\t\t],\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "pwd",\n\t\t\tclass: "form-item",\n\t\t\ttype: "password",\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\trequired: true,\n\t\t\t\tconstraint: "!this.validity.patternMismatch",\n\t\t\t\tmessage: "Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres",\n\t\t\t\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\t\t\t},\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t}\n\t]\n});'
-		},
-		autofill: {
-			type: "function",
-			description: 'Permite rellenar todos los campos con los valores que se capturaron a través de la funcionalidad "enableUndo".',
-			example: 'IntelliForm.autofill();'
-		},
-		setUndo: {
-			type: "function",
-			description: 'Proporciona la lógica necesaria para administrar todos los cambios que se realizan dentro de los input y select, incluso si la página se vuelve a cargar.',
-			example: '// Habilitar Deshacer para todo tipo de inputs.\nIntelliForm.setUndo({target: ["input[type=text]"]});\n\n// Otra forma es:\nIntelliForm.target = ["name", "surname", "street", "phone", "email"];\nIntelliForm.setUndo();'
-		},
-		startSequence: {
-			type: "function",
-			description: 'Proporciona una forma de crear una secuencia de cambios en "tiempo real" sobre la página actual para su reproducción posterior, incluso cuando la página se vuelve a cargar.',
-			example: 'IntelliForm.startSequence();\n// Para detener la secuencia se debe ejecutar la función de "stopSequence".',
-		},
-		stopSequence: {
-			type: "function",
-			description: 'Detiene y guarda el registro de eventos. Esta funcionalidad solo funciona si "startSequence" se habilitó antes, de lo contrario, esta acción no tendrá ningún efecto.',
-			example: 'IntelliForm.stopSequence();',
-		},
-		getSequence: {
-			type: "function",
-			description: 'Devuelve la secuencia guardada para la página actual.',
-			example: 'IntelliForm.getSequence();\n// This will return something similar to:\n"[\n\t{"ts":0,"id":"_bodyItem58","event":"focusin"},\n\t{"ts":35,"id":"_bodyItem58","event":"click"},\n\t{"ts":37,"id":"_bodyItem58","event":"change","value":""}\n\t...\n]',
-		},
-		setSequence: {
-			type: "function",
-			description: 'Permite establecer una nueva secuencia para interactuar con la página actual. Esta funcionalidad recibe un parámetro de tipo cadena con los pasos que se desean ejecutar. Las posibles propiedades dentro de la secuencia son:\n\t● <b>ts</b>: indica el tiempo, en milisegundos, que debe transcurrir entre el cambio anterior y actual.\n\t● <b>id</b>: Indica el nombre (de identificación válido) al que se aplicará el cambio. Puede ejecutar la funcionalidad "setIDs()" antes de asignar la propiedad "id" automáticamente.\n\t● <b>event</b>: indica el tipo de cambio. Los eventos posibles son: click, focusin, focusout, scroll, change y keydown.\n\t● <b>left</b>: indican la posición izquierda en eventos de desplazamiento (scroll).\n\t● <b>key</b>: indica el carácter que se presiona en los eventos keydown.\n\t● <b>keyCode</b>: indica el código de la tecla JavaScript presionado en los eventos keydown.\n\t● <b>top</b>: Indica la posición superior en los eventos de desplazamiento (scroll).\n\t● <b>value</b>: indica el valor del elemento en los eventos de tipo change.\n\r\nNota: la mejor manera de crear una secuencia es usar la funcionalidad "startSequence".',
-			example: 'IntelliForm.setSequence(\'[{"ts":0,"id":"_bodyItem58","event":"focusin"},{"ts":35,"id":"_bodyItem58","event":"click"},{"ts":37,"id":"_bodyItem58","event":"focusout"},...]\');',
-		},
-		removeSequence: {
-			type: "function",
-			description: 'Eliminar la secuencia de la página actual.',
-			example: 'IntelliForm.removeSequence();',
-		},
-		playSequence: {
-			type: "function",
-			description: 'Permite reproducir una secuencia ya almacenada. Si el parámetro de la función está vacío, se recupera la secuencia a la página actual.',
-			example: 'IntelliForm.playSequence();',
-		},
-		setIDs: {
-			type: "function",
-			description: 'Asigna un atributo "id" secuencial a todos los elementos que no lo tengan establecido.',
-			example: 'IntelliForm.setIDs();',
-		},
-		send: {
-			type: "function",
-			description: 'Permite crear y enviar formularios en tiempo real a través de Ajax con método post. Los parámetros recibidos son: URL (para realizar la solicitud) y JSON con los inputs/elementos a enviar.',
-			example: 'IntelliForm.send({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});',
-		},
-		target:{
-			type: "object",
-			description: "Array de selectores con los elementos donde se habilitarán las funcionalidades de IntelliForm.",
-			example: 'IntelliForm.setUndo({target: ["#email", "#zipcode"]});',
-		}
+WikiHelper.Intelliform = {
+	general: {
+		version: '1.0',
+		name: 'IntelliForm',
+		help: 1,
+		description: 'IntelliForm es una herramienta para realizar operaciones con formularios. Permite agregar elementos de formulario en tiempo real, realizar solicitudes de publicación a través de JSON, automatizar secuencias de navegación, manejar operaciones de deshacer/rehacer y mucho más.'
+	},
+	addElement: {
+		type: "object",
+		description: 'Esta funcionalidad permite agregar elementos a un formulario a través del objeto JSON en tiempo de ejecución. Las propiedades JSON válidas son las típicas de HTML excepto "dataset" y "validate" que tienen un formato específico.\n\t● <b>dataset</b>: Es un JSON con atributos de nombre y valor.\n\t● <b>validate</b>: Es igual al formato Validator sin parámetro de destino. Para obtener más información, se puede consultar la ayuda del Validador de isiTools ejecutando "Validator.help()".',
+		example: 'IntelliForm.addElements({\n\ttarget: "formID",\n\tdata:[\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "age",\n\t\t\tclass: "form-item",\n\t\t\ttype: "number",\n\t\t\tmin: 18,\n\t\t\tmax: 100,\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\t\t\t\tmessage: "Los posibles valores son entre 18 y 100"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "username",\n\t\t\tclass: "form-item",\n\t\t\ttype: "text",\n\t\t\tdataset: [\n\t\t\t\t{name: "id", value: "0"},\n\t\t\t\t{name: "logged", value: "true"}\n\t\t\t],\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\ttag: "input",\n\t\t\tid: "pwd",\n\t\t\tclass: "form-item",\n\t\t\ttype: "password",\n\t\t\tvalidate: {\n\t\t\t\tfixed: true,\n\t\t\t\trequired: true,\n\t\t\t\tconstraint: "!this.validity.patternMismatch",\n\t\t\t\tmessage: "Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres",\n\t\t\t\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\t\t\t},\n\t\t\tfocus: function(){\n\t\t\t\tthis.classList.add("focused");\n\t\t\t},\n\t\t\tblur: function(){\n\t\t\t\tthis.classList.remove("focused");\n\t\t\t}\n\t\t}\n\t]\n});'
+	},
+	autofill: {
+		type: "function",
+		description: 'Permite rellenar todos los campos con los valores que se capturaron a través de la funcionalidad "enableUndo".',
+		example: 'IntelliForm.autofill();'
+	},
+	setUndo: {
+		type: "function",
+		description: 'Proporciona la lógica necesaria para administrar todos los cambios que se realizan dentro de los input y select, incluso si la página se vuelve a cargar.',
+		example: '// Habilitar Deshacer para todo tipo de inputs.\nIntelliForm.setUndo({target: ["input[type=text]"]});\n\n// Otra forma es:\nIntelliForm.target = ["name", "surname", "street", "phone", "email"];\nIntelliForm.setUndo();'
+	},
+	startSequence: {
+		type: "function",
+		description: 'Proporciona una forma de crear una secuencia de cambios en "tiempo real" sobre la página actual para su reproducción posterior, incluso cuando la página se vuelve a cargar.',
+		example: 'IntelliForm.startSequence();\n// Para detener la secuencia se debe ejecutar la función de "stopSequence".',
+	},
+	stopSequence: {
+		type: "function",
+		description: 'Detiene y guarda el registro de eventos. Esta funcionalidad solo funciona si "startSequence" se habilitó antes, de lo contrario, esta acción no tendrá ningún efecto.',
+		example: 'IntelliForm.stopSequence();',
+	},
+	getSequence: {
+		type: "function",
+		description: 'Devuelve la secuencia guardada para la página actual.',
+		example: 'IntelliForm.getSequence();\n// This will return something similar to:\n"[\n\t{"ts":0,"id":"_bodyItem58","event":"focusin"},\n\t{"ts":35,"id":"_bodyItem58","event":"click"},\n\t{"ts":37,"id":"_bodyItem58","event":"change","value":""}\n\t...\n]',
+	},
+	setSequence: {
+		type: "function",
+		description: 'Permite establecer una nueva secuencia para interactuar con la página actual. Esta funcionalidad recibe un parámetro de tipo cadena con los pasos que se desean ejecutar. Las posibles propiedades dentro de la secuencia son:\n\t● <b>ts</b>: indica el tiempo, en milisegundos, que debe transcurrir entre el cambio anterior y actual.\n\t● <b>id</b>: Indica el nombre (de identificación válido) al que se aplicará el cambio. Puede ejecutar la funcionalidad "setIDs()" antes de asignar la propiedad "id" automáticamente.\n\t● <b>event</b>: indica el tipo de cambio. Los eventos posibles son: click, focusin, focusout, scroll, change y keydown.\n\t● <b>left</b>: indican la posición izquierda en eventos de desplazamiento (scroll).\n\t● <b>key</b>: indica el carácter que se presiona en los eventos keydown.\n\t● <b>keyCode</b>: indica el código de la tecla JavaScript presionado en los eventos keydown.\n\t● <b>top</b>: Indica la posición superior en los eventos de desplazamiento (scroll).\n\t● <b>value</b>: indica el valor del elemento en los eventos de tipo change.\n\r\nNota: la mejor manera de crear una secuencia es usar la funcionalidad "startSequence".',
+		example: 'IntelliForm.setSequence(\'[{"ts":0,"id":"_bodyItem58","event":"focusin"},{"ts":35,"id":"_bodyItem58","event":"click"},{"ts":37,"id":"_bodyItem58","event":"focusout"},...]\');',
+	},
+	removeSequence: {
+		type: "function",
+		description: 'Eliminar la secuencia de la página actual.',
+		example: 'IntelliForm.removeSequence();',
+	},
+	playSequence: {
+		type: "function",
+		description: 'Permite reproducir una secuencia ya almacenada. Si el parámetro de la función está vacío, se recupera la secuencia a la página actual.',
+		example: 'IntelliForm.playSequence();',
+	},
+	setIDs: {
+		type: "function",
+		description: 'Asigna un atributo "id" secuencial a todos los elementos que no lo tengan establecido.',
+		example: 'IntelliForm.setIDs();',
+	},
+	send: {
+		type: "function",
+		description: 'Permite crear y enviar formularios en tiempo real a través de Ajax con método post. Los parámetros recibidos son: URL (para realizar la solicitud) y JSON con los inputs/elementos a enviar.',
+		example: 'IntelliForm.send({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});',
+	},
+	target:{
+		type: "object",
+		description: "Array de selectores con los elementos donde se habilitarán las funcionalidades de IntelliForm.",
+		example: 'IntelliForm.setUndo({target: ["#email", "#zipcode"]});',
 	}
 }
 
@@ -1716,20 +1691,18 @@ if(it.enabledModules.IntelliForm){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 11/03/2019																			
  **/
-if(it.enabledModules.IsMobile){
-	WikiHelper.Ismobile = {
-		general: {
-			version: '1.0',
-			name: 'IsMobile',
-			description: "Este método indica si el dispositivo actual es \"mobile\" o no.",
+WikiHelper.Ismobile = {
+	general: {
+		version: '1.0',
+		name: 'IsMobile',
+		description: "Este método indica si el dispositivo actual es \"mobile\" o no.",
+	},
+	additional: [
+		{
+			description: 'Para saber si el dispositivo es un dispositivo móvil:',
+			example: 'var mobile = new IsMobile();'
 		},
-		additional: [
-			{
-				description: 'Para saber si el dispositivo es un dispositivo móvil:',
-				example: 'var mobile = new IsMobile();'
-			},
-		]
-	}
+	]
 }
 
 /**
@@ -1739,34 +1712,32 @@ if(it.enabledModules.IsMobile){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 31/03/2019																			
  **/
-if(it.enabledModules.Language){
-	WikiHelper.Language = {
-		general: {
-			version: '1.0',
-			name: 'Language',
-			help: 1,
-			description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
-		},
-		init: {
-			type: 'function',
-			description: 'Asignar e inicializar la funcionalidad de multilenguaje.',
-			example: 'var availableLangs = [\n\t{id: "en-US", name: "English"},\n\t{id: "es-ES", name: "Spanish"},\n];\nvar translations = {\n\t"es-ES": [\n\t\t{ id: "Loading...", text: "Cargando..." },\n\t\t{ id: "Loaded!", text: "Cargado!" },\n\t\t{ id: "Comments", text: "Observaciones" }\n\t],\n\t"en-US": [\n\t\t{ id: "Loading...", text: "<i class="fa fa-spin"></i>" },\n\t\t{ id: "Loaded!", text: "OK!" }\n\t]\n};\nLanguage.init(availableLangs, translations);'
-		},
-		render: {
-			type: 'function',
-			description: 'Analiza todo el documento y reemplaza todas las coincidencias de patrones. Esta funcionalidad se alimenta de los atributos "data-tkey", "data-placeholder-tkey" y "data-title-tkey".',
-			example: '// The availableLangs and translations objects are defined before.\n// For example, supposed the next HTML code:\n//\t&lt;label for="notes" data-tkey="Comments">&lt;/label>\n//\t&lt;input id="notes" name="notes" placeholder="Comments" type="text" maxlength="255" />\nLanguage.init(availableLangs, translations);\nLanguage.render();\n\n// Note that the placeholder is translated and assugn the source text to "data-placeholder-tkey" attribute.'
-		},
-		set: {
-			type: 'function',
-			description: 'Establece el idioma actual. De forma predeterminada, el idioma es el que se proporciona a través del navegador.\nAdvertencia: Para admitir la compatibilidad del navegador, el código de idioma enviado se codificaría en ISO-639-1.',
-			example: '// Supposed that language by default in Chrome is "es-ES" (ISO 639-1 code to Spain)\nLanguage.set("en-US");'
-		},
-		get: {
-			type: 'function',
-			description: 'Devuelve la traducción para la cadena recibida. Si no se encuentra la coincidencia, se supone que no tiene traducción y devuelve la misma cadena.',
-			example: 'var tkey = Language.get("Loading...");\n// Si se desea recuperar la traducción para un idioma especificado, se puede enviar el identificador de idioma como segundo parámetro:\nvar tkey_ES = Language.get("Loading...", "es-ES");'
-		}
+WikiHelper.Language = {
+	general: {
+		version: '1.0',
+		name: 'Language',
+		help: 1,
+		description: "Este script le permite activar y administrar la función de multilenguaje en su sitio web.",
+	},
+	init: {
+		type: 'function',
+		description: 'Asignar e inicializar la funcionalidad de multilenguaje.',
+		example: 'var availableLangs = [\n\t{id: "en-US", name: "English"},\n\t{id: "es-ES", name: "Spanish"},\n];\nvar translations = {\n\t"es-ES": [\n\t\t{ id: "Loading...", text: "Cargando..." },\n\t\t{ id: "Loaded!", text: "Cargado!" },\n\t\t{ id: "Comments", text: "Observaciones" }\n\t],\n\t"en-US": [\n\t\t{ id: "Loading...", text: "<i class="fa fa-spin"></i>" },\n\t\t{ id: "Loaded!", text: "OK!" }\n\t]\n};\nLanguage.init(availableLangs, translations);'
+	},
+	render: {
+		type: 'function',
+		description: 'Analiza todo el documento y reemplaza todas las coincidencias de patrones. Esta funcionalidad se alimenta de los atributos "data-tkey", "data-placeholder-tkey" y "data-title-tkey".',
+		example: '// The availableLangs and translations objects are defined before.\n// For example, supposed the next HTML code:\n//\t&lt;label for="notes" data-tkey="Comments">&lt;/label>\n//\t&lt;input id="notes" name="notes" placeholder="Comments" type="text" maxlength="255" />\nLanguage.init(availableLangs, translations);\nLanguage.render();\n\n// Note that the placeholder is translated and assugn the source text to "data-placeholder-tkey" attribute.'
+	},
+	set: {
+		type: 'function',
+		description: 'Establece el idioma actual. De forma predeterminada, el idioma es el que se proporciona a través del navegador.\nAdvertencia: Para admitir la compatibilidad del navegador, el código de idioma enviado se codificaría en ISO-639-1.',
+		example: '// Supposed that language by default in Chrome is "es-ES" (ISO 639-1 code to Spain)\nLanguage.set("en-US");'
+	},
+	get: {
+		type: 'function',
+		description: 'Devuelve la traducción para la cadena recibida. Si no se encuentra la coincidencia, se supone que no tiene traducción y devuelve la misma cadena.',
+		example: 'var tkey = Language.get("Loading...");\n// Si se desea recuperar la traducción para un idioma especificado, se puede enviar el identificador de idioma como segundo parámetro:\nvar tkey_ES = Language.get("Loading...", "es-ES");'
 	}
 }
 
@@ -1777,23 +1748,31 @@ if(it.enabledModules.Language){
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 07/05/2020
  **/
-if(it.enabledModules.Mask){
-	WikiHelper.Mask = {
-		general: {
-			version: '1.1.2',
-			name: 'Mask',
-			help: 1,
-			description: 'Herramienta para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.'
-		},
-		Mask: {
-			type: 'function',
-			description: 'Indica el formato para la introducción del campo. Las posibles máscaras son:\n\t● <b>9</b>: Para indicar que sólo se aceptarán números del 0-9.\n\t● <b>A</b>: Para indicar que sólo se aceptarán caracteres alfanuméricos de la A-Z.\n\t● <b>#</b>: Para indicar que sólo se aceptará cualquier caracter.\n\t● <b>DD, MM e YYYY</b>: Para indicar formatos de tipo fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)\n\t● <b>HH, II e SS</b>: Para indicar formatos de tipo hora.',
-			example: 'it("#date").mask("YYYY-MM-DD");\n\
+WikiHelper.Mask = {
+	general: {
+		version: '1.1.2',
+		name: 'Mask',
+		help: 1,
+		description: 'Herramienta para generar máscaras de entrada en campos de texto que ayuda a los usuarios a introducir valores correctos.'
+	},
+	Mask: {
+		type: 'function',
+		description: 'Indica el formato para la introducción del campo. Las posibles máscaras son:\n\t● <b>9</b>: Para indicar que sólo se aceptarán números del 0-9.\n\t● <b>A</b>: Para indicar que sólo se aceptarán caracteres alfanuméricos de la A-Z.\n\t● <b>#</b>: Para indicar que sólo se aceptará cualquier caracter.\n\t● <b>DD, MM e YYYY</b>: Para indicar formatos de tipo fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)\n\t● <b>HH, II e SS</b>: Para indicar formatos de tipo hora.',
+		example: '// Definir una máscara de tipo fecha\n\
+it("#date").mask("YYYY-MM-DD");\n\
+\n\
+// Definir una máscara de tipo tiempo con horas y minutos únicamente\n\
 it(".time").mask("HH:II");\n\
+\n\
+// Definir una máscara de tipo tiempo con sustitución posterior de uno de sus atributos, en este caso, <field>placeholder</field>\n\
+it(hour).mask("HH:II:SS").setAttribute("placeholder", "HH:MM:SS");\n\
+\n\
+// Definir una máscara de tipo teléfono\n\
 it("#phone, #telefono").mask("(+99)-999-999-999");\n\
+\n\
+// Definir una máscara de tipo especial o compleja\n\
 it("#code").mask("99A-99#A-####-999A");'
-		},
-	}
+	},
 }
 
 /**
@@ -1803,19 +1782,18 @@ it("#code").mask("99A-99#A-####-999A");'
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 06/03/2021
  **/
-if(it.enabledModules.Slider){
-	WikiHelper.Slider = {
-		general: {
-			version: '2.0',
-			name: 'Slider',
-			help: 1,
-			description: 'Este componente permite crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.\n\
+WikiHelper.Slider = {
+	general: {
+		version: '2.0',
+		name: 'Slider',
+		help: 1,
+		description: 'Este componente permite crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.\n\
 <name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los sliders, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/slider/multithumb-slider.html</name>',
-		},
-		additional: [
-			{
-				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '_CSS_\n\
+	},
+	additional: [
+		{
+			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '_CSS_\n\
 // styles.css (de tu sitio web)\n\
 it-slider { display: block; width: 100%;}\n\
 \n\
@@ -1854,231 +1832,230 @@ it-slider[type=range] input[type=range]:focus::-ms-fill-lower{ background: #FFFF
 it-slider[type=range] input[type=range]:focus::-ms-fill-upper{ background: #FFFFFF; border: 0 none !important; }\n\
 it-slider[type=range] input[type=range]::-ms-tooltip{ display: none; }\n\
 @media all and (-ms-high-contrast:none){ it-slider[type=range] { position:relative; top: 6px; } it-slider[type=range] input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } it-slider[type=range] input[type=range]:focus { background: rgba(0,0,0,0) !important; } }\n\_CSS_'
-			}
-		],
-		autoDraw: {
-			type: 'function',
-			description: 'Permite definir etiquetas NSTATE para generar los componentes de Switch o Slider. Es útil cuando se quieren generar los componentes en tiempo de ejecución.\n\
+		}
+	],
+	autoDraw: {
+		type: 'function',
+		description: 'Permite definir etiquetas NSTATE para generar los componentes de Switch o Slider. Es útil cuando se quieren generar los componentes en tiempo de ejecución.\n\
 <name>NOTA: Este método se ejecuta automáticamente al cargar la página si el componenente está precargado. </name>',
-			exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
 &lt;it-slider\n\
-	id="switch1"\n\
-	type="switch"\n\
-	label-on="On"\n\
-	label-off="Off"\n\
-	checked="true"\n\
-	background="#ffffff"\n\
-	text-color="#000000"\n\
-	track-color="#f0f0f0"\n\
-	style="width: 200px;"\n\
-	onclick="console.log(\'cambiado!\')">\n\
+id="switch1"\n\
+type="switch"\n\
+label-on="On"\n\
+label-off="Off"\n\
+checked="true"\n\
+background="#ffffff"\n\
+text-color="#000000"\n\
+track-color="#f0f0f0"\n\
+style="width: 200px;"\n\
+onclick="console.log(\'cambiado!\')">\n\
 &lt;/it-slider>',
-			exampleMultiple: '// Definición de un slider bajo HTML5\n\
+		exampleMultiple: '// Definición de un slider bajo HTML5\n\
 &lt;it-slider\n\
-	id="subtipo"\n\
-	type="range"\n\
-	values="Moto:0, Coche:1, Quad:2"\n\
-	selected="2"\n\
-	background="#226699"\n\
-	text-color="#000000"\n\
-	track-color="#f0f0f0"\n\
-	style="display: inline-block; width: calc(100% - 128px);">\n\
+id="subtipo"\n\
+type="range"\n\
+values="Moto:0, Coche:1, Quad:2"\n\
+selected="2"\n\
+background="#226699"\n\
+text-color="#000000"\n\
+track-color="#f0f0f0"\n\
+style="display: inline-block; width: calc(100% - 128px);">\n\
 &lt;/it-slider>'
-		},
-		id: {
-			type: 'string',
-			description: 'Permite asignar y operar con todas las capas necesarias para generar el componente. Sólo si estamos si se está definiendo a través de una etiqueta NSTATE dentro de un documento web.',
-			exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+	},
+	id: {
+		type: 'string',
+		description: 'Permite asignar y operar con todas las capas necesarias para generar el componente. Sólo si estamos si se está definiendo a través de una etiqueta NSTATE dentro de un documento web.',
+		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
 &lt;it-slider\n\
-	id="switch1"\n\
-	type="switch"\n\
-	label-on="On"\n\
-	label-off="Off"\n\
-	checked="true">\n\
+id="switch1"\n\
+type="switch"\n\
+label-on="On"\n\
+label-off="Off"\n\
+checked="true">\n\
 &lt;/it-slider>\n',
-			exampleMultiple: '// Definición de un slider bajo HTML5\n\
+		exampleMultiple: '// Definición de un slider bajo HTML5\n\
 &lt;it-slider\n\
-	id="subtipo"\n\
-	type="range"\n\
-	values="Moto:0, Coche:1, Quad:2"\n\
-	selected="2">\n\
+id="subtipo"\n\
+type="range"\n\
+values="Moto:0, Coche:1, Quad:2"\n\
+selected="2">\n\
 &lt;/it-slider>'
-		},
-		type: {
-			type: 'string',
-			description: 'Permite definir el tipo de slider. Sus posibles valores son "switch" o "range"',
-			exampleSwitch: '// Definición básica de un switch\n\
+	},
+	type: {
+		type: 'string',
+		description: 'Permite definir el tipo de slider. Sus posibles valores son "switch" o "range"',
+		exampleSwitch: '// Definición básica de un switch\n\
 it("#activado").slider(({\n\
-	type: "switch"\n\
-	labelOn: "Sí",\n\
-	labelOff: "No"\n\
+type: "switch"\n\
+labelOn: "Sí",\n\
+labelOff: "No"\n\
 });',
-			exampleMultple: '// Definición básica de un selector múltiple\n\
+		exampleMultple: '// Definición básica de un selector múltiple\n\
 it("#nivel").slider({\n\
-	type: "range",\n\
-	values:[\n\
-		{label: "Bajo", value: 0},\n\
-		{label: "Medio", value: 1},\n\
-		{label: "Alto", value: 2}\n\
-	],\n\
+type: "range",\n\
+values:[\n\
+	{label: "Bajo", value: 0},\n\
+	{label: "Medio", value: 1},\n\
+	{label: "Alto", value: 2}\n\
+],\n\
 });'
-		},
-		labelOn: {
-			type: 'string',
-			description: 'Permite definir el valor de un switch cuando está activado.',
-			exampleSwitch: 'it("#mode").slider(({\n\
-	type: "switch"\n\
-	labelOn: "Lectura",\n\
-	labelOff: "Escritura"\n\
+	},
+	labelOn: {
+		type: 'string',
+		description: 'Permite definir el valor de un switch cuando está activado.',
+		exampleSwitch: 'it("#mode").slider(({\n\
+type: "switch"\n\
+labelOn: "Lectura",\n\
+labelOff: "Escritura"\n\
 });',
-		},
-		labelOff: {
-			type: 'string',
-			description: 'Permite definir el valor de un switch cuando está desactivado.',
-			exampleSwitch: 'it("#mode").slider(({\n\
-	type: "switch"\n\
-	labelOn: "Lectura",\n\
-	labelOff: "Escritura"\n\
+	},
+	labelOff: {
+		type: 'string',
+		description: 'Permite definir el valor de un switch cuando está desactivado.',
+		exampleSwitch: 'it("#mode").slider(({\n\
+type: "switch"\n\
+labelOn: "Lectura",\n\
+labelOff: "Escritura"\n\
 });',
-		},
-		colors: {
-			type: 'object',
-			description: 'Permite definir o especificar los colores que se utilizarán para crear el slider, tanto binario o de tipo switch, como múltiple o de tipo rango.',
-			exampleSwitch: '// Definición de un slider de tipo switch con colores personallizados mediante JavaScript\n\
+	},
+	colors: {
+		type: 'object',
+		description: 'Permite definir o especificar los colores que se utilizarán para crear el slider, tanto binario o de tipo switch, como múltiple o de tipo rango.',
+		exampleSwitch: '// Definición de un slider de tipo switch con colores personallizados mediante JavaScript\n\
 it("#activado").slider({\n\
-	type: "switch",\n\
-	labelOn: "Sí",\n\
-	labelOff: "No",\n\
-	checked: false,\n\
-	colors: {\n\
-		background: "#fff",\n\
-		extColor: "#000",\n\
-		trackColor: "#f0f0f0"\n\
-	}\n\
+type: "switch",\n\
+labelOn: "Sí",\n\
+labelOff: "No",\n\
+checked: false,\n\
+colors: {\n\
+	background: "#fff",\n\
+	extColor: "#000",\n\
+	trackColor: "#f0f0f0"\n\
+}\n\
 });\n\
 \n\
 // Definición de un slider de tipo switch con colores personallizados mediante HTML5\n\
 &lt;it-slider\n\
-	id="activado"\n\
-	type="switch"\n\
-	label-on="Sí"\n\
-	label-off="No"\n\
-	checked="false"\n\
-	background="#fff"\n\
-	text-color="#000"\n\
-	track-color="#f0f0f0">\n\
+id="activado"\n\
+type="switch"\n\
+label-on="Sí"\n\
+label-off="No"\n\
+checked="false"\n\
+background="#fff"\n\
+text-color="#000"\n\
+track-color="#f0f0f0">\n\
 &lt;/it-slider>',
-			exampleMultple: '// Definición de un slider de tipo rango con colores personallizados mediante JavaScript\n\
+		exampleMultple: '// Definición de un slider de tipo rango con colores personallizados mediante JavaScript\n\
 it("#nivel").slider.set({\n\
-	type: "range",\n\
-	values:[\n\
-		{label: "Bajo", value: 0},\n\
-		{label: "Medio", value: 1},\n\
-		{label: "Alto", value: 2}\n\
-	],\n\
-	selected: 1,\n\
-	colors: {\n\
-		background: "#fff",\n\
-		textColor: "#000",\n\
-		trackColor: "#f0f0f0"\n\
-	}\n\
+type: "range",\n\
+values:[\n\
+	{label: "Bajo", value: 0},\n\
+	{label: "Medio", value: 1},\n\
+	{label: "Alto", value: 2}\n\
+],\n\
+selected: 1,\n\
+colors: {\n\
+	background: "#fff",\n\
+	textColor: "#000",\n\
+	trackColor: "#f0f0f0"\n\
+}\n\
 });\n\
 \n\
 // Definición de un slider de tipo switch con colores personallizados mediante HTML5\n\
 &lt;it-slider\n\
-	id="nivel"\n\
-	type="range"\n\
-	values="Bajo:0, Medio:1, Alto:2"\n\
-	selected="1"\n\
-	background="#fff"\n\
-	text-color="#000"\n\
-	track-color="#f0f0f0">\n\
+id="nivel"\n\
+type="range"\n\
+values="Bajo:0, Medio:1, Alto:2"\n\
+selected="1"\n\
+background="#fff"\n\
+text-color="#000"\n\
+track-color="#f0f0f0">\n\
 &lt;/it-slider>'
-		},
-		checked: {
-			type: 'boolean',
-			description: 'Permite definir si el switch, o slider binario, está activado o chequeado.',
-			exampleSwitch: '// Definición de un slider de tipo switch con la opción de chequeado mediante JavaScript\n\
+	},
+	checked: {
+		type: 'boolean',
+		description: 'Permite definir si el switch, o slider binario, está activado o chequeado.',
+		exampleSwitch: '// Definición de un slider de tipo switch con la opción de chequeado mediante JavaScript\n\
 it("#interruptor").slider({\n\
-	type: "switch",\n\
-	labelOn: "Encendido",\n\
-	labelOff: "Apagado",\n\
-	checked: true,\n\
+type: "switch",\n\
+labelOn: "Encendido",\n\
+labelOff: "Apagado",\n\
+checked: true,\n\
 });\n\
 \n\
 // Definición de un slider de tipo switch con la opción de chequeado mediante HTML5\n\
 &lt;it-slider\n\
-	id="interruptor"\n\
-	type="switch"\n\
-	label-on="Encendido"\n\
-	label-off="Apagado"\n\
-	checked="true"\n\
+id="interruptor"\n\
+type="switch"\n\
+label-on="Encendido"\n\
+label-off="Apagado"\n\
+checked="true"\n\
 &lt;/it-slider>',
-		},
-		selected: {
-			type: 'string',
-			description: 'Permite definir el valor u opción activada del selector de tipo rango.',
-			exampleSwitch: '// Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante JavaScript\n\
+	},
+	selected: {
+		type: 'string',
+		description: 'Permite definir el valor u opción activada del selector de tipo rango.',
+		exampleSwitch: '// Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante JavaScript\n\
 it("#nivel").slider.set({\n\
-	type: "range",\n\
-	values:[\n\
-		{label: "Bajo", value: 0},\n\
-		{label: "Medio", value: 1},\n\
-		{label: "Alto", value: 2}\n\
-	],\n\
-	selected: 2,\n\
+type: "range",\n\
+values:[\n\
+	{label: "Bajo", value: 0},\n\
+	{label: "Medio", value: 1},\n\
+	{label: "Alto", value: 2}\n\
+],\n\
+selected: 2,\n\
 });\n\
 \n\
 // Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante HTML5\n\
 &lt;it-slider\n\
-	id="nivel"\n\
-	type="range"\n\
-	values="Bajo:0, Medio:1, Alto:2"\n\
-	selected="2"\n\
+id="nivel"\n\
+type="range"\n\
+values="Bajo:0, Medio:1, Alto:2"\n\
+selected="2"\n\
 &lt;/it-slider>',
-		},
-		values: {
-			type: 'object',
-			description: 'Permite definir los valores del slider.',
-			exampleMultple: '// Definición de un slider de tipo rango mediante JavaScript\n\
+	},
+	values: {
+		type: 'object',
+		description: 'Permite definir los valores del slider.',
+		exampleMultple: '// Definición de un slider de tipo rango mediante JavaScript\n\
 it("#valoracion").slider({\n\
-	type: "range",\n\
-	values:[\n\
-		{label: "Muy Mala", value: 0}\n\
-		{label: "Mala", value: 1},\n\
-		{label: "Media", value: 2},\n\
-		{label: "Buena", value: 3}\n\
-		{label: "Muy Buena", value: 4}\n\
-	],\n\
+type: "range",\n\
+values:[\n\
+	{label: "Muy Mala", value: 0}\n\
+	{label: "Mala", value: 1},\n\
+	{label: "Media", value: 2},\n\
+	{label: "Buena", value: 3}\n\
+	{label: "Muy Buena", value: 4}\n\
+],\n\
 });\n\
 \n\
 // Definición de un slider de tipo rango mediante HTML5\n\
 &lt;it-slider\n\
-	id="valoracion"\n\
-	type="range"\n\
-	values="Muy Mala:0, Mala:1, Media:2, Buena:3, Muy Buena: 4">\n\
+id="valoracion"\n\
+type="range"\n\
+values="Muy Mala:0, Mala:1, Media:2, Buena:3, Muy Buena: 4">\n\
 &lt;/it-slider>'
-		},
-		style: {
-			type: 'string',
-			description: 'Permite asignar al elemento padre del componente (etiqueta NSTATE) unos estilos en línea.',
-			exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+	},
+	style: {
+		type: 'string',
+		description: 'Permite asignar al elemento padre del componente (etiqueta NSTATE) unos estilos en línea.',
+		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
 &lt;it-slider\n\
-	id="switch1"\n\
-	type="switch"\n\
-	label-on="On"\n\
-	label-off="Off"\n\
-	style="margin-top 30px">\n\
+id="switch1"\n\
+type="switch"\n\
+label-on="On"\n\
+label-off="Off"\n\
+style="margin-top 30px">\n\
 &lt;/it-slider>\n',
-			exampleMultiple: '// Definición de un slider bajo HTML5\n\
+		exampleMultiple: '// Definición de un slider bajo HTML5\n\
 &lt;it-slider\n\
-	id="subtipo"\n\
-	type="range"\n\
-	values="Moto:0, Coche:1, Quad:2"\n\
-	style="margin-top 30px">\n\
+id="subtipo"\n\
+type="range"\n\
+values="Moto:0, Coche:1, Quad:2"\n\
+style="margin-top 30px">\n\
 &lt;/it-slider>'
-		},
-	}
+	},
 }
 
 /**
@@ -2088,63 +2065,62 @@ it("#valoracion").slider({\n\
 	@Copyright 2017-2021 Islavisual.
 	@Last update: 10/03/2021
 **/
-if(it.enabledModules.Password){
-	WikiHelper.Password = {
-		general: {
-			version: '2.0',
-			help: 1,
-			name: 'Password',
-			description: 'Este componente es una herramienta que ofrece la posibilidad de administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, posee un sistema de detección y penalización por consecución de minúsculas, mayúsculas y dígitos consecutivos o la repeción de tres o más veces sobre un mismo carácter.\n\
+WikiHelper.Password = {
+	general: {
+		version: '2.0',
+		help: 1,
+		name: 'Password',
+		description: 'Este componente es una herramienta que ofrece la posibilidad de administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, posee un sistema de detección y penalización por consecución de minúsculas, mayúsculas y dígitos consecutivos o la repeción de tres o más veces sobre un mismo carácter.\n\
 \n\
 // En todos los siguientes casos supondremos que tenemos un elemento o código como el siguiente:\n\
 <code>&lt;input id="pwd" name="pwd" type="password" maxlength="50" autocomplete="off" /></code>',
+	},
+	additional: [
+		{
+			description: 'Conocer la complejidad de la contraseña introducida:',
+			example: 'it.password.config.features.complexity;'
 		},
-		additional: [
-			{
-				description: 'Conocer la complejidad de la contraseña introducida:',
-				example: 'it.password.config.features.complexity;'
-			},
-			{
-				description: 'Saber si se cumplen los requisitos mínimos para poder enviar/guardar la contraseña:',
-				example: 'it.password.config.features.allowed;'
-			},
-			{
-				description: 'Cambiar el idioma y gran cantidad de opciones a través del objeto <name>config</name>:',
-				example: 'it.password.config = {\n\
-	autocheck: false,\n\
-	autodraw: true,\n\
-	colorok : "rgba(255,255,255,0.75)",\n\
-	colornok : "#e0e0e0",\n\
-	confirmby: null,\n\
-	features: { allowed: false, complexity: 0, extra: 0, length: 0, lowers: 0, numbers: 0, special: 0, uppers: 0 },\n\
-	minfeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },\n\
-	minfeaturesLang: { \n\
-		minfeatures: "Debe tener al menos",\n\
-		length: "Longitud",\n\
-		uppers: "Mayúsculas",\n\
-		lowers: "Minúsculas",\n\
-		numbers: "Números",\n\
-		special: "Especiales"\n\
-	},\n\
-	onerror: null,\n\
-	messages: {\n\
-		confirm_empty: "El campo de contraseña de confirmación no puede estar vacío",\n\
-		empty: "La contraseña está vacía",\n\
-		not_allowed: "Contraseña no permitida.",\n\
-		not_length: "Contraseña no tiene la longitud requerida",\n\
-		not_match: "Las contraseñas no coinciden"\n\
-	},\n\
-	text: "Introducción de la contraseña2,\n\
-	textconfirm: "Confirmación de la contraseña",\n\
-	placeholder: "Contraseña",\n\
-	placeholderconfirm: "Confirmar contraseña",\n\
-	showbutton: false,\n\
-	showicon: "la la-eye",\n\
+		{
+			description: 'Saber si se cumplen los requisitos mínimos para poder enviar/guardar la contraseña:',
+			example: 'it.password.config.features.allowed;'
+		},
+		{
+			description: 'Cambiar el idioma y gran cantidad de opciones a través del objeto <name>config</name>:',
+			example: 'it.password.config = {\n\
+autocheck: false,\n\
+autodraw: true,\n\
+colorok : "rgba(255,255,255,0.75)",\n\
+colornok : "#e0e0e0",\n\
+confirmby: null,\n\
+features: { allowed: false, complexity: 0, extra: 0, length: 0, lowers: 0, numbers: 0, special: 0, uppers: 0 },\n\
+minfeatures: { length: 6, uppers:1, lowers: 1, numbers: 1, special: 1, extra: 10 },\n\
+minfeaturesLang: { \n\
+	minfeatures: "Debe tener al menos",\n\
+	length: "Longitud",\n\
+	uppers: "Mayúsculas",\n\
+	lowers: "Minúsculas",\n\
+	numbers: "Números",\n\
+	special: "Especiales"\n\
+},\n\
+onerror: null,\n\
+messages: {\n\
+	confirm_empty: "El campo de contraseña de confirmación no puede estar vacío",\n\
+	empty: "La contraseña está vacía",\n\
+	not_allowed: "Contraseña no permitida.",\n\
+	not_length: "Contraseña no tiene la longitud requerida",\n\
+	not_match: "Las contraseñas no coinciden"\n\
+},\n\
+text: "Introducción de la contraseña2,\n\
+textconfirm: "Confirmación de la contraseña",\n\
+placeholder: "Contraseña",\n\
+placeholderconfirm: "Confirmar contraseña",\n\
+showbutton: false,\n\
+showicon: "la la-eye",\n\
 }'
-			},
-			{
-				description: 'Personalización de los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '// Password crea los estilos en tiempo de ejecución de manera automática, pero es posible añadirlos a la hoja de estilos principal para modificarlos como se deseen.\n\
+		},
+		{
+			description: 'Personalización de los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '// Password crea los estilos en tiempo de ejecución de manera automática, pero es posible añadirlos a la hoja de estilos principal para modificarlos como se deseen.\n\
 _CSS_\n\
 #it-password-pwd, #it-password-pwdc { position: relative; }\n\
 #it-password-pwd-meter{ width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0; border: 0 none; margin: 0 0 5px 0; display: none; }\n\
@@ -2157,104 +2133,103 @@ _CSS_\n\
 .it-password-show-button{ position: absolute; top: 0; right: 0; background: transparent; border: 0 none; color: #000; width: 32px; height: 48px; z-index: 2; }\n\
 .it-password-show-button i{ pointer-events: none; }\n\
 _CSS_'
-			}
-		],
-		autocheck: {
-			type: 'boolean',
-			description: 'Permite activar la comprobación automática de la contraseña en cada pulsación o entrada de datos.',
-			example:'it("#pwd").password({\n\
-	autocheck: false,\n\
+		}
+	],
+	autocheck: {
+		type: 'boolean',
+		description: 'Permite activar la comprobación automática de la contraseña en cada pulsación o entrada de datos.',
+		example:'it("#pwd").password({\n\
+autocheck: false,\n\
 })'
-		},
-		autodraw: {
-			type: 'boolean',
-			description: 'Permite activar o desactivar la capa que muestra gráficamente la fortaleza de la contraseña',
-			example:'it("#pwd").password({\n\
-	autodraw: false,\n\
+	},
+	autodraw: {
+		type: 'boolean',
+		description: 'Permite activar o desactivar la capa que muestra gráficamente la fortaleza de la contraseña',
+		example:'it("#pwd").password({\n\
+autodraw: false,\n\
 })'
-		},
-		check: {
-			type: 'function',
-			description: 'Permite comprobar la seguridad de la contraseña. Puede definir la longitud mínima y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, puede definir los colores utilizados para indicar cuándo la contraseña es correcta y cuándo no.',
-			example: '// Para este ejemplo, primero se debe añadir un evento onkeyup en el INPUT propuesto al principio de este documento de ayuda\n\
+	},
+	check: {
+		type: 'function',
+		description: 'Permite comprobar la seguridad de la contraseña. Puede definir la longitud mínima y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, puede definir los colores utilizados para indicar cuándo la contraseña es correcta y cuándo no.',
+		example: '// Para este ejemplo, primero se debe añadir un evento onkeyup en el INPUT propuesto al principio de este documento de ayuda\n\
 &lt;input\n\
-	id="pwd"\n\
-	name="pwd"\n\
-	type="password"\n\
-	maxlength="50"\n\
-	autocomplete="off"\n\
-	onkeyup="it.password.check(this);" />'
-		},
-		confirmby: {
-			type: 'string',
-			description: 'Permite añadir un segundo elemento de contraseña para poder realizar la accción de confirmación de contraseñas.',
-			example: 'it("#pwd").password({\n\
-	autocheck: false,\n\
-	autodraw: false,\n\
-	colorok: "#fff",\n\
-	colornok: "#000",\n\
-	confirmby: "pwdc"\n\
-	showbutton: true,\n\
-	showicon: "la la-eye",\n\
+id="pwd"\n\
+name="pwd"\n\
+type="password"\n\
+maxlength="50"\n\
+autocomplete="off"\n\
+onkeyup="it.password.check(this);" />'
+	},
+	confirmby: {
+		type: 'string',
+		description: 'Permite añadir un segundo elemento de contraseña para poder realizar la accción de confirmación de contraseñas.',
+		example: 'it("#pwd").password({\n\
+autocheck: false,\n\
+autodraw: false,\n\
+colorok: "#fff",\n\
+colornok: "#000",\n\
+confirmby: "pwdc"\n\
+showbutton: true,\n\
+showicon: "la la-eye",\n\
 });'
-		},
-		colornok: {
-			type: 'string',
-			description: 'Permite establecer el color de la barra de fortaleza que indica que no cumple el nivel de seguridad. Por defecto, hay seis niveles de complejidad. Cada vez que se cumpla un criterio concreto, se sumará uno al nivel de complejidad, lo que indicará si la contraseña es o no fácil de reconocer o descubrir.',
-			example:'it("#pwd").password({\n\
-	autocheck: false,\n\
-	autodraw: false,\n\
-	colorok: "#fff",\n\
-	colornok: "#000",\n\
-	showbutton: true,\n\
-	showicon: "la la-eye",\n\
+	},
+	colornok: {
+		type: 'string',
+		description: 'Permite establecer el color de la barra de fortaleza que indica que no cumple el nivel de seguridad. Por defecto, hay seis niveles de complejidad. Cada vez que se cumpla un criterio concreto, se sumará uno al nivel de complejidad, lo que indicará si la contraseña es o no fácil de reconocer o descubrir.',
+		example:'it("#pwd").password({\n\
+autocheck: false,\n\
+autodraw: false,\n\
+colorok: "#fff",\n\
+colornok: "#000",\n\
+showbutton: true,\n\
+showicon: "la la-eye",\n\
 });'
-		},
-		colorok: {
-			type: 'string',
-			description: 'Permite establecer el color de la barra de fortaleza que indica que cumple el nivel de seguridad. Por defecto, hay seis niveles de complejidad. Cada vez que se cumpla un criterio concreto, se sumará uno al nivel de complejidad, lo que indicará si la contraseña es o no fácil de reconocer o descubrir.',
-			example:'it("#pwd").password({\n\
-	autocheck: false,\n\
-	autodraw: false,\n\
-	colorok: "#fff",\n\
-	colornok: "#000",\n\
-	showbutton: true,\n\
-	showicon: "la la-eye",\n\
+	},
+	colorok: {
+		type: 'string',
+		description: 'Permite establecer el color de la barra de fortaleza que indica que cumple el nivel de seguridad. Por defecto, hay seis niveles de complejidad. Cada vez que se cumpla un criterio concreto, se sumará uno al nivel de complejidad, lo que indicará si la contraseña es o no fácil de reconocer o descubrir.',
+		example:'it("#pwd").password({\n\
+autocheck: false,\n\
+autodraw: false,\n\
+colorok: "#fff",\n\
+colornok: "#000",\n\
+showbutton: true,\n\
+showicon: "la la-eye",\n\
 });'
-		},
-		generate: {
-			type: 'function',
-			description: 'Permite crear una contraseña aleatoria de una longitud concreta que cumpla los requisitos mínimos.',
-			example: 'it.password.generate(8);'
-		},
-		getError: {
-			type: 'function',
-			description: 'Permite comprobar si se ha producido algún error de validación en el campo de texto asociado a la contraseña. Si la función setError está establecida, se enviará el resultado de la evaluación a la función asociada.',
-			example: 'it.password.getError();\n\
+	},
+	generate: {
+		type: 'function',
+		description: 'Permite crear una contraseña aleatoria de una longitud concreta que cumpla los requisitos mínimos.',
+		example: 'it.password.generate(8);'
+	},
+	getError: {
+		type: 'function',
+		description: 'Permite comprobar si se ha producido algún error de validación en el campo de texto asociado a la contraseña. Si la función setError está establecida, se enviará el resultado de la evaluación a la función asociada.',
+		example: 'it.password.getError();\n\
 // Esto podría mostrar abajo del campo de contraseña un mensaje como:\n\
 // "Contraseña no permitida. Debe tener al menos longitud 6, 1 mayúsculas, 1 minúsculas, 1 números, 1 especiales."'
-		},
-		showbutton: {
-			type: 'boolean',
-			description: 'Permite establecer un botón para que se pueda mostrar la contraseña. Por defecto, la contraseña aparecerá como puntos o asteriscos. Si se pulsa este botón el elemento de entrada de datos asociado se tranformará en un elemento de entrada de datos de texto, mostrando así, su contenido.\n\
+	},
+	showbutton: {
+		type: 'boolean',
+		description: 'Permite establecer un botón para que se pueda mostrar la contraseña. Por defecto, la contraseña aparecerá como puntos o asteriscos. Si se pulsa este botón el elemento de entrada de datos asociado se tranformará en un elemento de entrada de datos de texto, mostrando así, su contenido.\n\
 <name><bool>NOTA</bool>: Este parámetro está asociado al parámetro <field style="padding:0">showicon</field>, el cual indica el icono a utilizar.',
-			example:'it("#pwd").password({\n\
-	colorok: "#fff",\n\
-	colornok: "#0a3263",\n\
-	showbutton: true,\n\
-	showicon: "icon eye",\n\
+		example:'it("#pwd").password({\n\
+colorok: "#fff",\n\
+colornok: "#0a3263",\n\
+showbutton: true,\n\
+showicon: "icon eye",\n\
 });'
-		},
-		showicon: {
-			type: 'string',
-			description: 'Permite establecer el icono asociado al botón de mostrar la contraseña referenciado por el parámetro <field style="padding:0">showbutton</field>. Por defecto, este icono está establecido a <field>fa fa-eye</field>.',
-			example:'it("#pwd").password({\n\
-	colorok: "#fff",\n\
-	colornok: "#0a3263",\n\
-	showbutton: true,\n\
-	showicon: "la la-eye",\n\
+	},
+	showicon: {
+		type: 'string',
+		description: 'Permite establecer el icono asociado al botón de mostrar la contraseña referenciado por el parámetro <field style="padding:0">showbutton</field>. Por defecto, este icono está establecido a <field>fa fa-eye</field>.',
+		example:'it("#pwd").password({\n\
+colorok: "#fff",\n\
+colornok: "#0a3263",\n\
+showbutton: true,\n\
+showicon: "la la-eye",\n\
 });'
-		}
 	}
 }
 
@@ -2265,134 +2240,132 @@ _CSS_'
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 19/01/2021
  **/
-if(it.enabledModules.Selectpicker){
-	WikiHelper.Selectpicker = {
-		general: {
-			version: '1.4.2',
-			help: 1,
-			name: 'Selectpicker',
-			description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.\n\
+WikiHelper.Selectpicker = {
+	general: {
+		version: '1.4.2',
+		help: 1,
+		name: 'Selectpicker',
+		description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.\n\
 <name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>"
+	},
+	additional: [
+		{
+			description: 'Habilita la búsqueda dentro del desplegable:',
+			example: '// Supposed the next code:\n&lt;select id="months" name="months" class="select-picker" data-live-search="true">\n\t&lt;option value="01">January&lt;/option>\n\t...\n&lt;/select>\n\n// Once set data-live-search to true into select, initialize\nSelectpicker.init(".select-picker");'
 		},
-		additional: [
-			{
-				description: 'Habilita la búsqueda dentro del desplegable:',
-				example: '// Supposed the next code:\n&lt;select id="months" name="months" class="select-picker" data-live-search="true">\n\t&lt;option value="01">January&lt;/option>\n\t...\n&lt;/select>\n\n// Once set data-live-search to true into select, initialize\nSelectpicker.init(".select-picker");'
-			},
-			{
-				description: 'Personaliza el aspecto del Selectpicker a través de CSS:',
-				example: '.select-picker{\n\
-	position: relative;\n\
-	width: 100%;\n\
+		{
+			description: 'Personaliza el aspecto del Selectpicker a través de CSS:',
+			example: '.select-picker{\n\
+position: relative;\n\
+width: 100%;\n\
 }\n\n\
 .select-picker .dropdown-container{\n\
-	list-style: none;\n\
-	background: #fff;\n\
-	border: 1px solid rgba(0,0,0,0.1);\n\
-	padding: 0;\n\
-	position: absolute;\n\
-	top: 53px;\n\
-	width: 100%;\n\
-	z-index: 99999;\n\
+list-style: none;\n\
+background: #fff;\n\
+border: 1px solid rgba(0,0,0,0.1);\n\
+padding: 0;\n\
+position: absolute;\n\
+top: 53px;\n\
+width: 100%;\n\
+z-index: 99999;\n\
 }\n\n\
 .select-picker ul{\n\
-	overflow: auto;\n\
-	max-height: 164px;\n\
-	padding: 0;\n\
-	list-style: none;\n\
-	margin: 0;\n\
+overflow: auto;\n\
+max-height: 164px;\n\
+padding: 0;\n\
+list-style: none;\n\
+margin: 0;\n\
 }\n\n\
 .select-picker button{\n\
-	background: #f4f4f4;\n\
-	border: 1px solid rgba(0,0,0,0.1);\n\
-	width: 100%;\n\
-	height: 54px;\n\
-	text-align: left;\n\
-	line-height: 70px;\n\
-	font-weight: 500;\n\
+background: #f4f4f4;\n\
+border: 1px solid rgba(0,0,0,0.1);\n\
+width: 100%;\n\
+height: 54px;\n\
+text-align: left;\n\
+line-height: 70px;\n\
+font-weight: 500;\n\
 }\n\n\
 .select-picker button::before{\n\
-	content: "";\n\
-	display: inline-block;\n\
-	width: 0;\n\
-	height: 0;\n\
-	margin-left: 2px;\n\
-	vertical-align: middle;\n\
-	border-top: 4px dashed;\n\
-	border-right: 4px solid transparent;\n\
-	border-left: 4px solid transparent;\n\
-	position: absolute;\n\
-	right: 15px;\n\
-	top: 26px;\n\
+content: "";\n\
+display: inline-block;\n\
+width: 0;\n\
+height: 0;\n\
+margin-left: 2px;\n\
+vertical-align: middle;\n\
+border-top: 4px dashed;\n\
+border-right: 4px solid transparent;\n\
+border-left: 4px solid transparent;\n\
+position: absolute;\n\
+right: 15px;\n\
+top: 26px;\n\
 }\n\n\
 .select-picker button:hover{\n\
-	border-color: #adadad;\n\
+border-color: #adadad;\n\
 }\n\n\.select-picker.open button{\n\
-	background: #02a5a5;\n\
-	color: #ffffff;\n\
+background: #02a5a5;\n\
+color: #ffffff;\n\
 }\n\n\
 .select-picker li{\n\
-	min-height: 36px;\n\
-	border-bottom: 1px solid rgba(0,0,0,0.1);\n\
-	padding: 4px 10px 0px 10px;\n\
-	line-height: 36px;\n\
+min-height: 36px;\n\
+border-bottom: 1px solid rgba(0,0,0,0.1);\n\
+padding: 4px 10px 0px 10px;\n\
+line-height: 36px;\n\
 }\n\n\
 .select-picker li:not(.searcher):hover{\n\
-	background: #02A5A5;\n\
-	color: #fff;\n\
-	width: 100%;\n\
+background: #02A5A5;\n\
+color: #fff;\n\
+width: 100%;\n\
 }\n\n\
 .select-picker .searcher{\n\
-	position: relative;\n\
-	padding: 3px 40px 0 4px;\n\
-	min-height: 39px;\n\
-	border-bottom: 1px solid rgba(0,0,0,0.1);\n\
+position: relative;\n\
+padding: 3px 40px 0 4px;\n\
+min-height: 39px;\n\
+border-bottom: 1px solid rgba(0,0,0,0.1);\n\
 }\n\n\
 .select-picker .searcher .input-search{\n\
-	line-height: 36px;\n\
-	height: 32px;\n\
-	padding-right: 26px;\n\
-	color: #fff;\n\
+line-height: 36px;\n\
+height: 32px;\n\
+padding-right: 26px;\n\
+color: #fff;\n\
 }\n\n\
 .select-picker .search-icon::before{\n\
-	content: "";\n\
-	background: #ccc;\n\
-	width: 10px;\n\
-	height: 3px;\n\
-	position: absolute;\n\
-	border-radius: 100px;\n\
-	top: 21px;\n\
-	right: 6px;\n\
-	transform: rotate(40deg);\n\
+content: "";\n\
+background: #ccc;\n\
+width: 10px;\n\
+height: 3px;\n\
+position: absolute;\n\
+border-radius: 100px;\n\
+top: 21px;\n\
+right: 6px;\n\
+transform: rotate(40deg);\n\
 }\n\n\
 .select-picker .search-icon:after{\n\
-	content: "";\n\
-	width: 16px;\n\
-	height: 16px;\n\
-	border: 3px solid #ccc;\n\
-	border-radius: 100px;\n\
-	display: block;\n\
-	position: absolute;\n\
-	top: 8px;\n\
-	right: 12px;\n\
+content: "";\n\
+width: 16px;\n\
+height: 16px;\n\
+border: 3px solid #ccc;\n\
+border-radius: 100px;\n\
+display: block;\n\
+position: absolute;\n\
+top: 8px;\n\
+right: 12px;\n\
 }\n\n\
 .select-picker-active{\n\
-	background: #02a5a5;\n\
-	color: #fff;\n\
+background: #02a5a5;\n\
+color: #fff;\n\
 }'
-			},
-		],
-		selectpicker: {
-			type: 'function',
-			description: 'Crea y establece los componentes de configuración y presentación para los desplegables solicitados.',
-			example: 'it(".select-picker").selectpicker();'
 		},
-		liveSearch: {
-			type: 'boolean',
-			description: 'Habilita la búsqueda predictiva a través de un campo de texto.',
-			example: 'it(".select-picker").selectpicker({ liveSearch: true });'
-		},
-	}
+	],
+	selectpicker: {
+		type: 'function',
+		description: 'Crea y establece los componentes de configuración y presentación para los desplegables solicitados.',
+		example: 'it(".select-picker").selectpicker();'
+	},
+	liveSearch: {
+		type: 'boolean',
+		description: 'Habilita la búsqueda predictiva a través de un campo de texto.',
+		example: 'it(".select-picker").selectpicker({ liveSearch: true });'
+	},
 }
 
 /**
@@ -2403,24 +2376,22 @@ if(it.enabledModules.Selectpicker){
 	 @Last update: 11/03/2019
 	 @status PENDING to UPDATE
  **/
-if(it.enabledModules.SendForm){
-	WikiHelper.Sendform = {
-		general: {
-			version: '1.0',
-			name: 'SendForm',
-			description: "SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.",
-		},
-		url: {
-			type: 'string',
-			description: 'URL para realizar la petición.',
-			example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
-		},
-		params: {
-			type: 'string',
-			description: 'Parámetros que se enviarán como parte del formulario.',
-			example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
-		},
-	}
+ WikiHelper.Sendform = {
+	general: {
+		version: '1.0',
+		name: 'SendForm',
+		description: "SendForm es un script para crear y enviar formularios en tiempo real a través de Ajax en modo POST. Es como si el formulario estuviese físicamente ya de antes y el usuario pulsase el botón de enviar.",
+	},
+	url: {
+		type: 'string',
+		description: 'URL para realizar la petición.',
+		example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
+	},
+	params: {
+		type: 'string',
+		description: 'Parámetros que se enviarán como parte del formulario.',
+		example: 'new SendForm({\n\turl: "../pages/setProduct",\n\tparams: [{\n\t\t"type": "text",\n\t\t"id": "idProduct",\n\t\t"value": "1"\n\t}]\n});'
+	},
 }
 
 /**
@@ -2430,84 +2401,82 @@ if(it.enabledModules.SendForm){
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 05/03/2021																			
  **/
-if(it.enabledModules.Sorter){
-	WikiHelper.Sorter = {
-		general: {
-			version: '1.2.1',
-			name: 'Sorter',
-			description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
-		},
-		columns: {
-			type: 'object',
-			description: 'Define la ordenación de las columnas. Los posibles tipos son "string", "number", "date" y "enum". Este parámetro es opcional.\n\
+WikiHelper.Sorter = {
+	general: {
+		version: '1.2.1',
+		name: 'Sorter',
+		description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
+	},
+	columns: {
+		type: 'object',
+		description: 'Define la ordenación de las columnas. Los posibles tipos son "string", "number", "date" y "enum". Este parámetro es opcional.\n\
 Cosas a tener en cuenta:\n\
 \t\u2022 Si orderable es false, las propiedades "setto" y "type" no es necesario establecerlas porque serán ignoradas.\n\
 \t\u2022 Si no se establece la propiedad ID, se asignará automáticamente a "sorterColN", donde N es el número de columna\n\
 \t\u2022 Si no se especifica tipo de ordenación, se asignará como alfanumérica, es decir, de tipo "string".\n\
 \t\u2022 Si se especifica la ordenación de tipo fecha (date), se deberá asignar también el formato a través de la propiedad "format".\n\
 \t\u2022 Si se especifica la ordenación de tipo numeral (enum), se deberá asignar también el array de datos numerales a través de la propiedad "enum".',
-			example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
+		example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
 it("table").sorter(\n\
-	{\n\
-		columns: [\n\
-			{id: "c1", orderable: true, setto: "asc", type: "string"},\n\
-			{id: "c2", orderable: true, setto: "",    type: "number"},\n\
-			{id: "c3", orderable: true,               type: "date", format: "DD-MM-YYYY"},\n\
-			{id: "c4", orderable: true,               type: "enum", enum: ["Alto", "Medio", "Bajo"]},\n\
-			"",\n\
-			{id: "actions", orderable: false}\n\
-		]\n\
-	}\n\
+{\n\
+	columns: [\n\
+		{id: "c1", orderable: true, setto: "asc", type: "string"},\n\
+		{id: "c2", orderable: true, setto: "",    type: "number"},\n\
+		{id: "c3", orderable: true,               type: "date", format: "DD-MM-YYYY"},\n\
+		{id: "c4", orderable: true,               type: "enum", enum: ["Alto", "Medio", "Bajo"]},\n\
+		"",\n\
+		{id: "actions", orderable: false}\n\
+	]\n\
+}\n\
 );'
-		},
-		icons: {
-			type: 'object',
-			description: 'Define las clases que representarán los iconos de ordenación. Este parámetro es opcional.',
-			example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
+	},
+	icons: {
+		type: 'object',
+		description: 'Define las clases que representarán los iconos de ordenación. Este parámetro es opcional.',
+		example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
 it("table").sorter({\n\
-	icons: {\n\
-		sort: "fa fa-sort",\n\
-		asc: "fa fa-sort-alpha-asc",\n\
-		desc: "fa fa-sort-alpha-desc"\n\
-	}\n\
+icons: {\n\
+	sort: "fa fa-sort",\n\
+	asc: "fa fa-sort-alpha-asc",\n\
+	desc: "fa fa-sort-alpha-desc"\n\
+}\n\
 });\n\
 \n\
 // Que es lo mismo que el siguiente ejemplo debido a que, los iconos anteriores, son los por defecto.\n\
 it("table").sorter();'
-		},
-		selector: {
-			type: 'boolean',
-			description: 'Añade un botón que muestra un diálogo con todas las columnas y su orden actual.',
-			example: '// Habilitar el selector de columnas para ordenar\n\
+	},
+	selector: {
+		type: 'boolean',
+		description: 'Añade un botón que muestra un diálogo con todas las columnas y su orden actual.',
+		example: '// Habilitar el selector de columnas para ordenar\n\
 it("table").sorter({selector: true});'
-		},
-		sort: {
-			type: 'boolean',
-			description: 'Permite ordenar por una columna específica. Requiere de tres parámetros, el número de columna empezando desde CERO, el tipo de ordenación y la tabla donde aplicar la ordenación.',
-			example: '// Ordenar la segunda columna de forma ascendente en la tabla con ID "table01"\n\
+	},
+	sort: {
+		type: 'boolean',
+		description: 'Permite ordenar por una columna específica. Requiere de tres parámetros, el número de columna empezando desde CERO, el tipo de ordenación y la tabla donde aplicar la ordenación.',
+		example: '// Ordenar la segunda columna de forma ascendente en la tabla con ID "table01"\n\
 it.sorter.sort(1, "asc", document.getElementById("table01"));\n\
 // Ordenar la cuarta columna de forma descendente en la tabla con ID "table01"\n\
 it.sorter.sort(3, "desc", document.getElementById("table01"));\n\
 // Dejar la columna de la tabla con ID "table01" como estaba antes de ser ordenada"\n\
 it.sorter.sort(3, "none", it.sorter.config.table01);'
-		},
-		additional: [
-			{
-				description: 'Es posible acceder a la consiguración de la tabla a partir de su ID.',
-				example: '// Si suponemos que la tabla tiene el atributo ID asignado a "table01", podríamos acceder mediante:\n\
+	},
+	additional: [
+		{
+			description: 'Es posible acceder a la consiguración de la tabla a partir de su ID.',
+			example: '// Si suponemos que la tabla tiene el atributo ID asignado a "table01", podríamos acceder mediante:\n\
 console.log(it.sorter.config.table01);\n\n\
 // Esta instrucción debería mostrar un objeto JSON similar al siguiente:\n\
 {\n\
-	cols: 5,\n\
-	icons: {sort: "fa la-sort", asc: "fa la-sort-alpha-up", desc: "fa la-sort-alpha-down"}\n\
-	rows: 25\n\
-	selector: true\n\
-	sorting: ["desc", "asc", "", "", ""]\n\
-	table: table#table01.sortable\n\
+cols: 5,\n\
+icons: {sort: "fa la-sort", asc: "fa la-sort-alpha-up", desc: "fa la-sort-alpha-down"}\n\
+rows: 25\n\
+selector: true\n\
+sorting: ["desc", "asc", "", "", ""]\n\
+table: table#table01.sortable\n\
 }'
-			},
-		]
-	}
+		},
+	]
 }
 
 /**
@@ -2517,20 +2486,18 @@ console.log(it.sorter.config.table01);\n\n\
    @Copyright 2017-2021 Islavisual. 																	
    @Last update: 13/03/2019																			
  **/
-if(it.enabledModules.StripTags){
-	WikiHelper.Striptags = {
-		general: {
-			version: '1.0',
-			name: 'StripTags',
-			description: "Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.",
+WikiHelper.Striptags = {
+	general: {
+		version: '1.0',
+		name: 'StripTags',
+		description: "Función para limpiar de HTML una cadena proporcionada por parámetro. El segundo parámetro se puede usar para especificar las etiquetas que no deben ser eliminadas.",
+	},
+	additional: [
+		{
+			description: 'Limpiar de HTML un String',
+			example: 'StripTags("&lt;span>ejemplo de texto&lt;/span>", "");\n// Resultado: ejemplo de texto\n\nStripTags("&lt;span>ejemplo &lt;b>de&lt;/b> texto&lt;/span>", "&lt;b>");\n// Resultado: ejemplo &lt;b>de&lt;/b> texto'
 		},
-		additional: [
-			{
-				description: 'Limpiar de HTML un String',
-				example: 'StripTags("&lt;span>ejemplo de texto&lt;/span>", "");\n// Resultado: ejemplo de texto\n\nStripTags("&lt;span>ejemplo &lt;b>de&lt;/b> texto&lt;/span>", "&lt;b>");\n// Resultado: ejemplo &lt;b>de&lt;/b> texto'
-			},
-		]
-	}
+	]
 }
 
 /**
@@ -2540,18 +2507,17 @@ if(it.enabledModules.StripTags){
    @Copyright 2019 Islavisual.
    @Last update: 05/03/2021
  **/
-if(it.enabledModules.Treeview){
-	WikiHelper.Treeview = {
-		general: {
-			version: '1.2',
-			name: 'Treeview',
-			description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).\n\
-			<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/treeview/treeview-2/treeview-2a.html</name>",
-		},
-		additional: [
-			{
-				description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-				example: '_CSS_\n\
+WikiHelper.Treeview = {
+	general: {
+		version: '1.2',
+		name: 'Treeview',
+		description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).\n\
+		<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/treeview/treeview-2/treeview-2a.html</name>",
+	},
+	additional: [
+		{
+			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '_CSS_\n\
 // styles.css (from your site)\n\
 ul.treeview{ background: color: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }\n\
 ul.treeview, ul.treeview ul{ list-style: none; }\n\
@@ -2567,90 +2533,89 @@ ul.treeview li .active{ background: lightgray; color: rgb(51, 51, 51); }\n\
 ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:not(.switch-input):not(.clean-switch-input):focus::before{ border-color: #000; }\n\
 ul.treeview input[type="checkbox"]:focus + label{ background: #000;color: #fff; }\n\
 _CSS_'
-			}
-		],
-		classLeaf: {
-			type: 'string',
-			description: 'El parámetro "classLeaf" indica el nombre de clase que se aplicará a los nodos hoja (los de último nivel). Esta clase, por ejemplo, puede utilizarse para proporcionar un estilo diferente a este tipo de nodos. Por defecto está vacío.',
-			example: 'it("#treeview").treeview({data: treeviewJSON, classLeaf: "leaf-node"});'
-		},
-		collapsedIcon: {
-			type: 'string',
-			description: 'El parámetro "collapsedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de colapsado" que refleja que la rama está cerrada de manera predeterminada. Si no se establece, por defecto es contendrá \u25BA.',
-			example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, collapsedIcon: \'&lt;i class=\"plus\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, collapsedIcon: "+"});'
-		},
-		expandedIcon: {
-			type: 'string',
-			description: 'El parámetro "expandedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de expandido" que refleja que la rama está abierta de forma predeterminada. Si no se establece, Por defecto es \u25BC.',
-			example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, expandedIcon: \'&lt;i class=\"less\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, expandedIcon: "-"});'
-		},
-		leafIcon: {
-			type: 'string',
-			description: 'El parámetro "leafIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de hoja" que refleja que, este nodo, no tiene más hijos. Si no se establece, por defecto está vacío.',
-			example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, leafIcon: \'&lt;i class=\"leaf\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, leafIcon: "\\uD83D\\uDE54"});'
-		},
-		branchIcon: {
-			type: 'string',
-			description: 'El parámetro "branchIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de rama" que refleja que este nodo tiene, al menos, un hijo. Si no se establece, por defecto está vacío.',
-			example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, branchIcon: \'&lt;i class=\"folder\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, branchIcon: "\\uD83D\\uDCC2"});'
-		},
-		customCheck: {
-			type: 'string',
-			description: 'Cadena HTML con la nueva definición del checkbox. Por defecto está vacío (deshabilitado).',
-			example: 'it("#treeview").treeview({\n\tdata: treeviewJSON,\n\tcustomCheck: "&lt;label>Two&lt;input type=\'checkbox\'>&lt;span class=\'checkmark\'>&lt;/span>&lt;/label>"\n});'
-		},
-		data: {
-			type: 'object',
-			description: 'Es un objeto con los elementos a tratar. Este objeto debe estar en formato JSON.',
-			example: '//Example JSON to send to Treeview component.\nvar treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\texpanded: true,\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n}\it("#treeview").treeview({data: treeviewJSON});'
-		},
-		onSelectNode: {
-			type: 'function',
-			description: 'El parámetro "onSelectNode" indica la función de devolución de llamada cuando se selecciona un nodo. Por defecto, esta funcionalidad está deshabilitada.',
-			example: 'it("#treeview").treeview({data: treeviewJSON, onSelectNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
-		},
-		onCheckNode: {
-			type: 'function',
-			description: 'El parámetro "onCheckNode" indica la función de devolución de llamada cuando se chequea un nodo. Por defecto, esta funcionalidad está deshabilitada.',
-			example: 'it("#treeview").treeview({data: treeviewJSON, onCheckNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
-		},
-		selectable: {
-			type: 'boolean',
-			description: 'El parámetro "selectable" indica si los nodos serán seleccionables. Por defecto es false.',
-			example: 'it("#treeview").treeview({data: treeviewJSON, selectable: false});'
-		},
-		searchable: {
-			type: 'boolean',
-			description: 'El parámetro "searchable" indica si el árbol permitirá la búsqueda de nodos. Por defecto es false.',
-			example: 'it("#treeview").treeview({data: treeviewJSON, searchable: false});'
-		},
-		placeholderText: {
-			type: 'string',
-			description: 'El parámetro "placeholderText" indica el texto que se muestra dentro de la caja de texto cuando la búsqueda está habilitada (searchable es true). Por defecto es "Filter...".',
-			example: 'it("#treeview").treeview({data: treeviewJSON, placeholderText: "Writing to filter inside the tree"});'
-		},
-		styles: {
-			type: 'object',
-			description: 'El parámetro "styles" indica los estilos básicos que deben mostrarse en el componente de vista de árbol. Este objeto permitirá los siguientes subparámetros:\n\t● <b>bgTree</b>: fondo del árbol. Por defecto es transparent.\n\t● <b>borderTree </b>: Borde del árbol. Por defecto es rgba (0,0,0,0.15).\n\t● <b>textColor</b>: color del texto de los nodos. Por defecto es #000000.\n\t● <b>searchColor</b>: color de texto para la entrada de la búsqueda. Por defecto es #000000.\n\t● <b>searchBg</b>: color de fondo para la entrada de la búsqueda. Por defecto es #f0f0f0.\n\t● <b>activeColor</b>: color del texto del nodo seleccionado. De forma predeterminada es #ffffff.\n\t● <b>activeBg</b>: color de fondo del nodo seleccionado. Por defecto es #000000.\n\t● <b>linkColor</b>: color de texto para nodos con enlace. Por defecto es #006699.\n\t● <b>linkBg</b>: color de fondo para los nodos con enlace. Por defecto es transparent.',
-			example: 'it("#treeview").treeview({\n\tdata: treeviewJSON,\n\tselectable: true,\n\tstyles: {\n\t\tbgTree: "#ffffff",\n\t\tborderTree: "rgba(0,0,0,0.15)",\n\t\ttextColor: "#000",\n\t\tsearchColor: "#000",\n\t\tsearchBg: "#fff",\n\t\tactiveColor: "#333",\n\t\tactiveBg: "lightgray",\n\t\tlinkColor: "#009966",\n\t\tlinkBg: "rgba(0,0,0,0)"\n\t}\n});'
+		}
+	],
+	classLeaf: {
+		type: 'string',
+		description: 'El parámetro "classLeaf" indica el nombre de clase que se aplicará a los nodos hoja (los de último nivel). Esta clase, por ejemplo, puede utilizarse para proporcionar un estilo diferente a este tipo de nodos. Por defecto está vacío.',
+		example: 'it("#treeview").treeview({data: treeviewJSON, classLeaf: "leaf-node"});'
+	},
+	collapsedIcon: {
+		type: 'string',
+		description: 'El parámetro "collapsedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de colapsado" que refleja que la rama está cerrada de manera predeterminada. Si no se establece, por defecto es contendrá \u25BA.',
+		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, collapsedIcon: \'&lt;i class=\"plus\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, collapsedIcon: "+"});'
+	},
+	expandedIcon: {
+		type: 'string',
+		description: 'El parámetro "expandedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de expandido" que refleja que la rama está abierta de forma predeterminada. Si no se establece, Por defecto es \u25BC.',
+		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, expandedIcon: \'&lt;i class=\"less\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, expandedIcon: "-"});'
+	},
+	leafIcon: {
+		type: 'string',
+		description: 'El parámetro "leafIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de hoja" que refleja que, este nodo, no tiene más hijos. Si no se establece, por defecto está vacío.',
+		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, leafIcon: \'&lt;i class=\"leaf\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, leafIcon: "\\uD83D\\uDE54"});'
+	},
+	branchIcon: {
+		type: 'string',
+		description: 'El parámetro "branchIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de rama" que refleja que este nodo tiene, al menos, un hijo. Si no se establece, por defecto está vacío.',
+		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, branchIcon: \'&lt;i class=\"folder\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, branchIcon: "\\uD83D\\uDCC2"});'
+	},
+	customCheck: {
+		type: 'string',
+		description: 'Cadena HTML con la nueva definición del checkbox. Por defecto está vacío (deshabilitado).',
+		example: 'it("#treeview").treeview({\n\tdata: treeviewJSON,\n\tcustomCheck: "&lt;label>Two&lt;input type=\'checkbox\'>&lt;span class=\'checkmark\'>&lt;/span>&lt;/label>"\n});'
+	},
+	data: {
+		type: 'object',
+		description: 'Es un objeto con los elementos a tratar. Este objeto debe estar en formato JSON.',
+		example: '//Example JSON to send to Treeview component.\nvar treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\texpanded: true,\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n}\it("#treeview").treeview({data: treeviewJSON});'
+	},
+	onSelectNode: {
+		type: 'function',
+		description: 'El parámetro "onSelectNode" indica la función de devolución de llamada cuando se selecciona un nodo. Por defecto, esta funcionalidad está deshabilitada.',
+		example: 'it("#treeview").treeview({data: treeviewJSON, onSelectNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
+	},
+	onCheckNode: {
+		type: 'function',
+		description: 'El parámetro "onCheckNode" indica la función de devolución de llamada cuando se chequea un nodo. Por defecto, esta funcionalidad está deshabilitada.',
+		example: 'it("#treeview").treeview({data: treeviewJSON, onCheckNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
+	},
+	selectable: {
+		type: 'boolean',
+		description: 'El parámetro "selectable" indica si los nodos serán seleccionables. Por defecto es false.',
+		example: 'it("#treeview").treeview({data: treeviewJSON, selectable: false});'
+	},
+	searchable: {
+		type: 'boolean',
+		description: 'El parámetro "searchable" indica si el árbol permitirá la búsqueda de nodos. Por defecto es false.',
+		example: 'it("#treeview").treeview({data: treeviewJSON, searchable: false});'
+	},
+	placeholderText: {
+		type: 'string',
+		description: 'El parámetro "placeholderText" indica el texto que se muestra dentro de la caja de texto cuando la búsqueda está habilitada (searchable es true). Por defecto es "Filter...".',
+		example: 'it("#treeview").treeview({data: treeviewJSON, placeholderText: "Writing to filter inside the tree"});'
+	},
+	styles: {
+		type: 'object',
+		description: 'El parámetro "styles" indica los estilos básicos que deben mostrarse en el componente de vista de árbol. Este objeto permitirá los siguientes subparámetros:\n\t● <b>bgTree</b>: fondo del árbol. Por defecto es transparent.\n\t● <b>borderTree </b>: Borde del árbol. Por defecto es rgba (0,0,0,0.15).\n\t● <b>textColor</b>: color del texto de los nodos. Por defecto es #000000.\n\t● <b>searchColor</b>: color de texto para la entrada de la búsqueda. Por defecto es #000000.\n\t● <b>searchBg</b>: color de fondo para la entrada de la búsqueda. Por defecto es #f0f0f0.\n\t● <b>activeColor</b>: color del texto del nodo seleccionado. De forma predeterminada es #ffffff.\n\t● <b>activeBg</b>: color de fondo del nodo seleccionado. Por defecto es #000000.\n\t● <b>linkColor</b>: color de texto para nodos con enlace. Por defecto es #006699.\n\t● <b>linkBg</b>: color de fondo para los nodos con enlace. Por defecto es transparent.',
+		example: 'it("#treeview").treeview({\n\tdata: treeviewJSON,\n\tselectable: true,\n\tstyles: {\n\t\tbgTree: "#ffffff",\n\t\tborderTree: "rgba(0,0,0,0.15)",\n\t\ttextColor: "#000",\n\t\tsearchColor: "#000",\n\t\tsearchBg: "#fff",\n\t\tactiveColor: "#333",\n\t\tactiveBg: "lightgray",\n\t\tlinkColor: "#009966",\n\t\tlinkBg: "rgba(0,0,0,0)"\n\t}\n});'
 
-		},
-		target: {
-			type: 'string',
-			description: 'ID del elemento donde se implementará el componente Treeview. Este ID debe pertenecer a una etiqueta UL de HTML.',
-			example: 'it("#treeview").treeview({data: treeviewJSON});'
-		},
-		checked: {
-			type: 'boolean',
-			description: 'El parámetro "verified" indica al componente Treeview que el nodo debería cambiar su estado. Esta funcionalidad necesita un ID para seleccionar el elemento a verificar.',
-			example: '// ULItem is the ID from HTML element where treeview is implemented\nfor(var i = 0; i < 20; i++){\n\tdocument.ULItem.Treeview({id; i, checked: true});\n}'
-		},
-		refresh: {
-			type: 'function',
-			description: 'El parámetro "refresh" indica que el componente de vista de árbol debe volver a cargarse.',
-			example: 'var treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n};\n// ULItem is the ID from HTML element where Treeview is implemented\ndocument.ULItem.Treeview({data: treeviewJSON, refresh: true})'
-		},
-	}
+	},
+	target: {
+		type: 'string',
+		description: 'ID del elemento donde se implementará el componente Treeview. Este ID debe pertenecer a una etiqueta UL de HTML.',
+		example: 'it("#treeview").treeview({data: treeviewJSON});'
+	},
+	checked: {
+		type: 'boolean',
+		description: 'El parámetro "verified" indica al componente Treeview que el nodo debería cambiar su estado. Esta funcionalidad necesita un ID para seleccionar el elemento a verificar.',
+		example: '// ULItem is the ID from HTML element where treeview is implemented\nfor(var i = 0; i < 20; i++){\n\tdocument.ULItem.Treeview({id; i, checked: true});\n}'
+	},
+	refresh: {
+		type: 'function',
+		description: 'El parámetro "refresh" indica que el componente de vista de árbol debe volver a cargarse.',
+		example: 'var treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n};\n// ULItem is the ID from HTML element where Treeview is implemented\ndocument.ULItem.Treeview({data: treeviewJSON, refresh: true})'
+	},
 }
 
 /**
@@ -2660,46 +2625,44 @@ _CSS_'
 	 @Copyright 2017-2021 Islavisual.
 	 @Last update: 17/03/2019
  **/
-if(it.enabledModules.Validator){
-	WikiHelper.Validator = {
-		general: {
-			version: '1.0',
-			name: 'Validator',
-			help: 1,
-			description: "Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.",
-		},
-		additional: [
-			{
-				description: 'Personalizar la clase de validator-error y validator-error-msg a través de estilos CSS.',
-				example: '_CSS_// Personalizar el estilo del input\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Personalizar el color del mensaje de validación\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
-			}
-		],
-		set: {
-			type: 'function',
-			description: 'El método "set" indica a Validator que se desea aplicar una restricción predefinida a un input o campo de entrada de datos. Por lo general, estas restricciones son: patternMismatch, rangeOverflow, rangeUnderflow, stepMismatch, "=", "!=", "<", ">", ">=" and "<=".',
-			example: '// Permitir sólo números igual o menores a 100\nValidator.set({\n\ttarget: "percent",\n\tconstraint: "<=100",\n\tmessage: "Por favor, el número debe ser igual o menor a 100",\n\trequired: true\n});\n\n// Permitir sólo "Spain"\nValidator.set({\n\ttarget: "country",\n\tconstraint: "==\'Spain\'",\n\tmessage: "La palabra correcta es Spain",\n\tfixed: true,\n\trequired: true\n});\n\n// Permitir sólo una lista de valores\nvar arraySex = ["man", "woman", "other"];\nValidator.set({\n\ttarget: "sex",\n\tconstraint: "arraySex.indexOf(this.value) != -1",\n\tmessage: "Los posibles valores son: man, woman, other"\n});\n\n// Permitir sólo un rango de valores\ndocument.getElementById("range").setAttribute("type", "number");\ndocument.getElementById("range").setAttribute("min", 50);\ndocument.getElementById("range").setAttribute("max", 100);\nValidator.set({\n\ttarget: "range",\n\tfixed: true,\n\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\tmessage: "Los posibles valores son entre 50 y 100"\n});\n\n// Validación de la contraseña con, al menos, una letra mayúscula, una letra minúscula,\n// un dígito, un carácter especial y con un mínimo de ocho en longitud.\nValidator.set({\n\ttarget: "pwd",\n\tfixed: true,\n\trequired: true,\n\tconstraint: "!this.validity.patternMismatch",\n\tmessage: "La contraseña no coincide con el formato especificado",\n\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n});'
-		},
-		fileset: {
-			type: 'function',
-			description: 'Define las restricciones que deben tener las entradas del archivo. Esta funcionalidad se alimenta de un objeto JSON que admite:\n\t ● <b>accept</b>: es una cadena que define, separados por comas, los tipos de archivos que debe aceptar la entrada del archivo. De forma predeterminada, está vacío.\n\t ● <b>preview</b>: Habilita la vista previa del archivo. Por defecto, es false.\n\t ● <b>size</b>: Limitar (en KB) el tamaño del archivo que se va a cargar. De forma predeterminada, es 0, que indica que no tiene límite.\n\t ● <b>message</b>: mensaje que se muestra cuando la entrada del archivo no es válida.',
-			example: '// Permitir solo tipos de archivos de Word\nValidator.fileset({\n\ttarget: "file",\n\taccept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",\n\tmessage: "Los archivos permitidos son todos los formatos de Word!"\n});\n\n// Habilitar la vista previa dentro del contenedor de miniaturas\nValidator.fileset({target: "file", preview: true});\n\n// Limitar el tamaño de los archivos de imagen a 100KB.\nValidator.fileset({target: "file", maxsize: 100, accept: "image/*", message: "El tamaño de la imagen debe ser menor a 100 KB"});'
-		},
-		fixed: {
-			type: "boolean",
-			description: 'Esta propiedad le indica al Validador que los mensajes deben mostrarse debajo del campo de entrada.',
-			example: '// Limitar el tamaño de los archivos jpeg a 250 KB y mostrar el mensaje bajo el input\nValidator.fileset({\n\ttarget: "file",\n\tfixed: true,\n\tmaxsize: 250,\n\taccept: ".jpg,.jpeg",\n\tmessage: "El tamaño del archivo debería ser menor a 250 KB"\n});'
-		},
-		newValidation: {
-			type: 'function',
-			description: 'Definir validaciones personalizadas a través de código JavaScript.',
-			example: 'Validator.target = document.getElementById("checkbox");\nValidator.newValidation("input", "\\\n\tif (!this.checked) {\\\n\t\te.target.setCustomValidity("Must be checked!");\\\n\t\te.target.classList.add("validator-error")\\\n\t\tValidator.addMessage(e.target);\\\n\t} else {\\\n\t\te.target.setCustomValidity("");\\\n\t\te.target.classList.remove("validator-error");\\\n\t\te.target.nextElementSibling.remove();\\\n\t}\\\n");'
-		},
-		onInvalid: {
-			type: "function",
-			description: 'Función de devolución de llamada cuando cuando se produzca un error de validación.',
-			example: 'Validator.target = document.getElementById("inputRequired");\nValidator.onInvalid("this.classList.add(\'validator-error\')")'
-		},
-	}
+WikiHelper.Validator = {
+	general: {
+		version: '1.0',
+		name: 'Validator',
+		help: 1,
+		description: "Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.",
+	},
+	additional: [
+		{
+			description: 'Personalizar la clase de validator-error y validator-error-msg a través de estilos CSS.',
+			example: '_CSS_// Personalizar el estilo del input\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Personalizar el color del mensaje de validación\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
+		}
+	],
+	set: {
+		type: 'function',
+		description: 'El método "set" indica a Validator que se desea aplicar una restricción predefinida a un input o campo de entrada de datos. Por lo general, estas restricciones son: patternMismatch, rangeOverflow, rangeUnderflow, stepMismatch, "=", "!=", "<", ">", ">=" and "<=".',
+		example: '// Permitir sólo números igual o menores a 100\nValidator.set({\n\ttarget: "percent",\n\tconstraint: "<=100",\n\tmessage: "Por favor, el número debe ser igual o menor a 100",\n\trequired: true\n});\n\n// Permitir sólo "Spain"\nValidator.set({\n\ttarget: "country",\n\tconstraint: "==\'Spain\'",\n\tmessage: "La palabra correcta es Spain",\n\tfixed: true,\n\trequired: true\n});\n\n// Permitir sólo una lista de valores\nvar arraySex = ["man", "woman", "other"];\nValidator.set({\n\ttarget: "sex",\n\tconstraint: "arraySex.indexOf(this.value) != -1",\n\tmessage: "Los posibles valores son: man, woman, other"\n});\n\n// Permitir sólo un rango de valores\ndocument.getElementById("range").setAttribute("type", "number");\ndocument.getElementById("range").setAttribute("min", 50);\ndocument.getElementById("range").setAttribute("max", 100);\nValidator.set({\n\ttarget: "range",\n\tfixed: true,\n\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\tmessage: "Los posibles valores son entre 50 y 100"\n});\n\n// Validación de la contraseña con, al menos, una letra mayúscula, una letra minúscula,\n// un dígito, un carácter especial y con un mínimo de ocho en longitud.\nValidator.set({\n\ttarget: "pwd",\n\tfixed: true,\n\trequired: true,\n\tconstraint: "!this.validity.patternMismatch",\n\tmessage: "La contraseña no coincide con el formato especificado",\n\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n});'
+	},
+	fileset: {
+		type: 'function',
+		description: 'Define las restricciones que deben tener las entradas del archivo. Esta funcionalidad se alimenta de un objeto JSON que admite:\n\t ● <b>accept</b>: es una cadena que define, separados por comas, los tipos de archivos que debe aceptar la entrada del archivo. De forma predeterminada, está vacío.\n\t ● <b>preview</b>: Habilita la vista previa del archivo. Por defecto, es false.\n\t ● <b>size</b>: Limitar (en KB) el tamaño del archivo que se va a cargar. De forma predeterminada, es 0, que indica que no tiene límite.\n\t ● <b>message</b>: mensaje que se muestra cuando la entrada del archivo no es válida.',
+		example: '// Permitir solo tipos de archivos de Word\nValidator.fileset({\n\ttarget: "file",\n\taccept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",\n\tmessage: "Los archivos permitidos son todos los formatos de Word!"\n});\n\n// Habilitar la vista previa dentro del contenedor de miniaturas\nValidator.fileset({target: "file", preview: true});\n\n// Limitar el tamaño de los archivos de imagen a 100KB.\nValidator.fileset({target: "file", maxsize: 100, accept: "image/*", message: "El tamaño de la imagen debe ser menor a 100 KB"});'
+	},
+	fixed: {
+		type: "boolean",
+		description: 'Esta propiedad le indica al Validador que los mensajes deben mostrarse debajo del campo de entrada.',
+		example: '// Limitar el tamaño de los archivos jpeg a 250 KB y mostrar el mensaje bajo el input\nValidator.fileset({\n\ttarget: "file",\n\tfixed: true,\n\tmaxsize: 250,\n\taccept: ".jpg,.jpeg",\n\tmessage: "El tamaño del archivo debería ser menor a 250 KB"\n});'
+	},
+	newValidation: {
+		type: 'function',
+		description: 'Definir validaciones personalizadas a través de código JavaScript.',
+		example: 'Validator.target = document.getElementById("checkbox");\nValidator.newValidation("input", "\\\n\tif (!this.checked) {\\\n\t\te.target.setCustomValidity("Must be checked!");\\\n\t\te.target.classList.add("validator-error")\\\n\t\tValidator.addMessage(e.target);\\\n\t} else {\\\n\t\te.target.setCustomValidity("");\\\n\t\te.target.classList.remove("validator-error");\\\n\t\te.target.nextElementSibling.remove();\\\n\t}\\\n");'
+	},
+	onInvalid: {
+		type: "function",
+		description: 'Función de devolución de llamada cuando cuando se produzca un error de validación.',
+		example: 'Validator.target = document.getElementById("inputRequired");\nValidator.onInvalid("this.classList.add(\'validator-error\')")'
+	},
 }
 
 /**
@@ -2712,61 +2675,56 @@ if(it.enabledModules.Validator){
 
 this.Helper = it.helper = function (func, cfg) {
 	// if func is "index" or empty, build the object
-	if(typeof func == "undefined") func = "Index";
+	if(typeof func == "undefined" || func.trim() == "") func = "Index";
 	
+	func = it.ucwords(func.toLowerCase());
+
 	// if configuration is undefined, set by default
 	if(typeof cfg == "undefined" || cfg == null) cfg = { theme: 'DARK', printOnScreen: true };
+	else if(typeof cfg == "string"){
+		cfg = { about: cfg, theme: 'DARK', printOnScreen: true };
+	}
 
 	// If index helper not exists, build it!
-	if (typeof WikiHelper.index == "undefined") {
-		var idx = "Index";
-		WikiHelper[idx] = {
-			general: {
-				name: idx,
-				version: 1.00,
-				description: "Index of scripts into isiTools"
-			}
-		}
-		for (var key in WikiHelper) {
-			if (key.toLowerCase() == 'index') continue;
-
-			if (typeof WikiHelper[idx][WikiHelper[key].general.name] == "undefined") {
-				WikiHelper[idx][WikiHelper[key].general.name] = {};
-			}
-
-			var aux = {};
-				aux = Object.assign({}, WikiHelper[key]);
-			if(typeof aux.general != "undefined") delete aux.general;
-			if(typeof aux.additional != "undefined") delete aux.additional;
-
-			if(WikiHelper[key].general.intern){
-				WikiHelper[key].general.helpText = WikiHelper[key].general.example;
-
-			} else if(typeof WikiHelper[key].general.help != "undefined" && WikiHelper[key].general.help == 1){
-				WikiHelper[key].general.helpText = '<comm>// Para obtener ayuda general sobre el script/plugin</comm>\n' + WikiHelper[key].general.name + '.help();\n';
-				WikiHelper[key].general.helpText += WikiHelper[key].general.name + ".help({theme: '" + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + "'});\n";
-				if(typeof Object.keys(aux)[0] != "undefined"){
-					WikiHelper[key].general.helpText += '\n<comm>// Para obtener ayuda sobre un método o propiedad específica</comm>\n' + WikiHelper[key].general.name + ".help({help: '" + Object.keys(aux)[0] + "', theme: '" + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + "'});\n";
-				}
-			} else {
-				WikiHelper[key].general.helpText = '<comm>// Para obtener ayuda general sobre el script/plugin</comm>\n' + WikiHelper[key].general.name + "('help');\n";
-				WikiHelper[key].general.helpText += WikiHelper[key].general.name + "({help: '', theme: '" + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + "'});\n";
-				if(typeof Object.keys(aux)[0] != "undefined"){
-					WikiHelper[key].general.helpText += '\n<comm>// Para obtener ayuda sobre un método o propiedad específica</comm>\n' + WikiHelper[key].general.name + "({help: '" + Object.keys(aux)[0] + "', theme: '" + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + "'});\n";
-				}
-			}
-
-			WikiHelper[idx][WikiHelper[key].general.name].description = WikiHelper[key].general.description
-			if(!WikiHelper[key].general.intern){
-				WikiHelper[idx][WikiHelper[key].general.name].description += '\n<a onclick="' + WikiHelper[key].general.helpText.split("\n")[1] + "\"><b>Pulsa aquí para obtener ayuda sobre " + WikiHelper[key].general.name + "</b>.</a>";
-			}
-			WikiHelper[idx][WikiHelper[key].general.name].example =  WikiHelper[key].general.helpText;
-			WikiHelper[idx][WikiHelper[key].general.name].example = WikiHelper[idx][WikiHelper[key].general.name].example.replace(new RegExp (WikiHelper[key].general.name, 'ig'), function($0){ return "<name>" + $0 + "</name>"; })
+	WikiHelper.Index = {
+		general: {
+			name: "Index",
+			version: 2.0,
+			description: "Index of scripts into isiTools"
 		}
 	}
 
+	for (var key in WikiHelper) {
+		if (typeof WikiHelper.Index[WikiHelper[key].general.name] == "undefined") {
+			WikiHelper.Index[WikiHelper[key].general.name] = {};
+		}
+
+		if(key == "Index") continue;
+
+		var aux = {};
+			aux = Object.assign({}, WikiHelper[key]);
+		if(typeof aux.general != "undefined") delete aux.general;
+		if(typeof aux.additional != "undefined") delete aux.additional;
+
+		WikiHelper[key].general.helpText = '<comm>// Para llamar al ayudante de isiTools puede utilizarse la sintaxis <field>Helper()</field> o <field>it.helper()</field> indistintamente.</comm>\n';
+		WikiHelper[key].general.helpText += '<comm>// Para obtener ayuda general sobre el componente:</comm>\n' + 'Helper(<str>"' + WikiHelper[key].general.name + '"</str>);\n';
+		WikiHelper[key].general.helpText += 'Helper(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<func>theme</func>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
+		if(typeof Object.keys(aux)[0] != "undefined"){
+			WikiHelper[key].general.helpText += '\n<comm>// Para obtener ayuda sobre un método o propiedad específica:</comm>';
+			WikiHelper[key].general.helpText += '\nit.helper(<str>"' + WikiHelper[key].general.name + '"</str>, <str>"' + Object.keys(aux)[0] + '"</str>);';
+			WikiHelper[key].general.helpText += '\nit.helper(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<func>about</func>:</null> <str>"' + Object.keys(aux)[0] + '"</str>, <null><func>theme</func>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
+		}
+		
+		WikiHelper.Index[func] = {};
+		WikiHelper.Index[func].description = WikiHelper[key].general.description
+		WikiHelper.Index[func].example =  WikiHelper[key].general.helpText;
+		WikiHelper.Index[func].example = WikiHelper.Index[func].example.replace(new RegExp (WikiHelper[key].general.name, 'ig'), function($0){ return "<name>" + $0 + "</name>"; })
+
+		if(WikiHelper[key].general.name.toLowerCase() == func.toLowerCase()) break;
+	}
+
 	// Get object with the info
-	var sourceHelper = WikiHelper[it.ucwords(func)];
+	var sourceHelper = WikiHelper[func];
 	if(!sourceHelper){
 		console.error("IsiTools dice: Componente no habilitado o cargado");
 		return;
@@ -2778,7 +2736,7 @@ this.Helper = it.helper = function (func, cfg) {
 	delete help.general;
 	
 	// Hack to intern functions
-	if(WikiHelper[it.ucwords(func)].general.hasOwnProperty("intern") && WikiHelper[it.ucwords(func)].general.intern){
+	if(WikiHelper[func].general.hasOwnProperty("intern") && WikiHelper[func].general.intern){
 		help[func] = []
 		help[func].push({description: 'Método ' + func})
 		help[func].push({example: general.example})
@@ -2788,7 +2746,7 @@ this.Helper = it.helper = function (func, cfg) {
 	// if exists another Helper, is removed
 	if (document.querySelector("#h31p3r")) {
 		document.querySelector("#h31p3r").remove();
-		document.body.style.position = '';
+		document.body.classList.remove('body-hidden');
 	}
 
 	// Set themes
@@ -2810,23 +2768,23 @@ this.Helper = it.helper = function (func, cfg) {
 		opt.highlight = 'rgba(255,255,255,0.1)';
 
 	}
-	opt.method = !cfg.hasOwnProperty('method') ? null : cfg.method;
-	opt.property = !cfg.hasOwnProperty('property') ? null : cfg.property;
+	opt.about = cfg.hasOwnProperty('method') || cfg.hasOwnProperty('property') || cfg.about || null;
 	opt.printOnScreen = !cfg.hasOwnProperty('printOnScreen') ? true : cfg.printOnScreen;
+	opt.theme = theme
 
 	// If method or property is set, print only your help
 	var spec = false, aux = {};
-	if (opt.method || opt.property) {
-		aux[opt.method] = help[opt.method];
+	if (opt.about) {
+		aux[opt.about] = help[opt.about];
 		help = aux;
 		spec = true;
 	}
 	
 	// Set HTML template
-	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
+	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
 	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
-	<h2>Pantalla de ayuda para ' + general.name + " " + general.version + '</h2>\
-	<p style="margin-top: 64px">'+ general.description + '</p>\
+	<h1>Pantalla de ayuda para ' + general.name + " " + general.version + '</h1>\
+	<p style="margin-top: 10px">'+ general.description + '</p>\
 	<p>Parámetros y opciones:</p>\
 	__TEXT__\
 <div id="additionalH31p3r" style="display:none; margin-top: 32px">\
@@ -2837,8 +2795,7 @@ this.Helper = it.helper = function (func, cfg) {
 		<p>Opciones del Helper:</p>\
 		<p style="padding-left: 32px;">\
 			● <key>printOnScreen</key>: Booleano que indica si se debe mostrar la ayuda en pantalla o, de lo contrario, por consola. Por defecto es true.<br/>\
-			● <key>method</key>: Mostrar la ayuda del método solicitado.<br/>\
-			● <key>property</key>: Mostrar la ayuda de la propiedad solicitada.<br/>\
+			● <key>about</key>: Mostrar la ayuda sobre el método o propiedad solicitada.<br/>\
 			● <key>theme</key>: Sus posibles valores son "dark" para el tema utilizar oscuro y "light" para el tema claro. Por defecto es "dark".\
 		</p>\
 		<p>\
@@ -2848,9 +2805,9 @@ this.Helper = it.helper = function (func, cfg) {
 	</div>';
 
 	if (general.name.toLowerCase() == "index") {
-		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.style.position=\'\';"></i>\
+		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
 		<nav>\
-			<a href="#"><i class="btn-bars" onclick="it.helper.toggleMenu(this)"></i></a>\
+			<a href="javascript:void(0)"><i class="btn-bars" onclick="it.helper.toggleMenu(this)"></i></a>\
 			<ul>\
 				<li style="height: 40px; margin: 0; position: relative;">\
 					<input type="search" placeholder="Buscar componente..." oninput="it.helper.filterh31p3r(this)" />\
@@ -2859,36 +2816,59 @@ this.Helper = it.helper = function (func, cfg) {
 				__ITEMS_HELP__\
 			</ul>\
 		</nav>\
-		<h2>Tabla de contenidos de isiTools ' +  it.version + '</h2>\
-		<div style="margin-top: 64px">\
-		IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
-		<br/>\
-		<br/>\
-		Instalación<br/>\
-		Descargar / copiar las librerías en tu carpeta javascript de tu proyecto. Después, inserta el código necesario para activar isiTools. Por ejemplo:\
-		<code><comm>// Cargar todas las funciones</comm><br/>\
-&lt;script src="isitools.js" /><br/>\
-&lt;script src="isitoolsHerlper.js" /><br/>\
-<comm>// Cargar selectivamente algunas características</comm><br/>\
-&lt;script src="isitools.js<int>?modules=AddCSSRule+Alert+Autocomplete+DOM</int>" /><br/>\
-&lt;script src="isitoolsHerlper.js" /><br/></code>\
+		<h1>Tabla de contenidos de isiTools ' +  it.version + '</h1>\
+		<div style="margin-top: 10px">\
+			IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
+			<br/>\
 			__TEXT__\
+<name style="margin: 15px 0 10px 0; display:block;">Información adicional:</name>\
+Para utilizar cada uno de los componentes / módulos que, a continuación, se muestran se deberá activar previamente mediante una de las siguientes opciones:\
+<ul>\
+<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto <field style="padding: 0">itEnabledModules</field>, true o false en función de si se desea o no que se cargue y quede activo.</li>\
+<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo el nombre del componente en el atributo SCR del elemento SCRIPT que carga isiTools mediante el uso del atributo <field style="padding: 0">modules</field>.</li>\
+<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto declarado en el archivo <field style="padding: 0">config.js</field>, <bool>true</bool> o <bool>false</bool> en función de si se desea o no que se cargue y quede activo.</li>\
+</ul>\
+<br/>\
+Para llamar al ayudante de isiTools puede utilizarse la sintaxis <field style="padding: 0">Helper()</field> o <field style="padding: 0">it.helper()</field> indistintamente.<br/>\
+<code style="margin: 10px 0; padding: 0">\
+<comm>// Si se desea obtener ayuda general sobre un componente se puede recurrir a la forma reducida de un parámetro:</comm><br/>\
+Helper(<str>"each"</str>);<br/>\
+<br/>\
+<comm>// Si se desea obtener ayuda sobre un método o propiedad de un componente específico se puede recurrir a la forma reducida de dos parámetros:</comm><br/>\
+it.helper(<str>"autocomplete"</str>, <str>"callback"</str>);<br/>\
+<br/>\
+<comm>// Si se desea obtener ayuda general sobre un componente usando el tema claro se puede recurrir a la forma con el segundo parámetro como JSON:</comm><br/>\
+Helper(<str>"alert"</str>, <null>{<func>theme</func>:</null> <str>"light"</str><null>}</null>);<br/>\
+<br/>\
+<comm>// Esta última forma permite también establecer el método o propiedad que se desea consultar</comm><br/>\
+it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheckNode;"</str>, <null><func>theme</func>:</null> <str>"light"</str><null>}</null>);\
+</code>\
 		</div>\
 		';
 	}
 
 	if (opt.printOnScreen) {
+		AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-		AddCSSRule('', "#h31p3r", 'font-family: arial; font-size: 14px; position:fixed;top: 0;left: 0;width: 100%;height: 100%; white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
-		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px;font-size: 20px;font-variant: small-caps;position: fixed;width: 100%;left: 0;top: -15px;border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
-		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 0px 0 10px; font-size:1.0rem; padding: 64px 5px 5px 5px; border-bottom: 2px solid ' + opt.highlight + '; color: ' + opt.keyColor + ' !important;');
-		AddCSSRule('', "#h31p3r h3[onclick]", 'cursor:pointer');
-		AddCSSRule('', "#h31p3r ul li, #h31p3r p ", 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
-        AddCSSRule('', "#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p { font-size: 1rem; }");
-		AddCSSRule('', "#h31p3r field", 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
-		AddCSSRule('', "#h31p3r field.des, #h31p3r field.exa", "display: block; width: 100%;");
+		AddCSSRule('', "#h31p3r", 'font-family: arial; font-size: 14px; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
+		AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px; font-size: 20px; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
+		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; padding: 15px; font-size: 16px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
+		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1.0rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
+		AddCSSRule('', '#h31p3r h3[onclick]', 'cursor:pointer; transition: all 0.35s ease-in-out; padding: 3px 0 0 0; line-height: 22px;');
+		AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
+		AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
+		AddCSSRule('', '#h31p3r h3[onclick]::before', 'content: "\\1F517"; opacity: 0; transition: all 0.35s ease-in-out;');
+		AddCSSRule('', '#h31p3r.index h2', 'margin: 12px 0 15px 0 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); width: 100%; box-shadow: rgb(0 0 0) 0px 0px 24px 1px inset; padding: 5px 0;');
+		AddCSSRule('', '#h31p3r.index h3', ' margin: 0; box-shadow: none; border: 0 none; width: 25%; display: inline-block; ');
+		AddCSSRule('', '#h31p3r.index h3.no-loaded', 'color: ' + opt.commentColor + ' !important;');
+		AddCSSRule('', '#h31p3r.index h3 text', 'display: inline; padding: 0;');
+		AddCSSRule('', '#h31p3r ul li, #h31p3r p ', 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
+        AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
+		AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
+		AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
 		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
 		AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
+		AddCSSRule('', '#h31p3r text a:hover, #h31p3r text a:focus, #h31p3r text a:active, #h31p3r text a:hover b, #h31p3r text a:focus b, #h31p3r text a:active b', 'color: ' + opt.keyColor + ' !important; text-decoration: underline;');
 		AddCSSRule('', '#h31p3r > a', 'position: fixed;left: 10px;top: 10px; border: 1px solid ' + opt.highlight + '; padding: 3px 10px; line-height:26px;z-index:9; color: ' + opt.background + ';');
 		AddCSSRule('', '#h31p3r > a:hover', 'background: ' + opt.background + '; color: ' + opt.color + ';');
 		AddCSSRule('', '#h31p3r int', 'color: ' + opt.intColor + ';');
@@ -2899,6 +2879,7 @@ this.Helper = it.helper = function (func, cfg) {
 		AddCSSRule('', '#h31p3r null', 'color: ' + opt.nullColor + ';');
 		AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
 		AddCSSRule('', '#h31p3r code, #h31p3r pre code', 'color: ' + opt.exampleColor + '; padding-left: 32px; display: block; ');
+		AddCSSRule('', '#h31p3r code field', 'padding: 0; text-transform: none;');
 		AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
 		AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 32px; top: 11px; width: 32px; height: 32px;  background: ' + opt.buttons + '; z-index:9; cursor: pointer;');
 		AddCSSRule('', '#h31p3r .btn-times:hover', 'opacity: 1;');
@@ -2929,66 +2910,95 @@ this.Helper = it.helper = function (func, cfg) {
 			AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
 		}
 
-		var text = '', additional = '', items_help = '';
-		var idx = 0;
-		for (var prop in help) {
+		var text = '', additional = '', items_help = '', internHeaderGroupAdded = false, headerGroupAdded = false, idx = 0, sortProps = func == "Index" ? Object.keys(help) : Object.keys(help).sort();
+
+		for (var p = 0; p < sortProps.length; p++) {
+			var prop = sortProps[p];
+
+			if(prop == "Index") continue;
+
 			var intern = general.hasOwnProperty("intern") && general.intern;
+			
 			if (prop != "additional" && general.name.toLowerCase() != "index") {
 				var type = help[prop].hasOwnProperty("type") ? help[prop].type : '';
 				text += '<h3>' + (((type == "function" || intern ) ? 'Método ' : 'Propiedad ') + prop) + '</h3>';
-			} else if (general.name.toLowerCase() == "index") {
-				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop;
-				var clk   = '" onclick="' + 'it.helper(\'' + wprop + '\')' + '"';
 
-				text += '<h3 id="' + wprop + clk + '>' + wprop + '</h3>';
+			} else if (general.name.toLowerCase() == "index") {
+				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop, clk;
+
+				if(WikiHelper[it.ucwords(prop)].general.intern || (!WikiHelper[it.ucwords(prop)].general.intern && itEnabledModules[prop])){
+					clk = 'onclick="' + 'it.helper(\'' + wprop + '\')' + '"';
+				} else {
+					clk = 'onclick="' + 'it.helper(\'' + wprop + '\')' + '" title="Componente no cargado" class="no-loaded"';
+				}
+				
+				if(WikiHelper[it.ucwords(prop)].general.intern && !internHeaderGroupAdded){
+					text += '<h2>Componentes internos, siempre disponibles</h2>';
+					internHeaderGroupAdded = true;
+
+				} else if(!WikiHelper[it.ucwords(prop)].general.intern && !headerGroupAdded){
+					text += '<h2 style="margin-top: 48px !important">Componentes consumibles a petición</h2>';
+					headerGroupAdded = true;
+				}
+
+				var enabled = WikiHelper[it.ucwords(prop)].general.intern ? '' : (' <text>' + (itEnabledModules[prop] ? '&#x2713;' : '&#xD7;') + '</text>');
+				text += '<h3 id="' + wprop + '" ' + clk + '>' + wprop + enabled + '</h3>';
 				
 				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
 			}
 
 			if (typeof help[prop] == "undefined") {
 				text += '<span style="padding-left: 32px; color: ' + opt.stringColor + '">El método o propiedad solicitada no está definida. Para revisar la ayuda manualmente intenta:</p>';
-				text += '<span style="padding-left: 32px; color: ' + opt.stringColor + '"><code>' + (func) + '("help");</code></span></p>';
+				text += '<span style="padding-left: 32px; color: ' + opt.stringColor + '"><code>it.helper("' + func + '");</code></span></p>';
 			}
 
-			for (var key in help[prop]) {
-				if (help[prop].hasOwnProperty("type") || general.name.toLowerCase() == "index") {
-					var keyTranslated = key.replace(/type/ig, 'Tipo').replace(/example/ig, 'Ejemplos ').replace(/description/ig, 'Descripción');
-					text += '<field class="' + key.substr(0, 3) + '">' + keyTranslated + '</field>' + (key == "type" ? '' : '');
-					items = help[prop][key].split("\n");
-					text += key.indexOf('example') == 0 ? ('<code>' + styleItems(key, items) + '</code>') : styleItems(key, items);
+			for (var key2 in help[prop]) {
+				if (help[prop].hasOwnProperty("type")) {
+					var keyTranslated = key2.replace(/type/ig, 'Tipo').replace(/example/ig, 'Ejemplos ').replace(/description/ig, 'Descripción');
+					text += '<field class="' + key2.substr(0, 3) + '">' + keyTranslated + '</field>' + (key2 == "type" ? '' : '');
+					items = help[prop][key2].split("\n");
+					text += key2.indexOf('example') == 0 ? ('<code>' + styleItems(key2, items) + '</code>') : styleItems(key2, items);
 
 				} 
 			}
 
-			for (var k = 0; k < help[prop].length; k++) {
-				for (var subkey in help[prop][k]) {
-					items = help[prop][k][subkey].split("\n");
-					var subkeyTranslated = subkey.replace(/example/ig, 'Ejemplos ').replace(/description/ig, 'Descripción');
-					additional += '<field class="' + key.substr(0, 3) + '">' + subkeyTranslated + '</field>' + (subkey == "type" ? '' : '');
-					additional += subkey.indexOf('example') == 0 ? ('<code>' + styleItems(subkey, items) + '</code>') : styleItems(subkey, items);
+			if (general.name.toLowerCase() != "index") {
+				for (var k = 0; k < help[prop].length; k++) {
+					for (var subkey in help[prop][k]) {
+						if(!intern || (intern && subkey != "description")){
+							items = help[prop][k][subkey].split("\n");
+							var subkeyTranslated = subkey.replace(/example/ig, 'Ejemplos ').replace(/description/ig, 'Descripción');
+							additional += '<field class="' + key.substr(0, 3) + '">' + subkeyTranslated + '</field>' + (subkey == "type" ? '' : '');
+							additional += subkey.indexOf('example') == 0 ? ('<code>' + styleItems(subkey, items) + '</code>') : styleItems(subkey, items);
+						}
+					}
 				}
 			}
 			idx++;
 		}
-
+		
 		// Add to body the help requested
 		var aux = template.replace(/__BACKGROUND__/ig, opt.background)
 			.replace(/__COLOR__/ig, opt.color)
 			.replace(/__TEXT__/ig, text)
 			.replace(/__ADDITIONAL__/ig, additional)
 			.replace(/__ITEMS_HELP__/ig, items_help)
-			.replace(/__HELPEROPTIONS__/ig, typeof WikiHelper['Index'][func] != "undefined" ? ("<code>" + WikiHelper['Index'][func].example + '</code>') : '')
+			.replace(/__HELPEROPTIONS__/ig, typeof WikiHelper.Index[func] != "undefined" ? ("<code>" + WikiHelper.Index[func].example + '</code>') : '')
 			.replace(/\\"/ig, '"')
 			.replace(/\\n/ig, '<br/>');
 
 		var a = document.createElement("pre");
 			a.setAttribute("id", "h31p3r");
+			a.setAttribute("class", func.toLowerCase() == 'index' ? 'index' : '')
 			a.innerHTML = aux;
 
 		document.body.appendChild(a);
 
 		if (additional.trim() != "") document.getElementById("additionalH31p3r").style.display = '';
-		document.body.style.position = "fixed";
+
+		// Hide body content
+		document.body.classList.add("body-hidden");
+
 
 		document.getElementById("h31p3r").onclick = function(e){
 			var aux = e.target.parentElement.tagName.toLowerCase()
