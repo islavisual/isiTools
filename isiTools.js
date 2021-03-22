@@ -9,19 +9,19 @@ var itEnabledModules = {
 	Debugger: false,
 	DOM: false,
 	GetBrowser: false,
-	GetParam: true,
+	GetParam: false,
 	HttpRequest:true,
-	Include: true,
+	Include: false,
 	IntelliForm: false,
 	IsMobile: false,
 	Language: false,
 	Mask: true,
-	Slider: false,
-	Password: false,
+	Slider: true,
+	Password: true,
 	Selectpicker: true,
 	SendForm: false,
-	Sorter: true,
-	StripTags: true,
+	Sorter: false,
+	StripTags: false,
 	Treeview: true,
 	Validator: false
 }
@@ -43,10 +43,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "1.9.1",
+it.version = "2.0b",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "10/03/2021",
+it.lastupdate = "22/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -333,19 +333,28 @@ it.set = function(){ if(this.so != null) this[this.so].set.call(this[this.so]) }
 
 /**
 	Simular evento como fuese lanzado por el usuario
-	@version: 1.0.0
+	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2021 Islavisual.
-	@Last update: 18/09/2019
+	@Last update: 21/03/2021
 **/
-it.simulateEvent = function(evt, el){
+it.simulateEvent = function(){
+	var args = Array.prototype.slice.call(arguments), event;
 
-	var event = new Event(evt, {'bubbles': true, 'cancelable': true});
-	el.dispatchEvent(event);
+	if(args[0] == "change"){
+		event = new Event(args[0], {'bubbles': true, 'cancelable': true});
+		args[1].dispatchEvent(event);
 
-	if(evt == "change"){
-		var event = new Event('input', {'bubbles': true, 'cancelable': true});
-		el.dispatchEvent(event);
+		event = new Event('input', {'bubbles': true, 'cancelable': true});
+		args[1].dispatchEvent(event);
+
+	} else if(args[0].indexOf("key") == 0){
+		event = new KeyboardEvent(args[0], { 'keyCode': args[1].charCodeAt(0), 'which': args[1].charCodeAt(0)});
+		args[2].dispatchEvent(event);
+
+	} else {
+		var event = new Event(args[0], {'bubbles': true, 'cancelable': true});
+		args[1].dispatchEvent(event);
 	}
 }
 
@@ -474,7 +483,7 @@ function isiToolsCallback(json){
 
 			// Hack for only string
 			if (typeof cfg == "string") {
-				cfg = { title: window.location.hostname + ' says:', body: cfg };
+				cfg = { title: window.location.hostname + ' dice:', body: cfg };
 			}
 
 			// If configuration object is invalid
@@ -502,8 +511,8 @@ function isiToolsCallback(json){
 
 			// Default Actions
 			var defaultActions = {
-				accept: { enabled: true, text: 'Accept', class: '', alignment: 'right', callback: null, addtocallback: {} },
-				cancel: { enabled: false, text: 'Cancel', class: '', alignment: 'left', callback: null, addtocallback: {} }
+				accept: { enabled: true, text: 'Acceptar', class: '', alignment: 'right', callback: null, addtocallback: {} },
+				cancel: { enabled: false, text: 'Cancelar', class: '', alignment: 'left', callback: null, addtocallback: {} }
 			}
 
 			// Create JSON with current opt
@@ -4626,6 +4635,9 @@ function isiToolsCallback(json){
 						input.name = this.target.id;
 						input.checked = cfg.selected=="0" || cfg.checked == "true" || cfg.checked == true ? true : false;
 						input.type = "checkbox";
+						if(cfg.hasOwnProperty("disabled") && (cfg.disabled == "true" || cfg.disabled === true)){
+							input.setAttribute("disabled", "disabled");
+						}
 
 					var label = document.createElement("label");
 						label.setAttribute("data-on", cfg.labelOn);
@@ -4642,6 +4654,7 @@ function isiToolsCallback(json){
 					cont.setAttribute("aria-label", ariaLbl);
 					cont.setAttribute("role", "switch");
 					cont.setAttribute("aria-checked", input.checked);
+					cont.classList.add("rendered");
 					
 					this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
 					this.target.parentNode.removeChild(this.target);
@@ -4745,18 +4758,18 @@ function isiToolsCallback(json){
 			it.addCSSRule('', "#slider-" + cfg.id, 'display: block; width: 100%;');
 
 			if(type == "switch"){
-				it.addCSSRule('', "#slider-" + cfg.id, "border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0;");
-				it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; ");
-				it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
-				it.addCSSRule('', "#slider-" + cfg.id + " label::before, it-slider[type=switch] label::after", "font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+				it.addCSSRule('', "#slider-" + cfg.id, "background: linear-gradient(to bottom, rgba(245,245,245,1) 0%,rgba(0,0,0,0) 100%); border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0;");
+				it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: 100% !important; z-index: 1; ");
+				it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.50) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+				it.addCSSRule('', "#slider-" + cfg.id + " label::before, it-slider[type=switch] label::after", "font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
 				it.addCSSRule('', "#slider-" + cfg.id + " label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
 				it.addCSSRule('', "#slider-" + cfg.id + " label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
 				it.addCSSRule('', "#slider-" + cfg.id + " input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
 				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ label::before", "opacity: 0;");
 				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ label::after", "opacity: 1;");
-				it.addCSSRule('', "#slider-" + cfg.id + " handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
+				it.addCSSRule('', "#slider-" + cfg.id + " handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); /*box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);*/ border: 1px solid rgba(0, 0, 0, 0.2); height: 100%; left: 3px; position: absolute; top: 3px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
 				it.addCSSRule('', "#slider-" + cfg.id + " handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
-				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ handle", "box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 4px);");
+				it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ handle", "/*box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.2);*/ left: calc(50% - 3px);");
 
 			} else if(type == "range") {
 				it.addCSSRule('', "#slider-" + cfg.id + " values", "width: 100%; display: table; height: auto;");
@@ -4785,6 +4798,8 @@ function isiToolsCallback(json){
 			var items = document.querySelectorAll("it-slider");
 			for(var x = 0; x < items.length; x++){
 				var item = items[x], arr = {}, colors = {};
+
+				if(item.classList.contains("rendered")) continue;
 
 				for (var i = 0, atts = item.attributes, n = atts.length, arr = {}; i < n; i++){
 					var key = atts[i].nodeName, value = atts[i].value;
@@ -6431,198 +6446,237 @@ function isiToolsCallback(json){
 
 	/**
 		 Validator functionality
-		@version: 1.0
+		@version: 2.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 17/03/2019
+		@Last update: 22/03/2021
 	**/
 	if(json.Validator){
-		this.Validator = it.validator = {
-			setTarget: function(e){
-				this.opt.target = document.getElementById(e);
-			},
-			opt: {},
-			help: function(cfg){
-				if(typeof cfg == "undefined") cfg = {help: ''};
-				if(!cfg.hasOwnProperty("help")) cfg.help = '';
+		this.Validator = it.validator = function(cfg){
+			if(cfg == undefined) cfg = {};
 
-				if (typeof showHelper != "undefined") showHelper("Validator", cfg);
-				else alert("Helper not available!")
-				return;
-			},
-			set: function(cfg){
+			// Recorremos todos los resultados que devuelve la función constructora
+			Array.prototype.slice.call(this.targets).forEach(function (target, idx) {
 				// Assign options and mandatories
-				var msg = this._assignOptions(cfg);
-				if(msg != "") return this._showErrorMessage(msg);
-
-				// If configuration object is invalid
-				if (!cfg.hasOwnProperty('target')) { alert("You need set an object like target to create the Treeview!. Please, see the help with the Treeview('help');"); return false; }
-
-				// Get constraints and values
-				if(cfg.hasOwnProperty("constraint")){
-					var p = '(!=|==|===|<|>|<=|>=';
-					var c = cfg.constraint.match(new RegExp ('[' + p + ']', 'g')), v = cfg.constraint.match(new RegExp ('[^' + p + ']', 'g')).join('');
-						c = c != null ? c.join('') : '';
-				}
+				var msg = it.validator._assignOptions(cfg);
+				if(msg != "") return it.validator._showErrorMessage(msg);
+				if(cfg.type != 'universal') target.type = cfg.type;
 
 				// Set required attribute
-				if(cfg.hasOwnProperty("required") && cfg.required) cfg.target.setAttribute("required", "required");
+				if(cfg.hasOwnProperty("required") && cfg.required) target.setAttribute("required", "required");
 
 				// Set pattern attribute
-				if(cfg.hasOwnProperty("pattern")) cfg.target.setAttribute("pattern", cfg.pattern);
+				if(cfg.hasOwnProperty("pattern")) target.setAttribute("pattern", cfg.pattern);
 
-				// Assign configuration
-				cfg = this.opt;
+				// Set options object
+				cfg.target = target;
+				it.validator.opt = cfg;
 
-				var aux, auxi, auxv;
-				if(cfg.hasOwnProperty("oninvalid")){
-					this.onInvalid(cfg.oninvalid);
-					return;
+				if(cfg.type == "file"){
+					it.validator._fileset(cfg, msg);
 
-				} else if(Object.values(p.split("|")).indexOf(c) != -1 && c != ""){
-					var fc = 'e.target.value';
-					if(!isNaN(v)) fc = '!isNaN(' + fc + ') && parseFloat(' + fc + ')';
-					
-					aux = '	if (' + fc + ' ' + c + " " + v + ') {\n __AUXV__ } else {\n __AUXI__ }';
+				} else if(cfg.custom){
+					it.validator._newValidation('input', cfg.custom);
+
 				} else {
-					aux = 'if (' + cfg.constraint + ') {\n __AUXV__ } else {\n __AUXI__ }';
+					var aux, auxi, auxv;
+					if(cfg.hasOwnProperty("oninvalid")){
+						it.validator.onInvalid(cfg.oninvalid);
+
+					} else {
+						// Get constraints and values
+						if(cfg.hasOwnProperty("constraint")){
+							var p = '!=|==|===|<|>|<=|>=';
+							var c = cfg.constraint.match(new RegExp ('[' + p + ']', 'g'))
+								c = c != null ? c.join('') : '';
+							var v = cfg.constraint.match(new RegExp ('[^' + p + ']', 'g')).join('');
+						}
+
+						try{
+							eval("var auxTmp = " + cfg.constraint + ';')
+							if(auxTmp != cfg.constraint){
+								aux = '	if (' +cfg.constraint.replace(/this/ig, 'e.target') + ') {\n __AUXV__ } else {\n __AUXI__ }';		
+							} 
+							
+						} catch(e){
+							try{
+								p.split("|").forEach(function(el){
+									if(cfg.constraint.indexOf(el) != -1 && cfg.constraint.indexOf("this") == -1){
+										aux = 'if (' + cfg.constraint.replace(new RegExp (el, 'ig'), 'e.target.value' + el) + ') {\n __AUXV__ } else {\n __AUXI__ }';
+
+									} else if(cfg.constraint.indexOf("this") != -1) {
+										aux = 'if (' + cfg.constraint + ') {\n __AUXV__ } else {\n __AUXI__ }';
+									}
+								});
+							} catch(e){
+								it.validator._showErrorMessage('La restricción o condición no tiene un formato válido.\n\nSi se desea usar el valor actual del elemento de formulario tratado puede usarse la palabra reservada "this" (pe: this.value), en vez de "event" o cualquiera de sus equivalencias (pe: event.target.value ó e.target.value).\n\nPor favor, utiliza el atributo "onInvalid" para definir la restricción o consulta Helper(\'validator\');')
+								return;
+							}
+						}
+
+						// If display is enable, the message is added and displayed
+						var fa = it.validator._display(cfg) ? '	Validator.addMessage(e.target);\n' : '';
+						var fr = it.validator._display(cfg) ? '	if(e.target.nextElementSibling != null && e.target.nextElementSibling.classList.contains("validator-error-msg")) e.target.nextElementSibling.remove();\n' : '';
+
+						auxv  = '	e.target.setCustomValidity("");\n';
+						auxv += '	e.target.classList.remove("validator-error");\n';
+						auxv += fr;
+						auxi  = '	e.target.setCustomValidity("' + cfg.message + '");\n';
+						auxi += '	e.target.classList.add("validator-error")\n';
+						auxi += fa;
+
+						it.validator._newValidation('invalid', auxi);
+						it.validator._newValidation('input', aux.replace(/__AUXV__/ig, auxv).replace(/__AUXI__/ig, auxi));
+					}
 				}
+			});
+		}
 
-				// If fixed is enable, add message under input
-				var fa = this._fixed(cfg) ? '	Validator.addMessage(e.target);\n' : '';
-				var fr = this._fixed(cfg) ? '	if(e.target.nextElementSibling != null && e.target.nextElementSibling.classList.contains("validator-error-msg")) e.target.nextElementSibling.remove();\n' : '';
+		it.validator.opt = {};
 
-				auxv  = '	e.target.setCustomValidity("");\n';
-				auxv += '	e.target.classList.remove("validator-error");\n';
-				auxv += fr;
-				auxi  = '	e.target.setCustomValidity("' + cfg.message + '");\n';
-				auxi += '	e.target.classList.add("validator-error")\n';
-				auxi += fa;
+		it.validator.addMessage = function(trg){
+			var ns = trg.nextElementSibling;
+			var exists = !ns ? false : ns.classList.contains("validator-error-msg");
 
-				this.newValidation('invalid', auxi);
-				this.newValidation('input', aux.replace(/__AUXV__/ig, auxv).replace(/__AUXI__/ig, auxi));
-			},
-			newValidation: function(type, fn){
-				if (type == null || type == "") { return this._showErrorMessage("Type validation not valid!.\nPlease, see the help with the Validator('help');"); }
-				if (fn == null || fn == "") { return this._showErrorMessage("Function code is empty!.\nPlease, see the help with the Validator('help');"); }
+			if(!exists){
+				var aux = document.createElement("span");
+					aux.setAttribute("class", "validator-error-msg");
+					aux.innerHTML = trg.validationMessage;
+
+				trg.parentNode.insertBefore(aux, trg.nextSibling);
+			} else {
+				ns.innerHTML = trg.validationMessage;
+			}
+
+			if(typeof it.addCSSRule != "undefined"){
+				AddCSSRule('', ".validator-error-msg",  'background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2);');
+			}
+		}
+
+		it.validator.onInvalid = function(msg){
+			// Not soported IE9- and Safari
+			if (msg == null || msg == "") { return this._showErrorMessage('Mensaje no válido.\n\nPor favor, consulta Helper(\'validator\');'); }
+			
+			this.opt.target.setAttribute("oninvalid", "this.setCustomValidity('" + this.opt.oninvalid + "'); this.classList.add('validator-error'); Validator.addMessage(this);");
+			this.opt.target.setAttribute("oninput", "this.setCustomValidity(''); this.classList.remove('validator-error'); try{ this.nextElementSibling.remove(); } catch(e) {}");
+		}
+
+		it.validator._assignOptions = function(cfg){
+			var msg = "";
+
+			// If it.target has value, set to cfg object
+			if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
+
+			cfg.target = document.getElementById(cfg.target);
+			this.opt = cfg; 
+
+			if (!cfg.hasOwnProperty('type')) this.opt.type = "universal";
+			if (!cfg.hasOwnProperty('custom')) this.opt.custom = null;
+
+			if((!cfg.hasOwnProperty('message') || cfg.message == "") && !cfg.hasOwnProperty('messages') && !cfg.hasOwnProperty("oninvalid") && !cfg.hasOwnProperty("custom")){
+				msg = '¡Necesita configurar el parámetro "message" o "messages"!.\nPor favor, consulte la ayuda con el Helper(\'validator\')';
+			}
+
+			if(!cfg.hasOwnProperty('messages')){
+				this.opt.display = !cfg.hasOwnProperty('display') ? true : cfg.display;
+			}
+			
+			if (cfg.hasOwnProperty('messages')) {
+				if (!cfg.hasOwnProperty('maxsize')) this.opt.messages.maxsize = "";
+				if (!cfg.hasOwnProperty('accept')) this.opt.messages.accept = "";
+				if (!cfg.hasOwnProperty('display')) this.opt.messages.display = true;
+			}
+			return msg;
+		}
+
+		it.validator._display = function(cfg){
+			var f = false;
+			if((cfg.hasOwnProperty("display") && cfg.display) || (cfg.hasOwnProperty("messages") && cfg.messages.hasOwnProperty("display") & cfg.messages.display)) f = true;
+
+			return f;
+		}
+
+		it.validator._fileset = function(cfg){
+			var fa = this._display(cfg) ? '		Validator.addMessage(e.target);\n' : '';
+			var fr = this._display(cfg) ? '		try{ e.target.nextElementSibling.remove(); } catch(e) {}\n' : '';
+
+			// Set accpet attribute
+			if(cfg.hasOwnProperty("accept") && cfg.accept != "") cfg.target.setAttribute("accept", cfg.accept);
+
+			// Set required attribute
+			if(cfg.hasOwnProperty("required") && cfg.required) cfg.target.setAttribute("required", "required");
+
+			// Assign configuration
+			cfg = this.opt;
+
+			// Limit file maxsize
+			if(cfg.hasOwnProperty("maxsize")){
+				var aux = 'var el = e.target;\n';
+					aux += 'for(var i = 0; i < el.files.length; i++){\n';
+					aux += '	if(el.files[i].size > ' + cfg.maxsize + ' * 1024){\n';
+					aux += '		el.setCustomValidity(el.files[i].name + ": ' + (cfg.hasOwnProperty("messages") ? cfg.messages.maxsize : cfg.message) + '");\n';
+					aux += '		el.classList.add("validator-error");\n';
+					aux += '		e.value = ""\n';
+					aux += fa;
+					aux += '		return false;\n';
+					aux += '	} else {\n';
+					aux += '		e.target.setCustomValidity("");\n';
+					aux += '		e.target.classList.remove("validator-error");\n';
+					aux += fr;
+					aux += '		return false;\n';
+					aux += '	}\n';
+					aux += '}\n';
+				this._newValidation('change', aux);
+				this._newValidation('invalid', aux);
+			}
+
+			// Enabling preview
+			if(cfg.hasOwnProperty("preview")){
+				cfg.target.addEventListener("change", function(e){
+					var el = e.target;
+					if (el.files && el.files[0]) {
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							cfg.thumbnail.innerHTML = '<img src="'+e.target.result+'"/>';
+						};
+						reader.readAsDataURL(el.files[0]);
+					}
+				});
+			}
+		}
+
+		it.validator._newValidation = function(type, fn){
+			if (type == null || type == "") { return this._showErrorMessage('El tipo de validación no es válida.\n\nPor favor, consulta Helper(\'validator\');'); }
+			if (fn == null || fn == "") { return this._showErrorMessage('El código de la función está vacío.\n\nPor favor, consulta Helper(\'validator\');'); }
+			
+			if(typeof fn == 'function'){
+				fn = 'document.getElementById("' + this.opt.target.id + '").addEventListener("' + type + '", ' + fn.toLocaleString()+ '\n);';
+				console.log(fn)
+				eval(fn);
 				
+			} else {
 				var prefix = '';
-				if(this.opt.fixed) prefix = 'e.preventDefault();\n';
-
+				if(this.opt.display) prefix = 'e.preventDefault();\n';
+	
 				fn = 'document.getElementById("' + this.opt.target.id + '").addEventListener("' + type + '", function(e){\n' + prefix + fn + '\n});';
 				eval(fn);
-			},
-			onInvalid: function(msg){
-				// Not soported IE9- and Safari
-				if (msg == null || msg == "") { return this._showErrorMessage("Message no valid!.\nPlease, see the help with the Validator('help');"); }
-				
-				this.opt.target.setAttribute("oninvalid", "this.setCustomValidity('" + this.opt.oninvalid + "'); this.classList.add('validator-error'); Validator.addMessage(this);");
-				this.opt.target.setAttribute("oninput", "this.setCustomValidity(''); this.classList.remove('validator-error'); try{ this.nextElementSibling.remove(); } catch(e) {}");
-			},
-			_fixed: function(cfg){
-				var f = false;
-				if((cfg.hasOwnProperty("fixed") && cfg.fixed) || (cfg.hasOwnProperty("messages") && cfg.messages.hasOwnProperty("fixed") & cfg.messages.fixed)) f = true;
-
-				return f;
-			},
-			fileset: function(cfg){
-				// Assign options and mandatories
-				var msg = this._assignOptions(cfg);
-				if(msg != "") return this._showErrorMessage(msg);
-
-				var fa = this._fixed(cfg) ? '		Validator.addMessage(e.target);\n' : '';
-				var fr = this._fixed(cfg) ? '		try{ e.target.nextElementSibling.remove(); } catch(e) {}\n' : '';
-
-				// Set accpet attribute
-				if(cfg.hasOwnProperty("accept") && cfg.accept != "") cfg.target.setAttribute("accept", cfg.accept);
-
-				// Set required attribute
-				if(cfg.hasOwnProperty("required") && cfg.required) cfg.target.setAttribute("required", "required");
-
-				// Assign configuration
-				cfg = this.opt;
-
-				// Limit file maxsize
-				if(cfg.hasOwnProperty("maxsize")){
-					var aux = 'var el = e.target;\n';
-						aux += 'for(var i = 0; i < el.files.length; i++){\n';
-						aux += '	if(el.files[i].size > ' + cfg.maxsize + ' * 1024){\n';
-						aux += '		el.setCustomValidity(el.files[i].name + ": ' + (cfg.hasOwnProperty("messages") ? cfg.messages.maxsize : cfg.message) + '");\n';
-						aux += '		el.classList.add("validator-error");\n';
-						aux += '		e.value = ""\n';
-						aux += fa;
-						aux += '		return false;\n';
-						aux += '	} else {\n';
-						aux += '		e.target.setCustomValidity("");\n';
-						aux += '		e.target.classList.remove("validator-error");\n';
-						aux += fr;
-						aux += '		return false;\n';
-						aux += '	}\n';
-						aux += '}\n';
-					this.newValidation('change', aux);
-					this.newValidation('invalid', aux);
-				}
-
-				// Enabling preview
-				if(cfg.hasOwnProperty("preview")){
-					cfg.target.addEventListener("change", function(e){
-						var el = e.target;
-						if (el.files && el.files[0]) {
-							var reader = new FileReader();
-							reader.onload = function(e) {
-								cfg.thumbnail.innerHTML = '<img src="'+e.target.result+'"/>';
-							};
-							reader.readAsDataURL(el.files[0]);
-						}
-					});
-				}
-			},
-			_assignOptions: function(cfg){
-				var msg = "";
-
-				// If it.target has value, set to cfg object
-				if(!cfg.hasOwnProperty('target') && this.targets) cfg.target = this.targets[0].id;
-
-				cfg.target = document.getElementById(cfg.target);
-				this.opt = cfg; 
-
-				if (!cfg.hasOwnProperty('target')) msg = "'target' parameter is not defined!.\nPlease, see the help with the Validator('help');";
-
-				if((!cfg.hasOwnProperty('message') || cfg.message == "") && !cfg.hasOwnProperty('messages') && !cfg.hasOwnProperty("oninvalid")){
-					msg = "You needs set 'message' or 'messages' parameter!.\nPlease, see the help with the Validator('help');";
-				}
-				if(!cfg.hasOwnProperty('messages')){
-					this.opt.fixed = !cfg.hasOwnProperty('fixed') ? false : cfg.fixed;
-				}
-				if (cfg.hasOwnProperty('messages')) {
-					if (!cfg.hasOwnProperty('maxsize')) this.opt.messages.maxsize = "";
-					if (!cfg.hasOwnProperty('accept')) this.opt.messages.accept = "";
-					if (!cfg.hasOwnProperty('fixed')) this.opt.messages.fixed = false;
-				}
-				return msg;
-			},
-			addMessage: function(trg){
-				var ns = trg.nextElementSibling;
-				var exists = !ns ? false : ns.classList.contains("validator-error-msg");
-
-				if(!exists){
-					var aux = document.createElement("span");
-						aux.setAttribute("class", "validator-error-msg");
-						aux.innerHTML = trg.validationMessage;
-
-					trg.parentNode.insertBefore(aux, trg.nextSibling);
-				} else {
-					ns.innerHTML = trg.validationMessage;
-				}
-
-				if(typeof it.addCSSRule != "undefined"){
-					AddCSSRule('', ".validator-error-msg",  'background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2);');
-				}
-			},
-			_showErrorMessage: function(msg){
-				try { Alert(msg); } catch(e) { alert(msg); }
-				return false;
 			}
+
+			
+		}
+
+		it.validator._showErrorMessage = function(msg){
+			try { Alert(msg.replace(/\n/g, '<br/>').replace(/\"(.*?)\"/ig, "<b>$1</b>")); } catch(e) { alert(msg); }
+			return false;
+		}
+
+		it.validator.help = function(cfg){
+			if(typeof cfg == "undefined") cfg = {help: ''};
+			if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+			if (typeof showHelper != "undefined") showHelper("Validator", cfg);
+			else alert("Helper not available!")
+			return;
 		}
 	}
 }
