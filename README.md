@@ -6,7 +6,7 @@ Los componentes que ofrece son:
 * **FormatedDate**: Devuelve la fecha formateada en base al formato y valor enviados. El primer parámtero se corresponde con el formato, que puede ser un código BCP-47 como (en-US, en-GB ó es-PA), y el segundo es el valor de fecha a formatear. Ambos parámetros son opcionales.
 * **Get**: Recuperar el enésimo elemento devuelto por la función constructora it().
 * **GetTextWidth**: Función para calcular el ancho de un elemento en base a un texto dado.
-* **hex2rgba**: Convierte un color en formato hexadecimal en un valor RGB con canal alfa personalizable.
+* **hexToRGBA**: Convierte un color en formato hexadecimal en un valor RGB con canal alfa personalizable.
 * **Last**: Devuelve el último elemento de los elementos recuperados por la función constructora.
 * **LeftPad**: Añadir ceros por la izquierda a valores numéricos.\nSe alimenta de un único parámetro que indica el número de ceros a añadir si el número no tiene la longitud indicada.
 * **ScrollTo**: Mover el scroll vertical de un determinado elemento hasta una posición determinada.
