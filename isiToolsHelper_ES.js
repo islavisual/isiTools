@@ -112,7 +112,7 @@ WikiHelper.Hextorgba = {
 		intern: true,
 		name: 'hexToRGBA',
 		help: 1,
-		description: 'Convertir color hexidecimal a RGB con un valor de alfa personalizable.\n\
+		description: 'Convierte un color en formato hexadecimal en un valor RGB con canal alfa personalizable.\n\
 	Si el valor del segundo parámetro no está establecido se devolverá con un valor de alfa igual a 1, es decir, totalmente opaco. \n\
 	En cualquier otro caso el valor de la opacidad será establecida a partir de un valor comprendido entre 0 y 1, donde 0 es totalmente transparente y 1 es totalmente opaco.',
 		example: '// Convertir el color correspondiente a #000 en formato RGBA sin transparencia alguna\n\
