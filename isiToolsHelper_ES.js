@@ -105,6 +105,27 @@ it.getTextWidth(Array.prototype.slice.call($0.querySelectorAll("option"), 0));',
 	},
 }
 
+
+WikiHelper.Hextorgba = {
+	general: {
+		version: '1.0',
+		intern: true,
+		name: 'hexToRGBA',
+		help: 1,
+		description: 'Convertir color hexidecimal a RGB con un valor de alfa personalizable.\n\
+	Si el valor del segundo parámetro no está establecido se devolverá con un valor de alfa igual a 1, es decir, totalmente opaco. \n\
+	En cualquier otro caso el valor de la opacidad será establecida a partir de un valor comprendido entre 0 y 1, donde 0 es totalmente transparente y 1 es totalmente opaco.',
+		example: '// Convertir el color correspondiente a #000 en formato RGBA sin transparencia alguna\n\
+it.hexToRGBA("#000");\n\
+\n\
+// Convertir el color correspondiente a #FF0000 en formato RGBA con una transparecia al 50%\n\
+it.hexToRGBA("#FF0000", 0.5);\n\
+\n\
+// Devolver el valor correspondiente al negro totalmente transparente\n\
+it.hexToRGBA("#000", 0);',
+	},
+}
+
 WikiHelper.Last = {
 	general: {
 		version: '1.0',
