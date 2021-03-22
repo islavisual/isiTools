@@ -267,7 +267,7 @@ it.getTextWidth = function(obj, fontFamily, fontSize, padding){
 	@Copyright 2017-2021 Islavisual.
 	@Last update: 07/03/2021
 **/
-it.hex2rgba = function(hex, alpha){
+it.hexToRGBA = function(hex, alpha){
 	var c;
 	
 	if(alpha == undefined) alpha = 1;
@@ -4580,7 +4580,7 @@ function isiToolsCallback(json){
 				// Calculate background color to gradient
 				var bg2 = '', alfa;
 				if(colors.background.indexOf("#") != -1){
-					var aux = it.hex2rgba(colors.background, 0.4).replace(/[^0-9,\.]/ig, '').split(",")
+					var aux = it.hexToRGBA(colors.background, 0.4).replace(/[^0-9,\.]/ig, '').split(",")
 					for(var i = 0; i < aux.length-1; i++){
 						bg2 += ((parseInt(aux[i]) - 32) + ",").trim(",")
 					}
@@ -4596,7 +4596,7 @@ function isiToolsCallback(json){
 				
 				// Calculate track color to gradient and border
 				if(colors.trackColor.indexOf("#") != -1){
-					var aux = it.hex2rgba(colors.trackColor, 0.4).replace(/[^0-9,\.]/ig, '').split(",")
+					var aux = it.hexToRGBA(colors.trackColor, 0.4).replace(/[^0-9,\.]/ig, '').split(",")
 					for(var i = 0; i < aux.length-1; i++){
 						bg2 += ((parseInt(aux[i]) - 32) + ",").trim(",")
 					}
@@ -4944,7 +4944,7 @@ function isiToolsCallback(json){
 				if(typeof it.addCSSRule != "undefined"){
 					it.addCSSRule('', "#it-password-" + cfg.target.id + (cfg.confirmby ? (", #it-password-" + cfg.confirmby) : ''), "position: relative");
 					it.addCSSRule('', "#" + pwdmeter.id, "width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0; border: 0 none; margin: 0 0 5px 0; display: none");
-					it.addCSSRule('', "#" + pwdmeter.id + " > div", "background: " + it.hex2rgba(cfg.colorok, 0.1)  + "; width: calc(16.667% - 1px); float: left; height: 5px; padding: 0; margin: 0px 1px 0 0; position: relative;");
+					it.addCSSRule('', "#" + pwdmeter.id + " > div", "background: " + it.hexToRGBA(cfg.colorok, 0.1)  + "; width: calc(16.667% - 1px); float: left; height: 5px; padding: 0; margin: 0px 1px 0 0; position: relative;");
 					it.addCSSRule('', "#" + pwdmeter.id + ".not-draw", "display: none !important");
 					it.addCSSRule('', "#" + pwdmeter.id + " > div.spotlight", "background: " + cfg.colorok + ";");
 					it.addCSSRule('', "input:focus ~ #" + pwdmeter.id, "background: " + cfg.colornok + "; display: block;");
