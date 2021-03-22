@@ -167,15 +167,30 @@ iit(document.querySelector("fieldset")).scrollTo(56);',
 
 WikiHelper.Simulateevent = {
 	general: {
-		version: '1.0',
+		version: '1.1',
 		intern: true,
 		name: 'simulateevent',
 		help: 1,
 		description: 'Simula un evento como si fuese lanzado por el usuario.\nSe alimenta de dos parámetros. El primero es el evento a simular. El segundo, el elemento dónde disparar dicho evento',
 		example: '// Lanzar el evento CHANGE en el primer elemento INPUT que se encuentre en la página.\n\
 it.simulateEvent("change", it("input").get());\n\
-// Lanzar el evento INPUT en el primer elemento INPUT de tipo texto que se encuentre en la página.\n\
-it.simulateEvent("change", it("input[type=text]").get());',
+\n\
+// Lanzar el evento INPUT en el segundo elemento INPUT de tipo texto que se encuentre en la página.\n\
+it.simulateEvent("input", it("input[type=text]").get(1));\n\
+\n\
+// Lanzar el evento CLICK en el elemento con ID switch1.\n\
+it.simulateEvent("click", document.getElementId("#switch1"));\n\
+\n\
+// Lanzar la pulsación de la tecla "1" bajo el evento KEYUP para el elemento con ID elemento1.\n\
+// <b>NOTA</b>: Para los eventos de tipo KEYPRESS, KEYDOWN y KEYUP el número de parámetros solicitados son 3, en vez de dos\n\
+it.simulateEvent("keyup", "1", it("#elemento1").get());\n\
+\n\
+// Lanzar la pulsación de la tecla "a" bajo el evento KEYDOWN para todos los elementos con clase text.\n\
+// <b>NOTA</b>: Para los eventos de tipo KEYPRESS, KEYDOWN y KEYUP el número de parámetros solicitados son 3, en vez de dos\n\
+var items = it(".text").targets;\n\
+for(var i = 0; i < items.length; i++){\n\
+	it.simulateEvent("keydown", "a", items[i]);\n\
+}',
 	},
 }
 
@@ -1228,7 +1243,7 @@ custom: []\n\
 };"
 		},
 		{
-			description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <field style="padding: 0; text-transform:lowercase">"finicio"</field> podría ser:',
+			description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <property>"finicio"</property> podría ser:',
 			example: '_CSS_\n\
 // styles.css (de tu sitio web)\n\
 #datepicker-layer-finicio { width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden; }\n\
@@ -1584,27 +1599,55 @@ WikiHelper.Include = {
 	general: {
 		version: '1.3',
 		name: 'Include',
-		description: "Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.",
+		description: 'Plugin para insertar código HTML dentro de un contenedor. La carga de archivos se realiza a través de Ajax en modo asíncrono y con método POST.\n\
+<name><b>NOTA</b>: En cuanto se detecte que este componente está cargado, se incluirán automáticamente todos los archivos indicados por la propiedad <property>auto-include</property>. En otras palabras, es como si se llamará automáticamente a la siguiente instrucción:</name>\n\
+<code><name>Include(</name>{ attribute: <str>"auto-include"</str> });</code>',
+
 	},
 	data: {
 		type: 'string',
 		description: 'El código HTML/texto a insertar.',
-		example: 'it("#target").include({\n\tdata: \'&lt;section class="container">\\\n\t\t&lt;article id="art_01">\\\n\t\t\t...\\\n\t\t&lt;/article>\\\n\t&lt;/section>\'\n});'
+		example: '//Supongamos un elemento de caja <property>DIV</property>, el cual tiene el <property>id</property> igual a <property>target</property>.\n\
+// Si deseásemos incluir un HTML a modo de texto plano, podríamos hacer:\n\
+it("#target").include({\n\
+	data: \'\n\
+	&lt;section class="container">\\\n\
+		&lt;article id="art_01">\\\n\
+			...\\\n\
+		&lt;/article>\\\n\
+	&lt;/section>\'\n});'
 	},
 	file: {
 		type: 'string',
 		description: 'URL del archivo a insertar en el elemento contenedor.',
-		example: 'it("#target").include({ file: "./customers/profile.html" });'
+		example: '//Supongamos un elemento de caja <property>DIV</property>, el cual tiene el <property>id</property> igual a <property>target</property>.\n\
+// Si deseásemos incluir el contenido del archivo "profile.html" que está en la carpeta "customers", podríamos hacer:\n\
+it("#target").include({ file: "./customers/profile.html" });'
 	},
 	attribute: {
 		type: 'string',
 		description: 'Indica qué atributo de datos personalizado HTML se utilizará para recuperar la URL que incluirá datos dentro de capas de contenedor (generalmente DIV, SECCIÓN, ARTÍCULO,...).',
-		example: '// Supongamos que el siguiente código fuente con "data-include"\n&lt;div>\n\t&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\t&lt;div class="container" data-include="./historical.html">&lt;/div>\n&lt;/div>\n\n Include({ attribute: "data-include" });'
+		example: '// Supongamos el siguiente código fuente en el que se establece el atributo <property>data-include<property>\n\
+&lt;div>\n\
+	&lt;div class="container" data-include="./profileCard.html">&lt;/div>\n\
+	&lt;div class="container" data-include="./historical.html">&lt;/div>\n\
+&lt;/div>\n\
+// Para realizar la acción de incluir el HTML de los archivos indicados ateriormente, bastaría con ejecutar:\n\
+Include({ attribute: "data-include" });'
 	},
 	callback: {
 		type: 'function',
 		description: 'Devuelve el control a la función indicada tras el proceso de inclusión. Esto es útil cuando se desea insertar dinámicamente un archivo detrás de otro en un orden preestablecido.',
-		example: 'it("#target").include({ file: "./customers/profile.html", callback: loadedFile });\n\nfunction loadedFile(){\n\tconsole.log("fichero incrustado!");\n}'
+		example: '//Supongamos un elemento de caja <property>DIV</property>, el cual tiene el <property>id</property> igual a <property>target</property>.\n\
+// Si deseásemos incluir el contenido del archivo "profile.html" que está en la carpeta "customers" y, cuándo esté cargado e insertado, mostrar un mensaje, podríamos hacer:\n\
+it("#target").include({\n\
+	file: "./customers/profile.html",\n\
+	callback: loadedFile\n\
+});\n\
+\n\
+function loadedFile(){\n\
+	console.log("fichero incrustado!");\n\
+}'
 	},
 }
 
@@ -1764,7 +1807,7 @@ it("#date").mask("YYYY-MM-DD");\n\
 // Definir una máscara de tipo tiempo con horas y minutos únicamente\n\
 it(".time").mask("HH:II");\n\
 \n\
-// Definir una máscara de tipo tiempo con sustitución posterior de uno de sus atributos, en este caso, <field>placeholder</field>\n\
+// Definir una máscara de tipo tiempo con sustitución posterior de uno de sus atributos, en este caso, <property>placeholder</property>\n\
 it(hour).mask("HH:II:SS").setAttribute("placeholder", "HH:MM:SS");\n\
 \n\
 // Definir una máscara de tipo teléfono\n\
@@ -2213,7 +2256,7 @@ showicon: "la la-eye",\n\
 	showbutton: {
 		type: 'boolean',
 		description: 'Permite establecer un botón para que se pueda mostrar la contraseña. Por defecto, la contraseña aparecerá como puntos o asteriscos. Si se pulsa este botón el elemento de entrada de datos asociado se tranformará en un elemento de entrada de datos de texto, mostrando así, su contenido.\n\
-<name><bool>NOTA</bool>: Este parámetro está asociado al parámetro <field style="padding:0">showicon</field>, el cual indica el icono a utilizar.',
+<name><bool>NOTA</bool>: Este parámetro está asociado al parámetro <property>showicon</property>, el cual indica el icono a utilizar.',
 		example:'it("#pwd").password({\n\
 colorok: "#fff",\n\
 colornok: "#0a3263",\n\
@@ -2223,7 +2266,7 @@ showicon: "icon eye",\n\
 	},
 	showicon: {
 		type: 'string',
-		description: 'Permite establecer el icono asociado al botón de mostrar la contraseña referenciado por el parámetro <field style="padding:0">showbutton</field>. Por defecto, este icono está establecido a <field>fa fa-eye</field>.',
+		description: 'Permite establecer el icono asociado al botón de mostrar la contraseña referenciado por el parámetro <property>showbutton</property>. Por defecto, este icono está establecido a <property>fa fa-eye</property>.',
 		example:'it("#pwd").password({\n\
 colorok: "#fff",\n\
 colornok: "#0a3263",\n\
@@ -2620,17 +2663,19 @@ _CSS_'
 
 /**
 	 Validator functionality
-	 @version: 1.0
+	 @version: 2.0
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
-	 @Last update: 17/03/2019
+	 @Last update: 22/03/2021
  **/
 WikiHelper.Validator = {
 	general: {
 		version: '1.0',
 		name: 'Validator',
 		help: 1,
-		description: "Este script establece mensajes de validez personalizados para un elemento de entrada de datos de formulario. Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.",
+		description: 'Este script establece validaciones personalizadas para los elementos de entrada de datos de formulario.\n\
+Aunque admite más parámetros o configuraciones, para un correcto funcionamiento sólo se requieren el atributo <property>contraint</property> y <property>message</property>.\n\
+<name><b>NOTA</b>:Recordar que, para HTML5, un mensaje de validación vacío significa que la entrada de datos es correcta.</name>',
 	},
 	additional: [
 		{
@@ -2638,31 +2683,149 @@ WikiHelper.Validator = {
 			example: '_CSS_// Personalizar el estilo del input\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Personalizar el color del mensaje de validación\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
 		}
 	],
-	set: {
+	constraint: {
 		type: 'function',
-		description: 'El método "set" indica a Validator que se desea aplicar una restricción predefinida a un input o campo de entrada de datos. Por lo general, estas restricciones son: patternMismatch, rangeOverflow, rangeUnderflow, stepMismatch, "=", "!=", "<", ">", ">=" and "<=".',
-		example: '// Permitir sólo números igual o menores a 100\nValidator.set({\n\ttarget: "percent",\n\tconstraint: "<=100",\n\tmessage: "Por favor, el número debe ser igual o menor a 100",\n\trequired: true\n});\n\n// Permitir sólo "Spain"\nValidator.set({\n\ttarget: "country",\n\tconstraint: "==\'Spain\'",\n\tmessage: "La palabra correcta es Spain",\n\tfixed: true,\n\trequired: true\n});\n\n// Permitir sólo una lista de valores\nvar arraySex = ["man", "woman", "other"];\nValidator.set({\n\ttarget: "sex",\n\tconstraint: "arraySex.indexOf(this.value) != -1",\n\tmessage: "Los posibles valores son: man, woman, other"\n});\n\n// Permitir sólo un rango de valores\ndocument.getElementById("range").setAttribute("type", "number");\ndocument.getElementById("range").setAttribute("min", 50);\ndocument.getElementById("range").setAttribute("max", 100);\nValidator.set({\n\ttarget: "range",\n\tfixed: true,\n\tconstraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\tmessage: "Los posibles valores son entre 50 y 100"\n});\n\n// Validación de la contraseña con, al menos, una letra mayúscula, una letra minúscula,\n// un dígito, un carácter especial y con un mínimo de ocho en longitud.\nValidator.set({\n\ttarget: "pwd",\n\tfixed: true,\n\trequired: true,\n\tconstraint: "!this.validity.patternMismatch",\n\tmessage: "La contraseña no coincide con el formato especificado",\n\tpattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n});'
+		description: 'Indica la validación que se desea aplicar a un elemento de formulario o campo de entrada de datos. Por lo general, estas restricciones son:\n\
+	● <b>patternMismatch</b>: Indica si el valor introducido no se ajusta a las restricciones establecidas por el atributo <property>pattern</property> definido en el elemento de formulario.\n\
+	● <b>rangeOverflow</b>: Indica si el valor introducido no se ajusta a las restricciones establecidas por el atributo <property>max</property> definido en el elemento de formulario.\n\
+	● <b>rangeUnderflow</b>: Indica si el valor introducido no se ajusta a las restricciones establecidas por el atributo <property>min</property> definido en el elemento de formulario.\n\
+	● <b>stepMismatch</b>: Indica si el valor introducido no se ajusta a las restricciones establecidas por el atributo <property>step</property> definido en el elemento de formulario.\n\
+	● <b>Operadores</b>: Es decir, "=", "!=", "<", ">", ">=" y "<=".',
+		example: '// Permitir sólo números igual o menores a 100\n\
+it("#percent").validator({\n\
+	constraint: "<=100",\n\
+	message: "Por favor, el número debe ser igual o menor a 100",\n\
+	required: true\n\
+});\n\
+\n\
+// Permitir sólo "Sí" o "No"\n\
+it("#respuesta").validator({\n\
+	constraint: "==\'S\' || ==\'N\'",\n\
+	message: "Los valores correctos son: S o N",\n\
+	required: true\n\
+});\n\
+\n\
+// Permitir sólo una lista de valores\n\
+var arraySex = ["H", "M", "X"];\n\
+it("#sexo").validator({\n\
+	constraint: "arraySex.indexOf(this.value) != -1",\n\
+	message: "Los posibles valores son: H, M y X"\n\
+});\n\
+\n\
+// Permitir sólo un rango de valores\n\
+document.getElementById("range").setAttribute("type", "number");\n\
+document.getElementById("range").setAttribute("min", 50);\n\
+document.getElementById("range").setAttribute("max", 100);\n\
+it("#range").validator({\n\
+	constraint: "!this.validity.rangeOverflow && !this.validity.rangeUnderflow",\n\
+	message: "Los posibles valores son entre 50 y 100"\n\
+});\n\
+\n\
+// Validación de la contraseña con, al menos, una letra mayúscula, una letra minúscula,\n\
+// un dígito, un carácter especial y con un mínimo de ocho en longitud.\n\
+it("#pwd").validator({\n\
+	required: true,\n\
+	constraint: "!this.validity.patternMismatch",\n\
+	message: "La contraseña no coincide con el formato especificado",\n\
+	pattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\
+});'
 	},
-	fileset: {
-		type: 'function',
-		description: 'Define las restricciones que deben tener las entradas del archivo. Esta funcionalidad se alimenta de un objeto JSON que admite:\n\t ● <b>accept</b>: es una cadena que define, separados por comas, los tipos de archivos que debe aceptar la entrada del archivo. De forma predeterminada, está vacío.\n\t ● <b>preview</b>: Habilita la vista previa del archivo. Por defecto, es false.\n\t ● <b>size</b>: Limitar (en KB) el tamaño del archivo que se va a cargar. De forma predeterminada, es 0, que indica que no tiene límite.\n\t ● <b>message</b>: mensaje que se muestra cuando la entrada del archivo no es válida.',
-		example: '// Permitir solo tipos de archivos de Word\nValidator.fileset({\n\ttarget: "file",\n\taccept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",\n\tmessage: "Los archivos permitidos son todos los formatos de Word!"\n});\n\n// Habilitar la vista previa dentro del contenedor de miniaturas\nValidator.fileset({target: "file", preview: true});\n\n// Limitar el tamaño de los archivos de imagen a 100KB.\nValidator.fileset({target: "file", maxsize: 100, accept: "image/*", message: "El tamaño de la imagen debe ser menor a 100 KB"});'
+	type: {
+		type: 'string',
+		description: 'Actualemnte, sólo define que la validación es para elementos de entrada de tipo FILE. Esta funcionalidad se alimenta de un objeto JSON que admite:\n\
+	● <b>accept</b>: es una cadena que define, separados por comas, los tipos de archivos que debe aceptar la entrada del archivo. De forma predeterminada, está vacío.\n\
+	● <b>preview</b>: Habilita la vista previa del archivo. Por defecto, es false.\n\
+	● <b>size</b>: Limitar (en KB) el tamaño del archivo que se va a cargar. De forma predeterminada, es 0, que indica que no tiene límite.\n\
+	● <b>message</b>: mensaje que se muestra cuando la entrada del archivo no es válida.',
+		example: '// Permitir solo tipos de archivos de Word\n\
+it("avatar").validator({\n\
+	type: "file",\n\
+	accept: ".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document",\n\
+	message: "Los archivos permitidos son todos los formatos de Word."\n\
+});\n\
+\n\
+// Permitir solo tipos de archivos de Excel\n\
+it("avatar").validator({\n\
+	type: "file",\n\
+	accept: ".xls, .xlsx, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",\n\
+	message: "Los archivos permitidos son todos los formatos de Excel y CSV."\n\
+});\n\
+\n\
+// Permitir sólo tipos de archivos de PDF\n\
+it("avatar").validator({\n\
+	type: "file",\n\
+	accept: ".pdf, application/pdf",\n\
+	message: "Los archivos permitidos son, únicamente, en formato PDF."\n\
+});\n\
+\n\
+// Habilitar la vista previa dentro del contenedor de miniaturas\n\
+it("").validator.fileset({\n\
+	type: "file",\n\
+	preview: true\n\
+});\n\
+\n\
+// Limitar el tamaño de los archivos de imagen a 100KB.\n\
+it("").validator.fileset({\n\
+	type: "file",\n\
+	maxsize: 100,\n\
+	accept: "image/*",\n\
+	message: "El tamaño de la imagen debe ser menor a 100 KB"\n\
+});'
 	},
-	fixed: {
+	display: {
 		type: "boolean",
-		description: 'Esta propiedad le indica al Validador que los mensajes deben mostrarse debajo del campo de entrada.',
-		example: '// Limitar el tamaño de los archivos jpeg a 250 KB y mostrar el mensaje bajo el input\nValidator.fileset({\n\ttarget: "file",\n\tfixed: true,\n\tmaxsize: 250,\n\taccept: ".jpg,.jpeg",\n\tmessage: "El tamaño del archivo debería ser menor a 250 KB"\n});'
+		description: 'Esta propiedad le indica si los mensajes resultantes de la validación deben añadirse y mostrarse tras la comprobación. Por defecto es <bool>true</bool>',
+		example: '// Limitar el tamaño de los archivos jpeg a 250 KB y no mostrar el mensaje de error aunque falle.\n\
+it("#avatar").validator({\n\
+	type: "file",\n\
+	display:false,\n\
+	maxsize: 250,\n\
+	accept: ".jpg,.jpeg",\n\
+	message: "El tamaño del archivo debería ser menor a 250 KB"\n\
+});\n\
+// Cuando se implementa este comportamiento, no mostrará ningún mensaje de error, pero sí que añadirá la clase <property>validator-error</property>, la cual puede ser útil para mostrar mensajes a partir de CSS, por ejemplo, podrían mostrarse los mensajes de error a través de:\n\
+<property>input + span{ display: none}</property>\n\
+<property>input.validator-error + span{ display: block}</property>'
 	},
-	newValidation: {
+	custom: {
 		type: 'function',
-		description: 'Definir validaciones personalizadas a través de código JavaScript.',
-		example: 'Validator.target = document.getElementById("checkbox");\nValidator.newValidation("input", "\\\n\tif (!this.checked) {\\\n\t\te.target.setCustomValidity("Must be checked!");\\\n\t\te.target.classList.add("validator-error")\\\n\t\tValidator.addMessage(e.target);\\\n\t} else {\\\n\t\te.target.setCustomValidity("");\\\n\t\te.target.classList.remove("validator-error");\\\n\t\te.target.nextElementSibling.remove();\\\n\t}\\\n");'
+		description: 'Permite definir validaciones personalizadas a través de código JavaScript.',
+		example: 'it("#switch1").validator({\n\
+	custom: function(e){\n\
+		if (!this.checked) {\n\
+			e.target.setCustomValidity("Debe estar seleccionado!");\n\
+			e.target.classList.add("validator-error")\n\
+			Validator.addMessage(e.target);\n\
+		} else {\n\
+			e.target.setCustomValidity("");\n\
+			e.target.classList.remove("validator-error");\n\
+			e.target.nextElementSibling.remove();\n\
+		}\n\
+	}\n\
+});'
 	},
-	onInvalid: {
-		type: "function",
-		description: 'Función de devolución de llamada cuando cuando se produzca un error de validación.',
-		example: 'Validator.target = document.getElementById("inputRequired");\nValidator.onInvalid("this.classList.add(\'validator-error\')")'
-	},
+	required: {
+		type: 'string',
+		description: 'Establece el atributo de requerido.',
+		example: '// Permitir sólo números igual o menores a 100\n\
+it("#percent").validator({\n\
+	constraint: "<=100",\n\
+	message: "Por favor, el número debe ser igual o menor a 100",\n\
+	required: true\n\
+});'
+	}, 
+	pattern: {
+		type: 'string',
+		description: 'Permite utilizar una expresión regular para validar la entrada de datos.',
+		example: '// Validación de la contraseña con, al menos, una letra mayúscula, una letra minúscula,\n\
+// un dígito, un carácter especial y con un mínimo de ocho en longitud.\n\
+it("#pwd").validator({\n\
+	required: true,\n\
+	constraint: "!this.validity.patternMismatch",\n\
+	message: "La contraseña no coincide con el formato especificado",\n\
+	pattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\
+});'
+	}
 }
 
 /**
@@ -2706,7 +2869,7 @@ this.Helper = it.helper = function (func, cfg) {
 		if(typeof aux.general != "undefined") delete aux.general;
 		if(typeof aux.additional != "undefined") delete aux.additional;
 
-		WikiHelper[key].general.helpText = '<comm>// Para llamar al ayudante de isiTools puede utilizarse la sintaxis <field>Helper()</field> o <field>it.helper()</field> indistintamente.</comm>\n';
+		WikiHelper[key].general.helpText = '<comm>// Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.</comm>\n';
 		WikiHelper[key].general.helpText += '<comm>// Para obtener ayuda general sobre el componente:</comm>\n' + 'Helper(<str>"' + WikiHelper[key].general.name + '"</str>);\n';
 		WikiHelper[key].general.helpText += 'Helper(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<func>theme</func>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
 		if(typeof Object.keys(aux)[0] != "undefined"){
@@ -2785,7 +2948,7 @@ this.Helper = it.helper = function (func, cfg) {
 	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
 	<h1>Pantalla de ayuda para ' + general.name + " " + general.version + '</h1>\
 	<p style="margin-top: 10px">'+ general.description + '</p>\
-	<p>Parámetros y opciones:</p>\
+	<p class="warning">__WARNING__</p>\
 	__TEXT__\
 <div id="additionalH31p3r" style="display:none; margin-top: 32px">\
 	<h3>Información adicional</h3>\
@@ -2824,12 +2987,12 @@ this.Helper = it.helper = function (func, cfg) {
 <name style="margin: 15px 0 10px 0; display:block;">Información adicional:</name>\
 Para utilizar cada uno de los componentes / módulos que, a continuación, se muestran se deberá activar previamente mediante una de las siguientes opciones:\
 <ul>\
-<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto <field style="padding: 0">itEnabledModules</field>, true o false en función de si se desea o no que se cargue y quede activo.</li>\
-<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo el nombre del componente en el atributo SCR del elemento SCRIPT que carga isiTools mediante el uso del atributo <field style="padding: 0">modules</field>.</li>\
-<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto declarado en el archivo <field style="padding: 0">config.js</field>, <bool>true</bool> o <bool>false</bool> en función de si se desea o no que se cargue y quede activo.</li>\
+<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto <property>itEnabledModules</property>, true o false en función de si se desea o no que se cargue y quede activo.</li>\
+<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo el nombre del componente en el atributo SCR del elemento SCRIPT que carga isiTools mediante el uso del atributo <property>modules</property>.</li>\
+<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto declarado en el archivo <property>config.js</property>, <bool>true</bool> o <bool>false</bool> en función de si se desea o no que se cargue y quede activo.</li>\
 </ul>\
 <br/>\
-Para llamar al ayudante de isiTools puede utilizarse la sintaxis <field style="padding: 0">Helper()</field> o <field style="padding: 0">it.helper()</field> indistintamente.<br/>\
+Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.<br/>\
 <code style="margin: 10px 0; padding: 0">\
 <comm>// Si se desea obtener ayuda general sobre un componente se puede recurrir a la forma reducida de un parámetro:</comm><br/>\
 Helper(<str>"each"</str>);<br/>\
@@ -2858,14 +3021,19 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
 		AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
 		AddCSSRule('', '#h31p3r h3[onclick]::before', 'content: "\\1F517"; opacity: 0; transition: all 0.35s ease-in-out;');
+		
 		AddCSSRule('', '#h31p3r.index h2', 'margin: 12px 0 15px 0 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); width: 100%; box-shadow: rgb(0 0 0) 0px 0px 24px 1px inset; padding: 5px 0;');
 		AddCSSRule('', '#h31p3r.index h3', ' margin: 0; box-shadow: none; border: 0 none; width: 25%; display: inline-block; ');
 		AddCSSRule('', '#h31p3r.index h3.no-loaded', 'color: ' + opt.commentColor + ' !important;');
+		AddCSSRule('', '#h31p3r.index h3.no-loaded[onclick]::before', 'content: "\\26cc"; padding: 0 0 0 5px;');
 		AddCSSRule('', '#h31p3r.index h3 text', 'display: inline; padding: 0;');
+
 		AddCSSRule('', '#h31p3r ul li, #h31p3r p ', 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
-        AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
+		AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
+		AddCSSRule('', '#h31p3r p.warning', 'background: linear-gradient(45deg, #de1f60, transparent); border-radius: 4px;');
 		AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
+		AddCSSRule('', '#h31p3r property', 'text-transform: none; padding: 0; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
 		AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
 		AddCSSRule('', '#h31p3r text a:hover, #h31p3r text a:focus, #h31p3r text a:active, #h31p3r text a:hover b, #h31p3r text a:focus b, #h31p3r text a:active b', 'color: ' + opt.keyColor + ' !important; text-decoration: underline;');
@@ -2941,10 +3109,10 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 					headerGroupAdded = true;
 				}
 
-				var enabled = WikiHelper[it.ucwords(prop)].general.intern ? '' : (' <text>' + (itEnabledModules[prop] ? '&#x2713;' : '&#xD7;') + '</text>');
+				var enabled = '';
 				text += '<h3 id="' + wprop + '" ' + clk + '>' + wprop + enabled + '</h3>';
 				
-				items_help += '<li onclick="this.querySelector(\'a\').click()"><a href="#' + wprop + '">' + wprop + '</a></li>';
+				items_help += '<li ' + clk + '><a href="javascript: void(0)">' + wprop + '</a></li>';
 			}
 
 			if (typeof help[prop] == "undefined") {
@@ -2984,6 +3152,7 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 			.replace(/__ADDITIONAL__/ig, additional)
 			.replace(/__ITEMS_HELP__/ig, items_help)
 			.replace(/__HELPEROPTIONS__/ig, typeof WikiHelper.Index[func] != "undefined" ? ("<code>" + WikiHelper.Index[func].example + '</code>') : '')
+			.replace(/__WARNING__/ig, !WikiHelper[func].general.intern && !itEnabledModules[WikiHelper[func].general.name] ? '<b>ATENCIÓN</b>: El componente no está habilitado' : '')
 			.replace(/\\"/ig, '"')
 			.replace(/\\n/ig, '<br/>');
 
