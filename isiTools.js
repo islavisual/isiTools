@@ -46,7 +46,7 @@ it.name = "isiTools";
 it.version = "2.0b",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "22/03/2021",
+it.lastupdate = "23/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -294,7 +294,7 @@ it.last = function(){ return this.targets[this.targets.length - 1] }
 
 /**
 	Recuperar un determinado padre establecido por nombre de etiqueta o todos los padres de un elemento
-	@version: 1.0.0
+	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2021 Islavisual.
 	@Last update: 02/03/2021
@@ -303,7 +303,7 @@ it.parents = function(e){
     var r = [], el = it.targets[0];
 
     for (var p = el && el.parentElement;
-             e ? (p && p.tagName.toLowerCase() != e.toLowerCase()) : p;
+             e ? (p && !p.matches(e)) : p;
              p = p.parentElement) {
         r.push(p);
     }
@@ -803,10 +803,10 @@ function isiToolsCallback(json){
 
 	/**
 		Autocomplete functionality
-		@version: 1.5.1
+		@version: 1.6
 		@author: Pablo E. Fernández (islavisual@gmail.com).
 		@Copyright 2017-2021 Islavisual.
-		@Last update: 05/03/2021
+		@Last update: 23/03/2021
 	**/
 	
 	if(json.Autocomplete){
@@ -875,31 +875,25 @@ function isiToolsCallback(json){
 					delay: !cfg.hasOwnProperty('delay') ? 300 : cfg.delay,
 					disable: !cfg.hasOwnProperty('disable') ? null : cfg.disable,
 					format: !cfg.hasOwnProperty('format') ? "list" : cfg.format,
-					helper: !cfg.hasOwnProperty('helper') ? true : cfg.helper,
+					helper: !cfg.hasOwnProperty('helper') ? false : cfg.helper,
 					highlight: !cfg.hasOwnProperty('highlight') ? null : cfg.highlight,
 					minLength: !cfg.hasOwnProperty('minLength') ? 3 : cfg.minLength,
-					minLengthMessage: !cfg.hasOwnProperty('minLengthMessage') ? "Cargando..." : cfg.minLengthMessage,
 					row: !cfg.hasOwnProperty('row') ? {} : cfg.row,
 					resort: !cfg.hasOwnProperty('resort') ? false : cfg.resort,
+					statusMessage: !cfg.hasOwnProperty('statusMessage') ? "Cargando..." : cfg.statusMessage,
 					target: cfg.target,
-					tooltips: !cfg.hasOwnProperty('tooltips') ? null : cfg.tooltips,
+					tooltip: !cfg.hasOwnProperty('tooltip') ? null : cfg.tooltip,
 					voidMessage: !cfg.hasOwnProperty('voidMessage') ? "No se han encontrado coincidencias" : cfg.voidMessage,
 				}
 
+				if(opt.highlight && !opt.highlight.hasOwnProperty("value")) opt.highlight.value = "";
+
 				if(opt.format == "table"){
 					// Define column fields by default
-					if(!opt.row.hasOwnProperty('columns')){
+					if(!opt.row.hasOwnProperty('columns') && opt.data){
 						opt.row.columns = [];
 						for(var key in opt.data[0]){
 							opt.row.columns.push(key);
-						}
-					}
-
-					// Define header fields by default
-					if(!opt.row.hasOwnProperty('headers')){
-						opt.row.headers = [];
-						for(var key in opt.data[0]){
-							opt.row.headers.push(key.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s){ return s.toUpperCase(); }));
 						}
 					}
 
@@ -951,38 +945,13 @@ function isiToolsCallback(json){
 
 				// Set message if minLength is -1 and message and events if minLength not id -1
 				if(opt.minLength == -1) {
-					opt.target.setAttribute("placeholder", opt.minLengthMessage);
+					opt.target.setAttribute("placeholder", opt.statusMessage);
 
 					opt.target.onkeydown = function(){ return false; }
 					
 				} else {
 					opt.target.setAttribute("placeholder", opt.target.dataset.placeholder);
 					opt.target.onkeydown = null;
-
-					function callbackInputAfter(e){
-						opt.data = e;
-						
-						// If file is JSON, disable ajax property to filter by this component
-						if(opt.url.split(".json")[opt.url.split(".json").length-1] == '') opt.ajax = false;
-						
-						var event = new Event('inputAfter');
-						opt.target.dispatchEvent(event);
-					}
-
-					function triggerAfterKey(t){
-						if(!opt.ajax){
-							var event = new Event('inputAfter');
-							t.dispatchEvent(event);
-						} else {
-							new HttpRequest({
-								url: opt.url + (opt.url.split("?").length == 1 ? "?q=" : "&q=") + encodeURIComponent(t.value),
-								ajax: true, 
-								callback: callbackInputAfter, 
-								contentType: "application/json; charset=utf-8",
-								responseType: "json"}
-							);
-						}
-					}
 
 					opt.target.addEventListener("keydown",  function (e) {
 						var kc = e.keyCode, t = e.target;
@@ -1029,7 +998,7 @@ function isiToolsCallback(json){
 
 						clearTimeout(_timeoutAC); 
 						if(goon) {
-							_timeoutAC = setTimeout(triggerAfterKey, opt.delay, t); 
+							_timeoutAC = setTimeout(it.autocomplete._triggerAfterKey, opt.delay, t, opt); 
 						} else {
 							it.autocomplete._removeItemsList(false, opt)
 						}
@@ -1049,7 +1018,7 @@ function isiToolsCallback(json){
 						}
 					});
 
-					opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(triggerAfterKey, opt.delay, e.target); });
+					opt.target.addEventListener("paste", function (e) { clearTimeout(_timeoutAC); _timeoutAC = setTimeout(it.autocomplete._triggerAfterKey, opt.delay, e.target, opt); });
 
 					opt.target.addEventListener("inputAfter", function (e) {
 						var a, b, c, i, val = this.value.trim();
@@ -1073,16 +1042,36 @@ function isiToolsCallback(json){
 						a.setAttribute("id", opt.target.id + "-" + opt.className + "-list");
 						a.setAttribute("class", opt.className + "-items display");
 						a.classList.add(opt.format);
+						
+						// Assign inline styles
+						var aPos =  opt.target.getBoundingClientRect();
+						a.style.top = (aPos.top + aPos.height - 1) + 'px';
+						a.style.width = aPos.width + 'px';
+						a.style.left = aPos.x + 'px';
+						
 						e.target.setAttribute("aria-expanded", 'true')
 						
 						document.body.addEventListener("click", function (e) {
+							if(e.target.classList.contains(opt.className + "-items") || it(e.target).parents("." + opt.className + "-items")) return;
+
 							if(e.path.filter(function(e){ return e != document && e!= window && e.classList.contains("expand-layer")}).length == 0){
 								try{ document.getElementById(opt.target.id + "-" + opt.className + "-list").remove(); } catch(e){ }
 							}
 						});
 
-						this.parentNode.appendChild(a);
+						["scroll", "resize"].forEach(function (event) {
+							window.addEventListener(event, function () {
+								it('.' + opt.className + '-items').each(function(){
+									var aPos =  opt.target.getBoundingClientRect();
+									this.style.top = (aPos.top + aPos.height - 1) + 'px';
+									this.style.width = aPos.width + 'px';
+									this.style.left = aPos.x + 'px';
+								});
+							});
+						});
 
+						this.parentNode.appendChild(a);
+						
 						if (opt.format == "table") {
 							// If format is table and is desired show headers 
 							if(opt.row.showHeaders){
@@ -1111,20 +1100,22 @@ function isiToolsCallback(json){
 				}
 
 				if(it.addCSSRule != undefined){
-					it.addCSSRule('', '.autocomplete-items', 'position: absolute; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; ');
-					it.addCSSRule('', '.autocomplete-items div.value', 'line-height: normal; padding: 4px 10px; cursor: pointer; background-color: #fff; border-bottom: 0px solid #d4d4d4; text-transform: capitalize;');
-					it.addCSSRule('', '.autocomplete-items div.value:hover, .autocomplete-active', 'background-color: #006699 !important; color: #ffffff;');
-					it.addCSSRule('', '.autocomplete-items .header, .autocomplete-items .error', 'background: #fff; border-bottom: 1px solid #bfbfbf; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none;');
-					it.addCSSRule('', '.autocomplete-items .header span, .autocomplete-items .value span', 'width: 100%; display: inline-block; vertical-align: top;');
-					it.addCSSRule('', '.autocomplete-items .header span, .autocomplete-items .error span', 'display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase;');
-					it.addCSSRule('', '.autocomplete-items .error span', 'color: #f01223; ');
-					it.addCSSRule('', '.autocomplete-items .error.not-found span', 'color: #a0a0a0; text-transform: none;');
-					it.addCSSRule('', '.autocomplete-items .error + .value', 'color: #000; font-weight: bold;');
-					it.addCSSRule('', '.autocomplete-items.table .header', 'display: table; ');
-					it.addCSSRule('', '.autocomplete-items.cluster .header, .autocomplete-items .error', 'border-bottom: 0 none; margin-top: 15px; text-transform: uppercase; font-size: 0.85rem; font-weight: 600;');
-					it.addCSSRule('', '.autocomplete-items.cluster .header span', 'color: #bbb;');
-					it.addCSSRule('', '.autocomplete-items .value.highlighted', 'font-weight: bold; background: transparent; color: #008bb2;');
-					it.addCSSRule('', '.autocomplete-items .value.disabled', 'font-weight: 100; background: #eee; color: #aaa;');
+					it.addCSSRule('', '.' + opt.className + '-items', 'position: fixed; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; ');
+					it.addCSSRule('', '.' + opt.className + '-items div.value', 'line-height: normal; padding: 4px 10px; cursor: pointer; background-color: #fff; border-bottom: 0px solid #d4d4d4; text-transform: capitalize;');
+					it.addCSSRule('', '.' + opt.className + '-items div.value:hover, .' + opt.className + '-active', 'background-color: #006699 !important; color: #ffffff;');
+					it.addCSSRule('', '.' + opt.className + '-items .header, .' + opt.className + '-items .error', 'position: initial; background: #fff; border-bottom: 1px solid #bfbfbf; box-shadow: none; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none;');
+					it.addCSSRule('', '.' + opt.className + '-items .header span, .' + opt.className + '-items .value span', 'width: 100%; display: inline-block; vertical-align: top;');
+					it.addCSSRule('', '.' + opt.className + '-items .header span, .' + opt.className + '-items .error span', 'display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase;');
+					it.addCSSRule('', '.' + opt.className + '-items .error span', 'color: #f01223; ');
+					it.addCSSRule('', '.' + opt.className + '-items .error.not-found span', 'color: #a0a0a0; text-transform: none;');
+					it.addCSSRule('', '.' + opt.className + '-items .error + .value', 'color: #000; font-weight: bold;');
+					it.addCSSRule('', '.' + opt.className + '-items.table .header', 'display: table; ');
+					it.addCSSRule('', '.' + opt.className + '-items.cluster .header, .' + opt.className + '-items .error', 'border-bottom: 0 none; margin-top: 0; text-transform: uppercase; font-size: 0.85rem; font-weight: 600;');
+					it.addCSSRule('', '.' + opt.className + '-items.cluster .error', 'margin-top: 15px;');
+					it.addCSSRule('', '.' + opt.className + '-items.cluster .values .value', 'padding-left: 25px');
+					it.addCSSRule('', '.' + opt.className + '-items.cluster .header span', 'color: #bbb;');
+					it.addCSSRule('', '.' + opt.className + '-items .value.highlighted', 'font-weight: bold; background: transparent; color: #008bb2;');
+					it.addCSSRule('', '.' + opt.className + '-items .value.disabled', 'font-weight: 100; background: #eee; color: #aaa; pointer-events: none');
 
 					// Add helper button
 					if(opt.helper){
@@ -1211,10 +1202,16 @@ function isiToolsCallback(json){
 						b.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "' value='" + cval + "'>";
 						b.id="ac-" + opt.target.id + '-' + i;
 
+						// If items is highlighting
+
+						if(opt.highlight && typeof optData[opt.highlight.field] != 'undefined' && (opt.highlight.value == '' || (optData[opt.highlight.field] == opt.highlight.value))){
+							b.classList.add(opt.highlight.class);
+						}
+						
+
                     } else if(opt.format == "table"){
-                        var highlighting = opt.highlight ? true : false;
                         var disabling = opt.disable ? true : false;
-                        var tooltips = opt.tooltips ? true : false;
+                        var tooltips = opt.tooltip ? true : false;
 
                         for (var f = 0; f < opt.row.columns.length; f++) {
                             if(f == 0){
@@ -1233,11 +1230,9 @@ function isiToolsCallback(json){
                             var faux = '<span __tp__ style="width: ' + (100 / opt.row.columns.length) + '%">' + optData[opt.row.columns[f]] + "</span>";
                             
                             // If items is highlighting
-                            if(highlighting){
-                                if(typeof optData[opt.highlight.field] != 'undefined' &&  optData[opt.highlight.field] != 0){
-                                    b.classList.add(opt.highlight.class);
-                                }
-                            }
+							if(opt.highlight && typeof optData[opt.highlight.field] != 'undefined' && (opt.highlight.value == '' || (optData[opt.highlight.field] == opt.highlight.value))){
+								b.classList.add(opt.highlight.class);
+							}
 
                             // If items is disabling
                             if(disabling){
@@ -1248,9 +1243,9 @@ function isiToolsCallback(json){
 
                             // If items have tooltips and add items
                             if(tooltips){
-                                for (var t = 0; t < opt.tooltips.length; t++) {
-                                    if(tfld == opt.tooltips[t].field){
-                                        faux= faux.replace("__tp__", 'title="' + optData[opt.tooltips[t].text] + '"');
+                                for (var t = 0; t < opt.tooltip.length; t++) {
+                                    if(tfld == opt.tooltip[t].field){
+                                        faux= faux.replace("__tp__", 'title="' + optData[opt.tooltip[t].text] + '"');
                                         break
                                     } 
                                 }
@@ -1261,18 +1256,18 @@ function isiToolsCallback(json){
                         }
 
                     } else if(opt.format == "cluster"){
-                        b.innerHTML = '<span id="clustered' + i + '">' + optData[opt.row['groupby']] + "</span>";
+                        b.innerHTML = '<span id="clustered' + i + '">' + optData[opt.row.groupby] + "</span>";
                         b.classList.add("header");
                         bc = document.createElement("div");
                         bc.classList.add("values");
 
-                        var tooltips = opt.tooltips ? true : false;
+                        var tooltips = opt.tooltip ? true : false;
 
-                        var len = optData[opt.row['items']].length;
+                        var len = optData[opt.row.items].length;
                         for (var z = 0; z < len; z++) {
                             if(itemsCount > 99) break;
                             
-                            var text = '', cItem = optData[opt.row['items']][z];
+                            var text = '', cItem = optData[opt.row.items][z];
 
                             if(typeof cItem == "object"){ 
                                 text = Object.values(cItem).join("|");
@@ -1296,8 +1291,8 @@ function isiToolsCallback(json){
                                 aux.innerHTML += "<span>" + text  + "</span>";
                                 aux.innerHTML += "<input type='hidden' data-id='" + opt.target.id + "' data-index='" + i + "," + z + "' value='" + text + "'>";
 
-                                // Mark highlight
-                                if(opt.highlight && cItem[opt.highlight.field] && cItem[opt.highlight.field] != 0) {
+                                // If items is highlighting
+                                if(opt.highlight && cItem[opt.highlight.field] && (opt.highlight.value == '' || (cItem[opt.highlight.field] == opt.highlight.value))){
                                     aux.classList.add(opt.highlight.class);
                                 }
 
@@ -1308,7 +1303,7 @@ function isiToolsCallback(json){
 
                                 // Set tooltips
                                 if(tooltips){
-                                    aux.setAttribute("title", cItem[opt.tooltips.field]);
+                                    aux.setAttribute("title", cItem[opt.tooltip.field]);
                                 } else {
                                     aux.setAttribute("title", "");
                                 }
@@ -1361,7 +1356,7 @@ function isiToolsCallback(json){
 			}
 
             // Clean all temporary variables
-            cval = found = optData = keyVal = valAux = wildCard = bc = aux = highlighting = tooltips = tfld = faux = i = f = null;
+            cval = found = optData = keyVal = valAux = wildCard = bc = aux = tooltips = tfld = faux = i = f = null;
 		}
 
         it.autocomplete.search = function(value, text, wildCards, pass){
@@ -1416,6 +1411,41 @@ function isiToolsCallback(json){
 
             return counter == aux.length;
 		}
+
+		it.autocomplete._triggerAfterKey = function(t, opt){
+			if(!opt.ajax){
+				var event = new Event('inputAfter');
+				t.dispatchEvent(event);
+			} else {
+				new HttpRequest({
+					url: opt.url + (opt.url.split("?").length == 1 ? "?q=" : "&q=") + encodeURIComponent(t.value),
+					ajax: true, 
+					callback: it.autocomplete._callbackInputAfter.bind(opt), 
+					contentType: "application/json; charset=utf-8",
+					responseType: "json"}
+				);
+			}
+		}
+
+		it.autocomplete._callbackInputAfter = function(e){
+			this.data = e;
+
+			// Define header fields by default
+			if(this.format == "table"){
+				if(!this.row.hasOwnProperty('headers') && this.data){
+					this.row.headers = [];
+					for(var key in this.data[0]){
+						this.row.headers.push(key.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s){ return s.toUpperCase(); }));
+					}
+				}
+			}
+			
+			// If file is JSON, disable ajax property to filter by this component
+			if(this.url.split(".json")[this.url.split(".json").length-1] == '') this.ajax = false;
+			
+			var event = new Event('inputAfter');
+			this.target.dispatchEvent(event);
+		}
 		
 		it.autocomplete._addActive = function(x, opt) {
 			if(!x) return false;
@@ -1429,7 +1459,7 @@ function isiToolsCallback(json){
 		// Get Autocomplete List
 		it.autocomplete._getAutocompleteList = function(e, cls) {
 			var x = document.getElementById(e.id + "-" + cls + "-list");
-			if (x) x = x.querySelectorAll("div.value");
+			if (x) x = x.querySelectorAll("div.value:not(.disabled)");
 			return x;
 		}
 
@@ -1470,17 +1500,21 @@ function isiToolsCallback(json){
 		}
 
         it.autocomplete._click = function(val){
-			var id = it.autocomplete._getID(val);
-			var opt = it.autocomplete.targets[id].opt;
-			var trg = val.parentElement.previousElementSibling;
-			if(trg.tagName != "INPUT") trg = trg.previousElementSibling;
-			
-			trg.value = val.getElementsByTagName("input")[0].value;
-			if (opt.callback) opt.callback(val.getElementsByTagName("input")[0]);
-			it.autocomplete._closeAllLists(val);
+			if(!val.classList.contains("disabled")){
+				var id = it.autocomplete._getID(val);
+				var opt = it.autocomplete.targets[id].opt;
+				var trg = it(val).parents("." + opt.className + "-items").previousElementSibling;
+				if(trg.classList.contains("Autocomplete-helper-icon")) trg = trg.previousElementSibling;
 
-			trg.setAttribute("aria-activedescendant", val.id);
-			trg.focus();
+				if(trg.tagName != "INPUT") trg = trg.previousElementSibling;
+				
+				trg.value = val.getElementsByTagName("input")[0].value;
+				if (opt.callback) opt.callback(val.getElementsByTagName("input")[0]);
+				it.autocomplete._closeAllLists(val);
+
+				trg.setAttribute("aria-activedescendant", val.id);
+				trg.focus();
+			}
 		}
 
         it.autocomplete._closeAllLists = function(elmnt){
@@ -1523,12 +1557,12 @@ function isiToolsCallback(json){
 		}
 
 		it.autocomplete.showHelper = function(el){
-			var data = it.autocomplete.targets[el.previousElementSibling.id].opt.data.slice(0, 10);
+			var data = ["Humanes de Madrid", "Madrid", "Rivas-Vaciamadrid", "Rozas de Madrid, Las", "Madridejos", "Madridanos", "Valmadrid"];
 
 			// Definimos el array de ejemplo
 			var strData = ''
 			for(var x = 0; x < data.length; x++){
-				strData += '<b>"' + data[x] + '"</b>, ';
+				strData += '<b>"' + (typeof data[x] == "string" ? data[x] : Object.values(data[x])[0]) + '"</b>, ';
 			}
 
 			function getResults(pattern){
@@ -1544,7 +1578,7 @@ function isiToolsCallback(json){
 
 				return text + "<b>" + str.join("</b>, <b>") + '</b>';
 			}
-
+			
 			// Definimos los resultados para los ejemplos recuperados
 			var equal    = getResults('"' + data[0] + '"');
 			var contains = getResults(data[0].toLowerCase().substr(0, 1) + "+" + data[0].toLowerCase().substr(1, 1));
