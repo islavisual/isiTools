@@ -76,6 +76,16 @@ it("body").get();\n\
 // Recuperar el primer elemento que tenga la clase "hasDatePicker"\n\
 it(".hasDatePicker").get(0);\n\
 \n\
+// Recuperar ele elemento referenciado por $0"\n\
+it($0).get(0);\n\
+\n\
+// Recuperar el primer TD que descienda de TABLE"\n\
+it("td", "table").get(0);\n\
+\n\
+// Recuperar el primer elemento que descienda de otro elemento referenciado por una variable previa\n\
+var aux = document.body;\n\
+it(".hasDatePicker", aux).get(0);\n\
+\n\
 // Recuperar el tercer elemento que tenga la clase "form-input"\n\
 it(".form-input").get(2);',
 	},
@@ -3089,6 +3099,9 @@ this.Helper = it.helper = function (func, cfg) {
 		<h1>Tabla de contenidos de isiTools ' +  it.version + '</h1>\
 		<div style="margin-top: 10px">\
 			IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
+			<br/>\
+			<br/>\
+			Para recuperar los elementos de la página se puede usar diferentes formas. Todas ellas están explicadas con ejemplos en el método <property>get</property>.\
 			<br/>\
 			__TEXT__\
 <name style="margin: 15px 0 10px 0; display:block;">Información adicional:</name>\
