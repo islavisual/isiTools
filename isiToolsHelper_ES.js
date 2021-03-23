@@ -164,6 +164,12 @@ it($0).parents("table");\n\
 // Su resultado podría ser algo como:\n\
 &lt;table class="cebrada"&gt;&lt;/table&gt;\n\
 \n\
+// Devolver el elemento padre con clase "container" del elemento de formulario con ID "municipio".\n\
+it("#municipio").parents(".container");\n\
+\n\
+// Devolver el elemento padre con clase ".dialog.displayed" del primer input de la página.\n\
+it("input").parents(".dialog.displayed");\n\
+\n\
 // Devolver todos los padres de un elemento dado en un array.\n\
 it($0).parents();\n\
 // Su resultado podría ser algo como:\n\
@@ -512,19 +518,20 @@ styles:{\n\
 
 WikiHelper.Autocomplete = {
 	general: {
-		version: '1.5.1',
+		version: '1.6',
 		name: 'Autocomplete',
 		help: 1,
 		description: 'Este componente podría considerarse una mejora del componente "select" que proporciona HTML. Permite buscar y seleccionar de una lista de valores previamente rellenada a medida que se escribe, aprovechando la búsqueda y el filtrado.\n\n\
-Tambien permite realizar búsquedas mediante caracteres comodin como son las comillas dobles, el símbolo más o el símbolo asterisco.\n\n\
-Para entender mejor el significado de los caracteres comodín, supóngase que se tiene un array con los siguientes datos <code style="display: inline; padding: 0;">[<str>"Fat Bob"</str>, <str>"Street Bob"</str>, <str>"Scout Bobber"</str>, <str>"Sportster Iron"</str>, <str>"Rockster Flat"</str>, <str>"Street Rod"</str>]</code>\
+Tambien permite realizar búsquedas mediante caracteres comodin como son las comillas dobles, el símbolo más o el símbolo asterisco.\n\
+\n\
+Para entender mejor el significado de los caracteres comodín, supóngase que se tiene un array con los siguientes datos <code style="display: inline; padding: 0;">[<property>"Humanes de Madrid"</property>, <property>"Madrid"</property>, <property>"Rivas-Vaciamadrid"</property>, <property>"Rozas de Madrid, Las"</property>, <property>"Madridejos"</property>, <property>"Madridanos"</property>, <property>"Valmadrid"</property>]</code>\
 <ul>\
-<li><str>""</str>: Busca los resultados que coincidan exactamente con la cadena entrecomillada. Por ejemplo, si buscamos <str>"bobber"</str> no devolverá nada, pero si buscamos <str>"scout bobber"</str>, nos devolverá el registro que contenga el campo marca establecido a ese valor.</li>\n\
-<li><str>+</str>: Permite establecer búsquedas que tengan coincidencias parciales o totales de ambas expresiones. Por ejemplo, si buscamos <str>fat+b</str>, nos devolverá Fat Bob.</li>\n\
-<li><str>*</str>: El símbolo asterisco equivale a decir "cualquier cosa", pero dependiendo de dónde se encuentre y cuántos haya, significará una cosa u otra.\n\
-Si se establece delante de una expresión buscará todas las coincidencias que terminen con la expresión. Así, si buscamos <str>*bob</str>, nos devolverá "Fat Bob", "Street Bob".\n\
-Si se establece detrás de una expresión buscará todas las coincidencias que empiecen con la expresión. Así, si buscamos <str>str*</str>, nos devolverá "Street Bob" y "Street Rod".\n\
-Si se establece delante y detrás de una expresión buscará todas las coincidencias que contengan la expresión. Así, si buscamos <str>*ster*</str>, nos devolverá "Sportster Iron", "Rockster Flat".</li>\
+<li><name>""</name>: Busca los resultados que coincidan exactamente con la cadena entrecomillada. Por ejemplo, si buscamos <property>"Humanes de Madrid-"</property> no devolverá nada, pero si buscamos <property>"Humanes de Madrid"</property>, nos devolverá el registro que tenga como texto, exáctamente ese valor. En este caso, <property>Humanes de Madrid</property>.</li>\n\
+<li><name>+</name>: Permite establecer búsquedas que tengan coincidencias parciales o totales de ambas expresiones. Por ejemplo, si buscamos <property>h+u</property> devolverá, entre otros, <property>Humanes de Madrid</property>.</li>\n\
+<li style="white-space: pre-wrap"><name>*</name>: El símbolo asterisco equivale a decir "cualquier cosa", pero, dependiendo de dónde se encuentre y cuántos haya, significará una cosa u otra.Por ejemplo:\n\
+	● Si se establece delante de una expresión buscará todas las coincidencias que terminen con la expresión, por lo que si buscamos <property>*va</property> no devolverá nada.\n\
+	● Si se establece detrás de una expresión buscará todas las coincidencias que empiecen con la expresión, por lo que si buscamos <property>va*</property> devolverá, únicamente, <property>Valmadrid</property>.\n\
+	● Si se establece delante y detrás de una expresión buscará todas las coincidencias que contengan la expresión, por lo que si buscamos <property>*va*</property>, devolvera <property>Rivas-Vaciamadrid</property> y <property>Valmadrid</property>. Nótese que, este comportamiento es equivalente a no poner ningún asterisco.\n\
 </ul>\n\
 Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la página se vea poco afectado.\n\
 <name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>',
@@ -549,64 +556,58 @@ Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la 
 	ajax: {
 		type: 'boolean',
 		description: 'Indica que se van a utilizar llamadas al servidor para recuperar los datos del autocomplete. Cuándo ese parámetro está a <strong>true</strong>, supone que el filtrado de elementos lo realizará el servidor (a no ser que sea un archivo JSON), es decir, por más que escribamos en el campo de texto, no se reducirá el número de resultados.Por defecto es <str>false</str>.',
-		example: '// Autocomplete con filtrado por servidor.\n\
-// Cuando se utiliza este modo de filtrado, el servidor recibirá una petición POST con un parámetro llamado "q" que contendrá el texto introducido por el usuario.\n\
-it("#inputTextID").autocomplete({\n\
-format: "table",\n\
-ajax: true,\n\
-url: "http://www.islavisual.com/data/getMunicipio.php",\n\
-minLength: 3,\n\
-disable: {\n\
-	// Nombre del campo con el flag que indica si destacado o no\n\
-	field: "disabled",\n\
-	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-	class: "disabled",\n\
-},\n\
-row: {\n\
-	return_value: "municipio_id",\n\
-	columns: ["provincia_id", "nombre"],\n\
-},\n\
-})\n\n\
-// Autocomplete con AJAX y filtrado por el componente.\n\
-// Cuando se utiliza este modo de filtrado, el componente llamará al servidor para recuperar los datos, pero filtrará a través de su función integrada.\n\
-it("#inputTextID").autocomplete({,\n\
-url: "./municipios.json",\n\
-format: "list",\n\
-ajax: true,\n\
-row: {\n\
-	return_value: "nombre",\n\
-	columns: ["nombre"],\n\
-},\n\
-})'
+		example: '// Autocomplete con AJAX y filtrado por el componente.\n\
+// Cuando la petición es un archivo con extensión <property>json</property>, el componente realizará una única llamada en la primera búsqueda. En las siguientes ya no realizará ninguna llamada al servidor y buscará sólo dentro del parámetro <property>data</property>.\n\
+it("#municipio").autocomplete({\n\
+	url: "./json/jmunicipios.json",\n\
+	ajax: true,\n\
+	row: {\n\
+		return_value: "nombre",\n\
+		columns: ["nombre"],\n\
+	},\n\
+});\n\
+\n\
+// Autocomplete con filtrado previo por servidor.\n\
+// Cuando la petición tenga una extensión diferente a <property>json</property>, el servidor realizará cadavez una petición POST con un parámetro llamado <property>q</property> que contendrá el texto introducido por el usuario.\n\
+it("#municipio").autocomplete({\n\
+	format: "table",\n\
+	ajax: true,\n\
+	url: "https://www.islavisual.com/data/getMunicipio.php",\n\
+	minLength: 3,\n\
+	row: {\n\
+		return_value: "municipio_id",\n\
+		columns: ["provincia_id", "nombre"],\n\
+	},\n\
+});'
 	},
 	autoFocus: {
 		type: 'boolean',
 		description: 'Indica que se establezca el foco después de que finalice la creación del autocomeplete. Por defecto es <str>false</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-data: arrayList,\n\
-format: "list",\n\
-autoFocus: true\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	format: "list",\n\
+	autoFocus: true\n\
 })'
 	},
 	autoExpand: {
 		type: 'boolean',
 		description: 'Indica que se despliegue el autocomplete de forma automática. Por defecto es <str>false</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-data: arrayList,\n\
-format: "list",\n\
-autoExpand: true\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	format: "list",\n\
+	autoExpand: true\n\
 })'
 	},
 	autoSelect: {
 		type: 'boolean',
-		description: 'Indica que el valor del elemento de formulario o input seleccione el texto automáticamente. Por defecto es <str>false</str>.',
+		description: 'Indica que el valor del elemento de formulario (o input) seleccione todo el texto contenido de forma automática. Por defecto es <str>false</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-data: arrayList,\n\
-format: "list",\n\
-autoSelect: true\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	format: "list",\n\
+	autoSelect: true\n\
 })'
 	},
 	callback: {
@@ -615,28 +616,78 @@ autoSelect: true\n\
 Lo que recibirá esta función de retorno será un elemento de formulario input de tipo text con el valor solicitado en la propiedad <str>return_value</str> y la posición del item seleccionado dentro del diccionario de datos referenciado por la propiedad <str>data</str>. Por esta razón, dependiendo del tipo de auto complete utilizado, se podrá recuperar la de formas distintas.<br><br>\
 Como información adicional, si se desea acceder desde esta función de retorno a la configurción o a los datos declarados en el objeto data del autocomplete, se puede hacer a través de la expresión <name>Autocomplete</name>.<str>target.XXX</str>, donde <str>XXX</str> es el ID del input asignado al autocomplete.',
 		example: '// Ejemplo de función callback para un autocomplete de tipo list (lista)\n\
-function callback(input){\n\
-var index = input.dataset.index;\n\
-var id = input.dataset.id;\n\
-var value = input.value;\n\
-console.log("Nº Registro:", index, "Extraído del elemento con ID", id, "Valor seleccionado:", value);\n\
-}\n\n\
-// Ejemplo de función callback para un autocomplete de tipo table (tabla)\n\
-function callback(input){\n\
-var index = input.dataset.index;\n\
-var config = Autocomplete.targets[input.dataset.id].opt;\n\
-var item = config.data[index];\n\
+it("#municipio").autocomplete({\n\
+	url: "./json/municipios.json",\n\
+	format: "list",\n\
+	ajax: true,\n\
+	row: {\n\
+		return_value: "nombre",\n\
+		columns: ["nombre"],\n\
+	}\n\
+});\n\
 \n\
-// Desde item ya se puede acceder a cualquiera de los datos del registro original\n\
-console.log("Nº Registro:", index, "Datos seleccionados", item);\n\
-}\n\n\
-// Ejemplo de función callback para un autocomplete de tipo cluster (agrupado)\n\
 function callback(input){\n\
-var indexes = input.dataset.index.split(",");\n\
-var config = Autocomplete.targets[input.dataset.id].opt;\n\
-var group = config.data[indexes[0]][config.clusterFields.groupby];\n\
-var item = config.data[indexes[0]][config.clusterFields.items][indexes[1]];\n\
-console.log("Elemento Seleccionado:", group, item);\n\
+	var index = input.dataset.index;\n\
+	var id = input.dataset.id;\n\
+	var value = input.value;\n\
+	console.log("Nº Registro:", index, "Extraído del elemento con ID", id, "Valor seleccionado:", value);\n\
+}\n\
+\n\
+// Ejemplo de función callback para un autocomplete de tipo table (tabla)\n\
+it("#municipio").autocomplete({\n\
+    format: "table",\n\
+    ajax: true,\n\
+    url: "./json/municipios.json",\n\
+    minLength: 3,\n\
+    row: {\n\
+        return_value: "municipio_id",\n\
+        columns: ["provincia_id", "nombre"],\n\
+    },\n\
+    callback: callback\n\
+});\n\
+function callback(input){\n\
+	var index = input.dataset.index;\n\
+	var config = Autocomplete.targets[input.dataset.id].opt;\n\
+	var item = config.data[index];\n\
+	\n\
+	// Desde item ya se puede acceder a cualquiera de los datos del registro original\n\
+	console.log("Nº Registro:", index, "Datos seleccionados", item);\n\
+}\n\
+// Cada vez que se seleccione un registro, se mostrará por consola algo como:\n\
+<code><comm>Nº Registro: 1325 Datos seleccionados</comm>\n\
+{municipio_id: "09196", provincia_id: "09", cmun: "196", dc: "3", nombre: "Madrigal del Monte"}\n\
+	cmun: "196"\n\
+	dc: "3"\n\
+	municipio_id: "09196"\n\
+	nombre: "Madrigal del Monte"\n\
+	provincia_id: "09"\n\
+	&blacktriangleright; __proto__: <inline>Object</inline>\n\
+</code>\n\
+\n\
+// Ejemplo de función callback para un autocomplete de tipo cluster (agrupado)\n\
+var brandsList = [\n\
+{ group: "Coches", items: [\n\
+		{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
+		{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
+		{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
+	]},\n\
+{ group: "Motocicletas", items: [\n\
+		{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
+		{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
+		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
+	]},\n\
+];\n\
+it("#marca").autocomplete({\n\
+	format: "cluster",\n\
+	data: brandsList\n\
+});\n\
+\n\
+function callback(input){\n\
+	var indexes = input.dataset.index.split(",");\n\
+	var config = Autocomplete.targets[input.dataset.id].opt;\n\
+	var group = config.data[indexes[0]][config.clusterFields.groupby];\n\
+	var item = config.data[indexes[0]][config.clusterFields.items][indexes[1]];\n\
+	console.log("Elemento Seleccionado:", group, item);\n\
 }'
 	},
 	className: {
@@ -645,26 +696,26 @@ console.log("Elemento Seleccionado:", group, item);\n\
 Por defecto, el nombre de la clase de control es <str>autocomplete</str>.<br></br>\
 <b style="display: inline-block;">NOTA:</b> Mirar la información adicional para personalizar los estilos del componente.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-data: arrayList,\n\
-className: "auto-complete"\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	className: "auto-complete"\n\
 });'
 	},
 	data: {
 		type: 'object',
 		description: 'Objeto con los elementos para manejar o tratar. Este objeto puede estar en formato <str>JSON</str> o estar en formato <str>Array</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-data: arrayList\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList\n\
 });'
 	},
 	delay: {
 		type: 'integer',
 		description: 'Es el valor en milisegundos que personaliza el tiempo de espera entre que el usuario deja de escribir y se realiza la búsqueda. Por defecto está establecido a <str>300</str> milisegundos.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-data: arrayList,\n\
-delay: 1000\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	delay: 1000\n\
 });'
 	},
 	disable: {
@@ -673,48 +724,49 @@ delay: 1000\n\
 Los valores permitidos para este campo pueden ser booleanos (<str>true</str> o <str>false</str>) o de tipo binario (<str>0</str> ó <str>1</str>), donde 0 se interpreta como <str>false</str> y 1 se interpreta como <str>true</str>.',
 		example: '// Ejemplo de autocomplete en formato table (tabla) \n\
 var countriesJSON = [\n\
-{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
+	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
+	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
+	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-format: "table",\n\
-data: countriesJSON,\n\
-disable: {\n\
-	// Nombre del campo con el flag que indica si destacado o no\n\
-	field: "disabled",\n\
-	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-	class: "disabled",\n\
-},\n\
-row: {\n\
-	return_value: "id",\n\
-	columns: ["country", "capital"],\n\
-	headers: ["País", "Capital"]\n\
-}\n\
-});\n\n\
+it("#pais").autocomplete({\n\
+	format: "table",\n\
+	data: countriesJSON,\n\
+	disable: {\n\
+		// Nombre del campo con el flag que indica si destacado o no\n\
+		field: "disabled",\n\
+		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+		class: "disabled",\n\
+	},\n\
+	row: {\n\
+		return_value: "id",\n\
+		columns: ["country", "capital"],\n\
+		headers: ["País", "Capital"]\n\
+	}\n\
+});\n\
+\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
-{ group: "Coches", items: [\n\
-	{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
-	{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
-	{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
-]},\n\
-{ group: "Motocicletas", items: [\n\
-	{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
-	{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
-	{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
-]},\n\
+	{ group: "Coches", items: [\n\
+		{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
+		{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
+		{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
+	]},\n\
+	{ group: "Motocicletas", items: [\n\
+		{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
+		{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
+		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
+	]},\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-data: clusterList,\n\
-minLength: 1,\n\
-disable: {\n\
-	// Nombre del campo con el flag que indica si destacado o no\n\
-	field: "unavailable",\n\
-	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-	class: "disabled",\n\
-},\n\
-format: "cluster",\n\
+it("#marca").autocomplete({\n\
+	data: brandsList,\n\
+	minLength: 1,\n\
+	disable: {\n\
+		// Nombre del campo con el flag que indica si destacado o no\n\
+		field: "unavailable",\n\
+		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+		class: "disabled",\n\
+	},\n\
+	format: "cluster",\n\
 });'
 	},
 	format: {
@@ -727,27 +779,29 @@ Este parámetro tiene como valor por defecto es "list".\n<p style="margin: 10px 
 <li><name>cluster</name>: El objeto de datos del autocomplete está configurado como un array de objetos JSON que dentro tiene otro array de objetos JSON. Para que el autocomplete pueda manjar este objeto debe seguir las normas establecidas por la propiedad <str>row</str>.</li>\n\
 </ul>',
 		example: '// Ejemplo de autocomplete en formato list (lista)\n\
-var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
-it("#inputTextID").autocomplete({\n\
-format: "list",\n\
-data: arrayList\n\
-});\n\n\
-// Ejemplo de autocomplete en formato table (tabla) \n\
-var countriesJSON = [\n\
-{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
-];\n\
-it("#inputTextID").autocomplete({\n\
-format: "table",\n\
-data: countriesJSON,\n\
-row: {\n\
-	return_value: "id",\n\
-	columns: ["country", "code", "capital"],\n\
-	headers: ["Country", "Code", "Capital"],\n\
-	showHeaders: true\n\
-}\n\
-});\n\n\
+it("#municipio").autocomplete({\n\
+	url: "./json/municipios.json",\n\
+	format: "list",\n\
+	ajax: true,\n\
+	row: {\n\
+		return_value: "nombre",\n\
+		columns: ["nombre"],\n\
+	}\n\
+});\n\
+\n\
+// Ejemplo de autocomplete en formato table (tabla)\n\
+it("#municipio").autocomplete({\n\
+	format: "table",\n\
+	ajax: true,\n\
+	url: "./json/municipios.json",\n\
+	minLength: 3,\n\
+	row: {\n\
+		return_value: "municipio_id",\n\
+		columns: ["provincia_id", "nombre"],\n\
+	},\n\
+	callback: callback\n\
+});\n\
+\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
 { group: "Coches", items: [\n\
@@ -761,64 +815,69 @@ var brandsList = [\n\
 		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
 	]},\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-format: "cluster",\n\
-data: brandsList\n\
+it("#marca").autocomplete({\n\
+	format: "cluster",\n\
+	data: brandsList\n\
 });'
 	},
 	helper: {
 		type: 'boolean',
-		description: 'Indica si se debe mostrar el botón de ayuda del autocomplete. Este es un botón que se inserta a la derecha del input que posee el comportamiento de autocomplete. Por defecto es <str>false</str>.',
+		description: 'Indica si se debe mostrar el botón de ayuda del autocomplete. Por defecto, este botón se insertará a la derecha del input que posee la funcionalidad de autocomplete. Por defecto es <bool>false</bool>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList, helper: false});'
 	},
 	highlight: {
 		type: 'object',
-		description: 'Indica qué campo se utilizará como selector para indicar si está destacado el elemento producto de la búsqueda. Si el resultado de la evaluación se considera verdadera, se añadirá la clase proporcionada por la propiedad <str>class</str>.<br><br>\
-Los valores permitidos para este campo pueden ser booleanos (<str>true</str> o <str>false</str>) o de tipo binario (<str>0</str> ó <str>1</str>), donde 0 se interpreta como <str>false</str> y 1 se interpreta como <str>true</str>.',
+		description: 'Indica qué campo o propiedad se utilizará como selector para indicar si está destacado el elemento producto de la búsqueda. Si el resultado de la evaluación se considera verdadera, se añadirá la clase proporcionada por la propiedad <property>class</property>.<br><br>\
+Para que el elemento obtenga esta clase y, por tanto, se vuelva destacable, el valor de la propiedad suministrada por la propiedad <property>field</property> deberá contener el valor de la propiedad <property>value</property>. Si la propiedad <property>value</property> tiene un valor vacío o no está declarada, se tomará como condición para destacar que el registro tenga definida la propiedad, sea el valor que sea.',
 		example: '// Ejemplo de autocomplete en formato table (tabla) \n\
 var countriesJSON = [\n\
-{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", EU: 0 },\n\
-{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  EU: 1 },\n\
-{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  EU: 1 },\n\
+	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", EU: 0 },\n\
+	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  EU: 1 },\n\
+	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  EU: 1 },\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-format: "table",\n\
-data: countriesJSON,\n\
-highlight: {\n\
-	// Nombre del campo con el flag que indica si destacado o no\n\
-	field: "EU",\n\
-	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-	class: "highlighted",\n\
-},\n\
-row: {\n\
-	return_value: "id",\n\
-	columns: ["country", "capital"],\n\
-	headers: ["País", "Capital"]\n\
-}\n\
+it("#pais").autocomplete({\n\
+	format: "table",\n\
+	data: countriesJSON,\n\
+	highlight: {\n\
+		// Nombre del campo con el flag que indica si destacado o no\n\
+		field: "EU",\n\
+		value: 1,\n\
+		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+		class: "highlighted",\n\
+	},\n\
+	row: {\n\
+		return_value: "id",\n\
+		columns: ["country", "capital"],\n\
+		headers: ["País", "Capital"]\n\
+	}\n\
 });\n\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
-{ group: "Coches", items: [\n\
-	{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
-	{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
-	{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
-]},\n\
-{ group: "Motocicletas", items: [\n\
-	{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
-	{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
-	{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
-]},\n\
+	{\n\
+		group: "Coches", items: [\n\
+			{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: "no"},\n\
+			{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: "no"},\n\
+			{ id: 3, text: "Seat", tooltip: "Española", unavailable: "sí"}\n\
+		]\n\
+	}, {\n\
+		group: "Motocicletas", items: [\n\
+			{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: "sí"},\n\
+			{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: "no"},\n\
+			{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: "no"}\n\
+		]\n\
+	},\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-data: clusterList,\n\
-minLength: 1,\n\
-highlight: {\n\
-	// Nombre del campo con el flag que indica si destacado o no\n\
-	field: "unavailable",\n\
-	// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
-	class: "highlighted",\n\
-},\n\
-format: "cluster",\n\
+it("#marca").autocomplete({\n\
+	data: clusterList,\n\
+	minLength: 1,\n\
+	highlight: {\n\
+		// Nombre del campo con el flag que indica si destacado o no\n\
+		field: "unavailable",\n\
+			value: "no",\n\
+		// Clase CSS a asignar cuando el selector tenga un valor establecido a verdadero\n\
+		class: "highlighted",\n\
+	},\n\
+	format: "cluster",\n\
 });'
 	},
 	minLength: {
@@ -826,115 +885,142 @@ format: "cluster",\n\
 		description: 'Indica la longitud mínima para comenzar a buscar dentro del diccionario de datos asignado por la propiedad <str>data</str>. Por defecto es <str>3</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList, minLength: 4});'
 	},
-	minLengthMessage: {
+	statusMessage: {
 		type: 'string',
 		description: 'Es un mensaje que se muestra únicamente cuando la propiedad minLength es -1. Se puede utilizar, por ejemplo, para sacar un mensaje mientras se carga y configura el componente o para indicar el estado del autocomplete.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\n\
-it("#inputTextID").autocomplete({ data: {}, ajax: true, url: "https:\u002F<n/>\u002Fwsdeejemplo.com/get", minLength: -1, minLengthMessage: "Cargando..."} );\n\n\
-it("#inputTextID").autocomplete({ data: arrayList, minLength: -1, minLengthMessage: "Elemento desactivado..."} );'
+it("#vehiculo").autocomplete({ data: {}, ajax: true, url: "https:\u002F<n/>\u002Fwsdeejemplo.com/get", minLength: -1, statusMessage: "Cargando..."} );\n\n\
+it("#vehiculo").autocomplete({ data: arrayList, minLength: -1, statusMessage: "Elemento desactivado..."} );'
 	},
 	row: {
 		type: 'object',
 		description: 'Objeto que permite personalizar la estructura del diccionario de datos a gestionar asignado a la propiedad <str>data</str>".<br><br>\
-Si el formato del autocomplete es de tipo "table", los parámetros que puede recibir son:\n\
+Si el formato del autocomplete es de tipo <property>"table"</property>, los parámetros que puede recibir son:\n\
 <ul>\n\
 <li><name>columns</name>: Es un array que indica el nombre de los campos que se desea que muestren cuando se realiza una búsqueda. Por defecto, si no se establece este parámetro, devolverá el primer campo o propiedad del registro.</li>\n\
 <li><name>headers</name>: Es un array que indica el nombre de los campos que se establecerán como cabecera de la tabla. Por defecto, si no se establece este parámetro, devolverá los mismos nombres que estén indicados en la propiedad <str>columns</str>.</li>\n\
-<li><name>return_value</name>: Indica el nombre del campo que se devolverá a la función de declarada en la propiedad <str>callback</str>. Por defecto, esta propiedad tiene asignado el valor <str>group</str>.</li>\n\
-<li><name>showHEaders</name>: Indica si se debe o no mostrar la cabecera de la tabla. Por defecto, esta propiedad está asignada a <str>false</str>.</li>\n\
+<li><name>return_value</name>: Indica el nombre del campo que se devolverá a la función de declarada en la propiedad <str>callback</str>. Por defecto, esta propiedad tiene asignado el valor <str>text</str>.</li>\n\
+<li><name>showHeaders</name>: Indica si se debe o no mostrar la cabecera de la tabla. Por defecto, esta propiedad está asignada a <str>false</str>.</li>\n\
 </ul>\n\
-<p style="margin: 10px 0">Si el formato del autocomplete es de tipo "cluster", los parámetros que puede recibir son:</p>\n\
+<p style="margin: 10px 0">Si el formato del autocomplete es de tipo <property>"cluster"</property>, los parámetros que puede recibir son:</p>\n\
 <ul>\n\
 <li><name>group</name>: Indica el nombre de la clave de agrupación. Por defecto, esta propiedad tiene asignado el valor <str>group</str>.</li>\n\
 <li><name>items</name>: Indica el nombre de la clave dónde estarán almacenados la información a buscar. Por defecto, esta propiedad tiene asignado el valor <str>items</str>.</li>\n\
 <li><name>columns</name>: Es un array que indica el nombre de los campos que se desea que muestren cuando se realiza una búsqueda. Por defecto, si no se establece este parámetro, devolverá el primer campo o propiedad del registro.</li>\n\
 <li><name>return_value</name>: Indica el nombre del campo que se devolverá a la función de declarada en la propiedad <str>callback</str>. Por defecto, esta propiedad tiene asignado el valor <str>group</str>.</li>\n\
 </ul>',
-		example: '// Ejemplo de autocomplete de tipo table (tabla)\n\
-var countriesJSON = [\n\
-{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
-];\n\
-it("#inputTextID").autocomplete({\n\
-format: "table",\n\
-data: countriesJSON,\n\
-row: {\n\
-	return_value: "id",\n\
-	columns: ["country", "code", "capital"],\n\
-	headers: ["País", "Código", "Capital"],\n\
-	showHeaders: false\n\
-}\n\
-});\n\n\
+		example: '// Ejemplo de autocomplete de tipo lista\n\
+it("#pais").autocomplete({\n\
+	url: "./json/paises-idioma.json",\n\
+	format: "list",\n\
+	ajax: true,\n\
+	minLength: 2,\n\
+	className: "AutoComplete",\n\
+	row: {\n\
+		return_value: "name",\n\
+		columns: ["alpha2Code", "name", "region"],\n\
+	},\n\
+});\n\
+// Ejemplo de autocomplete de tipo table (tabla)\n\
+it("#pais").autocomplete({\n\
+	url: "./json/paises-idioma.json",\n\
+	format: "table",\n\
+	ajax: true,\n\
+	minLength: 2,\n\
+	className: "AutoComplete",\n\
+	row: {\n\
+		return_value: "name",\n\
+		columns: ["alpha2Code", "name", "region"],\n\
+		headers: ["Código", "Nombre", "Continente"],\n\
+		showHeaders: true,\n\
+	},\n\
+});\n\
+\n\
 // Ejemplo de autocomplete de tipo cluster (agrupado)\n\
 var vehiclesList = [\n\
-{ marca: "Seat", modelos: [{id: 101, modelo: "Arona", coste: 1}, {id: 102, modelo: "Ibiza", coste: 2}, {id: 103, modelo: "León", coste: 3}] },\n\
-{ marca: "Ford", modelos: [{id: 201, modelo: "Fiesta", coste: 4}, {id: 202, modelo: "Mondeo", coste: 5}, {id: 203, modelo: "Focus", coste: 6}] },\n\
-{ marca: "Renault", modelos: [{id: 301, modelo: "Captur", coste: 7}, {id: 302, modelo: "Clio", coste: 8}, {id: 303, modelo: "Espace", coste: 9}] },\n\
+	{\n\
+		marca: "Seat",\n\
+		modelos: [\n\
+			{ id: 101, modelo: "Arona", coste: 1 },\n\
+			{ id: 102, modelo: "Ibiza", coste: 2 },\n\
+			{ id: 103, modelo: "León", coste: 3 }\n\
+		]\n\
+	}, {\n\
+		marca: "Ford",\n\
+		modelos: [\n\
+			{ id: 201, modelo: "Fiesta", coste: 4 },\n\
+			{ id: 202, modelo: "Mondeo", coste: 5 },\n\
+			{ id: 203, modelo: "Focus", coste: 6 }\n\
+		]\n\
+	}, {\n\
+		marca: "Renault",\n\
+		modelos: [\n\
+			{ id: 301, modelo: "Captur", coste: 7 },\n\
+			{ id: 302, modelo: "Clio", coste: 8 },\n\
+			{ id: 303, modelo: "Espace", coste: 9 }\n\
+		]\n\
+	},\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-data: vehiclesList,\n\
-format: "cluster",\n\
-row: {\n\
-	return_value: "modelo",\n\
-	columns: ["modelo", "coste"],\n\
-	groupby: "marca",\n\
-	items: "modelos"\n\
-}\n\
+it("#vehiculo").autocomplete({\n\
+	data: vehiclesList,\n\
+	format: "cluster",\n\
+	minLength: 1,\n\
+	row: {\n\
+		return_value: "modelo",\n\
+		columns: ["modelo", "coste"],\n\
+		groupby: "marca",\n\
+		items: "modelos"\n\
+	}\n\
 });'
 	},
-	target: {
-		type: 'string',
-		description: 'ID del input de tipo texto dónde el se implementará el autocomplete.',
-		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\nnew Autocomplete({target: "inputTextID", data: arrayList});'
-	},
-	tooltips: {
+	tooltip: {
 		type: 'object',
 		description: 'Este parámetro es un JSON que indica qué campos se utilizarán como fuente de los tooltip.<br><br>\
 Si se utiliza el modo <name>cluster</name>, sólo se debe indicar el campo dónde está el texto del tooltip. Si se utiliza el modo <name>table</name>, se debe indicar el nombre del campo dónde se insertará el tooltip y el campo del tooltip.',
 		example: '// Ejemplo de autocomplete en formato table (tabla) \n\
 var countriesJSON = [\n\
-{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
-{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
-{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
+	{ id: 1, country: "Afganistán", capital: "Kabul", location: "Se encuentra dentro de Asia del Sur y Asia Central.", disabled: 1 },\n\
+	{ id: 2, country: "Albania", capital: "Tirane", location: "Se encuentra en el sureste de Europa.",  disabled: 0 },\n\
+	{ id: 3, country: "España", capital: "Madrid", location: "Se encuentra al al noreste con Francia y Andorra.",  disabled: 0 },\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-format: "table",\n\
-data: countriesJSON,\n\
-// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\
-tooltip: [{\n\
-	//Nombre del campo donde se establecerá el tooltip\n\
-	field: "country"\n\
-	//Nombre del campo que contiene el texto utilizado por el tooltip\n\
-	text: "location"\n\
-}],\n\
-row: {\n\
-	return_value: "id",\n\
-	columns: ["country", "capital"],\n\
-	headers: ["País", "Capital"]\n\
-}\n\
-});\n\n\
+it("#pais").autocomplete({\n\
+	format: "table",\n\
+	data: countriesJSON,\n\
+	// Tooltip es un array de JSON que puede definir tantos tooltips como columnas se muestran\n\
+	row: {\n\
+		return_value: "id",\n\
+		columns: ["country", "capital"],\n\
+		headers: ["País", "Capital"]\n\
+	},\n\
+	tooltip: [{\n\
+		//Nombre del campo donde se establecerá el tooltip\n\
+		field: "country",\n\
+		//Nombre del campo que contiene el texto utilizado por el tooltip\n\
+		text: "location"\n\
+	}]\n\
+});\n\
+\n\
 // Ejemplo en formato cluster (agrupado)\n\
 var brandsList = [\n\
-{ group: "Coches", items: [\n\
-	{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
-	{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
-	{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
-]},\n\
-{ group: "Motocicletas", items: [\n\
-	{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
-	{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
-	{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
-]},\n\
+	{ group: "Coches", items: [\n\
+		{ id: 1, text: "Ford", tooltip: "Estadounidense", unavailable: false},\n\
+		{ id: 2, text: "Jaguar", tooltip: "Inglesa", unavailable: false},\n\
+		{ id: 3, text: "Seat", tooltip: "Española", unavailable: true}\n\
+	]},\n\
+	{ group: "Motocicletas", items: [\n\
+		{ id: 1, text: "Suzuki", tooltip: "Japonesa", unavailable: true},\n\
+		{ id: 2, text: "Ducati", tooltip: "Italiana", unavailable: false},\n\
+		{ id: 3, text: "Hayley-Davidson", tooltip: "Estadounidense", unavailable: false}\n\
+	]},\n\
 ];\n\
-it("#inputTextID").autocomplete({\n\
-data: clusterList,\n\
-minLength: 1,\n\
-tooltips: {\n\
-	// Nombre del campo donde se encuentra el texto del tooltip\n\
-	field: "tooltip"\n\
-},\n\
-format: "cluster",\n\
+it("#vehiculo").autocomplete({\n\
+	data: brandsList,\n\
+	minLength: 1,\n\
+	tooltip: {\n\
+		// Nombre del campo donde se encuentra el texto del tooltip\n\
+		field: "tooltip"\n\
+	},\n\
+	format: "cluster",\n\
 });'
 	},
 	voidMessage: {
@@ -2691,7 +2777,7 @@ _CSS_'
  **/
 WikiHelper.Validator = {
 	general: {
-		version: '1.0',
+		version: '2.0',
 		name: 'Validator',
 		help: 1,
 		description: 'Este script establece validaciones personalizadas para los elementos de entrada de datos de formulario.\n\
@@ -2934,7 +3020,7 @@ this.Helper = it.helper = function (func, cfg) {
 	}
 
 	// Set themes
-	var darkTheme = { fieldColor: '#d2a5a5', stringColor: '#fff', exampleColor: '#ff6694', keyColor: '#467bfe', commentColor: '#828282', funcNameColor: '#0fbf88', boolColor: '#36e05c', strColor: '#c5c5c5', funcColor: '#f1c33d', intColor: '#ffabab', nullColor: '#b1b2b3' };
+	var darkTheme = { fieldColor: '#ff6a6a', stringColor: '#fff', exampleColor: '#ff6694', keyColor: '#467bfe', commentColor: '#828282', funcNameColor: '#0fbf88', boolColor: '#36e05c', strColor: '#c5c5c5', funcColor: '#f1c33d', intColor: '#ffabab', nullColor: '#b1b2b3' };
 	var lightTheme = { fieldColor: '#777', stringColor: '#222', exampleColor: '#0059af', keyColor: '#e91235', commentColor: '#656667', funcNameColor: '#07845d', boolColor: '#159460', strColor: '#ea6c10', funcColor: '#6e009a', intColor: '#12009a', nullColor: '#ff0000' };
 	var theme = !cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toUpperCase();
 
@@ -3092,6 +3178,8 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r input[type="search"] + i::after ', ' content: ""; position: absolute; top: 6px; left: 9px; width: 1px; height: 8px; border: 1px solid #ccc; transform: rotate(-45deg);'); 
 		AddCSSRule('', 'h3+#additionalH31p3r', 'margin: 0 !important;');
 		AddCSSRule('', 'h3+#additionalH31p3r > h3', 'margin: 0 !important; padding: 0; display: none;');
+		AddCSSRule('', '#h31p3r inline', 'padding: 0; color: ' + opt.stringColor + '; display: inline; width: auto; white-space: pre-wrap;');
+		AddCSSRule('', '#h31p3r code code', 'padding: 0;');
 
 		if(Helper.getParameters("f") == '.me'){
 			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
