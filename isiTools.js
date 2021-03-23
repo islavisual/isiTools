@@ -38,7 +38,11 @@ var it = function(t, f){
 	} else {
 		it.targets = document.querySelector(f).querySelectorAll(t);
 	}
-	
+
+	if(it.targets.length == 0){
+		console.log("No se encontraron elementos con el selector:", t, f ? f : '');
+	}
+
 	return it;
 };
 
