@@ -20,9 +20,9 @@ var itEnabledModules = {
 	Password: true,
 	Selectpicker: true,
 	SendForm: false,
-	Sorter: true,
+	Sorter: false,
 	StripTags: false,
-	Tabs: true,
+	Tabs: false,
 	Treeview: true,
 	Validator: false
 }
