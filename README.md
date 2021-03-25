@@ -37,6 +37,7 @@ Los componentes que ofrece son:
 * **SendForm**: Funcionalidad para crear y enviar formularios en tiempo real a través de Ajax en modo POST.
 * **Slider**: Funcionalidad para crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.
 * **Sorter**: Funcionalidad para ordenar tablas por múltiples columnas.
+* **Tabs**: Funcionalidad totalmente usable y accesiblepara mostrar información agrupada por secciones o pestañas.
 * **Treeview**: Funcionalidad para mostrar vistas jerárquizadas de información.
 * **Validator**: Funcionalidad para establecer mensajes de validez personalizados en los elementos de entrada de datos de los formularios. 
 
