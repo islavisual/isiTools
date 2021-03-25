@@ -20,8 +20,9 @@ var itEnabledModules = {
 	Password: true,
 	Selectpicker: true,
 	SendForm: false,
-	Sorter: false,
+	Sorter: true,
 	StripTags: false,
+	Tabs: true,
 	Treeview: true,
 	Validator: false
 }
@@ -47,10 +48,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0b",
+it.version = "2.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "23/03/2021",
+it.lastupdate = "25/03/2021",
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -143,7 +144,7 @@ it.first = function(){ return this.targets[0] }
 	Formatear las fechas a Big Endian (YYYY-MM-DD), Medium Endian (MM-DD-YYYY) o Little Endian (DD-MM-YYYY)
 	@version: 1.00																					
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2019 Islavisual.
+	@Copyright 2017-2021 Islavisual.
 	@Last update: 14/03/2019
 **/
 it.formatedDate = function(fmt, dt) {
@@ -222,7 +223,7 @@ it.getTextWidth = function(obj, fontFamily, fontSize, padding){
 
 	// Si es un SELECT, recuperamos los OPTION
 	if(obj.tagName == "SELECT"){
-		obj = Array.prototype.slice.call($0.querySelectorAll("option"), 0);
+		obj = Array.prototype.slice.call(obj.querySelectorAll("option"), 0);
 	}
 
 	if(typeof obj == "object" && obj.length != undefined){
@@ -777,7 +778,8 @@ function isiToolsCallback(json){
 					AddCSSRule('', ".Alert header .close-btn", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
 					AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
 					AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
-					AddCSSRule('', ".Alert footer button", 'background: #fff; color: #000; border: 1px solid #000;');
+					AddCSSRule('', ".Alert footer button", 'background: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; border: 1px solid ' + opt.styles.body.color + ';');
+					AddCSSRule('', ".Alert footer button:focus", 'background: ' + opt.styles.body.color + '; color: ' + opt.styles.body.background + '; border: 1px solid ' + opt.styles.body.color + ';');
 
 					if(opt.actions.accept.class == ""){
 						AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
@@ -794,6 +796,8 @@ function isiToolsCallback(json){
 				assignEvents();
 
 				if(opt.onshow){ opt.onshow(); }
+
+				if(!opt.actions.cancel.enabled) document.querySelector(".Alert footer button").focus();
 			}
 
 			var aux = opt.body.match(/^url\((.*)\)$/i);
@@ -4200,7 +4204,7 @@ function isiToolsCallback(json){
 			// Test touch event
 			var te;
 			try{ 
-				document.createEvent("TouchEvent");
+				te = document.createEvent("TouchEvent");
 				if(typeof te != "undefined") return true;
 			} catch(e){}
 
@@ -4329,7 +4333,7 @@ function isiToolsCallback(json){
 		Masking inputs functionality
 		@version: 1.1.2																					
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2019 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 21/06/2020
 	**/
 	if(json.Mask){
@@ -6156,7 +6160,7 @@ function isiToolsCallback(json){
 		 StripTags functionality
 		@version: 1.0
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2019 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 09/02/2019
 	**/
 	if(json.StripTags){
@@ -6174,12 +6178,305 @@ function isiToolsCallback(json){
 			});
 		}
 	}
+
+	
+	/**
+		 Tabs functionality
+		@version: 1.0
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2021 Islavisual.
+		@Last update: 25/03/2021
+	**/
+	if(json.Tabs){
+		this.Tabs = it.tabs = function (cfg) {
+			if(typeof cfg == "undefined") cfg = {};
+
+			// If method was called by HTMLSelectElement
+			this.targets = this.tagName != undefined ? [this] : (this.entries == undefined ? this.targets : this);
+
+			Array.prototype.slice.call(this.targets).forEach(function(target, x){
+				cfg.target = target.cloneNode(true), id = cfg.target.id;
+
+				// Si no tiene ID, se lo asignamos
+				if(!id) id = Math.random().toString(36).substr(2, 9);
+
+				// Creamos la configuración por defecto
+				cfg.images = !cfg.hasOwnProperty("images") ? null : cfg.images;
+				cfg.type   = !cfg.hasOwnProperty("type") ? '' : cfg.type;
+				cfg.label  = !cfg.hasOwnProperty("label") ? 'Opciones del tabs' : cfg.label;
+
+				// Verificamos que el número de tabs es igual al de contenedores
+				if(cfg.target.querySelectorAll('button, a').length != cfg.content.length){
+					var msg = "El número de tabs no se corresponde con el número de contenedores";
+					try { Alert(msg.replace(/\n/g, '<br/>').replace(/\"(.*?)\"/ig, "<b>$1</b>")); } catch(e) { alert(msg); }
+
+					return; 
+				}
+
+				// Asignamos algunos atributos al bloque de navegación (dónde están los botones o enlaces)
+				cfg.target.setAttribute("class", "it-tab-links");
+				cfg.target.setAttribute("role", 'tablist');
+				cfg.target.setAttribute("aria-label", cfg.label);
+
+				// Recorremos los disparadores o botones y asignamos atributos necesarios
+				var items = cfg.target.querySelectorAll('button, a');
+				for(var i = 0; i < items.length; i++){
+					items[i].setAttribute("role", "tab");
+					items[i].setAttribute("aria-selected", i == 0 ? 'true' : "false");
+					items[i].setAttribute("aria-controls", cfg.content[i]);
+					items[i].setAttribute("tabindex", '0');
+					items[i].setAttribute("type", 'button');
+					items[i].setAttribute("onclick", 'it.tabs.toggle(event, "' + cfg.content[i] + '")');
+
+					// Si es el primer tab, lo activamos
+					if(i == 0){
+						items[i].classList.add("active");
+					}
+					
+					// Si no tiene ID, se lo asignamos
+					if(!items[i].id){
+						items[i].id = "it-tab-link" + id + '-' + i
+					}
+
+					// Si se han sollicitado imágenes, las añadimos
+					if(cfg.images && cfg.images.length != 0){
+						var img = document.createElement("img");
+							img.classList.add("it-tab-link-image");
+							img.src = cfg.images[i];
+
+						items[i].insertAdjacentElement("afterbegin", img);
+					}
+
+					document.getElementById(cfg.content[i]).setAttribute("aria-labelledby", items[i].id);
+				}
+
+				// Añadimos la funcionalidad de overflow, si procede
+				if(cfg.type && cfg.type == "overflow"){
+					it.tabs.initOverflowMode(cfg);
+
+					// Establecemos el ancho del contenedor de botones o enlaces si la funcionalidad de overflow está habilitada
+					setTimeout(function(xTrg){
+						var trg = document.querySelector('#it-tabs-' + this + xTrg + ' .it-tab-links');
+						var prev = trg.previousElementSibling;
+						var next = trg.nextElementSibling;
+
+						var items2 = trg.querySelectorAll("button, a"), navCurrentWidth = 0;
+						
+						for(var x = 0; x < items2.length; x++){
+							var item2 = items2[x], style = window.getComputedStyle(item2);
+
+							navCurrentWidth += item2.offsetWidth + parseInt(style.marginRight) + parseInt(style.marginLeft);
+						}
+
+						trg.style.width = (navCurrentWidth + prev.offsetWidth) + 'px';
+
+					}.bind(id, x), 0)
+				}
+
+				// Detectamos si es mobile
+				var mobile = 'no-touch';
+				try {
+					if (typeof document.createEvent("TouchEvent") != "undefined") {
+						mobile = 'touch';
+					}
+				} catch (e) { }
+
+				// Envolvemos los disparadores de los tabs en una capa superior
+				var div = document.createElement("section");
+					div.id = 'it-tabs-' + id + x;
+					
+				if(!cfg.hasOwnProperty("label")){
+					cfg.target.setAttribute("aria-labelledby", div.id);
+				}
+
+				div.classList.add("it-tabs-container", mobile);
+				div.innerHTML = cfg.target.outerHTML;
+
+				target.insertAdjacentElement("beforebegin", div);
+
+				// Insertamos los contenedores de los tabs
+				var divTabs = document.getElementById(cfg.content[0]).parentElement;
+				if(cfg.content.length != divTabs.children.length){
+					divTabs = document.createElement("div");
+				} 
+
+				divTabs.classList.add("it-tab-contents")
+
+				for(var i = 0; i < items.length; i++){
+					var itmS = document.getElementById(cfg.content[i]);
+					var itmT = itmS.cloneNode(true);
+
+					itmT.setAttribute("role", 'tabpanel');
+					itmT.setAttribute("tabindex", '0')
+					itmT.style.display = i == 0 ? "block" : '';
+					divTabs.appendChild(itmT)
+
+					itmS.remove();
+				}
+
+				div.appendChild(divTabs);
+
+				window.addEventListener("resize", function(e){
+					it.tabs.resize();
+				})
+
+				setTimeout(function(){ it.tabs.resize(); }, 150);
+
+				// Eliminamos el target original
+				target.remove();
+			});
+
+			if(typeof it.addCSSRule != "undefined"){
+				AddCSSRule('', '.it-tab-links', 'overflow: hidden; z-index: 1; display: block; margin: 12px 0 0 0; padding: 0; position: relative; top: 1px; list-style: none;');
+				AddCSSRule('', '.it-tab-links [role="tab"]', 'background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0;');
+				AddCSSRule('', '.it-tab-links [role="tab"] img', 'width: auto; height: 48px; object-fit: cover; object-position: center center; display: block; max-width: none; max-height: none; image-rendering: -webkit-optimize-contrast; pointer-events: none; margin: 0 auto; opacity: 1;');
+				AddCSSRule('', '.it-tab-links [role="tab"]:not(.active) img', 'filter: grayscale(1); opacity: 0.5;');
+				AddCSSRule('', '.it-tab-links [role="tab"]:hover', 'background-color: #484848;');
+				AddCSSRule('', '.it-tab-links [role="tab"].active', 'background-color: #ffffff; color: #000000; border-color: rgba(0, 0, 0, 0.2); border-bottom-color: #fff;');
+				
+				AddCSSRule('', '.it-tabs-container', 'margin-top: 15px;');
+				AddCSSRule('', '.it-tabs-container [role="button"]', 'background-color: #fff; border: 0 none; color: #000; float: left; outline: none; cursor: pointer; padding: 5px 0; margin: 0; transition: 0.3s; border-radius: 5px 5px 0 0; position: absolute; left: 0; top: 0; min-width: 32px; z-index: 2;');
+				AddCSSRule('', '.it-tabs-container [role="button"]:last-child', 'left: auto; right: 0;');
+				AddCSSRule('', '.it-tabs-container [role="button"].large', 'height: 80px; font-size: 32px');
+
+				AddCSSRule('', '.it-tab-contents', 'border: 1px solid rgba(0,0,0,0.2); border-radius: 5px 5px 0px 0;');
+				AddCSSRule('', '.it-tab-contents [role=tabpanel]', 'display: none; padding: 6px 12px; border: 0 none;');
+
+				AddCSSRule('', '.it-tabs-overflow', 'overflow: hidden; position: relative; padding-left: 20px;');
+				AddCSSRule('', '.it-tabs-overflow .it-tab-links', 'margin: 0; top: 0; margin-left: 8px; ');
+				AddCSSRule('', '.it-tabs-overflow [role="button"]', 'top: -1px;');
+				AddCSSRule('', '.it-tabs-overflow + .it-tab-contents', 'margin-top: -1px;');
+
+				AddCSSRule('', '.it-tabs-overflow.hide-buttons [role="button"]', 'display: none');
+				AddCSSRule('', '.it-tabs-overflow.hide-buttons .it-tab-links', 'margin-left: 0');
+
+				AddCSSRule('', '.it-tabs-container.touch', 'position: relative;');
+				AddCSSRule('', '.it-tabs-container.touch .it-tabs-overflow', 'position: initial; overflow: auto;');
+				AddCSSRule('', '.it-tabs-container.touch [role="button"]', 'color: #999;');
+			}
+		}
+
+		it.tabs.version = '1.0';
+		it.tabs._navMousedownID = -1;
+		it.tabs._navMouseStep = 10;
+
+		it.tabs.toggle = function(e, id){
+			// Declare all variables
+			var i, tabcontent, tablinks;
+
+			// Get all elements with class="tabcontent" and hide them
+			tabcontent = it(e.target).parents(".it-tabs-container").querySelectorAll("[role=tabpanel]");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			// Get all elements with class="tablinks" and remove the class "active"
+			tablinks = it(e.target).parents('.it-tab-links').querySelectorAll("[role=tab]")
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].classList.remove('active')
+			}
+
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			document.getElementById(id).style.display = "block";
+			e.target.classList.add("active");
+		}
+
+		it.tabs.resize = function(){
+			var otabs = document.querySelectorAll(".it-tabs-overflow");
+			for(var i = 0; i < otabs.length; i++){
+				var tab = otabs[i];
+
+				if(tab.offsetWidth > tab.querySelector(".it-tab-links").offsetWidth - 10){
+					tab.classList.add("hide-buttons");
+					tab.querySelector(".it-tab-links").style.left = '0';
+
+				} else {
+					tab.classList.remove("hide-buttons")
+				}
+			}
+		}
+
+		it.tabs.initOverflowMode = function (cfg){
+			var large = 'normal';
+			if(cfg.images && cfg.images.length != 0) large = "large";
+
+			var nto =  document.createElement("div");
+				nto.classList.add("it-tabs-overflow");
+				nto.appendChild(cfg.target)
+			
+			cfg.target = nto;
+
+			// Añadimos botón a la izquierda
+			var prev = document.createElement("button");
+				prev.setAttribute("role", 'button');
+				prev.setAttribute("tabindex", '0');
+				prev.type = 'button';
+				prev.classList.add("it-tab-prev", large);
+				prev.innerHTML = '&#11207;';
+	
+			// Añadimos botón a la derecha
+			var next = document.createElement("button");
+				next.setAttribute("role", 'button');
+				next.setAttribute("tabindex", '0');
+				next.type = 'button';
+				next.classList.add("it-tab-next", large);
+				next.innerHTML = '&#11208;';
+	
+			cfg.target.insertAdjacentElement("afterbegin", prev);
+			cfg.target.insertAdjacentElement("beforeend", next);
+
+			prev.setAttribute("onmousedown", "it.tabs.navMousedown(event)");
+			prev.setAttribute("onmouseup", "it.tabs.navmouseup(event)");
+			next.setAttribute("onmousedown", "it.tabs.navMousedown(event)");
+			next.setAttribute("onmouseup", "it.tabs.navmouseup(event)");
+		}
+
+		it.tabs.navMousedown = function (event) {
+			if(it.tabs._navMousedownID == -1){
+				it.tabs._navMousedownID = setInterval(function(){
+					it.tabs.whileNavMousedown(event); 
+				}, 20); 
+			} 
+		};
+		
+		it.tabs.navmouseup = function (event) {
+			if(it.tabs._navMousedownID!=-1) {
+				clearInterval(it.tabs._navMousedownID); 
+				it.tabs._navMousedownID = -1; 
+			}
+		};
+
+		it.tabs.whileNavMousedown = function (e) { 
+			var trg = e.target;
+			var px = null; 
+			var width = trg.offsetWidth;
+	
+			if(trg.classList.contains("it-tab-next")){
+				trg = trg.previousElementSibling;
+				px  = trg.offsetLeft - width;
+				
+				if(Math.abs(trg.offsetLeft) + trg.parentElement.offsetWidth < trg.offsetWidth){
+					px -= it.tabs._navMouseStep;
+					trg.style.left = px + 'px';
+				}
+
+			} else{
+				trg = trg.nextElementSibling;
+				px  = trg.offsetLeft - width;
+	
+				px += it.tabs._navMouseStep;
+				if(Math.abs(px) < it.tabs._navMouseStep) px = 0;
+								
+				trg.style.left = px + 'px';
+			}
+		}
+	}
 	
 	/**
 		 TreeView functionality
 		@version: 1.2
 		@author: Pablo E. Fernández (islavisual@gmail.com).
-		@Copyright 2019 Islavisual.
+		@Copyright 2017-2021 Islavisual.
 		@Last update: 05/03/2021
 	**/
 	if(json.Treeview){
