@@ -2661,10 +2661,139 @@ WikiHelper.Striptags = {
 }
 
 /**
+   Tabs Helper																		
+   @version: 1.0
+   @author: Pablo E. Fernández (islavisual@gmail.com).												
+   @Copyright 2017-2021 Islavisual. 																	
+   @Last update: 25/03/2021
+ **/
+WikiHelper.Tabs = {
+	general: {
+		version: '1.0',
+		name: 'Tabs',
+		description: 'Tabs es un componente totalmente usable y accesible de la interfaz gráfica de usuario que muestra información agrupada por secciones o pestañas.\n\
+		<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los tabs, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-2/tabs.html</name>\n\
+Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un código que se alimenta de una lista con enlaces o botones y unos elementos de caja o secciones que contienen los diferenttes contenidos de cada una de las pestañas.\n\
+\n\
+La estructura de la cabecera de los TABS puede definirse mediante un elemento de lista <property>ul</property> con enlaces:\n\
+<code>\
+<name>&lt;ul <field>class=</field><str>"tabs"</str>></name>\n\
+	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Investigación y Desarrollo</text><name>&lt;/button></name><name>&lt;/li></name>\n\
+	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Planificación y Organización</text><name>&lt;/button></name><name>&lt;/li></name>\n\
+	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Producción</text><name>&lt;/button></name><name>&lt;/li></name>\n\
+	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Pruebas y testing</text><name>&lt;/button></name><name>&lt;/li></name>\n\
+	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Resultados y Conclusiones</text><name>&lt;/button></name><name>&lt;/li></name>\n\
+<name>&lt;/ul></name>\n\
+</code>\n\
+O mediante un elemento de caja <property>div</property> o de navegación <property>nav</property> con botones:\n\
+<code>\
+<name>&lt;nav <field>class=</field><str>"tabs"</str>></name>\n\
+	<name>&lt;button></name><text style="display:inline; padding: 0">Investigación y Desarrollo</text><name>&lt;/button></name>\n\
+	<name>&lt;button></name><text style="display:inline; padding: 0">Planificación y Organización</text><name>&lt;/button></name>\n\
+	<name>&lt;button></name><text style="display:inline; padding: 0">Producción</text><name>&lt;/button></name>\n\
+	<name>&lt;button></name><text style="display:inline; padding: 0">Pruebas y testing</text><name>&lt;/button></name>\n\
+	<name>&lt;button></name><text style="display:inline; padding: 0">Resultados y Conclusiones</text><name>&lt;/button></name>\n\
+<name>&lt;/nav></name>\n\
+</code>\n\
+Los elementos que representan el cóntenido podrán ser cualquier elemento de caja o sección y sólo deberán ser proporcionados a través de un ID:\n\
+<code>\
+<name>&lt;div <field>id=</field><str>"tab1"</str>></name>\n\
+	<name>&lt;h3></name><text style="display:inline; padding: 0">Investigación y Desarrollo</text><name>&lt;/h3></name>\n\
+	<name>&lt;p></name>Texto 1<name>&lt;/p></name>\n\
+<name>&lt;/div></name>\n\
+<name>&lt;div <field>id=</field><str>"tab2"</str>></name>\n\
+	<name>&lt;h3></name><text style="display:inline; padding: 0">Planificación y Organización</text><name>&lt;/h3></name>\n\
+	<name>&lt;p></name>Texto 2<name>&lt;/p></name>\n\
+<name>&lt;/div></name>\n\
+<name>&lt;div <field>id=</field><str>"tab3"</str>></name>\n\
+	<name>&lt;h3></name><text style="display:inline; padding: 0">Producción</text><name>&lt;/h3></name>\n\
+	<name>&lt;p></name>Texto 3<name>&lt;/p></name>\n\
+<name>&lt;/div></name>\n\
+<name>&lt;div <field>id=</field><str>"tab4"</str>></name>\n\
+	<name>&lt;h3></name><text style="display:inline; padding: 0">Pruebas y testing</text><name>&lt;/h3></name>\n\
+	<name>&lt;p></name>Texto 4<name>&lt;/p></name>\n\
+<name>&lt;/div></name>\n\
+<name>&lt;div <field>id=</field><str>"tab5"</str>></name>\n\
+	<name>&lt;h3></name><text style="display:inline; padding: 0">Resultados y Conclusiones</text><name>&lt;/h3></name>\n\
+	<name>&lt;p></name>Texto 5<name>&lt;/p></name>\n\
+<name>&lt;/div></name>\n\
+</code>'
+	},
+	additional: [
+		{
+			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '_CSS_\n\
+// styles.css (from your site)\n\
+.it-tab-links{ overflow: hidden; z-index: 1; display: block; margin: 12px 0 0 0; padding: 0; position: relative; top: 1px; list-style: none;}\n\
+.it-tab-links [role="tab"]{ background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0;}\n\
+.it-tab-links [role="tab"] img{ width: auto; height: 48px; object-fit: cover; object-position: center center; display: block; max-width: none; max-height: none; image-rendering: -webkit-optimize-contrast; pointer-events: none; margin: 0 auto; opacity: 1;}\n\
+.it-tab-links [role="tab"]:not(.active) img{ filter: grayscale(1); opacity: 0.5;}\n\
+.it-tab-links [role="tab"]:hover{ background-color: #484848;}\n\
+.it-tab-links [role="tab"].active{ background-color: #ffffff; color: #000000; border-color: rgba(0, 0, 0, 0.2); border-bottom-color: #fff;}\n\
+.it-tabs-container{ margin-top: 15px;}\n\
+.it-tabs-container [role="button"]{ background-color: #fff; border: 0 none; color: #000; float: left; outline: none; cursor: pointer; padding: 5px 0; margin: 0; transition: 0.3s; border-radius: 5px 5px 0 0; position: absolute; left: 0; top: 0; min-width: 32px; z-index: 2;}\n\
+.it-tabs-container [role="button"]:last-child{ left: auto; right: 0;}\n\
+.it-tabs-container [role="button"].large{ height: 80px; font-size: 32px}\n\
+.it-tab-contents{ border: 1px solid rgba(0,0,0,0.2); border-radius: 5px 5px 0px 0;}\n\
+.it-tab-contents [role=tabpanel]{ display: none; padding: 6px 12px; border: 0 none;}\n\
+.it-tabs-overflow{ overflow: hidden; position: relative; padding-left: 20px;}\n\
+.it-tabs-overflow .it-tab-links{ margin: 0; top: 0; margin-left: 8px; }\n\
+.it-tabs-overflow [role="button"]{ top: -1px;}\n\
+.it-tabs-overflow + .it-tab-contents{ margin-top: -1px;}\n\
+.it-tabs-overflow.hide-buttons [role="button"]{ display: none}\n\
+.it-tabs-overflow.hide-buttons .it-tab-links{ margin-left: 0}\n\
+.it-tabs-container.touch{ position: relative;}\n\
+.it-tabs-container.touch .it-tabs-overflow{ position: initial; overflow: auto;}\n\
+.it-tabs-container.touch [role="button"]{ color: #999;}\n\
+_CSS_'
+		}
+	],
+	content: {
+		type: 'object',
+		description: 'Permite definir los <property>id</property> de los tabs a definir.',
+		example: 'it(".nav-tabs").tabs({\n\
+	content: ["tab1", "tab2", "tab3", "tab4", "tab5"]\n\
+});'
+	},
+	images: {
+		type: 'object',
+		description: 'Permite definir unas imágenes que serán insertadas como parte de la cabecera o título de la pestaña. Este atributo es opcional.',
+		example: 'it(".nav-tabs").tabs({\n\
+	content: ["tab1", "tab2", "tab3", "tab4", "tab5"],\n\
+	images: [\n\
+		"https://s3-us-west-2.amazonaws.com/s.cdpn.io/1457119/undraw_research.svg",\n\
+		"https://s3-us-west-2.amazonaws.com/s.cdpn.io/1457119/undraw_planning.svg",\n\
+		"https://s3-us-west-2.amazonaws.com/s.cdpn.io/1457119/undraw_production.svg",\n\
+		"https://s3-us-west-2.amazonaws.com/s.cdpn.io/1457119/undraw_testing.svg",\n\
+		"https://s3-us-west-2.amazonaws.com/s.cdpn.io/1457119/undraw_result.svg"\n\
+	],\n\
+	label: "Ejemplo de tabs"\n\
+});'
+	},
+	label: {
+		type: 'object',
+		description: 'Permite establecer un aria-label cuando se requiere que el tab sea accesible. Por defecto se asigna un texto genérico, pero es recomrendable cambiarlo a una descripción más específica para cumplir con los requerimientos mínimos de accesibilidad. Este atributo es opcional.',
+		example: 'it(".nav-tabs").tabs({\n\
+	content: ["tab1", "tab2", "tab3", "tab4", "tab5"],\n\
+	label: "Ejemplo de tabs"\n\
+});'
+	},
+	type: {
+		type: 'string',
+		description: 'Permite definir el comportamiento del componente. Si no se especifica, o es vacío, se obtendrá un comportamiento estándar de tabs o pestañas, pero, si su valor es <property>overflow</property> se comportará como un slider de pestañas, que podrán ser manipuladas mediante dos botones adicionales situados en los extremos.',
+		example: 'it(".nav-tabs").tabs({\n\
+	content: ["tab1", "tab2", "tab3", "tab4", "tab5"],\n\
+	label: "Ejemplo de tabs",\n\
+	type: "overflow"\n\
+});'
+	},
+}
+
+/**
    TreeView Helper
    @version: 1.2
    @author: Pablo E. Fernández (islavisual@gmail.com).
-   @Copyright 2019 Islavisual.
+   @Copyright 2017-2021 Islavisual.
    @Last update: 05/03/2021
  **/
 WikiHelper.Treeview = {
@@ -2949,7 +3078,7 @@ it("#pwd").validator({\n\
    Helper functionality
    @version: 1.1																					
    @author: Pablo E. Fernández (islavisual@gmail.com).
-   @Copyright 2019 Islavisual.
+   @Copyright 2017-2021 Islavisual.
    @Last update: 04/03/2021
  **/
 
