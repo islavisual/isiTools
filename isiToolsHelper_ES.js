@@ -3205,7 +3205,7 @@ this.Helper = it.helper = function (func, cfg) {
 	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
 	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
 	<h1>\
-		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 120px;top: 8px;">\
+		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 120px;top: 8px;">\
 		Pantalla de ayuda para ' + general.name + " " + general.version + 
 	'</h1>\
 	<p style="margin-top: 10px">'+ general.description + '</p>\
@@ -3241,7 +3241,7 @@ this.Helper = it.helper = function (func, cfg) {
 			</ul>\
 		</nav>\
 		<h1>\
-			<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 10px;top: 8px;">\
+			<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 10px;top: 8px;">\
 			Tabla de contenidos de isiTools ' +  it.version + 
 		'</h1>\
 		<div style="margin-top: 10px">\
