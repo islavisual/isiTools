@@ -3127,18 +3127,18 @@ this.Helper = it.helper = function (func, cfg) {
 		if(typeof aux.general != "undefined") delete aux.general;
 		if(typeof aux.additional != "undefined") delete aux.additional;
 
-		WikiHelper[key].general.helpText = '<comm>// Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.</comm>\n';
-		WikiHelper[key].general.helpText += '<comm>// Para obtener ayuda general sobre el componente:</comm>\n' + 'Helper(<str>"' + WikiHelper[key].general.name + '"</str>);\n';
-		WikiHelper[key].general.helpText += 'Helper(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<func>theme</func>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
+		WikiHelper[key].general.helpText = '<comm>// Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.</comm>';
+		WikiHelper[key].general.helpText += '\n<comm>// Para obtener ayuda general sobre el componente:</comm>\n' + '<func>Helper</func>(<str>"' + WikiHelper[key].general.name + '"</str>);';
+		WikiHelper[key].general.helpText += '\n<func>Helper</func>(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<property>theme</property>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
 		if(typeof Object.keys(aux)[0] != "undefined"){
 			WikiHelper[key].general.helpText += '\n<comm>// Para obtener ayuda sobre un método o propiedad específica:</comm>';
-			WikiHelper[key].general.helpText += '\nit.helper(<str>"' + WikiHelper[key].general.name + '"</str>, <str>"' + Object.keys(aux)[0] + '"</str>);';
-			WikiHelper[key].general.helpText += '\nit.helper(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<func>about</func>:</null> <str>"' + Object.keys(aux)[0] + '"</str>, <null><func>theme</func>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
+			WikiHelper[key].general.helpText += '\n<func>it.helper</func>(<str>"' + WikiHelper[key].general.name + '"</str>, <str>"' + Object.keys(aux)[0] + '"</str>);';
+			WikiHelper[key].general.helpText += '\n<func>it.helper</func>(<str>"' + WikiHelper[key].general.name + '"</str>, <null>{<property>about</property>:</null> <str>"' + Object.keys(aux)[0] + '"</str>, <null><func>theme</func>:</null> <str>"' + (!cfg.hasOwnProperty('theme') ? 'DARK' : cfg.theme.toLowerCase()) + '"</str>});\n';
 		}
 		
 		WikiHelper.Index[func] = {};
 		WikiHelper.Index[func].description = WikiHelper[key].general.description
-		WikiHelper.Index[func].example =  WikiHelper[key].general.helpText;
+		WikiHelper.Index[func].example =  '\n' + WikiHelper[key].general.helpText;
 		WikiHelper.Index[func].example = WikiHelper.Index[func].example.replace(new RegExp (WikiHelper[key].general.name, 'ig'), function($0){ return "<name>" + $0 + "</name>"; })
 
 		if(WikiHelper[key].general.name.toLowerCase() == func.toLowerCase()) break;
@@ -3263,16 +3263,16 @@ Para utilizar cada uno de los componentes / módulos que, a continuación, se mu
 Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.<br/>\
 <code style="margin: 10px 0; padding: 0">\
 <comm>// Si se desea obtener ayuda general sobre un componente se puede recurrir a la forma reducida de un parámetro:</comm><br/>\
-Helper(<str>"each"</str>);<br/>\
+<func>Helper</func>(<str>"each"</str>);<br/>\
 <br/>\
 <comm>// Si se desea obtener ayuda sobre un método o propiedad de un componente específico se puede recurrir a la forma reducida de dos parámetros:</comm><br/>\
-it.helper(<str>"autocomplete"</str>, <str>"callback"</str>);<br/>\
+<func>it.helper</func>(<str>"autocomplete"</str>, <str>"callback"</str>);<br/>\
 <br/>\
 <comm>// Si se desea obtener ayuda general sobre un componente usando el tema claro se puede recurrir a la forma con el segundo parámetro como JSON:</comm><br/>\
-Helper(<str>"alert"</str>, <null>{<func>theme</func>:</null> <str>"light"</str><null>}</null>);<br/>\
+<func>Helper</func>(<str>"alert"</str>, <null>{<property>theme</property>:</null> <str>"light"</str><null>}</null>);<br/>\
 <br/>\
 <comm>// Esta última forma permite también establecer el método o propiedad que se desea consultar</comm><br/>\
-it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheckNode;"</str>, <null><func>theme</func>:</null> <str>"light"</str><null>}</null>);\
+<func>it.helper</func>(<str>"treeview"</str>, <null>{<property>about</property>:</null> <str>"onCheckNode;"</str>, <null><property>theme</property>:</null> <str>"light"</str><null>}</null>);\
 </code>\
 		</div>\
 		';
@@ -3286,7 +3286,7 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', "#h31p3r", 'font-family: "Open Sans";; font-size: 14px; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px; font-size: 20px; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; padding: 15px; font-size: 16px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
-		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1.0rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
+		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1.1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
 		AddCSSRule('', '#h31p3r h3[onclick]', 'cursor:pointer; transition: all 0.35s ease-in-out; padding: 3px 0 0 0; line-height: 22px;');
 		AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
 		AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
@@ -3301,7 +3301,7 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r ul li, #h31p3r p ', 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
 		AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
 		AddCSSRule('', '#h31p3r p.warning', 'background: linear-gradient(45deg, #de1f60, transparent); border-radius: 4px;');
-		AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.fieldColor + ';');
+		AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.strColor + ';');
 		AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
 		AddCSSRule('', '#h31p3r property', 'text-transform: none; padding: 0; display: inline-block; color: ' + opt.fieldColor + ';');
 		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
@@ -3310,7 +3310,7 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r > a', 'position: fixed;left: 10px;top: 10px; border: 1px solid ' + opt.highlight + '; padding: 3px 10px; line-height:26px;z-index:9; color: ' + opt.background + ';');
 		AddCSSRule('', '#h31p3r > a:hover', 'background: ' + opt.background + '; color: ' + opt.color + ';');
 		AddCSSRule('', '#h31p3r int', 'color: ' + opt.intColor + ';');
-		AddCSSRule('', '#h31p3r str, #h31p3r str int', 'color: ' + opt.strColor + ';');
+		AddCSSRule('', '#h31p3r str, #h31p3r str int', 'color: ' + opt.stringColor + ';');
 		AddCSSRule('', '#h31p3r bool', 'color: ' + opt.boolColor + ';');
 		AddCSSRule('', '#h31p3r func', 'color: ' + opt.funcColor + ';');
 		AddCSSRule('', '#h31p3r name', 'color: ' + opt.funcNameColor + ';');
@@ -3345,6 +3345,9 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r code code', 'padding: 0;');
 
 		AddCSSRule('', '#h31p3r p > name, #h31p3r p > name > *', 'color: #999; margin-top: 10px; display: inline-block;');
+
+		AddCSSRule('', '#h31p3rOptions field', 'display: none;');
+		AddCSSRule('', '#h31p3rOptions code', 'padding-left: 32px; display: block;');
 
 		if(Helper.getParameters("f") == '.me'){
 			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
