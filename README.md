@@ -2,6 +2,8 @@
 
 IsiTools 2 es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación de proyectos. Los componentes proporcionados están diseñados para ser reutilizables y obtener un mejor rendimiento, usabilidad web, accesibilidad web, lo que repercuteb en una mejor experiencia de usuario (UX).
 
+##### Versión actual: 2.0.1
+
 Los componentes que ofrece son:
 ## Globales
 * **First**: Devuelve el primer elemento de los elementos recuperados por la función constructora
