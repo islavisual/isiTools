@@ -246,11 +246,11 @@ it.ucwords("framework de isiTools", false);',
 }
 
 /**
-   AddCSSRule Helper																		
-   @version: 1.10																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 04/04/2019																			
+   AddCSSRule Helper						
+   @version: 1.10
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 04/04/2019
  **/
 WikiHelper.Addcssrule = {
 	general: {
@@ -283,10 +283,10 @@ WikiHelper.Addcssrule = {
 
 
 /**
-   Alert Helper																		
+   Alert Helper						
    @version: 1.6.1
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
    @Last update: 26/01/2021
  **/
 WikiHelper.Alert = {
@@ -294,7 +294,7 @@ WikiHelper.Alert = {
 		version: "1.6.2",
 		name: 'Alert',
 		description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.\n\
-<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices-1.1/examples/dialog-modal/dialog.html</name>",
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices-1.1/examples/dialog-modal/dialog.html</name>",
 	},
 	additional: [
 		{
@@ -544,7 +544,7 @@ Para entender mejor el significado de los caracteres comodín, supóngase que se
 	● Si se establece delante y detrás de una expresión buscará todas las coincidencias que contengan la expresión, por lo que si buscamos <property>*va*</property>, devolvera <property>Rivas-Vaciamadrid</property> y <property>Valmadrid</property>. Nótese que, este comportamiento es equivalente a no poner ningún asterisco.\n\
 </ul>\n\
 Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la página se vea poco afectado.\n\
-<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>',
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>',
 	}, 
 	additional: [
 		{
@@ -1183,11 +1183,11 @@ it("#inputTextID").constraint.decrement();'
 }
 
 /**
-   Counter Helper																		
+   Counter Helper
    @version: 1.1
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 19/05/2020																			
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 19/05/2020
  **/
 WikiHelper.Counter = {
 	general: {
@@ -1332,31 +1332,31 @@ WikiHelper.Datepicker = {
 		version: '1.2.2',
 		name: 'Datepicker',
 		help: 1,
-		description: 'Datepicker es un control que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks\n\
-<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los datepickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/dialog-modal/datepicker-dialog.html</name>',
+		description: 'Datepicker es un control totalmente usable y accesible que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks.\n\
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los datepickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/dialog-modal/datepicker-dialog.html</name>',
 	},
 	additional: [
 		{
 			description: 'También es posible cambiar el idioma de manera global a través de la propiedad config del componente DatePicker.',
 			example: "it.datepicker.config = {\n\
-icon: '<i class=\"icon-calendar\"></i>',\n\
-shortdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],\n\
-longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],\n\
-shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],\n\
-longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],\n\
-weekstart: 1,\n\
-textTrigger: 'Mostrar el calendario',\n\
-textYear: 'Año',\n\
-textToday: 'Hoy',\n\
-textRemove: 'Eliminar',\n\
-autoClose: true,\n\
-curDate: null,\n\
-selMonth: null,\n\
-selYear: null,\n\
-selDay: null,\n\
-format: 'DD-MM-YYYY',\n\
-md: {},\n\
-custom: []\n\
+	icon: '<i class=\"icon-calendar\"></i>',\n\
+	shortdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],\n\
+	longdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],\n\
+	shortmonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],\n\
+	longmonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],\n\
+	weekstart: 1,\n\
+	textTrigger: 'Mostrar el calendario',\n\
+	textYear: 'Año',\n\
+	textToday: 'Hoy',\n\
+	textRemove: 'Eliminar',\n\
+	autoClose: true,\n\
+	curDate: null,\n\
+	selMonth: null,\n\
+	selYear: null,\n\
+	selDay: null,\n\
+	format: 'DD-MM-YYYY',\n\
+	md: {},\n\
+	custom: []\n\
 };"
 		},
 		{
@@ -1403,17 +1403,29 @@ custom: []\n\
 	format: {
 		type: 'String',
 		description: 'Indica el formato para la introducción de la fecha. En general se utilizan los formatos DD-MM-YYYY (Little Endian), MM-DD-YYYY (Meddium Endian) y YYYY-MM-DD (Big Endian)',
-		example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0066a8", foreground: "#fff"});'
+		example: 'it("#birth-date").datepicker({\n\
+	format: "YYYY-MM-DD",\n\
+	background: "#0066a8",\n\
+	foreground: "#fff"\n\
+});'
 	},
 	background: {
 		type: 'String',
 		description: 'Indica el color de fondo que se desea usar. En general, este color será el color corporativo primario.',
-		example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0a1631", foreground: "#ff6694"});'
+		example: 'it("#birth-date").datepicker({\n\
+	format: "DD-MM-YYYY",\n\
+	background: "#0a1631",\n\
+	foreground: "#ff6694"\n\
+});'
 	},
 	foreground: {
 		type: 'String',
 		description: 'Indica el color de fondo que se desea usar. En general, este color será blanco o negro, aunque en ocasiones suele ser el color corporativo secundario.',
-		example: 'it("#birth-date").datepicker({format: "DD-MM-YYYY", background: "#0a1631", foreground: "#000"});'
+		example: 'it("#birth-date").datepicker({\n\
+	format: "DD-MM-YYYY",\n\
+	background: "#0a1631",\n\
+	foreground: "#000"\n\
+});'
 	},
 	shortdays: {
 		type: 'Object',
@@ -1519,11 +1531,11 @@ WikiHelper.Debugger = {
 }
 
 /**
-   DOM Helper																		
-   @version: 1.00																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 27/02/2019																			
+   DOM Helper
+   @version: 1.00
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 27/02/2019
  **/
 WikiHelper.Dom = {
 	general: {
@@ -1540,11 +1552,11 @@ WikiHelper.Dom = {
 }
 
 /**
-   GetBrowser Helper																		
-   @version: 1.1																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 27/01/2019																			
+   GetBrowser Helper						
+   @version: 1.1		
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 27/01/2019
  **/
 WikiHelper.Getbrowser = {
 	general: {
@@ -1585,11 +1597,11 @@ WikiHelper.Getbrowser = {
 }
 
 /**
-   GetParam Helper																		
-   @version: 1.1																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 13/03/2019																			
+   GetParam Helper						
+   @version: 1.1		
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 13/03/2019
  **/
 WikiHelper.Getparam = {
 	general: {
@@ -1606,11 +1618,11 @@ WikiHelper.Getparam = {
 }
 
 /**
-   HttpRequest Helper																		
-   @version: 2.0																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 27/02/2019																			
+   HttpRequest Helper						
+   @version: 2.0		
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 27/02/2019
  **/
 WikiHelper.Httprequest = {
 	general: {
@@ -1630,7 +1642,7 @@ WikiHelper.Httprequest = {
 	},
 	contentType: {
 		type: 'function',
-		description: 'Tipo de contenido de los datos recibidos. Por defecto, este attributo es <b>application/x-www-form-urlencoded</b>.\nLos valores más comunes son:\n\t● <b>application/x-www-form-urlencoded</b> (responsiveType debe ser "text")\n\t● <b>text/html; charset=utf-8</b> (responsiveType debe ser "text")\n\t● <b>application/json; charset=utf-8</b> (responsiveType debe ser "json")\n\t● <b>application/octet-stream</b> (responsiveType debe ser "blob")\n\t● <b>application/pdf</b> (responsiveType debería ser "blob")',
+		description: 'Tipo de contenido de los datos recibidos. Por defecto, este atributo es <b>application/x-www-form-urlencoded</b>.\nLos valores más comunes son:\n\t● <b>application/x-www-form-urlencoded</b> (responsiveType debe ser "text")\n\t● <b>text/html; charset=utf-8</b> (responsiveType debe ser "text")\n\t● <b>application/json; charset=utf-8</b> (responsiveType debe ser "json")\n\t● <b>application/octet-stream</b> (responsiveType debe ser "blob")\n\t● <b>application/pdf</b> (responsiveType debería ser "blob")',
 		example: 'new HttpRequest({url: "getData.json", contentType: "application/json; charset=utf-8"})'
 	},
 	onAbort: {
@@ -1706,7 +1718,7 @@ WikiHelper.Httprequest = {
 }
 
 /**
-   Include Helper																		
+   Include Helper						
    @version: 1.3
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
@@ -1845,11 +1857,11 @@ WikiHelper.Intelliform = {
 }
 
 /**
-   IsMobile Helper																		
-   @version: 1.00																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 11/03/2019																			
+   IsMobile Helper						
+   @version: 1.00		
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 11/03/2019
  **/
 WikiHelper.Ismobile = {
 	general: {
@@ -1866,11 +1878,11 @@ WikiHelper.Ismobile = {
 }
 
 /**
-   Language Helper																		
-   @version: 1.00																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 31/03/2019																			
+   Language Helper						
+   @version: 1.00		
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 31/03/2019
  **/
 WikiHelper.Language = {
 	general: {
@@ -1936,10 +1948,10 @@ it("#code").mask("99A-99#A-####-999A");'
 }
 
 /**
-   Slider Helper																		
-   @version: 2.0																					
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
+   Slider Helper						
+   @version: 2.0		
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
    @Last update: 06/03/2021
  **/
 WikiHelper.Slider = {
@@ -1948,7 +1960,7 @@ WikiHelper.Slider = {
 		name: 'Slider',
 		help: 1,
 		description: 'Este componente permite crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.\n\
-<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los sliders, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/slider/multithumb-slider.html</name>',
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los sliders, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/slider/multithumb-slider.html</name>',
 	},
 	additional: [
 		{
@@ -2406,7 +2418,7 @@ WikiHelper.Selectpicker = {
 		help: 1,
 		name: 'Selectpicker',
 		description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.\n\
-<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>"
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los combobox o selectpickers, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.0pattern/combobox-autocomplete-both.html</name>"
 	},
 	additional: [
 		{
@@ -2555,11 +2567,11 @@ color: #fff;\n\
 }
 
 /**
-   Sorter Helper																		
+   Sorter Helper						
    @version: 1.2
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 05/03/2021																			
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 05/03/2021
  **/
 WikiHelper.Sorter = {
 	general: {
@@ -2640,11 +2652,11 @@ table: table#table01.sortable\n\
 }
 
 /**
-   StripTags Helper																		
+   StripTags Helper						
    @version: 1.0
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
-   @Last update: 13/03/2019																			
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 13/03/2019
  **/
 WikiHelper.Striptags = {
 	general: {
@@ -2661,10 +2673,10 @@ WikiHelper.Striptags = {
 }
 
 /**
-   Tabs Helper																		
+   Tabs Helper						
    @version: 1.0
-   @author: Pablo E. Fernández (islavisual@gmail.com).												
-   @Copyright 2017-2021 Islavisual. 																	
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
    @Last update: 25/03/2021
  **/
 WikiHelper.Tabs = {
@@ -2672,7 +2684,7 @@ WikiHelper.Tabs = {
 		version: '1.0',
 		name: 'Tabs',
 		description: 'Tabs es un componente totalmente usable y accesible de la interfaz gráfica de usuario que muestra información agrupada por secciones o pestañas.\n\
-		<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los tabs, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-2/tabs.html</name>\n\
+		<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los tabs, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-2/tabs.html</name>\n\
 Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un código que se alimenta de una lista con enlaces o botones y unos elementos de caja o secciones que contienen los diferenttes contenidos de cada una de las pestañas.\n\
 \n\
 La estructura de la cabecera de los TABS puede definirse mediante un elemento de lista <property>ul</property> con enlaces:\n\
@@ -2801,7 +2813,7 @@ WikiHelper.Treeview = {
 		version: '1.2',
 		name: 'Treeview',
 		description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).\n\
-		<name><bool>NOTA</bool>: Si se necesita ayuda sobre las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/treeview/treeview-2/treeview-2a.html</name>",
+		<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/treeview/treeview-2/treeview-2a.html</name>",
 	},
 	additional: [
 		{
@@ -3076,7 +3088,7 @@ it("#pwd").validator({\n\
 
 /**
    Helper functionality
-   @version: 1.1																					
+   @version: 1.1		
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
    @Last update: 04/03/2021
@@ -3192,7 +3204,10 @@ this.Helper = it.helper = function (func, cfg) {
 	// Set HTML template
 	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
 	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
-	<h1>Pantalla de ayuda para ' + general.name + " " + general.version + '</h1>\
+	<h1>\
+		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 120px;top: 8px;">\
+		Pantalla de ayuda para ' + general.name + " " + general.version + 
+	'</h1>\
 	<p style="margin-top: 10px">'+ general.description + '</p>\
 	<p class="warning">__WARNING__</p>\
 	__TEXT__\
@@ -3225,12 +3240,16 @@ this.Helper = it.helper = function (func, cfg) {
 				__ITEMS_HELP__\
 			</ul>\
 		</nav>\
-		<h1>Tabla de contenidos de isiTools ' +  it.version + '</h1>\
+		<h1>\
+			<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 10px;top: 8px;">\
+			Tabla de contenidos de isiTools ' +  it.version + 
+		'</h1>\
 		<div style="margin-top: 10px">\
-			IsiTools es un conjunto de herramientas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Las herramientas proporcionadas están diseñadas para obtener una mejor experiencia de usuario y un desarrollo más utilizable y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente a través de JSON proporcionado a través del archivo config.json o mediante el parámetro "modules" establecido en el attributo SRC.\
+		IsiTools es un conjunto de herramientas pensadas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Todas las funcionalidades incluidas están diseñadas para obtener un mejor rendimiento y experiencia de usuario, un desarrollo más óptimo y ágil y un uso más sencillo y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente o modular evitando que el DOM se llene de elementos que no van a ser utilizados.<br/></br/>\
+			La manera de activar o habilitar cada componente es a través de JSON proporcionado en la propia librería, a través del archivo config.json, o mediante el parámetro "modules" establecido en el atributo SRC de la etiqueta SCRIPT que la carga.\
 			<br/>\
 			<br/>\
-			Para recuperar los elementos de la página se puede usar diferentes formas. Todas ellas están explicadas con ejemplos en el método <property>get</property>.\
+			La forma de seleccionar los elementos es mediante selectores CSS, de igual manera que lo hacen otros conocidos frameworks. Pueden encontrase varios ejemplos en el método <property>get</property>.\
 			<br/>\
 			__TEXT__\
 <name style="margin: 15px 0 10px 0; display:block;">Información adicional:</name>\
@@ -3260,9 +3279,11 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 	}
 
 	if (opt.printOnScreen) {
+		AddCSSRule('', "@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');");
+
 		AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
 		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-		AddCSSRule('', "#h31p3r", 'font-family: arial; font-size: 14px; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
+		AddCSSRule('', "#h31p3r", 'font-family: "Open Sans";; font-size: 14px; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
 		AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px; font-size: 20px; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
 		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; padding: 15px; font-size: 16px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
 		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1.0rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
@@ -3295,7 +3316,7 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r name', 'color: ' + opt.funcNameColor + ';');
 		AddCSSRule('', '#h31p3r null', 'color: ' + opt.nullColor + ';');
 		AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
-		AddCSSRule('', '#h31p3r code, #h31p3r pre code', 'color: ' + opt.exampleColor + '; padding-left: 32px; display: block; ');
+		AddCSSRule('', '#h31p3r > code, #h31p3r #additionalH31p3r > code', 'color: ' + opt.exampleColor + '; padding: 8px 5px 5px 32px; display: block; width: 100%; ');
 		AddCSSRule('', '#h31p3r code field', 'padding: 0; text-transform: none;');
 		AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
 		AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 32px; top: 11px; width: 32px; height: 32px;  background: ' + opt.buttons + '; z-index:9; cursor: pointer;');
@@ -3323,10 +3344,12 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 		AddCSSRule('', '#h31p3r inline', 'padding: 0; color: ' + opt.stringColor + '; display: inline; width: auto; white-space: pre-wrap;');
 		AddCSSRule('', '#h31p3r code code', 'padding: 0;');
 
+		AddCSSRule('', '#h31p3r p > name, #h31p3r p > name > *', 'color: #999; margin-top: 10px; display: inline-block;');
+
 		if(Helper.getParameters("f") == '.me'){
 			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
 		} else {
-			AddCSSRule('', '#h31p3r type', 'padding-left: 8px;');
+			AddCSSRule('', '#h31p3r type', 'padding-left: 8px; background: rgba(255,255,255,0.1); padding: 2px 5px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin: 0 5px;');
 		}
 
 		var text = '', additional = '', items_help = '', internHeaderGroupAdded = false, headerGroupAdded = false, idx = 0, sortProps = func == "Index" ? Object.keys(help) : Object.keys(help).sort();
@@ -3465,12 +3488,12 @@ it.helper(<str>"treeview"</str>, <null>{<func>about</func>:</null> <str>"onCheck
 				aux = aux.replace(new RegExp(/(\.|\#){0,1}([a-zA-Z0-9\(\)\:\.\-\s\\\^]+)\{/, "ig"), function($0, $1){	return "<name>" + $0.substr(0, $0.length-1) + "</name>{"});
 				aux += '<br/>';
 
-				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type>' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 
 			} else if (key.indexOf('example') == 0 && isCSS) {
 				text += aux;
 			} else {
-				text += key == "type" ? ('<type style="color: ' + color + '">' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
+				text += key == "type" ? ('<type>' + aux + '</type>') : (key.indexOf('example') == 0 ? aux : ('<' + tag + '>' + aux + '</' + tag + '>'));
 			}
 		}
 
