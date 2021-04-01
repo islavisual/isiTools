@@ -1552,6 +1552,124 @@ WikiHelper.Dom = {
 }
 
 /**
+   FlexBox Helper						
+   @version: 1.0
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 1/04/2021
+ **/
+WikiHelper.Flexbox = {
+	general: {
+		version: '1.0',
+		name: 'Flexbox',
+		description: 'Este componente está pensado para utilizar estructuras de tipo grid basadas en celdas o cajas.\n\
+\n\
+Permite la definición columnas por porcentajes, lo que hace posible crear fácilmente sitios webs complejos y dinámicos. Sin embargo, presenta una gran diferencia, sólo carga las clases CSS utilizadas en cada página, por lo que su peso es mucho más pequeño y el rendmiento a nivel global es mayor. Además, permite el uso múltiples anchos personalizados, definibles a partir de los prefijos predefinidos.\n\
+\n\
+Cabe destacar que, aunque es posible utilizar todas y cada uno de los prefijos predefinidos de manera independiente, siempre debe haber, al menos, la definición de una clase <property>col</property> en el atributo <property>class</property>. Esto es, si se desea utilizar las unidades de medida predefinidas por el atributo <property>resolutions</property>, se debe añadir adicionalmente la clase <property>col</property>.\n\
+\n\
+Si no se desea utilizar ninguna de las unidades de medida predefinidas en la propiedad <property>resolutions</property>, se puede definir, únicamente, la clase <property>col-XXX</property>, donde XXX es un valor decimal entre 0 y 100.',
+
+	},
+	col:{
+		type: 'string',
+		description: 'Permite definir las clases genéricas en cualquier resolución. Si no lleva guión y tamaño asociados, el porcentage será equitativo para todas las columnas.',
+		example: '&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col-33.333"> 1/3 &lt;/div>\n\
+		&lt;div class="col-33.333"> 1/3 &lt;/div>\n\
+		&lt;div class="col-33.333"> 1/3 &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>\n\
+\n\
+// El ejemplo anterior debería ser lo mismo que:\n\
+&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col"> 1/3 &lt;/div>\n\
+		&lt;div class="col"> 1/3 &lt;/div>\n\
+		&lt;div class="col"> 1/3 &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>'
+	},
+	offset:{
+		type: 'string',
+		description: 'Permite definir márgenes a la izquierda para mover las columnas hasta una posición concreta. Para que las celdas no pierdan la línea diferenciadora, y se caigan debajo, el total del ancho de las columnas y los márgenes deben sumar 100.',
+		example: '&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col-25 offset-10"> 1/3 &lt;/div>\n\
+		&lt;div class="col-30"> 1/3 &lt;/div>\n\
+		&lt;div class="col-25"> 1/3 &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>\n\
+\n\
+// También es posible definir un margen para una unidad de medida en particular añadiéndole uno de los prefijos:\n\
+&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col xs-90 md-25 lg-25 xl-25 xs-offset-10"> A &lt;/div>\n\
+		&lt;div class="col xs-100 md-50 lg-50 xl-50"> B &lt;/div>\n\
+		&lt;div class="col xs-100 md-25 lg-25 xl-25"> C &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>'
+	},
+	order:{
+		type: 'string',
+		description: 'Permite definir el orden de las columnas. Cabe destacar que, esta característica, no es muy recomendable puesto que perjudica la accesibilidad web de las páginas.',
+		example: '&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col order-1"> 1 &lt;/div>\n\
+		&lt;div class="col order-3"> 2 &lt;/div>\n\
+		&lt;div class="col order-2"> 3 &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>\n\
+\n\
+// También es posible definir un orden para una unidad de medida en particular añadiéndole uno de los prefijos:\n\
+&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col xs-order-1"> 1 &lt;/div>\n\
+		&lt;div class="col xs-order-3"> 2 &lt;/div>\n\
+		&lt;div class="col xs-order-2"> 3 &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>'
+	},
+	gap:{
+		type: 'string',
+		description: 'Permite definir el espacio entre las filas y columnas del grid. Esta propiedad sólo admite un único valor establecido en cualquiera de las unidades de medida CSS válidas. Por defecto, esta característica está establecida a 5px.',
+		example: 'it.flexbox.config.gap = "5px";'
+	},
+	padding:{
+		type: 'string',
+		description: 'Permite definir el espacio de padding dentro de las filas y columnas del grid. Esta propiedad sólo admite un único valor establecido en cualquiera de las unidades de medida CSS válidas. Por defecto, esta característica está establecida a 5px.',
+		example: 'it.flexbox.config.padding = "5px";'
+	},
+	resolutions:{
+		type: 'Object',
+		description: 'Este objeto permite definir los prefijos utilizados en la especificación de clases que se utilizarán para estructurar el grid. Por defecto, se han definido los prefijos <property>xs</property>, <property>sm</property>, <property>md</property>, <property>lg</property> y <property>xl</property>, lo cuales, permiten definir comportamientos diferentes según la resolución:\n\
+\n\
+	● <property style="width: 24px;">xs</property>: Desde 0 hasta 480px\n\
+	● <property style="width: 24px;">sm</property>: Desde 481px hasta 768px\n\
+	● <property style="width: 24px;">md</property>: Desde 769px hasta 1024px\n\
+	● <property style="width: 24px;">lg</property>: Desde 1025px hasta 1366px\n\
+	● <property style="width: 24px;">xl</property>: Desde 1367px hasta 1920px',
+		example: 'it.flexbox.config.resolutions = [\n\
+	{name: "xs", maxWidth: 480},\n\
+	{name: "sm", maxWidth: 768},\n\
+	{name: "md", maxWidth: 1024},\n\
+	{name: "lg", maxWidth: 1366},\n\
+	{name: "xl", maxWidth: 1920}\n\
+]\n\
+\n\
+// El siguiente ejemplo define un ancho igual en todas las celdas para las resoluciones que estén dentro de los límites marcados por los prefijos <property>sm</property> y <property>xl</property>, un ancho del 25% para las resoluciones que estén dentro de los límites marcados por los prefijos <property>md</property> y <property>lg</property>, y un ancho del 100% para las resoluciones que estén dentro de los límites marcados por el prefijo <property>xs</property>.\n\
+&lt;div class="flexbox">\n\
+	&lt;div class="row">\n\
+		&lt;div class="col xs-100 md-25 lg-25"> A &lt;/div>\n\
+		&lt;div class="col xs-100 md-25 lg-25"> B &lt;/div>\n\
+		&lt;div class="col xs-100 md-25 lg-25"> C &lt;/div>\n\
+	&lt;/div>\n\
+&lt;/div>'
+	}
+}
+
+/**
    GetBrowser Helper						
    @version: 1.1		
    @author: Pablo E. Fernández (islavisual@gmail.com).
@@ -1562,7 +1680,7 @@ WikiHelper.Getbrowser = {
 	general: {
 		version: '1.1',
 		name: 'GetBrowser',
-		description: "Attempts to determine the capabilities of the user's browser through  the browser's information contains in the navigator object of JavaScript.",
+		description: "Intenta determinar las capacidades del navegador del usuario a través de la información del navegador que contiene el navegador de objetos de JavaScript.",
 	},
 	additional: [
 		{
@@ -3205,8 +3323,8 @@ this.Helper = it.helper = function (func, cfg) {
 	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
 	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
 	<h1>\
-		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 120px;top: 8px;">\
-		Pantalla de ayuda para ' + general.name + " " + general.version + 
+		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" />\
+		<span>Pantalla de ayuda para </span>' + general.name + " " + general.version + 
 	'</h1>\
 	<p style="margin-top: 10px">'+ general.description + '</p>\
 	<p class="warning">__WARNING__</p>\
@@ -3241,8 +3359,8 @@ this.Helper = it.helper = function (func, cfg) {
 			</ul>\
 		</nav>\
 		<h1>\
-			<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" width="280" style="display: inline-block;width: 200px;position: absolute;left: 10px;top: 8px;">\
-			Tabla de contenidos de isiTools ' +  it.version + 
+			<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" />\
+			<span>Tabla de contenidos de isiTools</span> ' +  it.version + 
 		'</h1>\
 		<div style="margin-top: 10px">\
 		IsiTools es un conjunto de herramientas pensadas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Todas las funcionalidades incluidas están diseñadas para obtener un mejor rendimiento y experiencia de usuario, un desarrollo más óptimo y ágil y un uso más sencillo y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente o modular evitando que el DOM se llene de elementos que no van a ser utilizados.<br/></br/>\
@@ -3279,80 +3397,86 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 	}
 
 	if (opt.printOnScreen) {
-		AddCSSRule('', "@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');");
+		if(!it.helper.loaded){
+			AddCSSRule('', "@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');");
 
-		AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
-		AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-		AddCSSRule('', "#h31p3r", 'font-family: "Open Sans";; font-size: 14px; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999;');
-		AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center;background: ' + opt.color + '; padding: 15px; font-size: 20px; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
-		AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; padding: 15px; font-size: 16px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
-		AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1.1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
-		AddCSSRule('', '#h31p3r h3[onclick]', 'cursor:pointer; transition: all 0.35s ease-in-out; padding: 3px 0 0 0; line-height: 22px;');
-		AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
-		AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
-		AddCSSRule('', '#h31p3r h3[onclick]::before', 'content: "\\1F517"; opacity: 0; transition: all 0.35s ease-in-out;');
-		
-		AddCSSRule('', '#h31p3r.index h2', 'margin: 12px 0 15px 0 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); width: 100%; box-shadow: rgb(0 0 0) 0px 0px 24px 1px inset; padding: 5px 0;');
-		AddCSSRule('', '#h31p3r.index h3', ' margin: 0; box-shadow: none; border: 0 none; width: 25%; display: inline-block; ');
-		AddCSSRule('', '#h31p3r.index h3.no-loaded', 'color: ' + opt.commentColor + ' !important;');
-		AddCSSRule('', '#h31p3r.index h3.no-loaded[onclick]::before', 'content: "\\26cc"; padding: 0 0 0 5px;');
-		AddCSSRule('', '#h31p3r.index h3 text', 'display: inline; padding: 0;');
+			AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
+			AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
+			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
+			AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center; font-weight:400; background: ' + opt.color + '; padding: 15px; font-size: 18px; line-height: normal; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
+			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; font-weight:400; padding: 15px; font-size: 18px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
+			AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); font-weight:400; z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
+			AddCSSRule('', '#h31p3r h3[onclick]', 'cursor:pointer; transition: all 0.35s ease-in-out; padding: 3px 0 0 0; line-height: 22px;');
+			AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
+			AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
+			AddCSSRule('', '#h31p3r h3[onclick]::before', 'content: "\\1F517"; opacity: 0; transition: all 0.35s ease-in-out;');
+			
+			AddCSSRule('', '#h31p3r.index h2', 'margin: 12px 0 15px 0 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); width: 100%; box-shadow: rgb(0 0 0) 0px 0px 24px 1px inset; padding: 5px 0;');
+			AddCSSRule('', '#h31p3r.index h3', ' margin: 0; box-shadow: none; border: 0 none; width: 25%; display: inline-block; ');
+			AddCSSRule('', '#h31p3r.index h3.no-loaded', 'color: ' + opt.commentColor + ' !important;');
+			AddCSSRule('', '#h31p3r.index h3.no-loaded[onclick]::before', 'content: "\\26cc"; padding: 0 0 0 5px;');
+			AddCSSRule('', '#h31p3r.index h3 text', 'display: inline; padding: 0;');
 
-		AddCSSRule('', '#h31p3r ul li, #h31p3r p ', 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
-		AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
-		AddCSSRule('', '#h31p3r p.warning', 'background: linear-gradient(45deg, #de1f60, transparent); border-radius: 4px;');
-		AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.strColor + ';');
-		AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
-		AddCSSRule('', '#h31p3r property', 'text-transform: none; padding: 0; display: inline-block; color: ' + opt.fieldColor + ';');
-		AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
-		AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
-		AddCSSRule('', '#h31p3r text a:hover, #h31p3r text a:focus, #h31p3r text a:active, #h31p3r text a:hover b, #h31p3r text a:focus b, #h31p3r text a:active b', 'color: ' + opt.keyColor + ' !important; text-decoration: underline;');
-		AddCSSRule('', '#h31p3r > a', 'position: fixed;left: 10px;top: 10px; border: 1px solid ' + opt.highlight + '; padding: 3px 10px; line-height:26px;z-index:9; color: ' + opt.background + ';');
-		AddCSSRule('', '#h31p3r > a:hover', 'background: ' + opt.background + '; color: ' + opt.color + ';');
-		AddCSSRule('', '#h31p3r int', 'color: ' + opt.intColor + ';');
-		AddCSSRule('', '#h31p3r str, #h31p3r str int', 'color: ' + opt.stringColor + ';');
-		AddCSSRule('', '#h31p3r bool', 'color: ' + opt.boolColor + ';');
-		AddCSSRule('', '#h31p3r func', 'color: ' + opt.funcColor + ';');
-		AddCSSRule('', '#h31p3r name', 'color: ' + opt.funcNameColor + ';');
-		AddCSSRule('', '#h31p3r null', 'color: ' + opt.nullColor + ';');
-		AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
-		AddCSSRule('', '#h31p3r > code, #h31p3r #additionalH31p3r > code', 'color: ' + opt.exampleColor + '; padding: 8px 5px 5px 32px; display: block; width: 100%; ');
-		AddCSSRule('', '#h31p3r code field', 'padding: 0; text-transform: none;');
-		AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
-		AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 32px; top: 11px; width: 32px; height: 32px;  background: ' + opt.buttons + '; z-index:9; cursor: pointer;');
-		AddCSSRule('', '#h31p3r .btn-times:hover', 'opacity: 1;');
-		AddCSSRule('', '#h31p3r .btn-times::before, #h31p3r .btn-times::after', 'position: absolute; left: 15px; top: 5px; content: " "; height: 24px; width: 2px; background-color: ' + opt.background + ';');
-		AddCSSRule('', '#h31p3r .btn-times::before', 'transform: rotate(45deg);');
-		AddCSSRule('', '#h31p3r .btn-times::after', 'transform: rotate(-45deg);');
-		AddCSSRule('', '#h31p3r nav', 'position: fixed; right: 70px; top: 15px; width: 22px; height: 24px; z-index: 9; cursor: pointer; text-align: center;');
-		AddCSSRule('', '#h31p3r nav .btn-bars', 'display: block; width: 24px; height: 20px; font-size: 25px; visibility: initial; float: right; border-bottom: 1px solid ' + opt.background + '; transition: all 0.3s ease 0s;');
-		AddCSSRule('', '#h31p3r nav .btn-bars:before', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 4px; transition: all 0.3s ease 0s;');
-		AddCSSRule('', '#h31p3r nav .btn-bars:after', 'content: ""; border-bottom: 1px solid ' + opt.background + '; width: 100%; display: block; height: 12px; transition: all 0.3s ease 0s;');
-		AddCSSRule('', '#h31p3r nav a.on .btn-bars:before', 'width: 50%;');
-		AddCSSRule('', '#h31p3r nav a.on .btn-bars:after', 'width: 75%; transition: all 0.3s ease;');
-		AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px;');
-		AddCSSRule('', '#h31p3r nav > a + ul', 'display: none; background: ' + opt.color + '; width: 150px; height: 150px; color: ' + opt.background + '; position: absolute; top: 38px; right: -15px; list-style: none; padding: 0; text-align: left;');
-		AddCSSRule('', '#h31p3r nav > a.on + ul', 'display:block; overflow-x: hidden; overflow-y: auto');
-		AddCSSRule('', '#h31p3r nav > a + ul li', 'padding: 5px 10px;');
-		AddCSSRule('', '#h31p3r nav > a + ul li:hover', 'background: ' + opt.highlight + '; padding: 5px 10px;');
-		AddCSSRule('', '#h31p3r nav > a + ul li a', ' color: ' + opt.background + '; font-weight: normal;');
-		AddCSSRule('', '#h31p3r input[type=search]', 'padding: 0 26px 0 6px;'); 
-		AddCSSRule('', '#h31p3r input[type=search] + i ', 'position: absolute; right: 20px; top: 12px; z-index: 2; filter: saturate(0); border: 2px solid #ccc; width: 12px; height: 12px; border-radius: 100%;'); 
-		AddCSSRule('', '#h31p3r input[type="search"] + i::after ', ' content: ""; position: absolute; top: 6px; left: 9px; width: 1px; height: 8px; border: 1px solid #ccc; transform: rotate(-45deg);'); 
-		AddCSSRule('', 'h3+#additionalH31p3r', 'margin: 0 !important;');
-		AddCSSRule('', 'h3+#additionalH31p3r > h3', 'margin: 0 !important; padding: 0; display: none;');
-		AddCSSRule('', '#h31p3r inline', 'padding: 0; color: ' + opt.stringColor + '; display: inline; width: auto; white-space: pre-wrap;');
-		AddCSSRule('', '#h31p3r code code', 'padding: 0;');
+			AddCSSRule('', '#h31p3r ul li, #h31p3r p ', 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
+			AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
+			AddCSSRule('', '#h31p3r p.warning', 'background: linear-gradient(45deg, #de1f60, transparent); border-radius: 4px;');
+			AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.strColor + ';');
+			AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
+			AddCSSRule('', '#h31p3r property', 'text-transform: none; padding: 0; display: inline-block; color: ' + opt.fieldColor + ';');
+			AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
+			AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
+			AddCSSRule('', '#h31p3r text a:hover, #h31p3r text a:focus, #h31p3r text a:active, #h31p3r text a:hover b, #h31p3r text a:focus b, #h31p3r text a:active b', 'color: ' + opt.keyColor + ' !important; text-decoration: underline;');
+			AddCSSRule('', '#h31p3r > a', 'position: fixed;left: 10px;top: 10px; border: 1px solid ' + opt.highlight + '; padding: 3px 10px; line-height:26px;z-index:9; color: ' + opt.background + ';');
+			AddCSSRule('', '#h31p3r > a:hover', 'background: ' + opt.background + '; color: ' + opt.color + ';');
+			AddCSSRule('', '#h31p3r int', 'color: ' + opt.intColor + ';');
+			AddCSSRule('', '#h31p3r str, #h31p3r str int', 'color: ' + opt.stringColor + ';');
+			AddCSSRule('', '#h31p3r bool', 'color: ' + opt.boolColor + ';');
+			AddCSSRule('', '#h31p3r func', 'color: ' + opt.funcColor + ';');
+			AddCSSRule('', '#h31p3r name', 'color: ' + opt.funcNameColor + ';');
+			AddCSSRule('', '#h31p3r null', 'color: ' + opt.nullColor + ';');
+			AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
+			AddCSSRule('', '#h31p3r > code, #h31p3r #additionalH31p3r > code', 'font-size: 14px; color: ' + opt.exampleColor + '; padding: 8px 5px 5px 32px; display: block; width: 100%; white-space: pre-wrap; ');
+			AddCSSRule('', '#h31p3r code field', 'padding: 0; text-transform: none;');
+			AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
+			AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 10px; top: 11px; width: 32px; height: 32px;  background: ' + opt.buttons + '; z-index:9; cursor: pointer;');
+			AddCSSRule('', '#h31p3r .btn-times:hover', 'opacity: 1;');
+			AddCSSRule('', '#h31p3r .btn-times::before, #h31p3r .btn-times::after', 'position: absolute; left: 15px; top: 5px; content: " "; height: 24px; width: 2px; background-color: ' + opt.background + ';');
+			AddCSSRule('', '#h31p3r .btn-times::before', 'transform: rotate(45deg);');
+			AddCSSRule('', '#h31p3r .btn-times::after', 'transform: rotate(-45deg);');
+			AddCSSRule('', '#h31p3r nav', 'position: fixed; right: 48px; top: 15px; width: 22px; height: 24px; z-index: 9; cursor: pointer; text-align: center;');
+			AddCSSRule('', '#h31p3r nav .btn-bars', 'display: block; width: 24px; height: 22px; font-size: 25px; visibility: initial; float: right; border-bottom: 2px solid ' + opt.background + '; transition: all 0.3s ease 0s;');
+			AddCSSRule('', '#h31p3r nav .btn-bars:before', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 4px; transition: all 0.3s ease 0s;');
+			AddCSSRule('', '#h31p3r nav .btn-bars:after', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; height: 10px; transition: all 0.3s ease 0s;');
+			AddCSSRule('', '#h31p3r nav a.on .btn-bars:before', 'width: 50%;');
+			AddCSSRule('', '#h31p3r nav a.on .btn-bars:after', 'width: 75%; transition: all 0.3s ease;');
+			AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px;');
+			AddCSSRule('', '#h31p3r nav > a + ul', 'display: none; background: ' + opt.color + '; width: 150px; height: 150px; color: ' + opt.background + '; position: absolute; top: 38px; right: -15px; list-style: none; padding: 0; text-align: left;');
+			AddCSSRule('', '#h31p3r nav > a.on + ul', 'display:block; overflow-x: hidden; overflow-y: auto');
+			AddCSSRule('', '#h31p3r nav > a + ul li', 'padding: 5px 10px;');
+			AddCSSRule('', '#h31p3r nav > a + ul li:hover', 'background: ' + opt.highlight + '; padding: 5px 10px;');
+			AddCSSRule('', '#h31p3r nav > a + ul li a', ' color: ' + opt.background + '; font-weight: normal;');
+			AddCSSRule('', '#h31p3r input[type=search]', 'padding: 0 26px 0 6px;'); 
+			AddCSSRule('', '#h31p3r input[type=search] + i ', 'position: absolute; right: 20px; top: 12px; z-index: 2; filter: saturate(0); border: 2px solid #ccc; width: 12px; height: 12px; border-radius: 100%;'); 
+			AddCSSRule('', '#h31p3r input[type="search"] + i::after ', ' content: ""; position: absolute; top: 6px; left: 9px; width: 1px; height: 8px; border: 1px solid #ccc; transform: rotate(-45deg);'); 
+			AddCSSRule('', 'h3+#additionalH31p3r', 'margin: 0 !important;');
+			AddCSSRule('', 'h3+#additionalH31p3r > h3', 'margin: 0 !important; padding: 0; display: none;');
+			AddCSSRule('', '#h31p3r inline', 'padding: 0; color: ' + opt.stringColor + '; display: inline; width: auto; white-space: pre-wrap;');
+			AddCSSRule('', '#h31p3r code code', 'padding: 0;');
 
-		AddCSSRule('', '#h31p3r p > name, #h31p3r p > name > *', 'color: #999; margin-top: 10px; display: inline-block;');
+			AddCSSRule('', '#h31p3r p > name, #h31p3r p > name > *', 'color: #999; margin-top: 10px; display: inline-block;');
 
-		AddCSSRule('', '#h31p3rOptions field', 'display: none;');
-		AddCSSRule('', '#h31p3rOptions code', 'padding-left: 32px; display: block;');
+			AddCSSRule('', '#h31p3rOptions field', 'display: none;');
+			AddCSSRule('', '#h31p3rOptions code', 'padding-left: 32px; display: block;');
 
-		if(Helper.getParameters("f") == '.me'){
-			AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
-		} else {
-			AddCSSRule('', '#h31p3r type', 'padding-left: 8px; background: rgba(255,255,255,0.1); padding: 2px 5px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin: 0 5px;');
+			AddCSSRule('', '#h31p3r > h1 > img', 'display: inline-block; width: 163px; position: absolute; left: 112px; top: 12px; image-rendering: -webkit-optimize-contrast;');
+			AddCSSRule('', '#h31p3r.index > h1 > img', 'left: 10px;');
+			AddCSSRule('', '@media all and (max-width: 767px)', '#h31p3r.index > h1 > img { width: 140px; left: 10px; top: 15px; } #h31p3r:not(.index) > h1 > img, #h31p3r > h1 > span{ display: none !important; } #h31p3r.index h3 { width: 50%; }');
+
+			if(Helper.getParameters("f") == '.me'){
+				AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
+			} else {
+				AddCSSRule('', '#h31p3r type', 'padding-left: 8px; background: rgba(255,255,255,0.1); padding: 2px 5px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin: 0 5px;');
+			}
 		}
 
 		var text = '', additional = '', items_help = '', internHeaderGroupAdded = false, headerGroupAdded = false, idx = 0, sortProps = func == "Index" ? Object.keys(help) : Object.keys(help).sort();
@@ -3455,6 +3579,8 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 				try { document.getElementById("h31p3r").querySelector("nav > a").classList.remove("on"); } catch(e) {}
 			}
 		};
+
+		it.helper.loaded = true;
 
 	} else {
 		printIntoConsole(help);
@@ -3599,6 +3725,8 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 	// Fixed problem of refresh when counter is running
 	setTimeout(function(){ it('#h31p3r').get().scrollTop = 1, it('#h31p3r').get().scrollTop = 0; },0)
 }
+
+it.helper.loaded = false;
 
 this.showHelper = it.showHelper = function(cs, cfg){
 	// If Helper is defined and user request help
