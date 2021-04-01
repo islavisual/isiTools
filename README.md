@@ -28,6 +28,7 @@ Los componentes que ofrece son:
 * **Datepicker**: Funcionalidad de calendario universal que permite al usuario seleccionar una fecha concreta de una lista con unos pocos clicks. 
 * **Debugger**: Depurador automático que permite conocer todo lo que sucede en las páginas.
 * **DOM**: Funcionalidad para la gestión de eventos, acciones,... una vez que la página esté completamente cargada.
+* **Flexbox**: Funcionalidad pensada para utilizar estructuras de tipo grid basadas en celdas o cajas a través de porcentajes y con carga dinámica de clases para mejorar el rendimiento de las páginas.
 * **GetBrowser**: Funcionalidad para determinar las capacidades del navegador del usuario.
 * **GetParam**: Funcionalidad para obtener todos los valores de los parámetros recibidos en la URL.
 * **HttpRequest**: Funcionalidad para realizar solicitudes remotas de una forma sencilla.
