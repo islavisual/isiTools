@@ -8,6 +8,7 @@ var itEnabledModules = {
 	Datepicker : true, 
 	Debugger: false,
 	DOM: false,
+	Flexbox: true,
 	GetBrowser: false,
 	GetParam: false,
 	HttpRequest:true,
@@ -40,7 +41,7 @@ var it = function(t, f){
 		it.targets = document.querySelector(f).querySelectorAll(t);
 	}
 
-	if(it.targets.length == 0){
+	if(it.targets.length == 0 && !it.loading){
 		console.log("No se encontraron elementos con el selector:", t, f ? f : '');
 	}
 
@@ -48,10 +49,11 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.1",
+it.version = "2.0.2",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "30/03/2021",
+it.lastupdate = "01/04/2021",
+it.loading = true;
 it.enabledModules = {},
 it.targets = null,
 it.checkTargets = function(el){ if(el.targets == undefined) el.targets = el; if(el.targets.length == undefined) el.targets = [el.targets]; return el.targets; }
@@ -3345,6 +3347,106 @@ function isiToolsCallback(json){
 	}
 
 	/**
+		 FlexBox Plugin
+		@version: 1.0
+		@author: Pablo E. Fernández (islavisual@gmail.com).
+		@Copyright 2017-2021 Islavisual.
+		@Last update: 01/04/2021
+	**/
+	if(json.Flexbox){
+		this.Flexbox = it.flexbox = function (cfg) {
+			if(!cfg) cfg = it.flexbox.config;
+
+			if(!cfg.hasOwnProperty('gap')) cfg.gap = "15px";
+			if(!cfg.hasOwnProperty('padding')) cfg.padding = "15px";
+
+			// Añadimos las clases CSS genéricas
+			it.addCSSRule('', '.flexbox', '--gap: ' + cfg.gap + '; --padding: ' + cfg.padding + '; display: block; flex-direction: column; margin: calc( -1 * var(--gap)) 0 0 calc( -1 * var(--gap)); padding: var(--padding);');
+			it.addCSSRule('', '.flexbox .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%;');
+			it.addCSSRule('', '.flexbox .col, .flexbox [class*="col-"]', 'display: block; align-items: center; flex: auto; box-sizing: border-box; margin: var(--gap) 0 0 var(--gap); padding: var(--padding);');
+
+			// Recuperamos todos los nombres de resoluciones
+			var names = []; 
+			Object.keys(it.flexbox.config.resolutions).forEach(function(key){
+				names.push(it.flexbox.config.resolutions[key].name)
+			});
+
+			// Recuperamos todas las clases de loa elementos a nivel de columna de los flexbox
+			var items = document.querySelectorAll('.flexbox > * > *');
+			Array.prototype.slice.call(items).forEach(function(target){
+				Array.prototype.slice.call(target.classList).forEach(function(cls){
+					var val  = cls.replace(/[^\.0-9]/ig, '').trim();
+					var clss = cls.replace(/\./g, '\\.').trim();
+
+					// Recorremos las diferentes resoluciones para 
+					// añadir la definición de la clase CSS si no existe 
+					// y en su media-query cuando proceda
+					for(var x = 0; x < it.flexbox.config.resolutions.length; x++){
+						var cs = it.flexbox.config.resolutions[x], name = cs.name;
+
+						if(!cs.hasOwnProperty("media")){
+							cs.media = '';
+						}
+
+						// Si la clase CSS es específica de una resolución la añadimos a la definición de su media-query
+						if(cls.indexOf(name) != -1 && cs.media.indexOf('.flexbox .' + clss) == -1){
+							if(cls.indexOf('offset') != -1){
+								cs.media += '.flexbox .' + clss + '{ margin-left: calc(' + val + '% + var(--gap)) }';
+
+							} else if(cls.indexOf('order') != -1){
+								cs.media += '.flexbox .' + clss + '{order:' + val + ';}';
+								
+							} else {
+								cs.media += '.flexbox .' + clss + '{' + ('flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));') + '}';
+							}
+
+						// Si la clase CSS NO es específica de una resolución, la añadimos directamente
+						}
+					}
+
+					if(cls.indexOf('col') != -1 && val > 0){
+						// Si es de tipo COL
+						it.addCSSRule('', '.flexbox .' + clss, 'flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));');
+
+					} else if(names.indexOf(cls.substr(0,2)) == -1 && cls.indexOf('offset') != -1 && val > 0){
+						// Si es de tipo OFFSET
+						it.addCSSRule('', '.flexbox .' + clss, 'margin-left: calc(' + val + '% + var(--gap))');
+
+					} else if(names.indexOf(cls.substr(0,2)) == -1 && cls.indexOf('order') != -1 && val > 0){
+						// Si es de tipo ORDER
+						it.addCSSRule('', '.flexbox .' + clss, 'order:' + val);
+
+					}
+				});
+			});
+
+			it.flexbox.config.resolutions.sort(function(a, b){
+				return b.maxWidth - a.maxWidth;
+			})
+
+			// Añadimos las medias-queries
+			for(var x = 0; x < it.flexbox.config.resolutions.length; x++){
+				var cs = it.flexbox.config.resolutions[x];
+				var mw = x + 1 == it.flexbox.config.resolutions.length ? 0 : it.flexbox.config.resolutions[x + 1].maxWidth + 1;
+
+				it.addCSSRule('', '@media all and (min-width: ' + mw + 'px) and (max-width: ' + cs.maxWidth + 'px)', cs.media);
+			}
+		}
+
+		it.flexbox.config = {
+			gap: '5px',
+			padding: '5px',
+			resolutions: [
+				{name: 'xs', maxWidth: 480},
+				{name: 'sm', maxWidth: 768},
+				{name: 'md', maxWidth: 1024},
+				{name: 'lg', maxWidth: 1366},
+				{name: 'xl', maxWidth: 1920},
+			]
+		};
+	}
+
+	/**
 		 Get Browser Plugin
 		@version: 1.1
 		@author: Pablo E. Fernández (islavisual@gmail.com).
@@ -4871,8 +4973,6 @@ function isiToolsCallback(json){
 				it('#' + arr.target).slider(arr);
 			}
 		}
-
-		it('it-slider').slider.autoDraw();
 	}
 
 	/**
@@ -7097,10 +7197,13 @@ if(it.browser == "IE"){
 }
 
 window.addEventListener("load", function(){
+	if(it.slider) it('it-slider').slider.autoDraw();
+
 	if(it.include){
 		if(!this.Include.includedFiles){
 			this.Include.includedFiles = true;
 			(function(){ Include({ attribute: "auto-include", callback: typeof onPageReady == "function" ? onPageReady: null }); })()
 		}
 	}
+	it.loading = false;
 }, false);
