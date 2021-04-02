@@ -34,11 +34,11 @@ WikiHelper.First = {
 	},
 }
 
-WikiHelper.Formatdate = {
+WikiHelper.Formateddate = {
 	general: {
 		version: '1.0',
 		intern: true,
-		name: 'formatdate',
+		name: 'formatedDate',
 		help: 1,
 		description: 'Devuelve la fecha formateada en base al formato y valor enviados. El primer parámtero se corresponde con el formato, que puede ser un código BCP-47 como (en-US, en-GB ó es-PA) y el segundo es el valor de fecha a formatear. Ambos parámetros son opcionales.\n\
 \t\u2022 Si el primer parámetro es omitido o es vacío, se devolverá en formato Little Endian (DD-MM-YYYY).\n\
@@ -95,7 +95,7 @@ WikiHelper.Gettextwidth = {
 	general: {
 		version: '1.0',
 		intern: true,
-		name: 'gettextwidth',
+		name: 'getTextWidth',
 		help: 1,
 		description: 'Función para calcular el ancho de un elemento en base a un texto dado.\n\
 	Se alimenta de los parámetros "obj", "fontFamily" y "fontSize". No obstante, los dos últimos son opcionales.\n\
@@ -151,7 +151,7 @@ WikiHelper.Leftpad = {
 	general: {
 		version: '1.0',
 		intern: true,
-		name: 'leftpad',
+		name: 'leftPad',
 		help: 1,
 		description: 'Permite añadir ceros por la izquierda a valores numéricos.\nSe alimenta de un único parámetro que indica el número de ceros a añadir si el número no tiene la longitud indicada.\n\
 <name><bool>NOTA</bool>: Aunque este pequeño componente lo define isiTools, está disponible desde el objeto String o Number para mayor facilidad de uso y aprendizaje.',
@@ -191,7 +191,7 @@ WikiHelper.Scrollto = {
 	general: {
 		version: '1.0',
 		intern: true,
-		name: 'scrollto',
+		name: 'scrollTo',
 		help: 1,
 		description: 'Función para mover el scroll vertical de un determinado elemento hasta una posición determinada.',
 		example: '// Mover la barra de desplazamiento de la página hasta la posición 100\n\
@@ -206,7 +206,7 @@ WikiHelper.Simulateevent = {
 	general: {
 		version: '1.1',
 		intern: true,
-		name: 'simulateevent',
+		name: 'simulateEvent',
 		help: 1,
 		description: 'Simula un evento como si fuese lanzado por el usuario.\nSe alimenta de dos parámetros. El primero es el evento a simular. El segundo, el elemento dónde disparar dicho evento',
 		example: '// Lanzar el evento CHANGE en el primer elemento INPUT que se encuentre en la página.\n\
@@ -516,6 +516,18 @@ styles:{\n\
 }\n\
 });'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'new Alert({\n\
+	title: "Precaución!",\n\
+	body:"El campo se encuentra vacío.",\n\
+	onshow: function(){\n\
+		document.querySelector(".Alert header").style.background="red";\n\
+	},\n\
+	stylesheet: true\n\
+});'
+	}
 }
 
 /**
@@ -983,6 +995,15 @@ it("#vehiculo").autocomplete({\n\
 	}\n\
 });'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	stylesheet: true\n\
+});'
+	},
 	tooltip: {
 		type: 'object',
 		description: 'Este parámetro es un JSON que indica qué campos se utilizarán como fuente de los tooltip.<br><br>\
@@ -1214,7 +1235,8 @@ _CSS_'
 		example: 'it("#counter").counter({\n\
 from: 5,\n\
 callback: function(){ console.log("Cuenta terminada!") }\n\
-});'	},
+});'
+	},
 	colors: {
 		type: 'object',
 		description: 'Permite definir los colores que se aplicarán en la barra de progreso asociada al contador. Por defecto son los que se preentan como ejemplo.',
@@ -1223,7 +1245,8 @@ colors: {low: "rgb(128,128,128)", half: "rgb(255,255,0)", high: "rgb(255,0,0)"},
 to: 30,\n\
 interval: 1,\n\
 mode: "count"\n\
-});'	},
+});'
+	},
 	format: {
 type: 'integer',
 description: 'Establece una máscara para la visualización de valores. Sólo es aplicable en modo "timer". Por defecto es "HH:MM:SS".',
@@ -1245,7 +1268,8 @@ format: "MM Min",\n\
 		description: 'Permite definir una cuenta atrás del valor indicado.',
 		example: 'it("#counter").counter({\n\
 from: 10,\n\
-})'		},
+});'
+	},
 	interval: {
 		type: 'integer',
 		description: 'Es el el número de segundos que deben pasar para incrementar o decrementar la cuenta. Por defecto su valor es 1.',
@@ -1253,7 +1277,8 @@ from: 10,\n\
 from: 10,\n\
 interval: 0.2\n\
 mode: "count"\n\
-})'		},
+});'
+	},
 	mode: {
 		type: 'string',
 		description: 'Indica el modo de visualiación del contador. Si el modo es "timer" (el modo por defecto) se presentará como una marca de tiempo, por lo que aunque el intervalo sea menor que un segundo, la duración será la misma qu para el intervalo por defecto\nEn otras palabras, si el modo es "timer", el parámetro interval no tendrá efecto si es menor que uno. Si el modo es "count", se presentará como un contador normal.',
@@ -1279,7 +1304,7 @@ notify: {\n\
 	message: "La sesión está a punto de caducar. Por favor, renuévela si desea continuar..."\n\
 	callback: enviarAlServidor()\n\
 },\n\
-})'
+});'
 	},
 	renew: {
 		type: 'object',
@@ -1291,7 +1316,7 @@ renew: {\n\
 	message: "Renovar"\n\
 	callback: enviarAlServidor()\n\
 },\n\
-})'
+});'
 	},
 	showvalue: {
 		type: 'boolean',
@@ -1299,7 +1324,7 @@ renew: {\n\
 		example: 'it("#counter").counter({\n\
 from: 3600,\n\
 showvalue: false\n\
-})'
+});'
 	},
 	title: {
 		type: 'string',
@@ -1307,7 +1332,7 @@ showvalue: false\n\
 		example: 'it("#counter").counter({\n\
 from: 10,\n\
 title: "Cuenta atrás hasta 10"\n\
-})'
+});'
 	},
 	to: {
 		type: 'integer',
@@ -1316,7 +1341,16 @@ title: "Cuenta atrás hasta 10"\n\
 to: 10,\n\
 interval: 0.2\n\
 mode: "count"\n\
-})'		},
+});'
+	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it("#counter").counter({\n\
+	from: 3600,\n\
+	stylesheet: true\n\
+});'
+	}
 }
 
 
@@ -1462,6 +1496,11 @@ WikiHelper.Datepicker = {
 		description: 'Indica el texto del botón que borra la fecha del campo de texto destino.',
 		example: 'it("#birth-date").datepicker({textToday: "Remove"});'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it("#birth-date").datepicker({ stylesheet: true });'
+	}
 }
 
 /**
@@ -1634,12 +1673,12 @@ Si no se desea utilizar ninguna de las unidades de medida predefinidas en la pro
 	gap:{
 		type: 'string',
 		description: 'Permite definir el espacio entre las filas y columnas del grid. Esta propiedad sólo admite un único valor establecido en cualquiera de las unidades de medida CSS válidas. Por defecto, esta característica está establecida a 5px.',
-		example: 'it.flexbox.config.gap = "5px";'
+		example: 'it.flexbox({ gap: "5px" });'
 	},
 	padding:{
 		type: 'string',
 		description: 'Permite definir el espacio de padding dentro de las filas y columnas del grid. Esta propiedad sólo admite un único valor establecido en cualquiera de las unidades de medida CSS válidas. Por defecto, esta característica está establecida a 5px.',
-		example: 'it.flexbox.config.padding = "5px";'
+		example: 'it.flexbox({ padding: "5px" });'
 	},
 	resolutions:{
 		type: 'Object',
@@ -1650,13 +1689,15 @@ Si no se desea utilizar ninguna de las unidades de medida predefinidas en la pro
 	● <property style="width: 24px;">md</property>: Desde 769px hasta 1024px\n\
 	● <property style="width: 24px;">lg</property>: Desde 1025px hasta 1366px\n\
 	● <property style="width: 24px;">xl</property>: Desde 1367px hasta 1920px',
-		example: 'it.flexbox.config.resolutions = [\n\
-	{name: "xs", maxWidth: 480},\n\
-	{name: "sm", maxWidth: 768},\n\
-	{name: "md", maxWidth: 1024},\n\
-	{name: "lg", maxWidth: 1366},\n\
-	{name: "xl", maxWidth: 1920}\n\
-]\n\
+		example: 'it.flexbox({\n\
+	resolutions = [\n\
+		{ name: "xs", maxWidth: 480 },\n\
+		{ name: "sm", maxWidth: 768 },\n\
+		{ name: "md", maxWidth: 1024 },\n\
+		{ name: "lg", maxWidth: 1366 },\n\
+		{ name: "xl", maxWidth: 1920 }\n\
+	]\n\
+});\n\
 \n\
 // El siguiente ejemplo define un ancho igual en todas las celdas para las resoluciones que estén dentro de los límites marcados por los prefijos <property>sm</property> y <property>xl</property>, un ancho del 25% para las resoluciones que estén dentro de los límites marcados por los prefijos <property>md</property> y <property>lg</property>, y un ancho del 100% para las resoluciones que estén dentro de los límites marcados por el prefijo <property>xs</property>.\n\
 &lt;div class="flexbox">\n\
@@ -1666,6 +1707,11 @@ Si no se desea utilizar ninguna de las unidades de medida predefinidas en la pro
 		&lt;div class="col xs-100 md-25 lg-25"> C &lt;/div>\n\
 	&lt;/div>\n\
 &lt;/div>'
+	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it.flexbox({ stylesheet: true });'
 	}
 }
 
@@ -2346,6 +2392,22 @@ values="Moto:0, Coche:1, Quad:2"\n\
 style="margin-top 30px">\n\
 &lt;/it-slider>'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: '// Definición de un slider de tipo rango mediante JavaScript\n\
+it("#valoracion").slider({\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Muy Mala", value: 0}\n\
+		{label: "Mala", value: 1},\n\
+		{label: "Media", value: 2},\n\
+		{label: "Buena", value: 3}\n\
+		{label: "Muy Buena", value: 4}\n\
+	],\n\
+	stylesheet: true\n\
+});'
+	}
 }
 
 /**
@@ -2520,6 +2582,15 @@ colornok: "#0a3263",\n\
 showbutton: true,\n\
 showicon: "la la-eye",\n\
 });'
+	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it("#pwd").password({\n\
+	autocheck: false,\n\
+	stylesheet: true\n\
+	\n\
+});'
 	}
 }
 
@@ -2656,6 +2727,11 @@ color: #fff;\n\
 		description: 'Habilita la búsqueda predictiva a través de un campo de texto.',
 		example: 'it(".select-picker").selectpicker({ liveSearch: true });'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it(".select-picker").selectpicker({ stylesheet: true });'
+	}
 }
 
 /**
@@ -2766,7 +2842,12 @@ sorting: ["desc", "asc", "", "", ""]\n\
 table: table#table01.sortable\n\
 }'
 		},
-	]
+	],
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it("table").sorter({ stylesheet: true });'
+	}
 }
 
 /**
@@ -2917,6 +2998,16 @@ _CSS_'
 	type: "overflow"\n\
 });'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it(".nav-tabs").tabs({\n\
+	content: ["tab1", "tab2", "tab3", "tab4", "tab5"],\n\
+	label: "Ejemplo de tabs",\n\
+	type: "overflow",\n\
+	stylesheet: true\n\
+});'
+	}
 }
 
 /**
@@ -3035,6 +3126,14 @@ _CSS_'
 		description: 'El parámetro "refresh" indica que el componente de vista de árbol debe volver a cargarse.',
 		example: 'var treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n};\n// ULItem is the ID from HTML element where Treeview is implemented\ndocument.ULItem.Treeview({data: treeviewJSON, refresh: true})'
 	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it("#treeview").treeview({\n\
+	data: treeviewJSON,\n\
+	stylesheet: true\n\
+});'
+	}
 }
 
 /**
@@ -3201,6 +3300,17 @@ it("#pwd").validator({\n\
 	message: "La contraseña no coincide con el formato especificado",\n\
 	pattern: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"\n\
 });'
+	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: '// Permitir sólo números igual o menores a 100\n\
+it("#percent").validator({\n\
+	constraint: "<=100",\n\
+	message: "Por favor, el número debe ser igual o menor a 100",\n\
+	required: true,\n\
+	stylesheet: true\n\
+});'
 	}
 }
 
@@ -3363,33 +3473,26 @@ this.Helper = it.helper = function (func, cfg) {
 			<span>Tabla de contenidos de isiTools</span> ' +  it.version + 
 		'</h1>\
 		<div style="margin-top: 10px">\
-		IsiTools es un conjunto de herramientas pensadas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Todas las funcionalidades incluidas están diseñadas para obtener un mejor rendimiento y experiencia de usuario, un desarrollo más óptimo y ágil y un uso más sencillo y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente o modular evitando que el DOM se llene de elementos que no van a ser utilizados.<br/></br/>\
-			La manera de activar o habilitar cada componente es a través de JSON proporcionado en la propia librería, a través del archivo config.json, o mediante el parámetro "modules" establecido en el atributo SRC de la etiqueta SCRIPT que la carga.\
-			<br/>\
-			<br/>\
-			La forma de seleccionar los elementos es mediante selectores CSS, de igual manera que lo hacen otros conocidos frameworks. Pueden encontrase varios ejemplos en el método <property>get</property>.\
-			<br/>\
-			__TEXT__\
+		IsiTools es un conjunto de herramientas pensadas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Todas las funcionalidades incluidas están diseñadas para obtener un mejor rendimiento y una experiencia de usuario, un desarrollo más óptimo y ágil y un uso más sencillo y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente o modular evitando que el DOM se llene de elementos que no van a ser utilizados.<br/></br/>\
+__TEXT__\
 <name style="margin: 15px 0 10px 0; display:block;">Información adicional:</name>\
-Para utilizar cada uno de los componentes / módulos que, a continuación, se muestran se deberá activar previamente mediante una de las siguientes opciones:\
-<ul>\
-<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto <property>itEnabledModules</property>, true o false en función de si se desea o no que se cargue y quede activo.</li>\
-<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo el nombre del componente en el atributo SCR del elemento SCRIPT que carga isiTools mediante el uso del atributo <property>modules</property>.</li>\
-<li style="list-style: disc; margin: 0 30px; padding: 0;">Estableciendo en cada propiedad del objeto declarado en el archivo <property>config.js</property>, <bool>true</bool> o <bool>false</bool> en función de si se desea o no que se cargue y quede activo.</li>\
-</ul>\
-<br/>\
-Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.<br/>\
+La manera de activar o habilitar cada componente puede realizarse a través del JSON <property>itEnabledModules</property> proporcionado en la propia librería para conseguir que siempre estén disponibles los componentes que se desean utilizar. No obstante, también es posible establecer todos los componentes del JSON a <property>false</property> y seleccionar su carga dinámicamente mediante el parámetro "modules" establecido en el atributo <property>src</property> de la etiqueta <property>script</property> que carga la librería.\n\
+<code><comm>// Cargar selectiva por parámetro en URL</comm>\n\
+<func>&lt;script</func> <field>src="js/isiTools/isiTools.js?<property>modules=AddCSSRule+Alert+Autocomplete+DOM</property>"</field><func>>&lt;/script></func>\n\
+<func>&lt;script</func> <field>src="js/isiTools/isiTools.js<property>?modules=Mask+Treeview</property>"</field><func>>&lt;/script></func>\n\n\
+La forma de seleccionar los elementos es mediante selectores CSS, de igual manera que lo hacen otros conocidos frameworks. Pueden encontrase varios ejemplos en el método <property>get</property>.\n\n\
+Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helper()</property> o <property>it.helper()</property> indistintamente.\n\
 <code style="margin: 10px 0; padding: 0">\
-<comm>// Si se desea obtener ayuda general sobre un componente se puede recurrir a la forma reducida de un parámetro:</comm><br/>\
-<func>Helper</func>(<str>"each"</str>);<br/>\
-<br/>\
-<comm>// Si se desea obtener ayuda sobre un método o propiedad de un componente específico se puede recurrir a la forma reducida de dos parámetros:</comm><br/>\
-<func>it.helper</func>(<str>"autocomplete"</str>, <str>"callback"</str>);<br/>\
-<br/>\
-<comm>// Si se desea obtener ayuda general sobre un componente usando el tema claro se puede recurrir a la forma con el segundo parámetro como JSON:</comm><br/>\
-<func>Helper</func>(<str>"alert"</str>, <null>{<property>theme</property>:</null> <str>"light"</str><null>}</null>);<br/>\
-<br/>\
-<comm>// Esta última forma permite también establecer el método o propiedad que se desea consultar</comm><br/>\
+<comm>// Si se desea obtener ayuda general sobre un componente se puede recurrir a la forma reducida de un parámetro:</comm>\n\
+<func>Helper</func>(<str>"each"</str>);\n\
+\n\
+<comm>// Si se desea obtener ayuda sobre un método o propiedad de un componente específico se puede recurrir a la forma reducida de dos parámetros:</comm>\n\
+<func>it.helper</func>(<str>"autocomplete"</str>, <str>"callback"</str>);\n\
+\n\
+<comm>// Si se desea obtener ayuda general sobre un componente usando el tema claro se puede recurrir a la forma con el segundo parámetro como JSON:</comm>\n\
+<func>Helper</func>(<str>"alert"</str>, <null>{<property>theme</property>:</null> <str>"light"</str><null>}</null>);\n\
+\n\
+<comm>// Esta última forma permite también establecer el método o propiedad que se desea consultar</comm>\n\
 <func>it.helper</func>(<str>"treeview"</str>, <null>{<property>about</property>:</null> <str>"onCheckNode;"</str>, <null><property>theme</property>:</null> <str>"light"</str><null>}</null>);\
 </code>\
 		</div>\
@@ -3405,14 +3508,14 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
 			AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center; font-weight:400; background: ' + opt.color + '; padding: 15px; font-size: 18px; line-height: normal; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
 			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; font-weight:400; padding: 15px; font-size: 18px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
-			AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); font-weight:400; z-index: -1; text-transform: uppercase; margin: 48px 0 10px; font-size:1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
+			AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); font-weight:400; z-index: -1; margin: 48px 0 10px; font-size:1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
 			AddCSSRule('', '#h31p3r h3[onclick]', 'cursor:pointer; transition: all 0.35s ease-in-out; padding: 3px 0 0 0; line-height: 22px;');
 			AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
 			AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
 			AddCSSRule('', '#h31p3r h3[onclick]::before', 'content: "\\1F517"; opacity: 0; transition: all 0.35s ease-in-out;');
 			
 			AddCSSRule('', '#h31p3r.index h2', 'margin: 12px 0 15px 0 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); width: 100%; box-shadow: rgb(0 0 0) 0px 0px 24px 1px inset; padding: 5px 0;');
-			AddCSSRule('', '#h31p3r.index h3', ' margin: 0; box-shadow: none; border: 0 none; width: 25%; display: inline-block; ');
+			AddCSSRule('', '#h31p3r.index h3', ' margin: 0; box-shadow: none; border: 0 none; width: 25%; display: inline-block;');
 			AddCSSRule('', '#h31p3r.index h3.no-loaded', 'color: ' + opt.commentColor + ' !important;');
 			AddCSSRule('', '#h31p3r.index h3.no-loaded[onclick]::before', 'content: "\\26cc"; padding: 0 0 0 5px;');
 			AddCSSRule('', '#h31p3r.index h3 text', 'display: inline; padding: 0;');
@@ -3490,7 +3593,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			
 			if (prop != "additional" && general.name.toLowerCase() != "index") {
 				var type = help[prop].hasOwnProperty("type") ? help[prop].type : '';
-				text += '<h3>' + (((type == "function" || intern ) ? 'Método ' : 'Propiedad ') + prop) + '</h3>';
+				text += '<h3>' + (((type == "function" || intern ) ? 'Método ' : 'Propiedad ') + (intern ? WikiHelper[func].general.name : prop)) + '</h3>';
 
 			} else if (general.name.toLowerCase() == "index") {
 				var wprop = prop.indexOf(".") ? prop.split(".")[0] : prop, clk;
