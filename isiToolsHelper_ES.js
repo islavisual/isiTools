@@ -308,7 +308,7 @@ WikiHelper.Alert = {
 .Alert header .close-btn { float: right; color: rgb(240, 240, 240); cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0; }\n\
 .Alert .Alert-body { background-color: rgb(240, 0, 32); color: rgb(255, 255, 255); display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; }\n\
 .Alert footer { position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0; }\n\
-.Alert footer button { background: #fff; color: #000; border: 1px solid #000; }\n\
+.Alert footer button { background: #fff; color: #000; border: 1px solid #000; padding: 3px 5px; }\n\
 .Alert .btn-cancel { padding: 5px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
 .Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
 body.fixed { position: fixed; width: 100%; }\n\
@@ -581,7 +581,7 @@ Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la 
 		example: '// Autocomplete con AJAX y filtrado por el componente.\n\
 // Cuando la petición es un archivo con extensión <property>json</property>, el componente realizará una única llamada en la primera búsqueda. En las siguientes ya no realizará ninguna llamada al servidor y buscará sólo dentro del parámetro <property>data</property>.\n\
 it("#municipio").autocomplete({\n\
-	url: "./json/jmunicipios.json",\n\
+	url: "./json/municipios.json",\n\
 	ajax: true,\n\
 	row: {\n\
 		return_value: "nombre",\n\
@@ -1397,36 +1397,36 @@ WikiHelper.Datepicker = {
 			description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <property>"finicio"</property> podría ser:',
 			example: '_CSS_\n\
 // styles.css (de tu sitio web)\n\
-#datepicker-layer-finicio { width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden; }\n\
-#datepicker-layer-finicio::before{ content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1; }\n\
-#datepicker-layer-finicio::after { content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:#fff; z-index: -1; }\n\
-#datepicker-layer-finicio .datepicker-close{  cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: #0066a8; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold; }\n\
-#datepicker-layer-finicio .datepicker-close::before, #datepicker-layer-finicio .datepicker-close::after{ content: ""; border-top: 2px solid #0066a8; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px; }\n\
-#datepicker-layer-finicio .datepicker-close::after{ transform: rotate(-45deg); }\n\
-#datepicker-layer-finicio .l-cal{ position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: #0066a8; color: #fff; float: left; text-align: center; padding: 0px 3px 5px 3px; }\n\
-#datepicker-layer-finicio .l-cal span{ opacity: 0.5; }\n\
-#datepicker-layer-finicio .l-cal span:first-child{ font-size: 38px; width: 100%; display: block; margin-top: 5px; }\n\
-#datepicker-layer-finicio .l-cal span:nth-child(2){ font-size: 18px; width: 100%; display: block; margin-bottom: 18px; }\n\
-#datepicker-layer-finicio .l-cal span:nth-child(4){ line-height: 32px; display: block; }\n\
-#datepicker-layer-finicio .r-cal{ background: #fff; width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%; }\n\
-#datepicker-layer-finicio .datepicker-years{ margin-bottom: 0; padding: 0 5px 5px; position: relative; }\n\
-#datepicker-layer-finicio .datepicker-years input{ font-size: 14px; height: 24px; width: 3.2em; background: #fff; color: #000;     border: 1px solid rgba(0,0,0,0.1); padding: 0; text-align: center; float: right; margin: 0 3px 5px calc(75% - 10px); position: relative; left: -10px; box-shadow: none !important; }\n\
-#datepicker-layer-finicio .datepicker-years input ~ span.dt-down{ display: block; position: absolute; right: 8px; top: 12px; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
-#datepicker-layer-finicio .datepicker-years input ~ span.dt-down::before{ display: block; position: absolute; right: 2px; top: 3px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
-#datepicker-layer-finicio .datepicker-years input ~ span.dt-up{ display: block; position: absolute; right: 8px; top: 0; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
-#datepicker-layer-finicio .datepicker-years input ~ span.dt-up::before{ display: block; position: absolute; right: 2px; top: 2px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
-#datepicker-layer-finicio .datepicker-months{ border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px; }\n\
-#datepicker-layer-finicio .datepicker-months .month{ cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; background: #fff; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box; }\n\
-#datepicker-layer-finicio .datepicker-months .month.active, #datepicker-layer-finicio .datepicker-months .month:hover{  background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); font-weight: normal; }\n\
-#datepicker-layer-finicio .datepicker-week{ padding: 0 5px; display: table; }\n\
-#datepicker-layer-finicio .r-cal .datepicker-week-names .datepicker-week{ padding: 5px; background: #0066a8; color: #fff; }\n\
-#datepicker-layer-finicio .datepicker-week .dayname, #datepicker-layer-finicio .datepicker-week .day{ cursor: pointer; font-size: 14px; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0); }\n\
-#datepicker-layer-finicio .datepicker-week .day.disabled{ opacity: 0.5; }\n\
-#datepicker-layer-finicio .datepicker-week .day.active, #datepicker-layer-finicio .datepicker-week .day:hover{ font-weight: normal; background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); padding: 0 6px; }\n\
-#datepicker-layer-finicio .datepicker-buttons{ position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0; }\n\
-#datepicker-layer-finicio .datepicker-buttons button{ cursor: pointer; color: #fff; background: #0066a8; border: 1px solid #0066a8; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px; }\n\
+.it-datepicker-date { width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden; }\n\
+.it-datepicker-date::before{ content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1; }\n\
+.it-datepicker-date::after { content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:#fff; z-index: -1; }\n\
+.it-datepicker-date .datepicker-close{  cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: #0066a8; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold; }\n\
+.it-datepicker-date .datepicker-close::before, .it-datepicker-date .datepicker-close::after{ content: ""; border-top: 2px solid #0066a8; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px; }\n\
+.it-datepicker-date .datepicker-close::after{ transform: rotate(-45deg); }\n\
+.it-datepicker-date .l-cal{ position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: #0066a8; color: #fff; float: left; text-align: center; padding: 0px 3px 5px 3px; }\n\
+.it-datepicker-date .l-cal span{ opacity: 0.5; }\n\
+.it-datepicker-date .l-cal span:first-child{ font-size: 38px; width: 100%; display: block; margin-top: 5px; }\n\
+.it-datepicker-date .l-cal span:nth-child(2){ font-size: 18px; width: 100%; display: block; margin-bottom: 18px; }\n\
+.it-datepicker-date .l-cal span:nth-child(4){ line-height: 32px; display: block; }\n\
+.it-datepicker-date .r-cal{ background: #fff; width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%; }\n\
+.it-datepicker-date .datepicker-years{ margin-bottom: 0; padding: 0 5px 5px; position: relative; }\n\
+.it-datepicker-date .datepicker-years input{ font-size: 14px; height: 24px; width: 3.2em; background: #fff; color: #000;     border: 1px solid rgba(0,0,0,0.1); padding: 0; text-align: center; float: right; margin: 0 3px 5px calc(75% - 10px); position: relative; left: -10px; box-shadow: none !important; }\n\
+.it-datepicker-date .datepicker-years input ~ span.dt-down{ display: block; position: absolute; right: 8px; top: 12px; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
+.it-datepicker-date .datepicker-years input ~ span.dt-down::before{ display: block; position: absolute; right: 2px; top: 3px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
+.it-datepicker-date .datepicker-years input ~ span.dt-up{ display: block; position: absolute; right: 8px; top: 0; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
+.it-datepicker-date .datepicker-years input ~ span.dt-up::before{ display: block; position: absolute; right: 2px; top: 2px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
+.it-datepicker-date .datepicker-months{ border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px; }\n\
+.it-datepicker-date .datepicker-months .month{ cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; background: #fff; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box; }\n\
+.it-datepicker-date .datepicker-months .month.active, .it-datepicker-date .datepicker-months .month:hover{  background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); font-weight: normal; }\n\
+.it-datepicker-date .datepicker-week{ padding: 0 5px; display: table; }\n\
+.it-datepicker-date .r-cal .datepicker-week-names .datepicker-week{ padding: 5px; background: #0066a8; color: #fff; }\n\
+.it-datepicker-date .datepicker-week .dayname, .it-datepicker-date .datepicker-week .day{ cursor: pointer; font-size: 14px; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0); }\n\
+.it-datepicker-date .datepicker-week .day.disabled{ opacity: 0.5; }\n\
+.it-datepicker-date .datepicker-week .day.active, .it-datepicker-date .datepicker-week .day:hover{ font-weight: normal; background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); padding: 0 6px; }\n\
+.it-datepicker-date .datepicker-buttons{ position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0; }\n\
+.it-datepicker-date .datepicker-buttons button{ cursor: pointer; color: #fff; background: #0066a8; border: 1px solid #0066a8; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px; }\n\
 .has-datepicker input{ width: 6.8em !important; float: left; }\n\
-.has-datepicker input + button{ cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 24px; }_CSS_'
+.has-datepicker input + button{ cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 28px; min-width: 28px; }_CSS_'
 		},
 	],
 	icon: {
@@ -2134,18 +2134,19 @@ WikiHelper.Slider = {
 it-slider { display: block; width: 100%;}\n\
 \n\
 // Estilos para un Slider de tipo SWITCH\n\
-it-slider[type=switch]{ border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0; }\N\
-it-slider[type=switch] input{ cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: calc(100% + 3px) !important; z-index: 1; }\n\
-it-slider[type=switch] label{ color: #000; font-size: 12px; background: #EAEAEA none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.15) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s; }\n\
-it-slider[type=switch] label::before, it-slider[type=switch] label::after{ font-size: 12px; line-height: 1; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit; }\n\
-it-slider[type=switch] label::before{ color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; }\n\
-it-slider[type=switch] label::after{ color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; }\n\
-it-slider[type=switch] input ~ label{ background: linear-gradient(to bottom, #E8E8E8 0%, #F0F0F0 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; }\n\
-it-slider[type=switch] input:checked ~ label::before{ opacity: 0; }\n\
-it-slider[type=switch] input:checked ~ label::after{ opacity: 1; }\n\
-it-slider[type=switch] handle{ background: linear-gradient(to bottom, #FFFFFF 0%, #EAEAEA 100%); box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); height: 22px; left: 4px; position: absolute; top: 4px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0; }\n\
-it-slider[type=switch] handle::before{ background: linear-gradient(to bottom, #EAEAEA 0%, #FFFFFF 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ""; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px; }\n\
-it-slider[type=switch] input:checked ~ handle{ box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); left: calc(50% - 4px); }\n\
+it-slider[type="switch"]                               { background: linear-gradient(rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0) 100%); border-radius: 0px; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0px; top: 0px; }\n\
+it-slider[type="switch"] input                         { cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; z-index: 1; height: 100% !important; }\n\
+it-slider[type="switch"] label                         { color: rgb(0, 0, 0); background: none 0px 0px repeat scroll rgb(223, 223, 223); box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 2px inset, rgba(0, 0, 0, 0.5) 0px 0px 2px inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s; }\n\
+it-slider[type="switch"] label::before,\n\
+it-slider[type="switch"] label::after   { font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit; }\n\
+it-slider[type="switch"] label::before                 { color: rgb(0, 0, 0); content: attr(data-off); right: 7px; }\n\
+it-slider[type="switch"] label::after                  { color: rgb(0, 0, 0); content: attr(data-on); left: 7px; opacity: 0; }\n\
+it-slider[type="switch"] input ~ label                 { box-shadow: rgba(0, 0, 0, 0.15) 0px 1px 2px inset, rgba(0, 0, 0, 0.2) 0px 0px 3px inset; border-radius: 0px; margin: 0px; padding: 0px; }\n\
+it-slider[type="switch"] input:checked ~ label::before { opacity: 0; }\n\
+it-slider[type="switch"] input:checked ~ label::after  { opacity: 1; }\n\
+it-slider[type="switch"] handle                        { background: linear-gradient(rgb(255, 255, 255) 0%, rgb(223, 223, 223) 100%); border: 1px solid rgba(0, 0, 0, 0.2); height: 100%; left: 3px; position: absolute; top: 3px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0px; }\n\
+it-slider[type="switch"] handle::before                { background: linear-gradient(rgb(223, 223, 223) 0%, rgb(255, 255, 255) 100%); border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.02) 0px 1px inset; content: ""; height: 12px; left: 50%; margin: -6px 0px 0px -6px; position: absolute; top: 50%; width: 12px; }\n\
+it-slider[type="switch"] input:checked ~ handle        { left: calc(50% - 3px); }\n\
 \n\
 // Estilos para un Slider de tipo RANGE\n\
 it-slider[type=range] values{ width: 100%; display: table; height: auto; }\n\
@@ -2176,27 +2177,27 @@ it-slider[type=range] input[type=range]::-ms-tooltip{ display: none; }\n\
 <name>NOTA: Este método se ejecuta automáticamente al cargar la página si el componenente está precargado. </name>',
 		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
 &lt;it-slider\n\
-id="switch1"\n\
-type="switch"\n\
-label-on="On"\n\
-label-off="Off"\n\
-checked="true"\n\
-background="#ffffff"\n\
-text-color="#000000"\n\
-track-color="#f0f0f0"\n\
-style="width: 200px;"\n\
-onclick="console.log(\'cambiado!\')">\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	checked="true"\n\
+	background="#ffffff"\n\
+	text-color="#000000"\n\
+	track-color="#f0f0f0"\n\
+	style="width: 200px;"\n\
+	onclick="console.log(\'cambiado!\')">\n\
 &lt;/it-slider>',
-		exampleMultiple: '// Definición de un slider bajo HTML5\n\
+		exampleRange: '// Definición de un slider bajo HTML5\n\
 &lt;it-slider\n\
-id="subtipo"\n\
-type="range"\n\
-values="Moto:0, Coche:1, Quad:2"\n\
-selected="2"\n\
-background="#226699"\n\
-text-color="#000000"\n\
-track-color="#f0f0f0"\n\
-style="display: inline-block; width: calc(100% - 128px);">\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	selected="2"\n\
+	background="#226699"\n\
+	text-color="#000000"\n\
+	track-color="#f0f0f0"\n\
+	style="display: inline-block; width: calc(100% - 128px);">\n\
 &lt;/it-slider>'
 	},
 	id: {
@@ -2204,18 +2205,18 @@ style="display: inline-block; width: calc(100% - 128px);">\n\
 		description: 'Permite asignar y operar con todas las capas necesarias para generar el componente. Sólo si estamos si se está definiendo a través de una etiqueta NSTATE dentro de un documento web.',
 		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
 &lt;it-slider\n\
-id="switch1"\n\
-type="switch"\n\
-label-on="On"\n\
-label-off="Off"\n\
-checked="true">\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	checked="true">\n\
 &lt;/it-slider>\n',
-		exampleMultiple: '// Definición de un slider bajo HTML5\n\
+		exampleRange: '// Definición de un slider bajo HTML5\n\
 &lt;it-slider\n\
-id="subtipo"\n\
-type="range"\n\
-values="Moto:0, Coche:1, Quad:2"\n\
-selected="2">\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	selected="2">\n\
 &lt;/it-slider>'
 	},
 	type: {
@@ -2223,36 +2224,36 @@ selected="2">\n\
 		description: 'Permite definir el tipo de slider. Sus posibles valores son "switch" o "range"',
 		exampleSwitch: '// Definición básica de un switch\n\
 it("#activado").slider(({\n\
-type: "switch"\n\
-labelOn: "Sí",\n\
-labelOff: "No"\n\
+	type: "switch"\n\
+	labelOn: "Sí",\n\
+	labelOff: "No"\n\
 });',
-		exampleMultple: '// Definición básica de un selector múltiple\n\
+		exampleRange: '// Definición básica de un selector múltiple\n\
 it("#nivel").slider({\n\
-type: "range",\n\
-values:[\n\
-	{label: "Bajo", value: 0},\n\
-	{label: "Medio", value: 1},\n\
-	{label: "Alto", value: 2}\n\
-],\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Bajo", value: 0},\n\
+		{label: "Medio", value: 1},\n\
+		{label: "Alto", value: 2}\n\
+	],\n\
 });'
 	},
 	labelOn: {
 		type: 'string',
 		description: 'Permite definir el valor de un switch cuando está activado.',
 		exampleSwitch: 'it("#mode").slider(({\n\
-type: "switch"\n\
-labelOn: "Lectura",\n\
-labelOff: "Escritura"\n\
+	type: "switch"\n\
+	labelOn: "Lectura",\n\
+	labelOff: "Escritura"\n\
 });',
 	},
 	labelOff: {
 		type: 'string',
 		description: 'Permite definir el valor de un switch cuando está desactivado.',
 		exampleSwitch: 'it("#mode").slider(({\n\
-type: "switch"\n\
-labelOn: "Lectura",\n\
-labelOff: "Escritura"\n\
+	type: "switch"\n\
+	labelOn: "Lectura",\n\
+	labelOff: "Escritura"\n\
 });',
 	},
 	colors: {
@@ -2260,53 +2261,53 @@ labelOff: "Escritura"\n\
 		description: 'Permite definir o especificar los colores que se utilizarán para crear el slider, tanto binario o de tipo switch, como múltiple o de tipo rango.',
 		exampleSwitch: '// Definición de un slider de tipo switch con colores personallizados mediante JavaScript\n\
 it("#activado").slider({\n\
-type: "switch",\n\
-labelOn: "Sí",\n\
-labelOff: "No",\n\
-checked: false,\n\
-colors: {\n\
-	background: "#fff",\n\
-	extColor: "#000",\n\
-	trackColor: "#f0f0f0"\n\
-}\n\
+	type: "switch",\n\
+	labelOn: "Sí",\n\
+	labelOff: "No",\n\
+	checked: false,\n\
+	colors: {\n\
+		background: "#fff",\n\
+		extColor: "#000",\n\
+		trackColor: "#f0f0f0"\n\
+	}\n\
 });\n\
 \n\
 // Definición de un slider de tipo switch con colores personallizados mediante HTML5\n\
 &lt;it-slider\n\
-id="activado"\n\
-type="switch"\n\
-label-on="Sí"\n\
-label-off="No"\n\
-checked="false"\n\
-background="#fff"\n\
-text-color="#000"\n\
-track-color="#f0f0f0">\n\
+	id="activado"\n\
+	type="switch"\n\
+	label-on="Sí"\n\
+	label-off="No"\n\
+	checked="false"\n\
+	background="#fff"\n\
+	text-color="#000"\n\
+	track-color="#f0f0f0">\n\
 &lt;/it-slider>',
-		exampleMultple: '// Definición de un slider de tipo rango con colores personallizados mediante JavaScript\n\
+		exampleRange: '// Definición de un slider de tipo rango con colores personallizados mediante JavaScript\n\
 it("#nivel").slider.set({\n\
-type: "range",\n\
-values:[\n\
-	{label: "Bajo", value: 0},\n\
-	{label: "Medio", value: 1},\n\
-	{label: "Alto", value: 2}\n\
-],\n\
-selected: 1,\n\
-colors: {\n\
-	background: "#fff",\n\
-	textColor: "#000",\n\
-	trackColor: "#f0f0f0"\n\
-}\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Bajo", value: 0},\n\
+		{label: "Medio", value: 1},\n\
+		{label: "Alto", value: 2}\n\
+	],\n\
+	selected: 1,\n\
+	colors: {\n\
+		background: "#fff",\n\
+		textColor: "#000",\n\
+		trackColor: "#f0f0f0"\n\
+	}\n\
 });\n\
 \n\
 // Definición de un slider de tipo switch con colores personallizados mediante HTML5\n\
 &lt;it-slider\n\
-id="nivel"\n\
-type="range"\n\
-values="Bajo:0, Medio:1, Alto:2"\n\
-selected="1"\n\
-background="#fff"\n\
-text-color="#000"\n\
-track-color="#f0f0f0">\n\
+	id="nivel"\n\
+	type="range"\n\
+	values="Bajo:0, Medio:1, Alto:2"\n\
+	selected="1"\n\
+	background="#fff"\n\
+	text-color="#000"\n\
+	track-color="#f0f0f0">\n\
 &lt;/it-slider>'
 	},
 	checked: {
@@ -2314,19 +2315,19 @@ track-color="#f0f0f0">\n\
 		description: 'Permite definir si el switch, o slider binario, está activado o chequeado.',
 		exampleSwitch: '// Definición de un slider de tipo switch con la opción de chequeado mediante JavaScript\n\
 it("#interruptor").slider({\n\
-type: "switch",\n\
-labelOn: "Encendido",\n\
-labelOff: "Apagado",\n\
-checked: true,\n\
+	type: "switch",\n\
+	labelOn: "Encendido",\n\
+	labelOff: "Apagado",\n\
+	checked: true,\n\
 });\n\
 \n\
 // Definición de un slider de tipo switch con la opción de chequeado mediante HTML5\n\
 &lt;it-slider\n\
-id="interruptor"\n\
-type="switch"\n\
-label-on="Encendido"\n\
-label-off="Apagado"\n\
-checked="true"\n\
+	id="interruptor"\n\
+	type="switch"\n\
+	label-on="Encendido"\n\
+	label-off="Apagado"\n\
+	checked="true"\n\
 &lt;/it-slider>',
 	},
 	selected: {
@@ -2334,43 +2335,43 @@ checked="true"\n\
 		description: 'Permite definir el valor u opción activada del selector de tipo rango.',
 		exampleSwitch: '// Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante JavaScript\n\
 it("#nivel").slider.set({\n\
-type: "range",\n\
-values:[\n\
-	{label: "Bajo", value: 0},\n\
-	{label: "Medio", value: 1},\n\
-	{label: "Alto", value: 2}\n\
-],\n\
-selected: 2,\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Bajo", value: 0},\n\
+		{label: "Medio", value: 1},\n\
+		{label: "Alto", value: 2}\n\
+	],\n\
+	selected: 2,\n\
 });\n\
 \n\
 // Definición de un slider de tipo rango de tres valores con la última opción seleccionada mediante HTML5\n\
 &lt;it-slider\n\
-id="nivel"\n\
-type="range"\n\
-values="Bajo:0, Medio:1, Alto:2"\n\
-selected="2"\n\
+	id="nivel"\n\
+	type="range"\n\
+	values="Bajo:0, Medio:1, Alto:2"\n\
+	selected="2"\n\
 &lt;/it-slider>',
 	},
 	values: {
 		type: 'object',
 		description: 'Permite definir los valores del slider.',
-		exampleMultple: '// Definición de un slider de tipo rango mediante JavaScript\n\
+		exampleRange: '// Definición de un slider de tipo rango mediante JavaScript\n\
 it("#valoracion").slider({\n\
-type: "range",\n\
-values:[\n\
-	{label: "Muy Mala", value: 0}\n\
-	{label: "Mala", value: 1},\n\
-	{label: "Media", value: 2},\n\
-	{label: "Buena", value: 3}\n\
-	{label: "Muy Buena", value: 4}\n\
-],\n\
+	type: "range",\n\
+	values:[\n\
+		{label: "Muy Mala", value: 0}\n\
+		{label: "Mala", value: 1},\n\
+		{label: "Media", value: 2},\n\
+		{label: "Buena", value: 3}\n\
+		{label: "Muy Buena", value: 4}\n\
+	],\n\
 });\n\
 \n\
 // Definición de un slider de tipo rango mediante HTML5\n\
 &lt;it-slider\n\
-id="valoracion"\n\
-type="range"\n\
-values="Muy Mala:0, Mala:1, Media:2, Buena:3, Muy Buena: 4">\n\
+	id="valoracion"\n\
+	type="range"\n\
+	values="Muy Mala:0, Mala:1, Media:2, Buena:3, Muy Buena: 4">\n\
 &lt;/it-slider>'
 	},
 	style: {
@@ -2378,24 +2379,56 @@ values="Muy Mala:0, Mala:1, Media:2, Buena:3, Muy Buena: 4">\n\
 		description: 'Permite asignar al elemento padre del componente (etiqueta NSTATE) unos estilos en línea.',
 		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
 &lt;it-slider\n\
-id="switch1"\n\
-type="switch"\n\
-label-on="On"\n\
-label-off="Off"\n\
-style="margin-top 30px">\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	style="margin-top 30px">\n\
 &lt;/it-slider>\n',
-		exampleMultiple: '// Definición de un slider bajo HTML5\n\
+		exampleRange: '// Definición de un slider bajo HTML5\n\
 &lt;it-slider\n\
-id="subtipo"\n\
-type="range"\n\
-values="Moto:0, Coche:1, Quad:2"\n\
-style="margin-top 30px">\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	style="margin-top 30px">\n\
 &lt;/it-slider>'
 	},
 	stylesheet:{
 		type: 'boolean',
 		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
-		example: '// Definición de un slider de tipo rango mediante JavaScript\n\
+		exampleSwitch: '// Definición de un Switch bajo HTML5\n\
+&lt;it-slider\n\
+	id="switch1"\n\
+	type="switch"\n\
+	label-on="On"\n\
+	label-off="Off"\n\
+	style="margin-top 30px"\n\
+	stylesheet="true">\n\
+&lt;/it-slider>\n\
+\n\
+// Definición de un slider de tipo switch con colores personallizados mediante JavaScript\n\
+it("#activado").slider({\n\
+	type: "switch",\n\
+	labelOn: "Sí",\n\
+	labelOff: "No",\n\
+	checked: false,\n\
+	colors: {\n\
+		background: "#fff",\n\
+		extColor: "#000",\n\
+		trackColor: "#f0f0f0"\n\
+	},\n\
+	stylesheet: true\n\
+});\n',
+		exampleRange: '// Definición de un slider bajo HTML5\n\
+&lt;it-slider\n\
+	id="subtipo"\n\
+	type="range"\n\
+	values="Moto:0, Coche:1, Quad:2"\n\
+	style="margin-top 30px"\n\
+	stylesheet="true">\n\
+&lt;/it-slider>\n\
+\n\
+// Definición de un slider de tipo rango mediante JavaScript\n\
 it("#valoracion").slider({\n\
 	type: "range",\n\
 	values:[\n\
@@ -2425,7 +2458,7 @@ WikiHelper.Password = {
 		description: 'Este componente es una herramienta que ofrece la posibilidad de administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, posee un sistema de detección y penalización por consecución de minúsculas, mayúsculas y dígitos consecutivos o la repeción de tres o más veces sobre un mismo carácter.\n\
 \n\
 // En todos los siguientes casos supondremos que tenemos un elemento o código como el siguiente:\n\
-<code>&lt;input id="pwd" name="pwd" type="password" maxlength="50" autocomplete="off" /></code>',
+<code><name>&lt;input</name> <property>id=</property>"pwd" <property>name=</property>"pwd" <property>type=</property>"password" <property>maxlength=</property>"50" <property>autocomplete=</property>"off"<name> /></name></code>',
 	},
 	additional: [
 		{
@@ -2474,16 +2507,16 @@ showicon: "la la-eye",\n\
 			description: 'Personalización de los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '// Password crea los estilos en tiempo de ejecución de manera automática, pero es posible añadirlos a la hoja de estilos principal para modificarlos como se deseen.\n\
 _CSS_\n\
-#it-password-pwd, #it-password-pwdc { position: relative; }\n\
-#it-password-pwd-meter{ width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0; border: 0 none; margin: 0 0 5px 0; display: none; }\n\
-#it-password-pwd-meter{ > div", "background: rgba(255,255,255,0.1); width: calc(16.667% - 1px); float: left; height: 5px; padding: 0; margin: 0px 1px 0 0; position: relative; }\n\
-#it-password-pwd-meter.not-draw", "display: none !important }\n\
-#it-password-pwd-meter{ > div.spotlight", "background: #fff; }\n\
-#input:focus ~ #it-password-pwd-meter{ background: #000; display: block; }\n\
-.it-password-messages{ padding: 5px; display: block; background: #ffecec; border: 1px solid rgba(0,0,0,0.1); margin: 5px 0; font-size: 1em; font-weight: 600; }\n\
-.it-password-messages:empty{ height: 0; padding: 0; border: 0 none; width: 100%; }\n\
-.it-password-show-button{ position: absolute; top: 0; right: 0; background: transparent; border: 0 none; color: #000; width: 32px; height: 48px; z-index: 2; }\n\
-.it-password-show-button i{ pointer-events: none; }\n\
+.it-password-layer                                  { position: relative; }\n\
+.it-password-meters                                 { width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0px; border: 0px none; margin: 0px 0px 5px; display: none; }\n\
+.it-password-meters > div                           { background: rgba(255, 255, 255, 0.1); width: calc(16.667% - 1px); float: left; height: 5px; padding: 0px; margin: 0px 1px 0px 0px; position: relative; }\n\
+.it-password-meters.not-draw                        { display: none !important; }\n\
+.it-password-meters > div.spotlight                 { background: rgba(255, 255, 255, 1); }\n\
+.it-password-layer input:focus ~ .it-password-meters{ background: rgba(0, 0, 0, 1); display: block; }\n\
+.it-password-layer .it-password-messages            { padding: 5px; display: block; background: rgba(205, 5, 60, 1); border: 1px solid rgba(0, 0, 0, 0.1); margin: 5px 0px; font-size: 1em; font-weight: 600; }\n\
+.it-password-layer .it-password-messages:empty      { height: 0px; padding: 0px; border: 0px none; width: 100%; }\n\
+.it-password-layer .it-password-show-button         { position: absolute; top: 0px; right: 0px; background: transparent; border: 0px none; color: rgba(0, 0, 0, 1); width: 32px; height: 28px; z-index: 2; }\n\
+.it-password-layer .it-password-show-button i       { pointer-events: none; color: rgba(0, 0, 0, 1) !important; }\n\
 _CSS_'
 		}
 	],
@@ -2884,6 +2917,7 @@ WikiHelper.Tabs = {
 		name: 'Tabs',
 		description: 'Tabs es un componente totalmente usable y accesible de la interfaz gráfica de usuario que muestra información agrupada por secciones o pestañas.\n\
 		<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los tabs, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-2/tabs.html</name>\n\
+\n\
 Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un código que se alimenta de una lista con enlaces o botones y unos elementos de caja o secciones que contienen los diferenttes contenidos de cada una de las pestañas.\n\
 \n\
 La estructura de la cabecera de los TABS puede definirse mediante un elemento de lista <property>ul</property> con enlaces:\n\
@@ -2936,7 +2970,7 @@ Los elementos que representan el cóntenido podrán ser cualquier elemento de ca
 			example: '_CSS_\n\
 // styles.css (from your site)\n\
 .it-tab-links{ overflow: hidden; z-index: 1; display: block; margin: 12px 0 0 0; padding: 0; position: relative; top: 1px; list-style: none;}\n\
-.it-tab-links [role="tab"]{ background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0;}\n\
+.it-tab-links [role="tab"]{ background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0; position: relative; top: auto; left: auto; right: auto; bottom: auto; display: block; height: auto; }\n\
 .it-tab-links [role="tab"] img{ width: auto; height: 48px; object-fit: cover; object-position: center center; display: block; max-width: none; max-height: none; image-rendering: -webkit-optimize-contrast; pointer-events: none; margin: 0 auto; opacity: 1;}\n\
 .it-tab-links [role="tab"]:not(.active) img{ filter: grayscale(1); opacity: 0.5;}\n\
 .it-tab-links [role="tab"]:hover{ background-color: #484848;}\n\
@@ -3040,7 +3074,7 @@ ul.treeview li label{ padding: 2px 5px; display: inline-block; }\n\
 ul.treeview li i.icon{ margin-right: 8px; }\n\
 ul.treeview li.search-box input{ width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0,0,0,0.1) }\n\
 ul.treeview li .active{ background: lightgray; color: rgb(51, 51, 51); }\n\
-ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:not(.switch-input):not(.clean-switch-input):focus::before{ border-color: #000; }\n\
+ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:focus::before{ border-color: #000; }\n\
 ul.treeview input[type="checkbox"]:focus + label{ background: #000;color: #fff; }\n\
 _CSS_'
 		}
@@ -3103,7 +3137,7 @@ _CSS_'
 	placeholderText: {
 		type: 'string',
 		description: 'El parámetro "placeholderText" indica el texto que se muestra dentro de la caja de texto cuando la búsqueda está habilitada (searchable es true). Por defecto es "Filter...".',
-		example: 'it("#treeview").treeview({data: treeviewJSON, placeholderText: "Writing to filter inside the tree"});'
+		example: 'it("#treeview").treeview({data: treeviewJSON, placeholderText: "Escribe para filtrar dentro del árbol"});'
 	},
 	styles: {
 		type: 'object',
@@ -3155,7 +3189,12 @@ Aunque admite más parámetros o configuraciones, para un correcto funcionamient
 	additional: [
 		{
 			description: 'Personalizar la clase de validator-error y validator-error-msg a través de estilos CSS.',
-			example: '_CSS_// Personalizar el estilo del input\n.validator-error{ box-shadow: 0 0 0 2px #f00 inset }\n//Personalizar el color del mensaje de validación\n.validator-error-msg{ background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2); }_CSS_'
+			example: '_CSS_// Personalizar el estilo del input\n\
+.it-validator-error{ background: rgba(255, 0, 0, 0.2); color: #fff !important; box-shadow: 0 0 0 2px #f00 inset }\n\
+\n\
+//Personalizar el color del mensaje de validación\n\
+.it-validator-error-msg{ background: rgba(255, 0, 0, 0.2); color: rgba(255, 255, 255, 1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(0, 0, 0, 0.2); }\n\
+_CSS_'
 		}
 	],
 	constraint: {
@@ -3507,8 +3546,10 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
 			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
 			AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center; font-weight:400; background: ' + opt.color + '; padding: 15px; font-size: 18px; line-height: normal; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
-			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + ';text-align: center; font-weight:400; padding: 15px; font-size: 18px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
-			AddCSSRule('', "#h31p3r h3", 'display: table; background: rgba(0,0,0,0); font-weight:400; z-index: -1; margin: 48px 0 10px; font-size:1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
+			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + '; text-align: center; font-weight:400; padding: 15px; font-size: 15px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
+			AddCSSRule('', "#h31p3r h2::before, #h31p3r h2::after", 'content: inherit;')
+			AddCSSRule('', "#h31p3r h3", 'display: table; text-align: left; background: rgba(0,0,0,0); font-weight:400; z-index: -1; margin: 48px 0 10px; font-size:1rem; padding: 5px; border-bottom: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255, 255, 255, .05); color: ' + opt.keyColor + ' !important; width: 100%; box-shadow: 0 0 24px 1px ' + (opt.theme == "DARK" ? "#000" : "#fff") + ' inset;');
+			AddCSSRule('', "#h31p3r h3::before, #h31p3r h3::after", 'content: inherit;')
 			AddCSSRule('', '#h31p3r h3[onclick]', 'cursor:pointer; transition: all 0.35s ease-in-out; padding: 3px 0 0 0; line-height: 22px;');
 			AddCSSRule('', '#h31p3r h3[onclick]:hover::before', 'opacity: 1; position: relative; left: -8px; ');
 			AddCSSRule('', '#h31p3r h3[onclick]:hover', 'color: #fff !important; padding-left: 25px;');
