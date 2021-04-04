@@ -49,10 +49,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.3",
+it.version = "2.0.4",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "02/04/2021",
+it.lastupdate = "04/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -455,7 +455,7 @@ function isiToolsCallback(json){
             }
 
             // If configuration object is invalid
-            if(!cfg.hasOwnProperty('body')){ alert("The 'body' parameter has not been supplied!.\nPlease, see the help with the Alert('help');"); return; }
+            if(!cfg.hasOwnProperty('body')){ alert("The 'body' parameter has not been supplied!.\nPlease, see the help with the it.alert('help');"); return; }
 
             // Default Styles
             var defaultStyles;
@@ -560,12 +560,12 @@ function isiToolsCallback(json){
                 }
             }
 
-            var tmpl = '<it-dialog class="Alert ' + opt.class + '" aria-labelledby="__ID__" aria-modal="true" role="dialog">\
+            var tmpl = '<it-dialog class="it-alert ' + opt.class + '" aria-labelledby="__ID__" aria-modal="true" role="dialog">\
 					<header>\
 						<h3 id="__ID__">__TITLE__</h3>\
 						<i class="close-btn">&times;</i>\
 					</header>\
-					<div class="Alert-body">\
+					<div class="it-alert-body">\
 						__DATA__\
 					</div>\
 					<footer>\
@@ -604,6 +604,8 @@ function isiToolsCallback(json){
                     if(aux){ opt.actions.accept.form = 'form="' + aux + '" type="submit"'; }
                 }
 
+                if(opt.actions.accept.form == undefined) opt.actions.accept.form = '';
+
                 // Create template
                 var aux = tmpl.replace("__TITLE__", opt.title)
                     .replace(/__ID__/g, 'dlg_' + Math.random().toString(36).substr(2, 5))
@@ -613,8 +615,8 @@ function isiToolsCallback(json){
 
                 // Create overlay and add to body
                 var a = document.createElement("div");
-                a.setAttribute("class", "Alert-overlay");
-                a.onclick = function(e){ if(e.target.classList.contains("Alert-overlay")) e.target.querySelector(".close-btn").click() }
+                a.setAttribute("class", "it-alert-overlay");
+                a.onclick = function(e){ if(e.target.classList.contains("it-alert-overlay")) e.target.querySelector(".close-btn").click() }
                 a.innerHTML = aux;
 
                 document.body.appendChild(a);
@@ -689,14 +691,14 @@ function isiToolsCallback(json){
 
             function assignEvents(){
                 document.addEventListener("keydown", function(e){
-                    if(e.keyCode == 27 && document.querySelector(".Alert")){
-                        document.querySelector(".Alert .close-btn").click();
+                    if(e.keyCode == 27 && document.querySelector(".it-alert")){
+                        document.querySelector(".it-alert .close-btn").click();
                         return false;
                     }
                     return;
                 });
 
-                document.querySelector(".Alert .close-btn").addEventListener("click", function(e){
+                document.querySelector(".it-alert .close-btn").addEventListener("click", function(e){
                     if(opt.actions.cancel.callback) opt.actions.cancel.callback(getData(e, false));
                     closeAlert(e);
                 });
@@ -704,7 +706,7 @@ function isiToolsCallback(json){
                 if(opt.actions.accept.enabled){
                     var cls = "." + opt.actions.accept.class.replace(/\s/g, '.');
                     cls = cls == "." ? 'button' : cls;
-                    document.querySelector(".Alert footer " + cls).addEventListener("click", function(e){
+                    document.querySelector(".it-alert footer " + cls).addEventListener("click", function(e){
                         var aux = getData(e, true);
                         if(!aux.hasOwnProperty("invalidMessage")){
                             if(opt.actions.accept.callback) opt.actions.accept.callback(aux);
@@ -714,7 +716,7 @@ function isiToolsCallback(json){
                 }
 
                 if(opt.actions.cancel.enabled){
-                    document.querySelector(".Alert footer ." + opt.actions.cancel.class.replace(/\s/g, '.')).addEventListener("click", function(e){
+                    document.querySelector(".it-alert footer ." + opt.actions.cancel.class.replace(/\s/g, '.')).addEventListener("click", function(e){
                         if(opt.actions.cancel.callback) opt.actions.cancel.callback(getData(e, false));
                         closeAlert(e);
                     });
@@ -752,33 +754,33 @@ function isiToolsCallback(json){
 
             function init(){
                 if(!opt.stylesheet){
-                    AddCSSRule('', ".Alert-overlay", 'position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999');
-                    AddCSSRule('', ".Alert", 'display: block; max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; border: 1px solid rgba(0,0,0,0.75); overflow: hidden; color: ' + opt.styles.body.color + ';');
-                    AddCSSRule('', ".Alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
-                    AddCSSRule('', ".Alert header h3", 'font-size: 14px; margin: 0; color: ' + opt.styles.title.color + '; display: inline-block');
-                    AddCSSRule('', ".Alert header .close-btn", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
-                    AddCSSRule('', ".Alert .Alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
-                    AddCSSRule('', ".Alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
-                    AddCSSRule('', ".Alert footer button", 'background: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; border: 1px solid ' + opt.styles.body.color + ';');
-                    AddCSSRule('', ".Alert footer button:focus", 'background: ' + opt.styles.body.color + '; color: ' + opt.styles.body.background + '; border: 1px solid ' + opt.styles.body.color + ';');
+                    AddCSSRule('', ".it-alert-overlay", 'position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999');
+                    AddCSSRule('', ".it-alert", 'display: block; max-width: 360px; margin: 100px auto 0; background-color: ' + opt.styles.body.background + '; border: 1px solid rgba(0,0,0,0.75); overflow: hidden; color: ' + opt.styles.body.color + ';');
+                    AddCSSRule('', ".it-alert header", 'padding: 10px 8px; background-color: ' + opt.styles.title.background + '; border-bottom: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.title.color + '; ' + opt.styles.title.extra);
+                    AddCSSRule('', ".it-alert header h3", 'font-size: 14px; margin: 0; color: ' + opt.styles.title.color + '; display: inline-block');
+                    AddCSSRule('', ".it-alert header .close-btn", 'float: right; color: ' + opt.styles.title.color + '; cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0;');
+                    AddCSSRule('', ".it-alert .it-alert-body", 'background-color: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; ' + opt.styles.body.extra);
+                    AddCSSRule('', ".it-alert footer", 'position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0;');
+                    AddCSSRule('', ".it-alert footer button", 'background: ' + opt.styles.body.background + '; color: ' + opt.styles.body.color + '; border: 1px solid ' + opt.styles.body.color + '; padding: 3px 5px;');
+                    AddCSSRule('', ".it-alert footer button:focus", 'background: ' + opt.styles.body.color + '; color: ' + opt.styles.body.background + '; border: 1px solid ' + opt.styles.body.color + ';');
 
                     if(opt.actions.accept.class == ""){
-                        AddCSSRule('', ".Alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
+                        AddCSSRule('', ".it-alert ." + opt.actions.accept.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.accept.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.accept.color + '; ' + opt.styles.actions.accept.extra);
                     }
 
                     if(opt.actions.accept.class == ""){
-                        AddCSSRule('', ".Alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
+                        AddCSSRule('', ".it-alert ." + opt.actions.cancel.class.replace(/\s/g, '.'), 'padding: 5px; border-radius: 0; background-color: ' + opt.styles.actions.cancel.background + '; border: 1px solid rgba(0,0,0,0.1); color: ' + opt.styles.actions.cancel.color + '; ' + opt.styles.actions.cancel.extra);
                     }
                 }
 
-                try{ document.querySelector(".Alert-overlay").remove(); } catch (e){}
+                try{ document.querySelector(".it-alert-overlay").remove(); } catch (e){}
 
                 render();
                 assignEvents();
 
                 if(opt.onshow){ opt.onshow(); }
 
-                if(!opt.actions.cancel.enabled) document.querySelector(".Alert footer button").focus();
+                if(!opt.actions.cancel.enabled) document.querySelector(".it-alert footer button").focus();
             }
 
             var aux = opt.body.match(/^url\((.*)\)$/i);
@@ -835,13 +837,13 @@ function isiToolsCallback(json){
 
                         newTag.setAttribute(akey, avalue);
                     }
-                    newTag.id = newTag.id + "_newNode-it-Autocomplete";
+                    newTag.id = newTag.id + "_newNode-it-autocomplete";
 
                     cfg.target.parentElement.insertBefore(newTag, cfg.target);
 
                     cfg.target.remove();
 
-                    newTag.id = newTag.id.replace("_newNode-it-Autocomplete", "");
+                    newTag.id = newTag.id.replace("_newNode-it-autocomplete", "");
 
                     cfg.target = newTag;
                 }
@@ -861,7 +863,7 @@ function isiToolsCallback(json){
                     autoExpand: !cfg.hasOwnProperty('autoExpand') ? false : cfg.autoExpand,
                     autoSelect: !cfg.hasOwnProperty('autoSelect') ? false : cfg.autoSelect,
                     callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
-                    className: !cfg.hasOwnProperty('className') ? "autocomplete" : cfg.className,
+                    className: !cfg.hasOwnProperty('className') ? "it-autocomplete" : cfg.className,
                     currentFocus: -1,
                     data: cfg.data,
                     delay: !cfg.hasOwnProperty('delay') ? 300 : cfg.delay,
@@ -921,7 +923,7 @@ function isiToolsCallback(json){
                 }
                 it.autocomplete.targets[opt.target.id] = {};
                 it.autocomplete.targets[opt.target.id].opt = opt;
-                opt.target.dataset.helper = "Autocomplete";
+                opt.target.dataset.helper = "autocomplete";
 
                 // Assign aria controls
                 opt.target.setAttribute("role", "combobox");
@@ -1093,10 +1095,23 @@ function isiToolsCallback(json){
                     });
                 }
 
+                if(opt.helper){
+                    var icon = document.createElement("i");
+                    icon.classList.add("it-autocomplete-helper-icon");
+                    icon.onclick = function(){
+                        it.autocomplete.showHelper(this);
+                    }
+                    icon.innerHTML = '?';
+
+                    opt.target.parentNode.insertBefore(icon, opt.target.nextSibling);
+                }
+
                 if(!opt.stylesheet){
                     it.addCSSRule('', '.' + opt.className + '-items', 'position: fixed; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; ');
-                    it.addCSSRule('', '.' + opt.className + '-items div.value', 'line-height: normal; padding: 4px 10px; cursor: pointer; background-color: #fff; border-bottom: 0px solid #d4d4d4; text-transform: capitalize;');
-                    it.addCSSRule('', '.' + opt.className + '-items div.value:hover, .' + opt.className + '-active', 'background-color: #006699 !important; color: #ffffff;');
+                    it.addCSSRule('', '.' + opt.className + '-items div.value', 'color: #000; line-height: normal; padding: 4px 10px; cursor: pointer; background-color: #fff; border-bottom: 0px solid #d4d4d4; text-transform: capitalize;');
+                    it.addCSSRule('', '.' + opt.className + '-items div.value b', 'color: #000;');
+                    
+                    it.addCSSRule('', '.' + opt.className + '-items div.value:hover,.' + opt.className + '-items div.value:hover b, .' + opt.className + '-active, .' + opt.className + '-active b', 'background-color: #006699 !important; color: #ffffff !important;');
                     it.addCSSRule('', '.' + opt.className + '-items .header, .' + opt.className + '-items .error', 'position: initial; background: #fff; border-bottom: 1px solid #bfbfbf; box-shadow: none; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none;');
                     it.addCSSRule('', '.' + opt.className + '-items .header span, .' + opt.className + '-items .value span', 'width: 100%; display: inline-block; vertical-align: top;');
                     it.addCSSRule('', '.' + opt.className + '-items .header span, .' + opt.className + '-items .error span', 'display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase;');
@@ -1114,26 +1129,16 @@ function isiToolsCallback(json){
                     // Add helper button
                     if(opt.helper){
                         it.addCSSRule('', "input[data-helper]", "padding-right: 28px;");
-                        it.addCSSRule('', ".Autocomplete-helper-icon", "cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
-                        it.addCSSRule('', ".Autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 10vw; display: block; width: 80vw; max-height: 550px; overflow: auto; z-index: 99;");
-                        it.addCSSRule('', ".Autocomplete-helper::after", 'content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;');
-                        it.addCSSRule('', ".Autocomplete-helper ul", "background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;");
-                        it.addCSSRule('', ".Autocomplete-helper ul b", "font-weight: bold;");
-                        it.addCSSRule('', ".Autocomplete-helper code", "padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px;");
-                        it.addCSSRule('', ".Autocomplete-helper button", "cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px;");
-                        it.addCSSRule('', ".Autocomplete-helper h3", "background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px;");
-                        it.addCSSRule('', ".Autocomplete-helper .hidden", "display: none !important");
-                        it.addCSSRule('', "@media all and (max-width: 640px)", ".Autocomplete-helper{ width: 100%; left: 0; top: 0;}");
-
-                        var icon = document.createElement("i");
-                        icon.classList.add("Autocomplete-helper-icon");
-                        icon.onclick = function(){
-                            //document.querySelector('.Autocomplete-helper').classList.toggle('hidden');
-                            it.autocomplete.showHelper(this);
-                        }
-                        icon.innerHTML = '?';
-
-                        opt.target.parentNode.insertBefore(icon, opt.target.nextSibling);
+                        it.addCSSRule('', ".it-autocomplete-helper-icon", "cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");
+                        it.addCSSRule('', ".it-autocomplete-helper", "background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 10vw; display: block; width: 80vw; max-height: 550px; overflow: auto; z-index: 99;");
+                        it.addCSSRule('', ".it-autocomplete-helper::after", 'content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;');
+                        it.addCSSRule('', ".it-autocomplete-helper ul", "background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;");
+                        it.addCSSRule('', ".it-autocomplete-helper ul b", "font-weight: bold;");
+                        it.addCSSRule('', ".it-autocomplete-helper code", "padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px;");
+                        it.addCSSRule('', ".it-autocomplete-helper button", "cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px;");
+                        it.addCSSRule('', ".it-autocomplete-helper h3", "background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px;");
+                        it.addCSSRule('', ".it-autocomplete-helper .hidden", "display: none !important");
+                        it.addCSSRule('', "@media all and (max-width: 640px)", ".it-autocomplete-helper{ width: 100%; left: 0; top: 0;}");
                     }
                 }
 
@@ -1501,7 +1506,7 @@ function isiToolsCallback(json){
                 var id = it.autocomplete._getID(val);
                 var opt = it.autocomplete.targets[id].opt;
                 var trg = it(val).parents("." + opt.className + "-items").previousElementSibling;
-                if(trg.classList.contains("Autocomplete-helper-icon")) trg = trg.previousElementSibling;
+                if(trg.classList.contains("it-autocomplete-helper-icon")) trg = trg.previousElementSibling;
 
                 if(trg.tagName != "INPUT") trg = trg.previousElementSibling;
 
@@ -1589,11 +1594,11 @@ function isiToolsCallback(json){
 
             // Creamos la capa de ayuda
             var div = document.createElement("div");
-            div.classList.add("Autocomplete-helper");
+            div.classList.add("it-autocomplete-helper");
 
             var ul = document.createElement("ul");
             var li1 = document.createElement("li");
-            li1.innerHTML = '<button onclick="this.parentElement.parentElement.parentElement.classList.toggle(\'hidden\')">Cerrar</button>';
+            li1.innerHTML = '<button onclick="this.parentElement.parentElement.parentElement.remove()">Cerrar</button>';
             ul.append(li1);
 
             var li2 = document.createElement("li");
@@ -1627,7 +1632,7 @@ function isiToolsCallback(json){
         }
 
         it.autocomplete.hideHelper = function(el){
-            document.querySelector(".Autocomplete-helper").remove();
+            document.querySelector(".it-autocomplete-helper").remove();
         }
     }
 
@@ -2026,7 +2031,7 @@ function isiToolsCallback(json){
 
                 // Create element container to counter
                 var div = document.createElement("div");
-                div.classList.add("counter");
+                div.classList.add("it-counter");
 
                 if(cfg.showvalue){
                     if(cfg.from){
@@ -2073,10 +2078,10 @@ function isiToolsCallback(json){
             }
 
             if(!cfg.stylesheet){
-                it.addCSSRule('', '.counter', 'position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; border: 1px solid rgba(255,255,255, 0.8); box-shadow: 0 0 0 2px rgb(0 0 0) inset;');
-                it.addCSSRule('', '.counter::before', 'content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #000; height: 100%; padding: 0; line-height: 24px; font-size: 0.9rem; z-index: 1;');
-                it.addCSSRule('', '.counter::after', 'content: ""; background: rgba(0, 0 , 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0;');
-                it.addCSSRule('', '.counter span.progress', 'width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: rgba(0,64,128, 1); position: relative; top: auto; right: auto; z-index: 0;');
+                it.addCSSRule('', '.it-counter', 'position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; border: 1px solid rgba(255,255,255, 0.8); box-shadow: 0 0 0 2px rgb(0 0 0) inset;');
+                it.addCSSRule('', '.it-counter::before', 'content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #000; height: 100%; padding: 0; line-height: 24px; font-size: 0.9rem; z-index: 1;');
+                it.addCSSRule('', '.it-counter::after', 'content: ""; background: rgba(0, 0 , 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0;');
+                it.addCSSRule('', '.it-counter span.progress', 'width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: rgba(0,64,128, 1); position: relative; top: auto; right: auto; z-index: 0;');
             }
 
             this.so = "counter";
@@ -2249,7 +2254,7 @@ function isiToolsCallback(json){
                 var id = target.id;
 
                 // If the id attrtibute is not set, we assign it by default
-                id = id == "" ? ('DatePicker_' + idx) : id;
+                id = id == "" ? ('it-datepicker_' + idx) : id;
 
                 if(cfg == undefined) cfg = it.datepicker.config;
 
@@ -2285,7 +2290,7 @@ function isiToolsCallback(json){
                         cfg.custom[id][k] = cfg[k];
                     }
 
-                    if(!cfg.hasOwnProperty("background")) cfg.custom[id].background = '#0066a8';
+                    if(!cfg.hasOwnProperty("background")) cfg.custom[id].background = '#24549c';
                     if(!cfg.hasOwnProperty("color")) cfg.custom[id].foreground = '#fff';
                     if(!cfg.hasOwnProperty("stylesheet")) cfg.custom[id].stylesheet = false;
 
@@ -2305,7 +2310,7 @@ function isiToolsCallback(json){
 
                     // Add and configure trigger button
                     var trigger = document.createElement('button');
-                    trigger.id = 'DatePicker_trigger_' + idx;
+                    trigger.id = 'it-datepicker-trigger-' + idx;
                     trigger.type = "button";
                     trigger.setAttribute("aria-lbel", cfg.textTrigger)
                     if(cfg.icon.indexOf("<") != -1){
@@ -2422,7 +2427,7 @@ function isiToolsCallback(json){
 
                     // Define picker object
                     var cal = document.createElement("section");
-                    cal.classList.add("datepicker-date");
+                    cal.classList.add("it-datepicker-date");
                     cal.id = "datepicker-layer-" + target.id
                     cal.setAttribute("data-id", target.id);
                     cal.setAttribute("tabindex", "0");
@@ -2776,7 +2781,7 @@ function isiToolsCallback(json){
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons", 'position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0;');
             it.addCSSRule('', "#datepicker-layer-" + id + " .datepicker-buttons button", 'cursor: pointer; color: ' + fg + '; background: ' + bg + '; border: 1px solid ' + bg + '; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px;');
             it.addCSSRule('', ".has-datepicker input", 'width: 6.8em !important; float: left;');
-            it.addCSSRule('', ".has-datepicker input + button", 'cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 24px;');
+            it.addCSSRule('', ".has-datepicker input + button", 'cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 28px; min-width: 28px;');
         };
 
         it.datepicker.config = {
@@ -3472,12 +3477,11 @@ function isiToolsCallback(json){
         this.Flexbox = it.flexbox = function(cfg){
             if(!cfg) cfg = {};
 
-            if(cfg.hasOwnProperty('gap')) it.flexbox.config.gap = cfg.gap;
-            if(cfg.hasOwnProperty('padding')) it.flexbox.config.padding = cfg.padding;
-            if(cfg.hasOwnProperty('resolutions')) it.flexbox.config.resolutions = cfg.resolutions;
-            if(!cfg.hasOwnProperty('stylesheet')) it.flexbox.config.stylesheet = false;
-
-            cfg = it.flexbox.config;
+            cfg.factor = !cfg.hasOwnProperty('factor') ? it.flexbox.config.factor : cfg.factor;
+            cfg.gap = !cfg.hasOwnProperty('gap') ? it.flexbox.config.gap : cfg.gap;
+            cfg.padding = !cfg.hasOwnProperty('padding') ? it.flexbox.config.padding : cfg.padding;
+            cfg.resolutions = !cfg.hasOwnProperty('resolutions') ? it.flexbox.config.resolutions : cfg.resolutions;
+            cfg.stylesheet = !cfg.hasOwnProperty('stylesheet') ? it.flexbox.config.stylesheet : cfg.stylesheet;
 
             // Añadimos las clases CSS genéricas
             if(!cfg.stylesheet){
@@ -3496,7 +3500,7 @@ function isiToolsCallback(json){
             var items = document.querySelectorAll('.flexbox > * > *');
             Array.prototype.slice.call(items).forEach(function(target){
                 Array.prototype.slice.call(target.classList).forEach(function(cls){
-                    var val = cls.replace(/[^\.0-9]/ig, '').trim() * cfg.factor;
+                    var val = Math.round(parseFloat(cls.replace(/[^\.0-9]/ig, '').trim()) * cfg.factor * 10000) / 10000;
                     var clss = cls.replace(/\./g, '\\.').trim();
 
                     // Recorremos las diferentes resoluciones para 
@@ -3510,15 +3514,15 @@ function isiToolsCallback(json){
                         }
 
                         // Si la clase CSS es específica de una resolución la añadimos a la definición de su media-query
-                        if(cls.indexOf(name) != -1 && cs.media.indexOf('.flexbox .' + clss) == -1){
+                        if(cls.indexOf(name) != -1 && cs.media.indexOf('.flexbox .row > .' + clss) == -1){
                             if(cls.indexOf('offset') != -1){
-                                cs.media += '.flexbox .' + clss + '{ margin-left: calc(' + val + '% + var(--gap)) }';
+                                cs.media += '.flexbox .row > .' + clss + '{ margin-left: calc(' + val + '% + var(--gap)) }';
 
                             } else if(cls.indexOf('order') != -1){
-                                cs.media += '.flexbox .' + clss + '{order:' + val + ';}';
+                                cs.media += '.flexbox .row > .' + clss + '{order:' + val + ';}';
 
                             } else {
-                                cs.media += '.flexbox .' + clss + '{' + ('flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));') + '}';
+                                cs.media += '.flexbox .row > .' + clss + '{' + ('flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));') + '}';
                             }
 
                             // Si la clase CSS NO es específica de una resolución, la añadimos directamente
@@ -3527,15 +3531,15 @@ function isiToolsCallback(json){
 
                     if(cls.indexOf('col') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo COL
-                        it.addCSSRule('', '.flexbox .' + clss, 'flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));');
+                        it.addCSSRule('', '.flexbox .row > .' + clss, 'flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));');
 
                     } else if(names.indexOf(cls.substr(0, 2)) == -1 && cls.indexOf('offset') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo OFFSET
-                        it.addCSSRule('', '.flexbox .' + clss, 'margin-left: calc(' + val + '% + var(--gap))');
+                        it.addCSSRule('', '.flexbox .row > .' + clss, 'margin-left: calc(' + val + '% + var(--gap))');
 
                     } else if(names.indexOf(cls.substr(0, 2)) == -1 && cls.indexOf('order') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo ORDER
-                        it.addCSSRule('', '.flexbox .' + clss, 'order:' + val);
+                        it.addCSSRule('', '.flexbox .row > .' + clss, 'order:' + val);
 
                     }
                 });
@@ -5146,7 +5150,7 @@ function isiToolsCallback(json){
             it.addCSSRule('', "#slider-" + cfg.id, 'display: block; width: 100%;');
 
             if(type == "switch"){
-                it.addCSSRule('', "#slider-" + cfg.id, "background: linear-gradient(to bottom, rgba(245,245,245,1) 0%,rgba(0,0,0,0) 100%); border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0;");
+                it.addCSSRule('', "#slider-" + cfg.id, "background: linear-gradient(to bottom, rgba(0,0,0,0.06) 0%,rgba(0,0,0,0) 100%); border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0;");
                 it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: 100% !important; z-index: 1; ");
                 it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.50) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
                 it.addCSSRule('', "#slider-" + cfg.id + " label::before, it-slider[type=switch] label::after", "font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
@@ -5179,7 +5183,7 @@ function isiToolsCallback(json){
                 it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]:focus::-ms-fill-lower", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
                 it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]:focus::-ms-fill-upper", 'background: ' + this.config.colors.background + '; border: 0 none !important;');
                 it.addCSSRule('', "#slider-" + cfg.id + " input[type=range]::-ms-tooltip", 'display: none;');
-                it.addCSSRule('', "@media all and (-ms-high-contrast:none)", "#slider-" + cfg.id + '{ position:relative; top: 6px; } #slider' + cfg.id + ' input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } #slider' + cfg.id + ' input[type=range]:focus{ background: rgba(0,0,0,0) !important; }');
+                it.addCSSRule('', "@media all and (-ms-high-contrast:none)", "#slider-" + cfg.id + '{ position:relative; top: 6px; } #slider-' + cfg.id + ' input[type=range]{ margin: 0 0 10px 0; padding: 0; height: 24px; } #slider-' + cfg.id + ' input[type=range]:focus{ background: rgba(0,0,0,0) !important; }');
             }
         };
         it.slider.autoDraw = function(){
@@ -5245,11 +5249,11 @@ function isiToolsCallback(json){
                 // Creamos el contenedor para la password
                 var div = document.createElement("div");
                 div.id = 'it-password-' + id;
-                div.classList.add("password-layer");
+                div.classList.add("it-password-layer");
 
                 var pwdmeter = document.createElement("span");
                 pwdmeter.id = 'it-password-' + id + '-meter';
-                pwdmeter.classList.add("password-meters", !cfg.autodraw ? 'not-draw' : 'draw');
+                pwdmeter.classList.add("it-password-meters", !cfg.autodraw ? 'not-draw' : 'draw');
 
                 var pwdmsg = document.createElement("span");
                 pwdmsg.id = 'it-password-' + id + '-message';
@@ -5284,7 +5288,7 @@ function isiToolsCallback(json){
                 if(cfg.confirmby){
                     var divC = document.createElement("div");
                     divC.id = 'it-password-' + cfg.confirmby;
-                    divC.classList.add("password-layer");
+                    divC.classList.add("it-password-layer");
 
                     var pwdmsgC = document.createElement("span");
                     pwdmsgC.id = 'it-password-' + cfg.confirmby + '-message';
@@ -5525,14 +5529,16 @@ function isiToolsCallback(json){
             } else {
                 msgPwd.innerHTML = '';
             }
+            
+            if(msgRep != undefined){
+                if(cfg.errorType == "confirm_empty"){
+                    msgRep.innerHTML = cfg.messages.confirm_empty;
 
-            if(cfg.errorType == "confirm_empty"){
-                msgRep.innerHTML = cfg.messages.confirm_empty;
-
-            } else if(cfg.errorType == "not_match"){
-                msgRep.innerHTML = cfg.messages.not_match;
-            } else {
-                msgRep.innerHTML = '';
+                } else if(cfg.errorType == "not_match"){
+                    msgRep.innerHTML = cfg.messages.not_match;
+                } else {
+                    msgRep.innerHTML = '';
+                }
             }
 
             return false;
@@ -5665,7 +5671,7 @@ function isiToolsCallback(json){
 
                 // Add layer will contents button and list
                 var div = document.createElement("div");
-                div.setAttribute("class", "select-picker");
+                div.setAttribute("class", "it-select-picker");
                 div.setAttribute("role", "combobox");
                 div.setAttribute("aria-autocomplete", "both");
                 div.setAttribute("aria-expanded", "false");
@@ -5720,15 +5726,15 @@ function isiToolsCallback(json){
                         var item = items[i];
 
                         if(item.innerHTML == btn.innerText){
-                            item.classList.add("select-picker-active");
+                            item.classList.add("it-select-picker-active");
                             it.selectpicker._curIndex[t.previousElementSibling.id] = i;
                         } else {
-                            item.classList.remove("select-picker-active");
+                            item.classList.remove("it-select-picker-active");
                         }
                     }
 
                     // Allocate scroll
-                    var active = t.querySelector('.select-picker-active');
+                    var active = t.querySelector('.it-select-picker-active');
                     var trg = t.querySelector("ul");
                     if(active) trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
                 });
@@ -5773,7 +5779,7 @@ function isiToolsCallback(json){
                     }
 
                     function setActive(x, dir){
-                        if(x >= 0 && x <= list.length - 1) list[x].classList.remove("select-picker-active");
+                        if(x >= 0 && x <= list.length - 1) list[x].classList.remove("it-select-picker-active");
 
                         function getNext(){
                             if(dir == '+') x++;
@@ -5787,7 +5793,7 @@ function isiToolsCallback(json){
                         x = getNext();
                         while (list[x].style.display == "none"){ x = getNext(); }
 
-                        list[x].classList.add("select-picker-active");
+                        list[x].classList.add("it-select-picker-active");
                         return x;
                     }
 
@@ -5796,10 +5802,10 @@ function isiToolsCallback(json){
                             trg = trg.parentElement.nextElementSibling;
 
                             // Move scroll to current position
-                            var active = trg.querySelector('.select-picker-active');
+                            var active = trg.querySelector('.it-select-picker-active');
                             if(dir == "down"){
                                 trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
-                            } else if(active.offsetTop < trg.scrollTop || document.querySelector('.select-picker-active:last-child').offsetTop == active.offsetTop){
+                            } else if(active.offsetTop < trg.scrollTop || document.querySelector('.it-select-picker-active:last-child').offsetTop == active.offsetTop){
                                 trg.scrollTop = active.offsetTop - trg.offsetHeight + trg.offsetHeight + 2;
                             }
                         } catch (e){}
@@ -5881,7 +5887,7 @@ function isiToolsCallback(json){
                         li.setAttribute("class", "selected");
                         btn.innerText = trg.options[trg.selectedIndex].innerText;
 
-                        div.setAttribute("aria-activedescendant", li.id)
+                        div.setAttribute("aria-activedescendant", item.value)
                     }
 
                     lst.appendChild(li);
@@ -5915,20 +5921,22 @@ function isiToolsCallback(json){
 
             // Add default Styles
             if(!cfg.stylesheet){
-                AddCSSRule('', ".select-picker", 'position: relative; width: 100%;');
-                AddCSSRule('', ".select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 30px; width: 100%; z-index: 99999;');
-                AddCSSRule('', ".select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
-                AddCSSRule('', ".select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 10px;');
-                AddCSSRule('', ".select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px;');
-                AddCSSRule('', ".select-picker button:hover", 'border-color: #adadad;');
-                AddCSSRule('', ".select-picker.open button", ' background: #000; color: #ffffff;');
-                AddCSSRule('', ".select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); padding: 4px 5px; line-height: normal; margin: 0;');
-                AddCSSRule('', ".select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
-                AddCSSRule('', ".select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%;');
-                AddCSSRule('', ".select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; height: auto; min-height: 26px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
-                AddCSSRule('', ".select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 5px; fill: #aaa; width: 15px');
-                AddCSSRule('', ".select-picker-active", 'background: #000; color: #fff;');
-                AddCSSRule('', ".select-picker > button:focus, select:focus + .select-picker > button", 'border: 1px solid red;');
+                AddCSSRule('', ".it-select-picker", 'position: relative; width: 100%;');
+                AddCSSRule('', ".it-select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 30px; width: 100%; z-index: 99999;');
+                AddCSSRule('', ".it-select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
+                AddCSSRule('', ".it-select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 10px;');
+                AddCSSRule('', ".it-select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px;');
+                AddCSSRule('', ".it-select-picker button:hover", 'border-color: #adadad;');
+                AddCSSRule('', ".it-select-picker.open button", ' background: #000; color: #ffffff;');
+                AddCSSRule('', ".it-select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); color: rgba(0,0,0,1); padding: 4px 5px; line-height: normal; margin: 0;');
+                AddCSSRule('', ".it-select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
+                AddCSSRule('', ".it-select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%;');
+                AddCSSRule('', ".it-select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; height: auto; min-height: 26px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
+                AddCSSRule('', ".it-select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 5px; fill: #aaa; width: 15px');
+                AddCSSRule('', ".it-select-picker-active", 'background: #000; color: #fff !important;');
+                AddCSSRule('', ".it-select-picker > button:focus, select:focus + .it-select-picker > button", 'border: 1px solid red;');
+                AddCSSRule('', '.it-select-picker input[type="search"]::-webkit-search-cancel-button', '-webkit-appearance: none; appearance: none;');
+                AddCSSRule('', '.it-select-picker input[type=search]::-ms-clear, .it-select-picker input[type=search]::-ms-reveal', 'display: none; width: 0; height: 0;');
             }
 
             return div
@@ -5960,24 +5968,24 @@ function isiToolsCallback(json){
             sp.classList.remove("open");
             sp.children[1].style.display = "none";
             sp.children[0].setAttribute("aria-expanded", "false");
-            sp.setAttribute("aria-activedescendant", sp.querySelector('li:nth-child(' + e[i].innerText + ')').id);
+            sp.setAttribute("aria-activedescendant", e[i].value);
 
             e.dispatchEvent(new Event('change'));
             e.focus();
         };
 
         it.selectpicker._windowListener = function(e){
-            if(document.querySelectorAll("div.select-picker.open").length != 0){
+            if(document.querySelectorAll("div.it-select-picker.open").length != 0){
                 var p = e.target;
 
                 try{
-                    while (p != document && !p.classList.contains('select-picker')){
+                    while (p != document && !p.classList.contains('it-select-picker')){
                         p = p.parentNode;
                     }
                 } catch (e){ p == e.target; }
 
                 if(p == document){
-                    var items = document.querySelectorAll("div.select-picker.open");
+                    var items = document.querySelectorAll("div.it-select-picker.open");
                     for(var i = 0; i < items.length; i++){
                         it.selectpicker.close(items[i])
                     }
@@ -6411,7 +6419,7 @@ function isiToolsCallback(json){
             }
 
             function toStr(v){
-                return v.toLowerCase();
+                return "'" + v.toLowerCase() + "'";
             }
 
             // Recuperamos el valor y lo convertimos a un valor ordenable
@@ -6689,7 +6697,7 @@ function isiToolsCallback(json){
 
             if(!cfg.stylesheet){
                 AddCSSRule('', '.it-tab-links', 'overflow: hidden; z-index: 1; display: block; margin: 12px 0 0 0; padding: 0; position: relative; top: 1px; list-style: none;');
-                AddCSSRule('', '.it-tab-links [role="tab"]', 'background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0;');
+                AddCSSRule('', '.it-tab-links [role="tab"]', 'background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0; position: relative; top: auto; left: auto; right: auto; bottom: auto; display: block; height: auto;');
                 AddCSSRule('', '.it-tab-links [role="tab"] img', 'width: auto; height: 48px; object-fit: cover; object-position: center center; display: block; max-width: none; max-height: none; image-rendering: -webkit-optimize-contrast; pointer-events: none; margin: 0 auto; opacity: 1;');
                 AddCSSRule('', '.it-tab-links [role="tab"]:not(.active) img', 'filter: grayscale(1); opacity: 0.5;');
                 AddCSSRule('', '.it-tab-links [role="tab"]:hover', 'background-color: #484848;');
@@ -6859,9 +6867,9 @@ function isiToolsCallback(json){
 
             // Creamos el JSON con la configuración por defecto
             var opt = {};
-            if(it.targets[0].classList.contains("treeview")){
+            if(it.targets[0].classList.contains("it-treeview")){
                 it.targets[0].innerHTML = "";
-                it.targets[0].classList.remove("treeview");
+                it.targets[0].classList.remove("it-treeview");
                 opt = it[it.targets[0].id].options;
             } else {
                 opt = {
@@ -6892,7 +6900,7 @@ function isiToolsCallback(json){
 
             function render(items, target, level){
                 if(level == 0){
-                    target.classList.add("treeview");
+                    target.classList.add("it-treeview");
                     target.setAttribute("role", "tree")
 
                     if(opt.searchable){
@@ -7042,7 +7050,7 @@ function isiToolsCallback(json){
                     for(var i = 0; i < items.length; i++){
                         var item = items[i];
 
-                        item.setAttribute("for", item.previousElementSibling.id);
+                        try{ item.setAttribute("for", item.previousElementSibling.id); } catch (e) {}
                     }
                 }
 
@@ -7068,7 +7076,7 @@ function isiToolsCallback(json){
                             if(str.length > 0 && item.querySelector("label").innerHTML.toLowerCase().indexOf(str.toLowerCase()) != -1){
 
                                 var aux = item.parentElement;
-                                while (!aux.classList.contains("treeview")){
+                                while (!aux.classList.contains("it-treeview")){
                                     if(item.tagName.toLowerCase() == "li"){
                                         aux.style.display = "";
                                         if(aux.classList.contains("collapsed")){
@@ -7104,19 +7112,20 @@ function isiToolsCallback(json){
             }
 
             function _addCSSRules(){
-                AddCSSRule('', "ul.treeview", "background: " + opt.styles.bgTree + "; width: 100%; border: 1px solid " + opt.styles.borderTree + "; padding: 5px;");
-                AddCSSRule('', "ul.treeview, ul.treeview ul", "list-style: none;", 0);
-                AddCSSRule('', "ul.treeview li", "color: " + opt.styles.textColor + ";");
-                AddCSSRule('', "ul.treeview li i", "cursor: pointer;");
-                AddCSSRule('', "ul.treeview li ul", "transition: 0.3s; max-height: 10000px; overflow: hidden;");
-                AddCSSRule('', "ul.treeview li.collapsed ul", "max-height: 0;");
-                AddCSSRule('', "ul.treeview li a", "color: " + opt.styles.linkColor + "; background: " + opt.styles.linkBg + ";");
-                AddCSSRule('', "ul.treeview li label", "padding: 2px 5px; display: inline-block;");
-                AddCSSRule('', "ul.treeview li i.icon", "margin-right: 8px;");
-                AddCSSRule('', "ul.treeview li.search-box input", "width: 100%; background: " + opt.styles.searchBg + "; color: " + opt.styles.searchColor + "; border: 1px solid rgba(0,0,0,0.1)");
-                AddCSSRule('', "ul.treeview li .active", "background: " + opt.styles.activeBg + "; color: " + opt.styles.activeColor + ";");
-                AddCSSRule('', 'ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:not(.switch-input):not(.clean-switch-input):focus::before', 'border-color: #000;');
-                AddCSSRule('', 'ul.treeview input[type="checkbox"]:focus + label', 'background: #000;color: #fff;');
+                AddCSSRule('', "ul.it-treeview", "background: " + opt.styles.bgTree + "; width: 100%; border: 1px solid " + opt.styles.borderTree + "; padding: 5px;");
+                AddCSSRule('', "ul.it-treeview, ul.it-treeview ul", "list-style: none;", 0);
+                AddCSSRule('', "ul.it-treeview li", "color: " + opt.styles.textColor + ";");
+                AddCSSRule('', "ul.it-treeview li i", "cursor: pointer;");
+                AddCSSRule('', "ul.it-treeview li ul", "transition: 0.3s; max-height: 10000px; overflow: hidden;");
+                AddCSSRule('', "ul.it-treeview li ul li", "padding-left: 15px;");
+                AddCSSRule('', "ul.it-treeview li.collapsed ul", "max-height: 0;");
+                AddCSSRule('', "ul.it-treeview li a", "color: " + opt.styles.linkColor + "; background: " + opt.styles.linkBg + ";");
+                AddCSSRule('', "ul.it-treeview li label", "padding: 2px 5px; display: inline-block;");
+                AddCSSRule('', "ul.it-treeview li i.icon", "margin-right: 8px;");
+                AddCSSRule('', "ul.it-treeview li.search-box input", "width: 100%; background: " + opt.styles.searchBg + "; color: " + opt.styles.searchColor + "; border: 1px solid rgba(0,0,0,0.1)");
+                AddCSSRule('', "ul.it-treeview li .active", "background: " + opt.styles.activeBg + "; color: " + opt.styles.activeColor + ";");
+                AddCSSRule('', 'ul.it-treeview input[type="checkbox"]:focus, ul.it-treeview input[type="checkbox"]:focus::before', 'border-color: #000;');
+                AddCSSRule('', 'ul.it-treeview input[type="checkbox"]:focus + label', 'background: #000;color: #fff;');
             }
 
             function init(){
@@ -7216,13 +7225,13 @@ function isiToolsCallback(json){
 
                         // If display is enable, the message is added and displayed
                         var fa = it.validator._display(cfg) ? '	Validator.addMessage(e.target);\n' : '';
-                        var fr = it.validator._display(cfg) ? '	if(e.target.nextElementSibling != null && e.target.nextElementSibling.classList.contains("validator-error-msg")) e.target.nextElementSibling.remove();\n' : '';
+                        var fr = it.validator._display(cfg) ? '	if(e.target.nextElementSibling != null && e.target.nextElementSibling.classList.contains("it-validator-error-msg")) e.target.nextElementSibling.remove();\n' : '';
 
                         auxv = '	e.target.setCustomValidity("");\n';
-                        auxv += '	e.target.classList.remove("validator-error");\n';
+                        auxv += '	e.target.classList.remove("it-validator-error");\n';
                         auxv += fr;
                         auxi = '	e.target.setCustomValidity("' + cfg.message + '");\n';
-                        auxi += '	e.target.classList.add("validator-error")\n';
+                        auxi += '	e.target.classList.add("it-validator-error")\n';
                         auxi += fa;
 
                         it.validator._newValidation('invalid', auxi);
@@ -7232,7 +7241,8 @@ function isiToolsCallback(json){
             });
 
             if(!cfg.stylesheet){
-                AddCSSRule('', ".validator-error-msg", 'background: rgba(255,0,0,0.1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(255,0,0,0.2);');
+                AddCSSRule('', '.validator-error', 'background: rgba(255, 0, 0, 0.2); box-shadow: 0 0 0 2px #f00 inset');
+                AddCSSRule('', '.it-validator-error-msg', 'background: rgba(255, 0, 0, 0.2); color: rgba(255, 255, 255, 1); width: 100%; display: block; padding: 5px; border: 1px solid rgba(0, 0, 0, 0.2);');
             }
         }
 
@@ -7240,11 +7250,11 @@ function isiToolsCallback(json){
 
         it.validator.addMessage = function(trg){
             var ns = trg.nextElementSibling;
-            var exists = !ns ? false : ns.classList.contains("validator-error-msg");
+            var exists = !ns ? false : ns.classList.contains("it-validator-error-msg");
 
             if(!exists){
                 var aux = document.createElement("span");
-                aux.setAttribute("class", "validator-error-msg");
+                aux.setAttribute("class", "it-validator-error-msg");
                 aux.innerHTML = trg.validationMessage;
 
                 trg.parentNode.insertBefore(aux, trg.nextSibling);
@@ -7257,8 +7267,8 @@ function isiToolsCallback(json){
             // Not soported IE9- and Safari
             if(msg == null || msg == ""){ return this._showErrorMessage('Mensaje no válido.\n\nPor favor, consulta Helper(\'validator\');'); }
 
-            this.opt.target.setAttribute("oninvalid", "this.setCustomValidity('" + this.opt.oninvalid + "'); this.classList.add('validator-error'); Validator.addMessage(this);");
-            this.opt.target.setAttribute("oninput", "this.setCustomValidity(''); this.classList.remove('validator-error'); try{ this.nextElementSibling.remove(); } catch(e){}");
+            this.opt.target.setAttribute("oninvalid", "this.setCustomValidity('" + this.opt.oninvalid + "'); this.classList.add('it-validator-error'); Validator.addMessage(this);");
+            this.opt.target.setAttribute("oninput", "this.setCustomValidity(''); this.classList.remove('it-validator-error'); try{ this.nextElementSibling.remove(); } catch(e){}");
         }
 
         it.validator._assignOptions = function(cfg){
@@ -7315,13 +7325,13 @@ function isiToolsCallback(json){
                 aux += 'for(var i = 0; i < el.files.length; i++){\n';
                 aux += '	if(el.files[i].size > ' + cfg.maxsize + ' * 1024){\n';
                 aux += '		el.setCustomValidity(el.files[i].name + ": ' + (cfg.hasOwnProperty("messages") ? cfg.messages.maxsize : cfg.message) + '");\n';
-                aux += '		el.classList.add("validator-error");\n';
+                aux += '		el.classList.add("it-validator-error");\n';
                 aux += '		e.value = ""\n';
                 aux += fa;
                 aux += '		return false;\n';
                 aux += '	} else {\n';
                 aux += '		e.target.setCustomValidity("");\n';
-                aux += '		e.target.classList.remove("validator-error");\n';
+                aux += '		e.target.classList.remove("it-validator-error");\n';
                 aux += fr;
                 aux += '		return false;\n';
                 aux += '	}\n';
