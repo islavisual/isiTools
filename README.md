@@ -4,6 +4,20 @@ IsiTools 2 es un conjunto de herramientas para ayudar a los desarrolladores dura
 
 ![](https://raw.githubusercontent.com/islavisual/isiTools/master/images/release.svg)
 
+## Autor
+Hola, mi nombre es Pablo E. Fernández Casado, el autor y mantenedor de este framework. Soy Full Stack Analyst Developer, además de, especialista en Usabilidad Web y Accesibilidad Web. He escrito varios libros sobre Diseño, Usabilidad y Accesibilidad Web, que puedes encontrar en la web de [RA-MA](https://www.ra-ma.es/autor/pablo-enrique-fernandez-casado/) y [Amazon](https://www.amazon.es/s?k=PABLO+E.+FERN%C3%81NDEZ+CASADO&i=stripbooks&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&ref=nb_sb_noss), entre otras webs.
+
+## Licencia
+[La licencia MIT (MIT).](https://choosealicense.com/licenses/mit/)
+
+Copyright (c) Pablo E. Fernández Casado
+
+Por la presente se otorga permiso, sin cargo, a cualquier persona que obtenga una copia de este software y los archivos de documentación asociados (el "Software"), para utilizar el Software sin restricciones, incluidos, entre otros, los derechos de uso, copia, modificación, fusión , publicar, distribuir, sublicenciar y / o vender copias del Software, y permitir que las personas a las que se les proporcione el Software lo hagan, sujeto a las siguientes condiciones:
+
+El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o partes sustanciales del Software.
+
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO, PERO NO LIMITADO A, LAS GARANTÍAS DE COMERCIABILIDAD, APTITUD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O TITULARES DE LOS DERECHOS DE AUTOR SERÁN RESPONSABLES DE CUALQUIER RECLAMO, DAÑOS U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O DE OTRO MODO, QUE SURJA DE, FUERA DE O EN RELACIÓN CON EL SOFTWARE O EL USO U OTRAS NEGOCIACIONES EN EL SOFTWARE.
+
 Los componentes que ofrece son:
 ## Globales
 * **First**: Devuelve el primer elemento de los elementos recuperados por la función constructora
@@ -41,6 +55,7 @@ Los componentes que ofrece son:
 * **Selectpicker**: Funcionalidad para gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.
 * **SendForm**: Funcionalidad para crear y enviar formularios en tiempo real a través de Ajax en modo POST.
 * **Slider**: Funcionalidad para crear sliders con múltiples valores. Si se selecciona el tipo "switch", el componente se comportará como un interruptor. Si se selecciona el tipo "range", el componente se comportará como un selector de múltiples valores "range" de HTML5.
+* **Slideshow**: Funcionalidad para presentar un conjunto de imágenes, comunmente denominadas diapositivas que se muestran secuencialmente una detrás de otra. Sólo permite visualizar una única diapositiva a la vez, sin embargo, ofrece la posibilidad de cambiar de diapositiva mediante unos botones que llevan a la anterior, la siguiente o a un número concreto, y la reproducción automática.
 * **Sorter**: Funcionalidad para ordenar tablas por múltiples columnas.
 * **Tabs**: Funcionalidad totalmente usable y accesiblepara mostrar información agrupada por secciones o pestañas.
 * **Treeview**: Funcionalidad para mostrar vistas jerárquizadas de información.
