@@ -250,7 +250,7 @@ it.ucwords("framework de isiTools", false);',
    @version: 1.10
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 04/04/2019
+   @Last update: 08/04/2021
  **/
 WikiHelper.Addcssrule = {
 	general: {
@@ -284,14 +284,14 @@ WikiHelper.Addcssrule = {
 
 /**
    Alert Helper						
-   @version: 1.6.1
+   @version: 1.6.3
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 26/01/2021
+   @Last update: 08/04/2021
  **/
 WikiHelper.Alert = {
 	general: {
-		version: "1.6.2",
+		version: "1.6.3",
 		name: 'Alert',
 		description: "Este componente permite crear alertas y diálogos de forma rápida y eficiente. Entre otras cosas permite la creación de alertas o diálogos a partir de un HTML externo, a través de una cadena de texto o a través del contenido de otro elemento HTML dentro del mismo contexto. Además, permite que sean arrastrables y fácilmente personalizables.\n\
 <name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices-1.1/examples/dialog-modal/dialog.html</name>",
@@ -300,19 +300,17 @@ WikiHelper.Alert = {
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '_CSS_\n\
-// styles.css (de tu sitio web)\n\
-.Alert-overlay { position: fixed; background: rgba(0,0,0,0.40); width: 100%; height: 100%; left: 0; top: 0; display: block; z-index: 999999; }\n\
-.Alert { display: block; max-width: 360px; margin: 100px auto 0; background-color: rgb(240, 0, 32); border: 1px solid rgba(0,0,0,0.75); overflow: hidden; color: rgb(255, 255, 255); }\n\
-.Alert header { padding: 10px 8px; background-color: rgb(208, 0, 16); border-bottom: 1px solid rgba(0,0,0,0.1); color: rgb(240, 240, 240); }\n\
-.Alert header h3 { font-size: 14px; margin: 0; color: rgb(240, 240, 240); display: inline-block; }\n\
-.Alert header .close-btn { float: right; color: rgb(240, 240, 240); cursor: pointer; position: relative; top: -5px; left: 0; font-size: 21px; padding: 0; }\n\
-.Alert .Alert-body { background-color: rgb(240, 0, 32); color: rgb(255, 255, 255); display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height:60vh; overflow:auto; font-weight: 600; }\n\
-.Alert footer { position: relative; top: 5px; padding: 10px 10px 8px 10px; height: auto; display: inline-block; width: 100%; margin: 0; }\n\
-.Alert footer button { background: #fff; color: #000; border: 1px solid #000; padding: 3px 5px; }\n\
-.Alert .btn-cancel { padding: 5px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
-.Alert .btn-accept { padding: 5px; border-radius: 0px; background-color: rgb(224, 224, 224); border: 1px solid rgba(0, 0, 0, 0.1); color: rgb(0, 0, 0); }\n\
-body.fixed { position: fixed; width: 100%; }\n\
-body.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }_CSS_'
+// Reglas CSS a incluir en tu hoja de estilos\n\
+.it-alert-overlay { position: fixed; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; left: 0px; top: 0px; display: block; z-index: 999999; }\n\
+.it-alert { display: block; max-width: 360px; margin: 100px auto 0px; background-color: rgba(255, 255, 255, 1); border: 1px solid rgba(0, 0, 0, 0.75); overflow: hidden; color: rgba(36, 84, 156, 1); }\n\
+.it-alert header { padding: 10px 8px; background-color: rgba(0, 0, 0, 1); border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: rgba(255, 255, 255, 1); }\n\
+.it-alert header h3 { font-size: 14px; margin: 0px; color: rgba(255, 255, 255, 1); display: inline-block; }\n\
+.it-alert header .close-btn { float: right; color: rgba(255, 255, 255, 1); cursor: pointer; position: relative; top: -5px; left: 0px; font-size: 21px; padding: 0px; }\n\
+.it-alert .it-alert-body { background-color: rgba(255, 255, 255, 1); color: rgba(0, 0, 0, 1); display: inline-block; width: 100%; padding: 10px; min-height: 100px; max-height: 60vh; overflow: auto; font-weight: 600; }\n\
+.it-alert footer { position: relative; top: 5px; padding: 10px 10px 8px; height: auto; display: inline-block; width: 100%; margin: 0px; }\n\
+.it-alert footer button { background: rgba(255, 255, 255, 1); color: rgba(36, 84, 156, 1); border: 1px solid rgba(0, 0, 0, 1); padding: 3px 5px; }\n\
+.it-alert footer button:focus { background: rgba(36, 84, 156, 1); color: rgba(255, 255, 255, 1); border: 1px solid rgba(0, 0, 0, 1); }\n\
+_CSS_'
 		}
 	],
 	theme: {
@@ -339,22 +337,22 @@ body.fixedOY { position: fixed; width: 100%; overflow-y: scroll; }_CSS_'
 		type: 'function',
 		description: 'Título de la alerta.',
 		example: 'new Alert({\n\
-title: "Precaución!",\n\
-body:"El campo se encuentra vacío.",\n\
-onshow: function(){\n\
-	document.querySelector(".Alert header").style.background="red";\n\
-}\n\
+	title: "Precaución!",\n\
+	body:"El campo se encuentra vacío.",\n\
+	onshow: function(){\n\
+		document.querySelector(".Alert header").style.background="red";\n\
+	}\n\
 });'
 	},
 	onhide: {
 		type: 'function',
 		description: 'Título de la alerta.',
 		example: 'new Alert({\n\
-title: "Precaución!",\n\
-body:"El campo se encuentra vacío.",\n\
-onhide: function(){\n\
-	console.log("Alerta ocultada!");\n\
-}\n\
+	title: "Precaución!",\n\
+	body:"El campo se encuentra vacío.",\n\
+	onhide: function(){\n\
+		console.log("Alerta ocultada!");\n\
+	}\n\
 })'
 	},
 	body: {
@@ -378,32 +376,33 @@ new Alert({title: "Precaución!", body:"url(./templates/dialog.html)"});'
 	},
 	actions: {
 		type: 'object',
-		description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, "accept" y "cancel".\nLos campos pueden estar compuestos por los atributos "enabled", "class", "align" y "callback".<br/><br/>\n\
-El parámetro "callback" es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado. A continuación se muestra un ejemplo que visualiza por consola el contenido de este JSON devuelto.',
+		description: 'Personaliza las acciones de una alerta. Este parámetro debe contener una estructura tipo objeto con dos campos, <property>accept</property> y <property>cancel</property>.\nLos campos pueden estar compuestos por los atributos <property>enabled</property>, <property>class</property>, <property>alignment</property>, <property>text</property> y <property>callback</property>.<br/><br/>\n\
+El parámetro <property>callback</property> es una función que recibe todos los elementos que tengan establecidos los atributos ID, NAME o CONTENTEDITABLE. Por ejemplo, si el componente Alert solicita un correo electrónico, cuando se pulse cualquiera de los botones se envirá un JSON con los datos y atributos del elemento solicitado. A continuación se muestra un ejemplo que visualiza por consola el contenido de este JSON devuelto.',
 		example: 'new Alert({\n\
-title: "Introduzca un código!",\n\
-body:\'&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>\',\n\
-actions:{\n\
-	accept: {\n\
-		enabled: true,\n\
-		text: "Accept",\n\
-		class: "btn btn-primary",\n\
-		alignment: "right",\n\
-		callback: alertAccepted\n\
-	},\n\
-	cancel: {\n\
-		enabled: true,\n\
-		text: "Cancel",\n\
-		class: "btn btn-secondary",\n\
-		alignment: "left",\n\
-		callback: function(e){\n\
-			console.log(e)\n\
+	title: "Introduzca un código!",\n\
+	body:\'&lt;label for="data">Operación de venta&lt;input type="text" id="data" />&lt;/label>&lt;script>(function(){it("#data").mask("99999")})()&lt;/script>\',\n\
+	actions:{\n\
+		accept: {\n\
+			enabled: true,\n\
+			text: "Accept",\n\
+			class: "btn accept",\n\
+			alignment: "right",\n\
+			callback: alertAccepted\n\
+		},\n\
+		cancel: {\n\
+			enabled: true,\n\
+			text: "Cancel",\n\
+			class: "btn cancel",\n\
+			alignment: "left",\n\
+			callback: function(e){\n\
+				console.log(e)\n\
+			}\n\
 		}\n\
 	}\n\
-}\n\
 });\n\
+\n\
 function alertAccepted(data){\n\
-console.log(data)\n\
+	console.log(data)\n\
 }\n\
 // Cuando el usuario pulse en el botón de aceptar, se mostrará por la consola algo similar a la siguiente estructura:\n\
 // {\n\
@@ -421,54 +420,61 @@ console.log(data)\n\
 // 			value: "28012"\n\
 // 		}\n\
 // 	]\n\
-// }'
+// }\n\
+\n\
+<field>Como caso especial, es posible asignar la acción del botón aceptar con el atributo <property>callback</property> en el mismo nivel que <property>title</property> o <property>body</property>:</field>\n\
+new Alert({\n\
+	title: "Atención",\n\
+	body:"Fichero " + files[0].name + " cargado!!",\n\
+	callback: function(e){\n\
+		console.log(e)\n\
+	}\n\
+});'
 	},
 	addtocallback: {
 		type: 'object',
 		description: 'Permite agregar elementos y/o valores a la devolución de llamada asociada a la acción de aceptar o de cancelar.',
 		example: 'new Alert({\n\
-title: "Precaución!",\n\
-body: "El campo se encuentra vacío.",\n\
-styles:{\n\
-title: {\n\
-	background: "#f0f0f0",\n\
-	color: "#2f2f2f",\n\
-	extra: ""\n\
-},\n\
-body: {\n\
-	background: "#fff",\n\
-	color: "#000",\n\
-	extra: ""\n\
-},\n\
-actions:{\n\
-	accept: {\n\
-		enabled: true,\n\
-		text: "Accept",\n\
-		class: "btn btn-primary",\n\
-		alignment: "right",\n\
-		callback: function(e){\n\
-			console.log(e)\n\
-		},\n\
-		addtocallback: {\n\
-			el0: "Botón pulsado!!",\n\
-			el1: document.querySelector("#inputID")\n\
-		}\n\
+	title: "Precaución!",\n\
+	body: "El campo se encuentra vacío.",\n\
+	title: {\n\
+		background: "#f0f0f0",\n\
+		color: "#2f2f2f",\n\
+		extra: ""\n\
 	},\n\
-	cancel: {\n\
-		enabled: true,\n\
-		text: "Cancel",\n\
-		class: "btn btn-secondary",\n\
-		alignment: "left",\n\
-		callback: function(e){\n\
-			console.log(e)\n\
+	body: {\n\
+		background: "#fff",\n\
+		color: "#000",\n\
+		extra: ""\n\
+	},\n\
+	actions:{\n\
+		accept: {\n\
+			enabled: true,\n\
+			text: "Accept",\n\
+			class: "btn btn-primary",\n\
+			alignment: "right",\n\
+			callback: function(e){\n\
+				console.log(e)\n\
+			},\n\
+			addtocallback: {\n\
+				el0: "Botón pulsado!!",\n\
+				el1: document.querySelector("#inputID")\n\
+			}\n\
+		},\n\
+		cancel: {\n\
+			enabled: true,\n\
+			text: "Cancel",\n\
+			class: "btn btn-secondary",\n\
+			alignment: "left",\n\
+			callback: function(e){\n\
+				console.log(e)\n\
+			}\n\
 		}\n\
 	}\n\
-}\n\
-}\n\
 });\n\
 \n\
 function alertAccepted(data){\n\
-console.log(data)\n\
+	console.log(data)\n\
 }\n\
 // Cuando el usuario pulse en el botón de aceptar, por consola algo similar a:\n\
 // {\n\
@@ -493,27 +499,27 @@ console.log(data)\n\
 		description: 'Personaliza los estilos de las alertas a través de JavaScript. Este parámetro debe contener una estructura tipo objeto con los campos "title", "body" y "actions".\nTodos los campos pueden estar compuestos por los atributos "background", "color" y "extra".\n<ul><li><b>background</b>: Establece el color del fondo</li><li><b>color</b>: Establece el color del texto</li><li><b>extra</b>: Establece otras propiedades CSS.</li></ul>',
 		example: '// Ejemplo de mensaje de alerta sin botón cancelar\n\
 new Alert({\n\
-title: "Precaución!",\n\
-body: "El campo se encuentra vacío.",\n\
-styles:{\n\
-	title: {\n\
-		background: "#f0f0f0",\n\
-		color: "#2f2f2f",\n\
-		extra: ""\n\
-	},\n\
-	body: {\n\
-		background: "#fff",\n\
-		color: "#000",\n\
-		extra: ""\n\
-	},\n\
-	actions: {\n\
-		accept: {\n\
-			background: "#e0e0e0",\n\
+	title: "Precaución!",\n\
+	body: "El campo se encuentra vacío.",\n\
+	styles:{\n\
+		title: {\n\
+			background: "#f0f0f0",\n\
+			color: "#2f2f2f",\n\
+			extra: ""\n\
+		},\n\
+		body: {\n\
+			background: "#fff",\n\
 			color: "#000",\n\
-			extra: "padding:15px"\n\
+			extra: ""\n\
+		},\n\
+		actions: {\n\
+			accept: {\n\
+				background: "#e0e0e0",\n\
+				color: "#000",\n\
+				extra: "padding:15px"\n\
+			}\n\
 		}\n\
 	}\n\
-}\n\
 });'
 	},
 	stylesheet:{
@@ -535,7 +541,7 @@ styles:{\n\
    @version: 1.5.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 30/04/2020
+   @Last update: 08/04/2021
  **/
 
 WikiHelper.Autocomplete = {
@@ -561,18 +567,46 @@ Es simple, fácil de personalizar y de utilizar y hace que el rendimiento de la 
 	additional: [
 		{
 			description: 'Personalizar los estilos del componente:',
-			example: '_CSS_// styles.css (from your site)\n.autocomplete-items { position: absolute; background: #ffffff; border: 1px solid #e0e0e0; z-index: 99; top: 100%; left: 15px; right: 0; width: -moz-calc(100% - 30px); width: -webkit-calc(100% - 30px); width: calc(100% - 30px); max-height: 210px; overflow-y: auto; overflow-x: hidden; }\n.autocomplete-items div.value { line-height: normal; padding: 10px; cursor: pointer; background-color: #fff;  border-bottom: 0px solid #d4d4d4;  text-transform: capitalize; }\n.autocomplete-items div.value:hover, \n.autocomplete-active { background-color: #006699 !important;  color: #ffffff; }\n.autocomplete-items .header,\n.autocomplete-items .error { background: #fff; border-bottom: 1px solid #bfbfbf; width: 100%; line-height: 28px; padding: 0 10px; pointer-events: none; }\n.autocomplete-items .header span, \n.autocomplete-items .value span { width: 100%; display: inline-block; vertical-align: top; }\n.autocomplete-items .header span,\n.autocomplete-items .error span { display: table-cell; height: auto; min-height: 32px; padding: 5px 0; line-height: normal; color: #000; font-size: 13px; font-weight: 600; text-transform: uppercase; }\n.autocomplete-items .error span { color: #f01223; }\n.autocomplete-items .error.not-found span { color: #a0a0a0; text-transform: none; }\n.autocomplete-items .error + .value { color: #000; font-weight: bold; }\n.autocomplete-items.table .header { display: table; }\n.autocomplete-items.cluster .header,\n.autocomplete-items .error { border-bottom: 0 none; margin-top: 15px; text-transform: uppercase; font-size: 0.85rem; font-weight: 600; }\n.autocomplete-items.cluster .header span { color: #bbb; }\n.autocomplete-items .value.highlighted { font-weight: bold; background: transparent; color: #008bb2; }\n.autocomplete-items .value.disabled { font-weight: 100;  background: #eee; color: #aaa; }\
-			<p>Estilos para el diálogo de ayuda</p>\
-			\ninput[data-helper]{ padding-right: 28px;}\n.Autocomplete-helper-icon{cursor: pointer; background: #000; color: #fff; height: 28px; width: 28px; line-height: 28px; position: absolute; right: 0; top: 0; text-align: center; z-index: 9;");}\
-			\n.Autocomplete-helper{ background: #f0f0f0; border: 1px solid #ccc; padding: 10px; position: fixed; top: 25vh; left: 25vw; display: block; width: 50vw; max-height: 550px; overflow: auto; z-index: 99;");}\
-			\n.Autocomplete-helper::after{ content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1;}\
-			\n.Autocomplete-helper ul{ background: #fff; border: 1px solid #ccc; padding: 10px; list-style: none;}\
-			\n.Autocomplete-helper ul b{ font-weight: bold; }\
-			\n.Autocomplete-helper code{ padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px; }\
-			\n.Autocomplete-helper button{ cursor: pointer; background: #000; color: #fff; height: 28px; line-height: 28px; float: right; padding: 0 10px; }\
-			\n.Autocomplete-helper h3{ background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); font-size: 20px; color: #000; padding: 5px; }\
-			\n.Autocomplete-helper .hidden{ display: none !important }\
-			\n@media all and (max-width: 640px){.Autocomplete-helper╠ width: 100%; left: 0; top: 0; ╣}_CSS_'
+			example: '_CSS_// Reglas CSS a incluir en tu hoja de estilos\n\
+.it-autocomplete-items { position: fixed; background: rgba(255, 255, 255, 1); border: 1px solid rgb(224, 224, 224); z-index: 99; top: 100%; left: 15px; right: 0px; width: calc(100% - 30px); max-height: 210px; overflow: hidden auto; }\n\
+.it-autocomplete-items div.value { color: rgba(0, 0, 0, 1); line-height: normal; padding: 4px 10px; cursor: pointer; background-color: rgba(255, 255, 255, 1); border-bottom: 0px solid rgba(0, 0, 0, 0.2); text-transform: capitalize; }\n\
+.it-autocomplete-items div.value b { color: rgba(0, 0, 0, 1); }\n\
+.it-autocomplete-items div.value:hover,\
+.it-autocomplete-items div.value:hover b,\
+.it-autocomplete-active,\
+.it-autocomplete-active b { color: rgba(255, 255, 255, 1) i !important; background-color: rgba(56, 104, 176, 1) !important; }\n\
+.it-autocomplete-items .header,\
+.it-autocomplete-items .error { position: initial; background: rgba(255, 255, 255, 1); border-bottom: 1px solid rgba(0, 0, 0, 0.4); box-shadow: none; width: 100%; line-height: 28px; padding: 0px 10px; pointer-events: none; }\n\
+.it-autocomplete-items .header span,\
+.it-autocomplete-items .value span { width: 100%; display: inline-block; vertical-align: top; }\n\
+.it-autocomplete-items .header span,\
+.it-autocomplete-items .error span { display: table-cell; height: auto; min-height: 32px; padding: 5px 0px; line-height: normal; color: rgba(0, 0, 0, 1); font-size: 13px; font-weight: 600; text-transform: uppercase; }\n\
+.it-autocomplete-items .error span { color: rgb(240, 18, 35); }\n\
+.it-autocomplete-items .error.not-found span { color: rgba(0, 0, 0, 0.45); text-transform: none; }\n\
+.it-autocomplete-items .error + .value { color: rgba(0, 0, 0, 1); font-weight: bold; }\n\
+.it-autocomplete-items.table .header { display: table; }\n\
+.it-autocomplete-items.cluster .header,\
+.it-autocomplete-items .error { border-bottom: 0px none; margin-top: 0px; text-transform: uppercase; font-size: 0.85rem; font-weight: 600; }\n\
+.it-autocomplete-items.cluster .error { margin-top: 15px; }\n\
+.it-autocomplete-items.cluster .values .value { padding-left: 25px; }\n\
+.it-autocomplete-items.cluster .header span { color: rgba(0, 0, 0, 0.4); }\n\
+.it-autocomplete-items .value.highlighted { font-weight: bold; background: transparent; color: rgba(36, 84, 156, 1); }\n\
+.it-autocomplete-items .value.disabled { font-weight: 100; background: rgba(0, 0, 0, 0.1); color: rgba(0, 0, 0, 0.5); pointer-events: none; }\n\
+\n\
+input[data-helper] { padding-right: 28px; }\n\
+.it-autocomplete-helper-icon { cursor: pointer; background: rgba(0, 0, 0, 1); color: rgba(0, 0, 0, 1); height: 28px; width: 28px; line-height: 28px; position: absolute; right: 5px; bottom: 5px; text-align: center; z-index: 9; }\n\
+.it-autocomplete-helper { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 0, 0, 0.15); padding: 10px; position: fixed; top: 25vh; left: 10vw; display: block; width: 80vw; max-height: 550px; overflow: auto; z-index: 99; }\n\
+.it-autocomplete-helper::after { content: ""; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: -1; }\n\
+.it-autocomplete-helper ul { background: rgba(255, 255, 255, 1); border: 1px solid rgba(0, 0, 0, 0.15); padding: 10px; list-style: none; }\n\
+.it-autocomplete-helper ul b { font-weight: bold; }\n\
+.it-autocomplete-helper code { padding: 2px 4px; font-size: 90%; color: rgba(233, 30, 99, 1); background-color: rgba(0, 0, 0, 0.04); border-radius: 4px; }\n\
+.it-autocomplete-helper button { cursor: pointer; background: rgba(0, 0, 0, 1); color: rgba(255, 255, 255, 1); border: 0 none; height: 32px; line-height: 28px; float: right; padding: 0px 10px; }\n\
+.it-autocomplete-helper h3 { background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), transparent); font-size: 20px; color: rgba(0, 0, 0, 1); padding: 5px; }\n\
+.it-autocomplete-helper .hidden { display: none !important; }\n\
+@media (max-width: 640px) {\
+    .it-autocomplete-helper { width: 100%; left: 0px; top: 0px; }\
+}\n\
+_CSS_'
 		}
 	],
 	ajax: {
@@ -1208,7 +1242,7 @@ it("#inputTextID").constraint.decrement();'
    @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 19/05/2020
+   @Last update: 08/04/2021
  **/
 WikiHelper.Counter = {
 	general: {
@@ -1220,12 +1254,12 @@ WikiHelper.Counter = {
 	additional: [
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
-			example: '_CSS_// styles.css (de tu sitio web)\n\
+			example: '_CSS_// Reglas CSS a incluir en tu hoja de estilos\n\
 // Ejemplo de estilo formato batería\n\
-.counter{ position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; border: 1px solid rgba(255,255,255, 0.8); box-shadow: 0 0 0 2px rgb(0 0 0) inset; }\n\
-.counter::before{ content: attr(data-value); position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: #000; height: 100%; padding: 0; line-height: 24px; font-size: 0.9rem; z-index: 1; }\n\
-.counter::after{ content: ""; background: rgba(0, 0 , 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0; }\n\
-.counter span.progress{ width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0; float: left; border-radius: 2px; background: rgba(0,64,128, 1); position: relative; top: auto; right: auto; z-index: 0; }\n\
+.it-counter { position: relative; float: right; width: 64px; height: 27px; margin: 10px 10px 10px 5px; border-radius: 4px; padding: 3px; background: rgba(255, 255, 255, 1); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 1) 0px 0px 0px 2px inset; }\n\
+.it-counter::before { content: attr(data-value); position: absolute; top: 0px; left: 0px; text-align: center; width: 100%; color: rgba(0, 0, 0, 1); height: 100%; padding: 0px; line-height: 24px; font-size: 0.9rem; z-index: 1; }\n\
+.it-counter::after { content: ""; background: rgba(0, 0, 0, 0.8); position: absolute; right: -5px; top: 5px; width: 5px; height: calc(100% - 10px); padding: 0px; }\n\
+.it-counter span.progress { width: 100%; height: 19px; min-height: auto; line-height: normal; padding: 0px; float: left; border-radius: 2px; background: rgba(255, 255, 255, 1); position: relative; top: auto; right: auto; z-index: 0; }\n\
 _CSS_'
 		}
 	],
@@ -1359,7 +1393,7 @@ mode: "count"\n\
 	 @version: 1.2.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
-	 @Last update: 11/07/2019
+	 @Last update: 08/04/2021
  **/
 WikiHelper.Datepicker = {
 	general: {
@@ -1396,35 +1430,36 @@ WikiHelper.Datepicker = {
 		{
 			description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <property>"finicio"</property> podría ser:',
 			example: '_CSS_\n\
-// styles.css (de tu sitio web)\n\
-.it-datepicker-date { width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden; }\n\
-.it-datepicker-date::before{ content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1; }\n\
-.it-datepicker-date::after { content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:#fff; z-index: -1; }\n\
-.it-datepicker-date .datepicker-close{  cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: #0066a8; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold; }\n\
-.it-datepicker-date .datepicker-close::before, .it-datepicker-date .datepicker-close::after{ content: ""; border-top: 2px solid #0066a8; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px; }\n\
-.it-datepicker-date .datepicker-close::after{ transform: rotate(-45deg); }\n\
-.it-datepicker-date .l-cal{ position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: #0066a8; color: #fff; float: left; text-align: center; padding: 0px 3px 5px 3px; }\n\
-.it-datepicker-date .l-cal span{ opacity: 0.5; }\n\
-.it-datepicker-date .l-cal span:first-child{ font-size: 38px; width: 100%; display: block; margin-top: 5px; }\n\
-.it-datepicker-date .l-cal span:nth-child(2){ font-size: 18px; width: 100%; display: block; margin-bottom: 18px; }\n\
-.it-datepicker-date .l-cal span:nth-child(4){ line-height: 32px; display: block; }\n\
-.it-datepicker-date .r-cal{ background: #fff; width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%; }\n\
-.it-datepicker-date .datepicker-years{ margin-bottom: 0; padding: 0 5px 5px; position: relative; }\n\
-.it-datepicker-date .datepicker-years input{ font-size: 14px; height: 24px; width: 3.2em; background: #fff; color: #000;     border: 1px solid rgba(0,0,0,0.1); padding: 0; text-align: center; float: right; margin: 0 3px 5px calc(75% - 10px); position: relative; left: -10px; box-shadow: none !important; }\n\
-.it-datepicker-date .datepicker-years input ~ span.dt-down{ display: block; position: absolute; right: 8px; top: 12px; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
-.it-datepicker-date .datepicker-years input ~ span.dt-down::before{ display: block; position: absolute; right: 2px; top: 3px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
-.it-datepicker-date .datepicker-years input ~ span.dt-up{ display: block; position: absolute; right: 8px; top: 0; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
-.it-datepicker-date .datepicker-years input ~ span.dt-up::before{ display: block; position: absolute; right: 2px; top: 2px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
-.it-datepicker-date .datepicker-months{ border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px; }\n\
-.it-datepicker-date .datepicker-months .month{ cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; background: #fff; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box; }\n\
-.it-datepicker-date .datepicker-months .month.active, .it-datepicker-date .datepicker-months .month:hover{  background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); font-weight: normal; }\n\
-.it-datepicker-date .datepicker-week{ padding: 0 5px; display: table; }\n\
-.it-datepicker-date .r-cal .datepicker-week-names .datepicker-week{ padding: 5px; background: #0066a8; color: #fff; }\n\
-.it-datepicker-date .datepicker-week .dayname, .it-datepicker-date .datepicker-week .day{ cursor: pointer; font-size: 14px; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0); }\n\
-.it-datepicker-date .datepicker-week .day.disabled{ opacity: 0.5; }\n\
-.it-datepicker-date .datepicker-week .day.active, .it-datepicker-date .datepicker-week .day:hover{ font-weight: normal; background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); padding: 0 6px; }\n\
-.it-datepicker-date .datepicker-buttons{ position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0; }\n\
-.it-datepicker-date .datepicker-buttons button{ cursor: pointer; color: #fff; background: #0066a8; border: 1px solid #0066a8; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px; }\n\
+// Reglas CSS a incluir en tu hoja de estilos\n\
+.it-datepicker { width: 360px; display: block; border: 1px solid rgba(0,0,0,0.05); padding: 0; height: auto; box-sizing: content-box; position: fixed; z-index: 999999; top: 15%; left: calc(50% - 180px); overflow: hidden; }\n\
+.it-datepicker::before{ content: ""; width: 100%; left: 0; top: 0; height: 100%; position: fixed; background: rgba(0,0,0,0.3); z-index: -1; }\n\
+.it-datepicker::after { content: ""; width: 100%; left: 0; top: 0; height: 100%; position: absolute; background:#fff; z-index: -1; }\n\
+.it-datepicker .datepicker-close{  cursor: pointer; position: absolute; top: 0; left: 25%; font-size: 1rem; width: 25%; color: #0066a8; padding-left: 36px; line-height: 36px; font-style: normal; font-weight: bold; }\n\
+.it-datepicker .datepicker-close::before, .it-datepicker .datepicker-close::after{ content: ""; border-top: 2px solid #0066a8; width: 18px; height: 2px; display: block; transform: rotate(45deg); position: absolute; top: 16px; left: 10px; }\n\
+.it-datepicker .datepicker-close::after{ transform: rotate(-45deg); }\n\
+.it-datepicker .l-cal{ position: absolute; top: 0; left: 0; width: 25%; display: block; height: 100%; background: #0066a8; color: #fff; float: left; text-align: center; padding: 0px 3px 5px 3px; }\n\
+.it-datepicker .l-cal span{ opacity: 0.5; }\n\
+.it-datepicker .l-cal span:first-child{ font-size: 38px; width: 100%; display: block; margin-top: 5px; }\n\
+.it-datepicker .l-cal span:nth-child(2){ font-size: 18px; width: 100%; display: block; margin-bottom: 18px; }\n\
+.it-datepicker .l-cal span:nth-child(4){ line-height: 32px; display: block; }\n\
+.it-datepicker .r-cal{ background: #fff; width: 75%; display: block; height: 100%; float: left; padding: 5px 0; margin-left: 25%; }\n\
+.it-datepicker .datepicker-years{ margin-bottom: 0; padding: 0 5px 5px; position: relative; }\n\
+.it-datepicker .datepicker-years input{ font-size: 14px; height: 24px; width: 3.2em; background: #fff; color: #000;     border: 1px solid rgba(0,0,0,0.1); padding: 0; text-align: center; float: right; margin: 0 3px 5px calc(75% - 10px); position: relative; left: -10px; box-shadow: none !important; }\n\
+.it-datepicker .datepicker-years input ~ span.dt-down{ display: block; position: absolute; right: 8px; top: 12px; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
+.it-datepicker .datepicker-years input ~ span.dt-down::before{ display: block; position: absolute; right: 2px; top: 3px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
+.it-datepicker .datepicker-years input ~ span.dt-up{ display: block; position: absolute; right: 8px; top: 0; border: 1px solid rgba(0,0,0,0.1); width: 11px; height: 12px; }\n\
+.it-datepicker .datepicker-years input ~ span.dt-up::before{ display: block; position: absolute; right: 2px; top: 2px; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5); width: 0; height: 0; content: ""; }\n\
+.it-datepicker .datepicker-months{ border-bottom: 1px solid rgba(0,0,0,0.2); padding: 0 4px; }\n\
+.it-datepicker .datepicker-months .month{ cursor: pointer; font-size: 14px; width: 40px; display: inline-block; text-align: center; background: #fff; border: 1px solid rgba(0,0,0,0.1); margin: 0 0 5px 3px; padding: 1px 0 0 0; line-height: 21px; box-sizing: border-box; }\n\
+.it-datepicker .datepicker-months .month.active, .it-datepicker .datepicker-months .month:hover{  background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); font-weight: normal; }\n\
+.it-datepicker .datepicker-week{ padding: 0 5px; display: table; }\n\
+.it-datepicker .r-cal .datepicker-week-names .datepicker-week{ padding: 5px; background: #0066a8; color: #fff; }\n\
+.it-datepicker .datepicker-week .dayname, .it-datepicker .datepicker-week .day{ cursor: pointer; font-size: 14px; width: 40px; display: table-cell; text-align: center; border: 0 none; margin: 0; padding: 2px 6px 0px 6px; margin-bottom: 5px; border-color: rgba(0, 0, 0, 0); }\n\
+.it-datepicker .datepicker-week .day.disabled{ opacity: 0.5; }\n\
+.it-datepicker .datepicker-week .day.active, .it-datepicker .datepicker-week .day:hover{ font-weight: normal; background: #0066a8; color: #fff; border-color: rgba(0,0,0,0.1); padding: 0 6px; }\n\
+.it-datepicker .datepicker-buttons{ position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.2); padding: 0; }\n\
+.it-datepicker .datepicker-buttons button{ cursor: pointer; color: #fff; background: #0066a8; border: 1px solid #0066a8; height: 30px; font-weight: normal; font-size: 14px; width: 100%; margin: 0; padding-top: 1px; }\n\
+.it-datepicker .datepicker-buttons button + button { border-top-color: rgba(255,255,255, 0.2);}\n\
 .has-datepicker input{ width: 6.8em !important; float: left; }\n\
 .has-datepicker input + button{ cursor:pointer; background: rgba(0,0,0,0); border: 0 none; position: relative; left: 0; top: 0; min-height: 28px; min-width: 28px; }_CSS_'
 		},
@@ -1607,9 +1642,60 @@ Permite la definición columnas por porcentajes, lo que hace posible crear fáci
 \n\
 Cabe destacar que, aunque es posible utilizar todas y cada uno de los prefijos predefinidos de manera independiente, siempre debe haber, al menos, la definición de una clase <property>col</property> en el atributo <property>class</property>. Esto es, si se desea utilizar las unidades de medida predefinidas por el atributo <property>resolutions</property>, se debe añadir adicionalmente la clase <property>col</property>.\n\
 \n\
-Si no se desea utilizar ninguna de las unidades de medida predefinidas en la propiedad <property>resolutions</property>, se puede definir, únicamente, la clase <property>col-XXX</property>, donde XXX es un valor decimal entre 0 y 100.',
-
+Si no se desea utilizar ninguna de las unidades de medida predefinidas en la propiedad <property>resolutions</property>, se puede definir, únicamente, la clase <property>col-XXX</property>, donde XXX es un valor decimal entre 0 y 100.\n\
+<name><bool>NOTA</bool>: Cuando se establecen los prefijos <property style="margin: 0">xs</property>, <property style="margin: 0">sm</property>, <property style="margin: 0">md</property>, <property style="margin: 0">lg</property> y/o <property style="margin: 0">xl</property> referentes a la resolución, el elemento tomará la mayor de las resoluciones definidas aunque la resolución del dispositivo sea más alta. Esto es, si definiesemos una columna como <property style="margin: 0">col xs-100 sm-50</property>, para las resoluciones mayores <property style="margin: 0">md</property>, <property style="margin: 0">lg</property> y <property style="margin: 0">xl</property> debería seguir aplicándose el porcentaje correspondiente al valor <property style="margin: 0">50</property>.</name>',
 	},
+	additional: [
+		{
+			description: 'Se pueden personalizar los estilos por defecto a través de reglas CSS. Un posible ejemplo para un elemento con ID <property>"finicio"</property> podría ser:',
+			example: '_CSS_\n\
+// Reglas CSS a incluir en tu hoja de estilos\n\
+// Dado que las reglas de estilo de este componente son muchas, aquí sólo se expondrá el caso genérico\n\
+it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column; margin: calc( -1 * 5px) 0 0 calc( -1 * 5px); padding: 5px; }\n\
+.it-flexbox .row { display: flex; flex-flow: row wrap; width: 100%; }\n\
+.it-flexbox .col, \n\
+.it-flexbox [class*="col-"]{ display: block; align-items: center; flex: 1 1 auto; box-sizing: border-box; margin: 5px 0 0 5px; padding: 5px; }\n\
+.it-flexbox .row > .col-1 { flex-basis: calc(8.33% - 5px); max-width: calc(8.33% - 5px); }\n\
+.it-flexbox .row > .col-2 { flex-basis: calc(16.66% - 5px); max-width: calc(16.66% - 5px); }\n\
+.it-flexbox .row > .col-3 { flex-basis: calc(25% - 5px); max-width: calc(25% - 5px); }\n\
+.it-flexbox .row > .col-4 { flex-basis: calc(33.33% - 5px); max-width: calc(33.33% - 5px); }\n\
+.it-flexbox .row > .col-5 { flex-basis: calc(41.66% - 5px); max-width: calc(41.66% - 5px); }\n\
+.it-flexbox .row > .col-6 { flex-basis: calc(50% - 5px); max-width: calc(50% - 5px); }\n\
+.it-flexbox .row > .col-7 { flex-basis: calc(58.33% - 5px); max-width: calc(58.33% - 5px); }\n\
+.it-flexbox .row > .col-8 { flex-basis: calc(66.66% - 5px); max-width: calc(66.66% - 5px); }\n\
+.it-flexbox .row > .col-9 { flex-basis: calc(75% - 5px); max-width: calc(75% - 5px); }\n\
+.it-flexbox .row > .col-10 { flex-basis: calc(83.33% - 5px); max-width: calc(83.33% - 5px); }\n\
+.it-flexbox .row > .col-11 { flex-basis: calc(91.66% - 5px); max-width: calc(91.66% - 5px); }\n\
+.it-flexbox .row > .col-12 { flex-basis: calc(100% - 5px); max-width: calc(100% - 5px); }\n\
+\n\
+.it-flexbox .row > .offset-1 { margin-left: calc(8.33% + 5px); }\n\
+.it-flexbox .row > .offset-2 { margin-left: calc(16.66% + 5px); }\n\
+.it-flexbox .row > .offset-3 { margin-left: calc(25% + 5px); }\n\
+.it-flexbox .row > .offset-4 { margin-left: calc(33.33% + 5px); }\n\
+.it-flexbox .row > .offset-5 { margin-left: calc(41.66% + 5px); }\n\
+.it-flexbox .row > .offset-6 { margin-left: calc(50% + 5px); }\n\
+.it-flexbox .row > .offset-7 { margin-left: calc(58.33% + 5px); }\n\
+.it-flexbox .row > .offset-8 { margin-left: calc(66.66% + 5px); }\n\
+.it-flexbox .row > .offset-9 { margin-left: calc(75% + 5px); }\n\
+.it-flexbox .row > .offset-10 { margin-left: calc(83.33% + 5px); }\n\
+.it-flexbox .row > .offset-11 { margin-left: calc(91.66% + 5px); }\n\
+.it-flexbox .row > .offset-12 { margin-left: calc(100% + 5px); }\n\
+\n\
+.it-flexbox .row > .order-1 { order: 1; }\n\
+.it-flexbox .row > .order-2 { order: 2; }\n\
+.it-flexbox .row > .order-3 { order: 3; }\n\
+.it-flexbox .row > .order-4 { order: 4; }\n\
+.it-flexbox .row > .order-5 { order: 5; }\n\
+.it-flexbox .row > .order-6 { order: 6; }\n\
+.it-flexbox .row > .order-7 { order: 7; }\n\
+.it-flexbox .row > .order-8 { order: 8; }\n\
+.it-flexbox .row > .order-9 { order: 9; }\n\
+.it-flexbox .row > .order-10 { order: 10; }\n\
+.it-flexbox .row > .order-11 { order: 11; }\n\
+.it-flexbox .row > .order-12 { order: 12; }\n\
+}_CSS_'
+		},
+	],
 	col:{
 		type: 'string',
 		description: 'Permite definir las clases genéricas en cualquier resolución. Si no lleva guión y tamaño asociados, el porcentage será equitativo para todas las columnas.',
@@ -2116,7 +2202,7 @@ it("#code").mask("99A-99#A-####-999A");'
    @version: 2.0		
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 06/03/2021
+   @Last update: 08/04/2021
  **/
 WikiHelper.Slider = {
 	general: {
@@ -2130,7 +2216,7 @@ WikiHelper.Slider = {
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '_CSS_\n\
-// styles.css (de tu sitio web)\n\
+// Reglas CSS a incluir en tu hoja de estilos\n\
 it-slider { display: block; width: 100%;}\n\
 \n\
 // Estilos para un Slider de tipo SWITCH\n\
@@ -2448,7 +2534,7 @@ it("#valoracion").slider({\n\
 	@version: 2.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
 	@Copyright 2017-2021 Islavisual.
-	@Last update: 10/03/2021
+	@Last update: 08/04/2021
 **/
 WikiHelper.Password = {
 	general: {
@@ -2507,16 +2593,16 @@ showicon: "la la-eye",\n\
 			description: 'Personalización de los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '// Password crea los estilos en tiempo de ejecución de manera automática, pero es posible añadirlos a la hoja de estilos principal para modificarlos como se deseen.\n\
 _CSS_\n\
-.it-password-layer                                  { position: relative; }\n\
-.it-password-meters                                 { width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0px; border: 0px none; margin: 0px 0px 5px; display: none; }\n\
-.it-password-meters > div                           { background: rgba(255, 255, 255, 0.1); width: calc(16.667% - 1px); float: left; height: 5px; padding: 0px; margin: 0px 1px 0px 0px; position: relative; }\n\
-.it-password-meters.not-draw                        { display: none !important; }\n\
-.it-password-meters > div.spotlight                 { background: rgba(255, 255, 255, 1); }\n\
-.it-password-layer input:focus ~ .it-password-meters{ background: rgba(0, 0, 0, 1); display: block; }\n\
-.it-password-layer .it-password-messages            { padding: 5px; display: block; background: rgba(205, 5, 60, 1); border: 1px solid rgba(0, 0, 0, 0.1); margin: 5px 0px; font-size: 1em; font-weight: 600; }\n\
-.it-password-layer .it-password-messages:empty      { height: 0px; padding: 0px; border: 0px none; width: 100%; }\n\
-.it-password-layer .it-password-show-button         { position: absolute; top: 0px; right: 0px; background: transparent; border: 0px none; color: rgba(0, 0, 0, 1); width: 32px; height: 28px; z-index: 2; }\n\
-.it-password-layer .it-password-show-button i       { pointer-events: none; color: rgba(0, 0, 0, 1) !important; }\n\
+.it-password-layer { position: relative; }\n\
+.it-password-meters { width: calc(100% - 3px); height: 6px; position: absolute; top: 3px; left: 2px; z-index: 99; padding: 0px; border: 0px none; margin: 0px 0px 5px; display: none; }\n\
+.it-password-meters > div { background: rgba(255, 255, 255, 0.1); width: calc(16.667% - 1px); float: left; height: 5px; padding: 0px; margin: 0px 1px 0px 0px; position: relative; }\n\
+.it-password-meters.not-draw { display: none !important; }\n\
+.it-password-meters > div.spotlight { background: rgba(255, 255, 255, 1); }\n\
+.it-password-layer input:focus ~ .it-password-meters { background: rgba(0, 0, 0, 1); display: block; }\n\
+.it-password-layer .it-password-messages { padding: 5px; display: block; background: rgba(205, 5, 60, 1); border: 1px solid rgba(0, 0, 0, 0.1); margin: 5px 0px; font-size: 1em; font-weight: 600; }\n\
+.it-password-layer .it-password-messages:empty { height: 0px; padding: 0px; border: 0px none; width: 100%; }\n\
+.it-password-layer .it-password-show-button { position: absolute; top: 0px; right: 0px; background: transparent; border: 0px none; color: rgba(0, 0, 0, 1); width: 32px; height: 28px; z-index: 2; }\n\
+.it-password-layer .it-password-show-button i { pointer-events: none; color: rgba(0, 0, 0, 1) !important; }\n\
 _CSS_'
 		}
 	],
@@ -2632,7 +2718,7 @@ showicon: "la la-eye",\n\
 	 @version: 1.4.2
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
-	 @Last update: 19/01/2021
+	 @Last update: 08/04/2021
  **/
 WikiHelper.Selectpicker = {
 	general: {
@@ -2649,105 +2735,27 @@ WikiHelper.Selectpicker = {
 		},
 		{
 			description: 'Personaliza el aspecto del Selectpicker a través de CSS:',
-			example: '.select-picker{\n\
-position: relative;\n\
-width: 100%;\n\
-}\n\n\
-.select-picker .dropdown-container{\n\
-list-style: none;\n\
-background: #fff;\n\
-border: 1px solid rgba(0,0,0,0.1);\n\
-padding: 0;\n\
-position: absolute;\n\
-top: 53px;\n\
-width: 100%;\n\
-z-index: 99999;\n\
-}\n\n\
-.select-picker ul{\n\
-overflow: auto;\n\
-max-height: 164px;\n\
-padding: 0;\n\
-list-style: none;\n\
-margin: 0;\n\
-}\n\n\
-.select-picker button{\n\
-background: #f4f4f4;\n\
-border: 1px solid rgba(0,0,0,0.1);\n\
-width: 100%;\n\
-height: 54px;\n\
-text-align: left;\n\
-line-height: 70px;\n\
-font-weight: 500;\n\
-}\n\n\
-.select-picker button::before{\n\
-content: "";\n\
-display: inline-block;\n\
-width: 0;\n\
-height: 0;\n\
-margin-left: 2px;\n\
-vertical-align: middle;\n\
-border-top: 4px dashed;\n\
-border-right: 4px solid transparent;\n\
-border-left: 4px solid transparent;\n\
-position: absolute;\n\
-right: 15px;\n\
-top: 26px;\n\
-}\n\n\
-.select-picker button:hover{\n\
-border-color: #adadad;\n\
-}\n\n\.select-picker.open button{\n\
-background: #02a5a5;\n\
-color: #ffffff;\n\
-}\n\n\
-.select-picker li{\n\
-min-height: 36px;\n\
-border-bottom: 1px solid rgba(0,0,0,0.1);\n\
-padding: 4px 10px 0px 10px;\n\
-line-height: 36px;\n\
-}\n\n\
-.select-picker li:not(.searcher):hover{\n\
-background: #02A5A5;\n\
-color: #fff;\n\
-width: 100%;\n\
-}\n\n\
-.select-picker .searcher{\n\
-position: relative;\n\
-padding: 3px 40px 0 4px;\n\
-min-height: 39px;\n\
-border-bottom: 1px solid rgba(0,0,0,0.1);\n\
-}\n\n\
-.select-picker .searcher .input-search{\n\
-line-height: 36px;\n\
-height: 32px;\n\
-padding-right: 26px;\n\
-color: #fff;\n\
-}\n\n\
-.select-picker .search-icon::before{\n\
-content: "";\n\
-background: #ccc;\n\
-width: 10px;\n\
-height: 3px;\n\
-position: absolute;\n\
-border-radius: 100px;\n\
-top: 21px;\n\
-right: 6px;\n\
-transform: rotate(40deg);\n\
-}\n\n\
-.select-picker .search-icon:after{\n\
-content: "";\n\
-width: 16px;\n\
-height: 16px;\n\
-border: 3px solid #ccc;\n\
-border-radius: 100px;\n\
-display: block;\n\
-position: absolute;\n\
-top: 8px;\n\
-right: 12px;\n\
-}\n\n\
-.select-picker-active{\n\
-background: #02a5a5;\n\
-color: #fff;\n\
-}'
+			example: '_CSS_\n\
+// Reglas CSS a incluir en tu hoja de estilos\n\
+.it-select-picker { position: relative; width: 100%; }\n\
+.it-select-picker .dropdown-container { list-style: none; background: rgba(255, 255, 255, 1); border: 1px solid rgba(0, 0, 0, 0.1); padding: 0px; position: absolute; top: 30px; width: 100%; z-index: 99999; }\n\
+.it-select-picker ul { overflow: auto; max-height: 164px; padding: 0px; list-style: none; margin: 0px; }\n\
+.it-select-picker button { background: rgba(255, 255, 255, 1); border: 1px solid rgba(0, 0, 0, 0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; position: relative; padding: 0px 10px; }\n\
+.it-select-picker button::before { content: ""; display: inline-block; width: 0px; height: 0px; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px; }\n\
+.it-select-picker button:hover { border-color: rgba(0, 0, 0, 0.66); }\n\
+.it-select-picker.open button { background: rgba(0, 0, 0, 1); color: rgba(255, 255, 255, 1) !important; box-shadow: 0 0 0 2px rgba(36, 84, 156, 1) inset; }\n\
+.it-select-picker li { border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: rgba(0, 0, 0, 1); padding: 4px 5px; line-height: normal; margin: 0px; }\n\
+.it-select-picker li:not(.searcher):hover { background: rgba(36, 84, 156, 1); color: rgba(255, 255, 255, 1); cursor: pointer; }\n\
+.it-select-picker .searcher { border-bottom: 1px solid rgba(0, 0, 0, 0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%; }\n\
+.it-select-picker .searcher .input-search { border: 0px none; border-radius: 0px; line-height: normal; height: auto; min-height: 26px; padding: 0px 20px 0px 5px; color: rgba(0, 0, 0, 1); width: 100%; z-index: 0; }\n\
+.it-select-picker .searcher svg { position: absolute; right: 5px; top: 5px; fill: rgba(0, 0, 0, 0.65); width: 15px; }\n\
+.it-select-picker-active { background: rgba(36, 84, 156, 1); color: rgba(255, 255, 255, 1) !important; }\n\
+.it-select-picker > button:focus,\n\
+select:focus + .it-select-picker > button { border: 1px solid rgba(205, 5, 60, 1); }\n\
+.it-select-picker input[type=search]::-ms-clear,\n\
+.it-select-picker input[type=search]::-ms-reveal { display: none; width: 0; height: 0; }\n\
+.it-select-picker input[type="search"]::-webkit-search-cancel-button { appearance: none; }\n\
+_CSS_'
 		},
 	],
 	selectpicker: {
@@ -2794,11 +2802,123 @@ color: #fff;\n\
 }
 
 /**
-   Sorter Helper						
-   @version: 1.2
+   SlideShow Helper
+   @version: 1.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 05/03/2021
+   @Last update: 08/04/2021
+ **/
+   WikiHelper.Slideshow = {
+	general: {
+		version: '1.0',
+		name: 'SlideShow',
+		help: 1,
+		description: 'Este componente permite presentar un conjunto de imágenes, comunmente denominadas diapositivas que se muestran secuencialmente una detrás de otra. Sólo permite visualizar una única diapositiva a la vez, sin embargo, ofrece la posibilidad de cambiar de diapositiva mediante unos botones que llevan a la anterior, la siguiente o a un número concreto, y la reproducción automática.\n\
+\n\
+También permite que la presentación cambie automáticamente de siapositiva pasado un tiempo, junto con la posibilidad de que pueda detenerse o reanudarse a través de unos controles de "play" y "stop".\n\
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los slideshow o carruseles de imágenes, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/carousel/carousel-1.html</name>',
+	},
+	additional: [
+		{
+			description: 'Personalizar el idioma a inglés. Por ejemplo:',
+			example: 'it.slideShow.language = {\n\
+	prev: "Previous Slide",\n\
+	next: "Next Slide",\n\
+	goto: "Show Slide ",\n\
+	start: "Start automatic slide show",\n\
+	stop: "Stop automatic slide show",\n\
+	title: "Slide show of images",\n\
+	slideOf: " of "\n\
+}'
+		},
+		{
+			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
+			example: '_CSS_// Reglas CSS a incluir en tu hoja de estilos\n\
+// Ejemplo de estilo formato batería\n\
+.it-slideshow { max-width: none; position: relative; margin: 0px; padding: 0px; }\n\
+.it-slideshow .prev, .it-slideshow .next { cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: all 0.6s ease 0s; border-radius: 0px 3px 3px 0px; user-select: none; }\n\
+.it-slideshow .next { right: 0px; border-radius: 3px 0px 0px 3px; }\n\
+.it-slideshow .prev:hover, .it-slideshow .next:hover { background-color: rgba(0, 0, 0, 0.8); }\n\
+.it-slideshow .title { color: rgb(255, 255, 255); font-size: 2rem; padding: 8px 12px; position: absolute; bottom: 50%; width: 100%; text-align: center; }\n\
+.it-slideshow .text { background: rgba(0, 0, 0, 0.5); color: rgb(242, 242, 242); font-size: 1rem; padding: 8px 12px 22px; position: absolute; bottom: 0px; width: 100%; text-align: center; }\n\
+.it-slideshow .slide-id { background-color: rgba(0, 0, 0, 0.8); color: rgb(242, 242, 242); font-size: 0.8rem; padding: 5px 10px; position: absolute; top: 0px; }\n\
+.it-slideshow .dots { text-align: center; position: absolute; width: 100%; bottom: 0px; left: 0px; }\n\
+.it-slideshow .dot { cursor: pointer; height: 15px; width: 15px; margin: 0px 2px; background-color: rgb(187, 187, 187); border-radius: 50%; display: inline-block; transition: background-color 0.6s ease 0s; }\n\
+.it-slideshow .slide { position: absolute; top: 0px; left: 0px; transition: opacity 1s ease-in-out 0s; height: 100%; width: 100%; margin: 0px; padding: 0px; }\n\
+.it-slideshow .slide img { max-width: 100%; display: block; object-fit: cover; height: 100%; width: 100%; }\n\
+.it-slideshow .active, .dot:hover { background-color: rgb(0, 0, 0); }\n\
+.it-slideshow .fade { opacity: 1; }\n\
+.it-slideshow .hide { opacity: 0; }\n\
+\n\
+@keyframes it-slideshow-fade {\
+	0% ╚ display: block; opacity: 0; ╗ 1% ╚ opacity: 0; ╗ 100% ╚ opacity: 1; ╗\
+}\n\
+@keyframes it-slideshow-hide {\
+	0% ╚ opacity: 1; ╗ 99% ╚ opacity: 0; ╗ 100% ╚ opacity: 0; display: none; ╗\
+}\n\
+\n\
+.it-slideshow.fullscreen { height: 100vh; width: 100%; }\n\
+.it-slideshow .player { position: absolute; top: 5px; right: 5px; font-size: 21px; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 0, 0, 0.5); color: rgb(255, 255, 255); width: 32px; height: 32px; line-height: 30px; text-align: center; padding: 0px; margin: 0px; }\n\
+.it-slideshow.playing .player::before { content: "\\2590\\a0\\258c"; }\n\
+.it-slideshow.playing .player { font-size: 12px; }\n\
+.it-slideshow.paused .player::before { content: "\\1f782"; }\n\
+.it-slideshow.paused .player { font-size: 19px; }\n\
+_CSS_'
+		}
+	],
+	autoplay: {
+		type: 'boolean',
+		description: 'Indica si el slideshow debe o no reproducir de manera automática el avance de slides pasados un determinado número de segundos. Por defecto, está establecido a <property>false</property>. Cabe destacar que la reproducción automática no es una práctica recomendada cuando se desea que las webs sean accesibles.',
+		example: 'it(".it-slideshow").slideShow({autoplay: true);'
+	},
+	fullscreen: {
+		type: 'boolean',
+		description: 'Indica si el slideshow debe mostrarse a pantalla completa. Esto puede ser útil cuando se desean añadir una presentación de diapositivas al principio de la página ya que las imágenes se mostrarán al 100% del alto y ancho del dispositivo. Por defecto, está establecido a <property>false</property>.',
+		example: 'it(".it-slideshow").slideShow({fullscreen: true);'
+	},
+	player: {
+		type: 'boolean',
+		description: 'Indica si el slideshow debe o no mostrar el control de reproducción automática. Por defecto, está establecido a <property>false</property>.',
+		example: 'it(".it-slideshow").slideShow({player: true);'
+	},
+	interval: {
+		type: 'number',
+		description: 'Indica el tiempo que debe transcurrir entre el cambio de una a otra diapositiva. Por defecto, está establecido a 5 segundos, aunque la recomendación es que sea mayor si se desea que tenga una mejor accesibilidad web.',
+		example: 'it(".it-slideshow").slideShow({interval: 10);'
+	},
+	showNumbers: {
+		type: 'boolean',
+		description: 'Indica si el slideshow debe o no mostrar el número de diapositiva que se está presentando. Por defecto, está establecido a <property>false</property>.',
+		example: 'it(".it-slideshow").slideShow({showNumbers: true);'
+	},
+	stylesheet:{
+		type: 'boolean',
+		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
+		example: 'it(".it-slideshow").slideShow({stylesheet: false);'
+	},
+	width: {
+		type: 'string',
+		description: 'Indica el ancho que se desea que tenga el slideshow. Por defecto, está establecido a <property>100%</property>.',
+		example: 'it(".it-slideshow").slideShow({width: "50%");'
+	},
+	height: {
+		type: 'string',
+		description: 'Indica el alto que se desea que tenga el slideshow. Por defecto, está establecido a <property>360px</property>.',
+		example: 'it(".it-slideshow").slideShow({height: "250px");'
+	},
+	title: {
+		type: 'string',
+		description: 'Indica el texto que describe el contenido de la presentación. Esto es importante si se desea preservar la accesibilidad web ya que le facilita a las herramientas de asistencia de que va la presentación. Por defecto se asigna un texto genérico, el cual, se extrae de las propiedades de lenguaje de la propiedad slideshow.language, comentada más adelante.',
+		example: 'it(".it-slideshow").slideShow({title: "Productos destacados de telefonía");'
+	},
+}
+
+/**
+   Sorter Helper						
+   @version: 1.2.1
+   @author: Pablo E. Fernández (islavisual@gmail.com).
+   @Copyright 2017-2021 Islavisual.
+   @Last update: 08/04/2021
  **/
 WikiHelper.Sorter = {
 	general: {
@@ -2806,6 +2926,38 @@ WikiHelper.Sorter = {
 		name: 'Sorter',
 		description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
 	},
+	additional: [
+		{
+			description: 'Es posible acceder a la consiguración de la tabla a partir de su ID.',
+			example: '// Si suponemos que la tabla tiene el atributo ID asignado a "table01", podríamos acceder mediante:\n\
+console.log(it.sorter.config.table01);\n\n\
+// Esta instrucción debería mostrar un objeto JSON similar al siguiente:\n\
+{\n\
+cols: 5,\n\
+icons: {sort: "fa la-sort", asc: "fa la-sort-alpha-up", desc: "fa la-sort-alpha-down"}\n\
+rows: 25\n\
+selector: true\n\
+sorting: ["desc", "asc", "", "", ""]\n\
+table: table#table01.it-sortable\n\
+}'
+		},
+		{
+			description: 'Personaliza el aspecto del componente a través de CSS.',
+			example: '_CSS_\n\
+			// Reglas CSS a incluir en tu hoja de estilos\n\
+.it-sortable th { cursor: pointer; position: relative; }\n\
+.it-sortable th .fa.fa-sort { line-height: 24px; position: absolute; top: 3px; right: 5px; font-size: 1em; color: rgba(0, 0, 0, 0.3); width: auto; }\n\
+.it-sortable th .fa.fa-sort-alpha-asc { line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: rgba(0, 0, 0, 1); width: auto; }\n\
+.it-sortable th .fa.fa-sort-alpha-desc { line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: rgba(0, 0, 0, 1); width: auto; }\n\
+.it-sortable-layer { position: relative; }\n\
+.it-sortable-layer .it-sortable-label { border: 1px solid rgba(0, 0, 0, 0.2); cursor: pointer; float: right; min-width: auto; height: 28px; text-align: right; line-height: 26px; padding: 0px 25px 0px 5px; margin: 5px 0px; position: relative; z-index: 2; }\n\
+.it-sortable-layer .it-sortable-label::before { content: ""; border-style: solid; border-image: initial; border-width: 8px; border-color: rgba(0, 0, 0, 1) transparent transparent; position: absolute; top: 10px; right: 6px; }\n\
+.it-sortable-layer .it-sortable-label::after { content: ""; border-style: solid; border-image: initial; border-width: 6px; border-color: rgba(255, 255, 255, 1) transparent transparent; position: absolute; top: 10px; right: 8px; }\n\
+.it-sortable-layer .it-sortable-label.open::before { transform: rotate(180deg); top: 0px; }\n\
+.it-sortable-layer .it-sortable-label.open::after { transform: rotate(180deg); top: 4px; }\n\
+_CSS_'
+		},
+	],
 	columns: {
 		type: 'object',
 		description: 'Define la ordenación de las columnas. Los posibles tipos son "string", "number", "date" y "enum". Este parámetro es opcional.\n\
@@ -2860,22 +3012,6 @@ it.sorter.sort(3, "desc", document.getElementById("table01"));\n\
 // Dejar la columna de la tabla con ID "table01" como estaba antes de ser ordenada"\n\
 it.sorter.sort(3, "none", it.sorter.config.table01);'
 	},
-	additional: [
-		{
-			description: 'Es posible acceder a la consiguración de la tabla a partir de su ID.',
-			example: '// Si suponemos que la tabla tiene el atributo ID asignado a "table01", podríamos acceder mediante:\n\
-console.log(it.sorter.config.table01);\n\n\
-// Esta instrucción debería mostrar un objeto JSON similar al siguiente:\n\
-{\n\
-cols: 5,\n\
-icons: {sort: "fa la-sort", asc: "fa la-sort-alpha-up", desc: "fa la-sort-alpha-down"}\n\
-rows: 25\n\
-selector: true\n\
-sorting: ["desc", "asc", "", "", ""]\n\
-table: table#table01.sortable\n\
-}'
-		},
-	],
 	stylesheet:{
 		type: 'boolean',
 		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
@@ -2909,7 +3045,7 @@ WikiHelper.Striptags = {
    @version: 1.0
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 25/03/2021
+   @Last update: 08/04/2021
  **/
 WikiHelper.Tabs = {
 	general: {
@@ -2968,7 +3104,7 @@ Los elementos que representan el cóntenido podrán ser cualquier elemento de ca
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '_CSS_\n\
-// styles.css (from your site)\n\
+// Reglas CSS a incluir en tu hoja de estilos\n\
 .it-tab-links{ overflow: hidden; z-index: 1; display: block; margin: 12px 0 0 0; padding: 0; position: relative; top: 1px; list-style: none;}\n\
 .it-tab-links [role="tab"]{ background-color: transparent; color: #888; float: left; outline: none; cursor: pointer; padding: 5px 10px; transition: 0.3s; border: 1px solid #fff; border-bottom-color: rgba(0, 0, 0, 0); margin: 0 5px; border-radius: 5px 5px 0 0; position: relative; top: auto; left: auto; right: auto; bottom: auto; display: block; height: auto; }\n\
 .it-tab-links [role="tab"] img{ width: auto; height: 48px; object-fit: cover; object-position: center center; display: block; max-width: none; max-height: none; image-rendering: -webkit-optimize-contrast; pointer-events: none; margin: 0 auto; opacity: 1;}\n\
@@ -3023,13 +3159,13 @@ _CSS_'
 	label: "Ejemplo de tabs"\n\
 });'
 	},
-	type: {
-		type: 'string',
-		description: 'Permite definir el comportamiento del componente. Si no se especifica, o es vacío, se obtendrá un comportamiento estándar de tabs o pestañas, pero, si su valor es <property>overflow</property> se comportará como un slider de pestañas, que podrán ser manipuladas mediante dos botones adicionales situados en los extremos.',
+	overflow: {
+		type: 'boolean',
+		description: 'Permite definir el comportamiento del componente. Si su valor es <property>false</property>, se obtendrá un comportamiento estándar de tabs o pestañas, pero, si su valor es <property>true</property> se comportará como un slider de pestañas, que podrán ser manipuladas mediante toques táctiles y los botones adicionales situados en los extremos.',
 		example: 'it(".nav-tabs").tabs({\n\
 	content: ["tab1", "tab2", "tab3", "tab4", "tab5"],\n\
 	label: "Ejemplo de tabs",\n\
-	type: "overflow"\n\
+	overflow: true\n\
 });'
 	},
 	stylesheet:{
@@ -3038,7 +3174,6 @@ _CSS_'
 		example: 'it(".nav-tabs").tabs({\n\
 	content: ["tab1", "tab2", "tab3", "tab4", "tab5"],\n\
 	label: "Ejemplo de tabs",\n\
-	type: "overflow",\n\
 	stylesheet: true\n\
 });'
 	}
@@ -3062,20 +3197,22 @@ WikiHelper.Treeview = {
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '_CSS_\n\
-// styles.css (from your site)\n\
-ul.treeview{ background: color: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }\n\
-ul.treeview, ul.treeview ul{ list-style: none; }\n\
-ul.treeview li{ color: color: rgb(51, 51, 51); }\n\
-ul.treeview li i{ cursor: pointer; }\n\
-ul.treeview li ul{ transition: 0.3s; max-height: 10000px; overflow: hidden; }\n\
-ul.treeview li.collapsed ul{ max-height: 0; }\n\
-ul.treeview li a{ color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\n\
-ul.treeview li label{ padding: 2px 5px; display: inline-block; }\n\
-ul.treeview li i.icon{ margin-right: 8px; }\n\
-ul.treeview li.search-box input{ width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0,0,0,0.1) }\n\
-ul.treeview li .active{ background: lightgray; color: rgb(51, 51, 51); }\n\
-ul.treeview input[type="checkbox"]:focus, ul.treeview input[type="checkbox"]:focus::before{ border-color: #000; }\n\
-ul.treeview input[type="checkbox"]:focus + label{ background: #000;color: #fff; }\n\
+// Reglas CSS a incluir en tu hoja de estilos\n\
+ul.it-treeview, ul.it-treeview ul { list-style: none; }\n\
+ul.it-treeview { background: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }\n\
+ul.it-treeview li { color: rgb(0, 0, 0); }\n\
+ul.it-treeview li i { cursor: pointer; }\n\
+ul.it-treeview li ul { transition: all 0.3s ease 0s; max-height: 10000px; overflow: hidden; }\n\
+ul.it-treeview li ul li { padding-left: 15px; }\n\
+ul.it-treeview li.collapsed ul { max-height: 0px; }\n\
+ul.it-treeview li a { color: rgb(36, 84, 156); background: rgba(0, 0, 0, 0); }\n\
+ul.it-treeview li label { padding: 2px 5px; display: inline-block; }\n\
+ul.it-treeview li i.icon { margin-right: 8px; }\n\
+ul.it-treeview li.search-box input { width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); }\n\
+ul.it-treeview li .active { background: rgb(56, 104, 176); color: rgb(255, 255, 255); }\n\
+ul.it-treeview input[type="checkbox"]:focus,\n\
+ul.it-treeview input[type="checkbox"]:focus::before { border-color: rgb(0, 0, 0); }\n\
+ul.it-treeview input[type="checkbox"]:focus + label { background: rgb(0, 0, 0); color: rgb(255, 255, 255); }\n\
 _CSS_'
 		}
 	],
@@ -3355,10 +3492,10 @@ it("#percent").validator({\n\
 
 /**
    Helper functionality
-   @version: 1.1		
+   @version: 1.2
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 04/03/2021
+   @Last update: 08/04/2021
  **/
 
 this.Helper = it.helper = function (func, cfg) {
@@ -3566,7 +3703,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', '#h31p3r p.warning', 'background: linear-gradient(45deg, #de1f60, transparent); border-radius: 4px;');
 			AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.strColor + ';');
 			AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
-			AddCSSRule('', '#h31p3r property', 'text-transform: none; padding: 0; display: inline-block; color: ' + opt.fieldColor + ';');
+			AddCSSRule('', '#h31p3r property', 'text-transform: none; padding: 0; display: inline-block; color: ' + opt.fieldColor + ' !important;');
 			AddCSSRule('', '#h31p3r text', 'padding-left: 32px; color: ' + opt.stringColor + '; display: block; width: 100%; white-space: pre-wrap;');
 			AddCSSRule('', '#h31p3r text a', 'color: ' + opt.stringColor + '; cursor: pointer; ');
 			AddCSSRule('', '#h31p3r text a:hover, #h31p3r text a:focus, #h31p3r text a:active, #h31p3r text a:hover b, #h31p3r text a:focus b, #h31p3r text a:active b', 'color: ' + opt.keyColor + ' !important; text-decoration: underline;');
@@ -3793,7 +3930,10 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 						str += "\n\t<null>" + feat.substr(0, feat.indexOf(":")) + "</null>:" + feat.substr(feat.indexOf(":") + 1) + "; ";
 				}
 				str += "\n}";
-				
+				if(str.indexOf("╚") != -1){
+					str = str.replace(/╚/g, '{').replace(/╗/g, '}').replace(/<null>/g, '').replace(new RegExp("</null>" , 'g'), '').replace(/\};/g, '}').replace(/:}/g, '}').replace(/\n/g, '').replace(/\t/g, '');
+				}
+
 				rulesNew += "<name>" + key + "</name> { " + str + "<br/>";
 				rulesNew =  rulesNew.replace("╠", '{').replace(":╣;", '}');
 			}
