@@ -21,6 +21,7 @@ var itEnabledModules = {
     Password: false,
     Selectpicker: true,
     SendForm: false,
+    SlideShow: false,
     Sorter: false,
     StripTags: false,
     Tabs: false,
@@ -49,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.4",
+it.version = "2.0.5",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "04/04/2021",
+it.lastupdate = "08/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -436,10 +437,10 @@ function isiToolsCallback(json){
 
     /**
     	 Custom alerts functionality
-    	@version: 1.6.2
+    	@version: 1.6.3
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 05/03/2021
+    	@Last update: 06/04/2021
     **/
     if(json.Alert){
         this.Alert = it.alert = function(cfg){
@@ -497,6 +498,11 @@ function isiToolsCallback(json){
                 styles: !cfg.hasOwnProperty('styles') ? defaultStylesLight : cfg.styles,
                 onshow: !cfg.hasOwnProperty('onshow') ? null : cfg.onshow,
                 onhide: !cfg.hasOwnProperty('onhide') ? null : cfg.onhide,
+            }
+
+            // If parameter callback is set to global level, assign to accept button 
+            if(cfg.hasOwnProperty('callback')){
+                opt.actions.accept.callback = cfg.callback;
             }
 
             // Set theme
@@ -2221,10 +2227,10 @@ function isiToolsCallback(json){
 
     /**
     	Datepicker functionality
-    	@version: 1.2.3
+    	@version: 1.2.4
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 05/03/2021
+    	@Last update: 06/04/2021
     **/
     if(json.Datepicker){
         this.Datepicker = it.datepicker = function(cfg){
@@ -2427,7 +2433,7 @@ function isiToolsCallback(json){
 
                     // Define picker object
                     var cal = document.createElement("section");
-                    cal.classList.add("it-datepicker-date");
+                    cal.classList.add("it-datepicker");
                     cal.id = "datepicker-layer-" + target.id
                     cal.setAttribute("data-id", target.id);
                     cal.setAttribute("tabindex", "0");
@@ -3468,10 +3474,10 @@ function isiToolsCallback(json){
 
     /**
     	 FlexBox Plugin
-    	@version: 1.0
+    	@version: 1.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 01/04/2021
+    	@Last update: 06/04/2021
     **/
     if(json.Flexbox){
         this.Flexbox = it.flexbox = function(cfg){
@@ -3485,9 +3491,9 @@ function isiToolsCallback(json){
 
             // Añadimos las clases CSS genéricas
             if(!cfg.stylesheet){
-                it.addCSSRule('', '.flexbox', '--gap: ' + cfg.gap + '; --padding: ' + cfg.padding + '; display: block; flex-direction: column; margin: calc( -1 * var(--gap)) 0 0 calc( -1 * var(--gap)); padding: var(--padding);');
-                it.addCSSRule('', '.flexbox .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%;');
-                it.addCSSRule('', '.flexbox .col, .flexbox [class*="col-"]', 'display: block; align-items: center; flex: auto; box-sizing: border-box; margin: var(--gap) 0 0 var(--gap); padding: var(--padding);');
+                it.addCSSRule('', '.it-flexbox', '--gap: ' + cfg.gap + '; --padding: ' + cfg.padding + '; display: block; flex-direction: column; margin: calc( -1 * var(--gap)) 0 0 calc( -1 * var(--gap)); padding: var(--padding);');
+                it.addCSSRule('', '.it-flexbox .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%; position: relative;');
+                it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: block; align-items: center; flex: auto; box-sizing: border-box; margin: var(--gap) 0 0 var(--gap); padding: var(--padding);');
             }
 
             // Recuperamos todos los nombres de resoluciones
@@ -3497,7 +3503,7 @@ function isiToolsCallback(json){
             });
 
             // Recuperamos todas las clases de loa elementos a nivel de columna de los flexbox
-            var items = document.querySelectorAll('.flexbox > * > *');
+            var items = document.querySelectorAll('.it-flexbox > * > *');
             Array.prototype.slice.call(items).forEach(function(target){
                 Array.prototype.slice.call(target.classList).forEach(function(cls){
                     var val = Math.round(parseFloat(cls.replace(/[^\.0-9]/ig, '').trim()) * cfg.factor * 10000) / 10000;
@@ -3509,37 +3515,38 @@ function isiToolsCallback(json){
                     for(var x = 0; x < it.flexbox.config.resolutions.length; x++){
                         var cs = it.flexbox.config.resolutions[x], name = cs.name;
 
+                        it.addCSSRule('', '.it-flexbox .row .' + name + '-show', 'display: none !important;');
+
                         if(!cs.hasOwnProperty("media")){
                             cs.media = '';
                         }
 
                         // Si la clase CSS es específica de una resolución la añadimos a la definición de su media-query
-                        if(cls.indexOf(name) != -1 && cs.media.indexOf('.flexbox .row > .' + clss) == -1){
+                        if(cls.indexOf(name) != -1 && cs.media.indexOf('.it-flexbox .row > .' + clss) == -1){
                             if(cls.indexOf('offset') != -1){
-                                cs.media += '.flexbox .row > .' + clss + '{ margin-left: calc(' + val + '% + var(--gap)) }';
+                                cs.media += '.it-flexbox .row > .' + clss + '{ margin-left: calc(' + val + '% + var(--gap)) }';
 
                             } else if(cls.indexOf('order') != -1){
-                                cs.media += '.flexbox .row > .' + clss + '{order:' + val + ';}';
+                                cs.media += '.it-flexbox .row > .' + clss + '{order:' + val + ';}';
 
                             } else {
-                                cs.media += '.flexbox .row > .' + clss + '{' + ('flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));') + '}';
+                                cs.media += '.it-flexbox .row > .' + clss + '{' + ('flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));') + '}';
                             }
-
-                            // Si la clase CSS NO es específica de una resolución, la añadimos directamente
                         }
                     }
 
+                    // Si la clase CSS NO es específica de una resolución, la añadimos directamente
                     if(cls.indexOf('col') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo COL
-                        it.addCSSRule('', '.flexbox .row > .' + clss, 'flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));');
+                        it.addCSSRule('', '.it-flexbox .row > .' + clss, 'flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));');
 
                     } else if(names.indexOf(cls.substr(0, 2)) == -1 && cls.indexOf('offset') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo OFFSET
-                        it.addCSSRule('', '.flexbox .row > .' + clss, 'margin-left: calc(' + val + '% + var(--gap))');
+                        it.addCSSRule('', '.it-flexbox .row > .' + clss, 'margin-left: calc(' + val + '% + var(--gap))');
 
                     } else if(names.indexOf(cls.substr(0, 2)) == -1 && cls.indexOf('order') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo ORDER
-                        it.addCSSRule('', '.flexbox .row > .' + clss, 'order:' + val);
+                        it.addCSSRule('', '.it-flexbox .row > .' + clss, 'order:' + val);
 
                     }
                 });
@@ -3553,23 +3560,25 @@ function isiToolsCallback(json){
                 target.parentElement.setAttribute("aria-rowindex", rows.indexOf(target.parentElement));
             });
 
-            var items = document.querySelectorAll('.flexbox');
+            var items = document.querySelectorAll('.it-flexbox');
             Array.prototype.slice.call(items).forEach(function(target){
                 target.setAttribute("role", "grid");
                 target.setAttribute("aria-rowcount", target.children.length);
             });
 
             it.flexbox.config.resolutions.sort(function(a, b){
-                return b.maxWidth - a.maxWidth;
+                return a.minWidth - b.minWidth;
             })
 
             // Añadimos las medias-queries
             for(var x = 0; x < it.flexbox.config.resolutions.length; x++){
                 var cs = it.flexbox.config.resolutions[x];
-                var mw = x + 1 == it.flexbox.config.resolutions.length ? 0 : it.flexbox.config.resolutions[x + 1].maxWidth + 1;
 
                 if(!cfg.stylesheet){
-                    it.addCSSRule('', '@media all and (min-width: ' + mw + 'px) and (max-width: ' + cs.maxWidth + 'px)', cs.media);
+                    cs.media += '.it-flexbox .row .' + cs.name + '-hide { display: none !important; }';
+                    cs.media += '.it-flexbox .row .' + cs.name + '-show { display: block !important; }'
+                    
+                    it.addCSSRule('', '@media all and (min-width: ' + (cs.minWidth) + 'px)', cs.media);
                 }
             }
         }
@@ -3579,11 +3588,11 @@ function isiToolsCallback(json){
             padding: '5px',
             factor: 1,
             resolutions: [
-               { name: 'xs', maxWidth: 480 },
-               { name: 'sm', maxWidth: 768 },
-               { name: 'md', maxWidth: 1024 },
-               { name: 'lg', maxWidth: 1366 },
-               { name: 'xl', maxWidth: 1920 },
+               { name: 'xs', minWidth: 0 },
+               { name: 'sm', minWidth: 640 },
+               { name: 'md', minWidth: 1024 },
+               { name: 'lg', minWidth: 1366 },
+               { name: 'xl', minWidth: 1680 },
             ]
         };
     }
@@ -5150,10 +5159,10 @@ function isiToolsCallback(json){
             it.addCSSRule('', "#slider-" + cfg.id, 'display: block; width: 100%;');
 
             if(type == "switch"){
-                it.addCSSRule('', "#slider-" + cfg.id, "background: linear-gradient(to bottom, rgba(0,0,0,0.06) 0%,rgba(0,0,0,0) 100%); border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: inherit; margin: 0; top: 0;");
+                it.addCSSRule('', "#slider-" + cfg.id, "background: linear-gradient(to bottom, rgba(0,0,0,0.06) 0%,rgba(0,0,0,0) 100%); border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: none; margin: 0; top: 0;");
                 it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: 100% !important; z-index: 1; ");
-                it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-size: 12px; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.50) inset; display: block; font-size: 10px; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
-                it.addCSSRule('', "#slider-" + cfg.id + " label::before, it-slider[type=switch] label::after", "font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+                it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-weight: 600; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.50) inset; display: block; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+                it.addCSSRule('', "#slider-" + cfg.id + " label::before, #slider-" + cfg.id + " label::after", "font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
                 it.addCSSRule('', "#slider-" + cfg.id + " label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
                 it.addCSSRule('', "#slider-" + cfg.id + " label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
                 it.addCSSRule('', "#slider-" + cfg.id + " input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
@@ -6057,10 +6066,246 @@ function isiToolsCallback(json){
     }
 
     /**
-    	Sort tables functionality																		
-    	@version: 1.2.1																					
-    	@author: Pablo E. Fernández (islavisual@gmail.com).												
-    	@Copyright 2017-2021 Islavisual. 																	
+    	SlideShow functionality
+    	@version: 1.0
+    	@author: Pablo E. Fernández (islavisual@gmail.com).
+    	@Copyright 2017-2021 Islavisual.
+    	@Last update: 08/04/2021
+    **/
+    if(json.SlideShow){
+        this.SlideShow = it.slideShow = function (cfg) {
+            if(typeof cfg == "undefined") cfg = {};
+            
+            // If method was called by HTMLSelectElement
+            this.targets = this.tagName != undefined ? [this] : (this.entries == undefined ? this.targets : this);
+
+            Array.prototype.slice.call(this.targets).forEach(function(target){
+                var id = target.id, i;
+
+                // Si el target no tiene ID, se lo asignamos
+                if(!id){
+                    if(!id) id = 'it-slider-' + Math.random().toString(36).substr(2, 9);
+                    target.id = id;
+                }
+
+                // Recuperamos la configuración actual
+                var opt = it.slideShow.config[id] || cfg;
+                opt.autoplay = cfg.hasOwnProperty("autoplay") ? cfg.autoplay : false;
+                opt.currentSlide = cfg.hasOwnProperty("currentSlide") ? cfg.currentSlide : (typeof cfg == "number" ? cfg : 1);
+                opt.dots = target.querySelectorAll(".dot");
+                opt.fullscreen = cfg.hasOwnProperty("fullscreen") ? cfg.fullscreen : false;
+                opt.interval = cfg.hasOwnProperty("interval") ? cfg.interval : 5;
+                opt.player = cfg.hasOwnProperty("player") ? cfg.player : false;
+                opt.showNumbers = cfg.hasOwnProperty("showNumbers") ? cfg.showNumbers : false;
+                opt.slides = target.querySelectorAll(".slide");
+                opt.stylesheet = cfg.hasOwnProperty("stylesheet") ? cfg.stylesheet : false;
+                opt.title = cfg.hasOwnProperty("title") ? cfg.title : it.slideShow.language.title;
+                opt.width = cfg.hasOwnProperty("width") ? cfg.width : '100%';
+                opt.height = cfg.hasOwnProperty("height") ? cfg.height : '360px';
+
+                // Si se solicitó a pantalla completa establecemos los valores calculados
+                if(opt.fullscreen){
+                    opt.height = '100vh';
+                    opt.width = '100vw';
+                    target.classList.add("fullscreen");
+                }
+
+                // Si se solicitó el botón de reproducción
+                if(opt.player){
+                    var aux = document.createElement("button");
+                    aux.classList.add("player");
+                    aux.setAttribute("role", "button")
+                    target.appendChild(aux);
+
+                    it.slideShow.pause(target);
+                }
+
+                // Establecemos valores por defecto si el número de slide está fuera de los límites
+                if (opt.currentSlide > opt.slides.length) {opt.currentSlide = 1}
+                if (opt.currentSlide < 1) {opt.currentSlide = opt.slides.length}
+
+                // Reestablecemos todos los slides y dots activos
+                for (i = 0; i < opt.slides.length; i++) { opt.slides[i].classList.add("hide"); }
+                if(opt.dots.length != 0){
+                    for (i = 0; i < opt.dots.length; i++) { opt.dots[i].classList.remove("active"); }
+                }
+
+                // Asignamos el slide y dot actual
+                opt.slides[opt.currentSlide-1].classList.remove("hide");
+                if(opt.dots.length != 0){
+                    opt.dots[opt.currentSlide-1].classList.add("active");
+                }
+
+                // Asignamos tamaño si el target no lo tiene todavía
+                if(!target.style.height){
+                    // Asignamos los atributos de accesibilidad 
+                    target.setAttribute("aria-roledescription", "carousel");
+                    target.setAttribute("aria-label", opt.title);
+
+                    // Creamos el contenedor de dots
+                    var dots = document.createElement("div");
+                        dots.classList.add("dots");
+
+                    // Asignamos los atributos de accesibilidad a cada slide,
+                    // Añadimos un enlace/dot en dots
+                    // Y el número de diapositiva, si procede
+                    for(var i = 0; i < opt.slides.length; i++){
+                        opt.slides[i].setAttribute("aria-roledescription", "slide");
+                        opt.slides[i].setAttribute("aria-label", (i + 1) + it.slideShow.language.slideOf +  opt.slides.length);
+
+                        var dot = document.createElement("a");
+                            dot.classList.add("dot")
+                            dot.setAttribute("onclick", "it.slideShow.toSlide(this, " + (i + 1) + ")");
+                            dot.setAttribute("role", "button");
+                            dot.setAttribute("aria-controls", target.id);
+                            dot.setAttribute("aria-label", it.slideShow.language.goto + (i + 1));
+                            dot.setAttribute("tabindex", "0");
+
+                        if(i == opt.currentSlide-1) dot.classList.add("active");
+
+                        if(opt.showNumbers){
+                            var sn = document.createElement("span");
+                                sn.classList.add("slide-id")
+                                sn.innerHTML = (i + 1) + " / " + opt.slides.length;
+
+                            opt.slides[i].insertAdjacentElement("afterbegin", sn);
+                        }
+
+                        dots.appendChild(dot);
+                    }
+
+                    // Añadimos los botones y dots a cada target
+                    var prev = document.createElement("a");
+                        prev.classList.add("prev")
+                        prev.setAttribute("onclick", "it.slideShow.toggle(this, -1)");
+                        prev.setAttribute("role", "button");
+                        prev.setAttribute("aria-controls", target.id);
+                        prev.setAttribute("aria-label", it.slideShow.language.prev);
+                        prev.setAttribute("tabindex", "0");
+                        prev.innerHTML = "&#10094;"
+
+                        target.appendChild(prev);
+
+                    var next = document.createElement("a");
+                        next.classList.add("next")
+                        next.setAttribute("onclick", "it.slideShow.toggle(this, 1)");
+                        next.setAttribute("role", "button");
+                        next.setAttribute("aria-controls", target.id);
+                        next.setAttribute("aria-label", it.slideShow.language.next);
+                        next.setAttribute("tabindex", "0");
+                        next.innerHTML = "&#10095;"
+
+                        target.appendChild(next);
+
+                    target.appendChild(dots);
+                    
+                    // Asignamos el ancho y alto del slideshow
+                    if(!opt.fullscreen){
+                        target.style.height = cfg.height;
+                        target.style.width = cfg.width;
+                    }
+
+                    // Guardamos la actual configuración
+                    it.slideShow.config[id] = opt;
+
+                    // Si se solicitó la reprocucción automática, la activamos
+                    if(opt.autoplay){
+                        it.slideShow.play(target);
+                    }
+                }
+            });
+
+            if(!cfg.stylesheet && !it.slideShow._stylesAdded){
+                AddCSSRule('', '.it-slideshow', 'max-width: none; position: relative; margin: 0; padding: 0;');
+                AddCSSRule('', '.it-slideshow .prev, .it-slideshow .next', 'cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none;');
+                AddCSSRule('', '.it-slideshow .next', 'right: 0; border-radius: 3px 0 0 3px;');
+                AddCSSRule('', '.it-slideshow .prev:hover, .it-slideshow .next:hover', 'background-color: rgba(0,0,0,0.8);');
+                AddCSSRule('', '.it-slideshow .title', 'color: #ffffff; font-size: 2rem; padding: 8px 12px; position: absolute; bottom: 50%; width: 100%; text-align: center;');
+                AddCSSRule('', '.it-slideshow .text', 'background: rgba(0,0,0,0.5); color: #f2f2f2; font-size: 1rem; padding: 8px 12px 22px; position: absolute; bottom: 0; width: 100%; text-align: center;');
+                AddCSSRule('', '.it-slideshow .slide-id', 'background-color: rgba(0,0,0,0.8); color: #f2f2f2; font-size: 0.8rem; padding: 5px 10px; position: absolute; top: 0;');
+                AddCSSRule('', '.it-slideshow .dots', 'text-align: center; position: absolute; width: 100%; bottom: 0; left: 0;');
+                AddCSSRule('', '.it-slideshow .dot ', 'cursor: pointer; height: 15px; width: 15px; margin: 0 2px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease;');
+                AddCSSRule('', '.it-slideshow .slide', 'position: absolute; top: 0; left: 0; transition: opacity 1s ease-in-out; height: 100%; width: 100%; margin: 0; padding: 0;');
+                AddCSSRule('', '.it-slideshow .slide img', 'max-width: 100%; display: block; object-fit: cover; height: 100%; width: 100%;');
+                AddCSSRule('', '.it-slideshow .active, .dot:hover', 'background-color: #000;');
+                AddCSSRule('', '.it-slideshow .fade', 'opacity: 1;');
+                AddCSSRule('', '.it-slideshow .hide', 'opacity: 0;');
+                AddCSSRule('', '@keyframes it-slideshow-fade', '0% { display: block; opacity: 0 } 1% { opacity: 0 } 100% { opacity: 1 }');
+                AddCSSRule('', '@keyframes it-slideshow-hide', ' 0% { opacity: 1 } 99% { opacity: 0; } 100% { opacity: 0; display: none; }');
+
+                AddCSSRule('', '.it-slideshow.fullscreen', 'height: 100vh; width: 100%;');
+
+                AddCSSRule('', '.it-slideshow .player', 'position: absolute; top: 5px; right: 5px; font-size: 21px; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 0 , 0, 0.5); color: #fff; width: 32px; height: 32px; line-height: 30px; text-align: center; padding: 0; margin: 0;');
+                AddCSSRule('', '.it-slideshow.playing .player::before', 'content: "\\2590\\a0\\258c"; ');
+                AddCSSRule('', '.it-slideshow.playing .player', 'font-size: 12px;');
+                AddCSSRule('', '.it-slideshow.paused .player::before', 'content: "\\1f782"; ');
+                AddCSSRule('', '.it-slideshow.paused .player', 'font-size: 19px;');
+                
+
+                it.slideShow._stylesAdded = true;
+            }
+        }
+
+        it.slideShow.config = {}
+        it.slideShow.language = {
+            prev: "Mostrar diapositiva anterior",
+            next: "Mostrar diapositiva siguiente",
+            goto: "Mostrar diapositiva ",
+            start: "Iniciar presentación automática de diapositivas",
+            stop: "Detener presentación automática de diapositivas",
+            title: "Presentación de diapositivas de imágenes",
+            slideOf: " de "
+        }
+        
+        it.slideShow.play = function(el){
+            var cfg = it.slideShow.config[el.id] || {};
+
+            it.slideShow._playing = setInterval(function(cfg){
+                it.slideShow.toggle(this, 1)
+            }.bind(el.querySelector(".next"), cfg), cfg.interval * 1000);
+
+            el.querySelector(".player").onclick = function(e){
+                it.slideShow.pause(e.target.parentElement)
+            }
+
+            el.querySelector(".player").setAttribute("aria-label", it.slideShow.language.stop)
+
+            el.classList.add("playing");
+            el.classList.remove("paused");
+        }
+
+        it.slideShow.pause = function(el){
+            clearInterval(it.slideShow._playing);
+
+            el.querySelector(".player").onclick = function(e){
+                it.slideShow.play(e.target.parentElement)
+            }
+
+            el.querySelector(".player").setAttribute("aria-label", it.slideShow.language.start)
+
+            el.classList.remove("playing");
+            el.classList.add("paused");
+        }
+        
+        it.slideShow.toggle = function(el, n){
+            el = el.parentElement;
+            it(el).slideShow(parseInt(el.querySelector(".active").getAttribute("onclick").replace(/[^0-9]/g, '')) + n);
+        }
+
+        it.slideShow.toSlide = function(el, n){
+            el = el.parentElement.parentElement;
+            it(el).slideShow(n);
+        }
+
+        it.slideShow._playing = null;
+        it.slideShow._stylesAdded = false;
+    }
+
+    /**
+    	Sort tables functionality
+    	@version: 1.2.1
+    	@author: Pablo E. Fernández (islavisual@gmail.com).
+    	@Copyright 2017-2021 Islavisual.
     	@Last update: 07/03/2021
     **/
     if(json.Sorter){
@@ -6077,7 +6322,7 @@ function isiToolsCallback(json){
                     id = 'Sorter_' + idx;
                     target.id = id;
                 }
-                target.classList.add("sortable");
+                target.classList.add("it-sortable");
 
                 // Establecemos la configuración requerida para la tabla
                 var opt = {
@@ -6135,7 +6380,7 @@ function isiToolsCallback(json){
         it.sorter._addSelector = function(opt){
             // Añadimos una capa envolvente para meter todos los elementos
             var div = document.createElement("div");
-            div.classList.add("sortable-layer");
+            div.classList.add("it-sortable-layer");
             div.innerHTML = opt.table.outerHTML;
 
             opt.table.parentElement.append(div)
@@ -6144,7 +6389,7 @@ function isiToolsCallback(json){
 
             // Añadimos el selector para ordenación múltiple
             var tbl = document.createElement("table");
-            tbl.classList.add("sortable-selector");
+            tbl.classList.add("it-sortable-selector");
             tbl.style.display = 'none';
 
             // Creamos la cabecera de la tabla
@@ -6172,7 +6417,6 @@ function isiToolsCallback(json){
             var tbody = document.createElement("tbody");
 
             var ths = opt.table.querySelectorAll("thead tr:last-child th");
-            var maxWidth = 0;
             for(var i = 0; i < ths.length; i++){
                 if(ths[i].innerText.trim() != ""){
                     var tr = document.createElement("tr");
@@ -6202,7 +6446,7 @@ function isiToolsCallback(json){
 
             // Añadimos el label para desplegar la lista de ordenación múltiple
             var lbl = document.createElement("label");
-            lbl.classList.add("sortable-label");
+            lbl.classList.add("it-sortable-label");
             lbl.onclick = function(e){
                 e.target.nextElementSibling.classList.toggle("open");
                 e.target.classList.toggle("open");
@@ -6440,23 +6684,23 @@ function isiToolsCallback(json){
 
         it.sorter._addCSSRules = function(opt){
             setTimeout(function(){
-                it.addCSSRule('', '.sortable th', 'cursor: pointer; position: relative; ');
-                it.addCSSRule('', '.sortable th ' + "." + opt.icons.sort.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 3px; right: 5px; font-size: 1em; color: #aaa; width: auto;');
-                it.addCSSRule('', '.sortable th ' + "." + opt.icons.asc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
-                it.addCSSRule('', '.sortable th ' + "." + opt.icons.desc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
+                it.addCSSRule('', '.it-sortable th', 'cursor: pointer; position: relative; ');
+                it.addCSSRule('', '.it-sortable th ' + "." + opt.icons.sort.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 3px; right: 5px; font-size: 1em; color: #aaa; width: auto;');
+                it.addCSSRule('', '.it-sortable th ' + "." + opt.icons.asc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
+                it.addCSSRule('', '.it-sortable th ' + "." + opt.icons.desc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
 
-                it.addCSSRule('', '.sortable-layer', 'position: relative;');
-                it.addCSSRule('', '.sortable-layer .sortable-label', 'border: 1px solid #ccc; cursor: pointer; float: right; min-width: auto; height: 28px; text-align: right; line-height: 26px; padding: 0 25px 0 5px; margin: 5px 0; position: relative; z-index: 2;');
-                it.addCSSRule('', '.sortable-layer .sortable-label::before', 'content: ""; border: 1px solid #000; border-width: 8px; border-color: #000 transparent transparent transparent; position: absolute; top: 10px; right: 6px; ');
-                it.addCSSRule('', '.sortable-layer .sortable-label::after', 'content: ""; border: 1px solid #000; border-width: 6px; border-color: #fff transparent transparent transparent; position: absolute; top: 10px; right: 8px; ');
-                it.addCSSRule('', '.sortable-layer .sortable-label.open::before', 'transform: rotate(180deg); top: 0;');
-                it.addCSSRule('', '.sortable-layer .sortable-label.open::after', 'transform: rotate(180deg); top: 4px;');
+                it.addCSSRule('', '.it-sortable-layer', 'position: relative;');
+                it.addCSSRule('', '.it-sortable-layer .it-sortable-label', 'border: 1px solid #ccc; cursor: pointer; float: right; min-width: auto; height: 28px; text-align: right; line-height: 26px; padding: 0 25px 0 5px; margin: 5px 0; position: relative; z-index: 2;');
+                it.addCSSRule('', '.it-sortable-layer .it-sortable-label::before', 'content: ""; border: 1px solid #000; border-width: 8px; border-color: #000 transparent transparent transparent; position: absolute; top: 10px; right: 6px; ');
+                it.addCSSRule('', '.it-sortable-layer .it-sortable-label::after', 'content: ""; border: 1px solid #000; border-width: 6px; border-color: #fff transparent transparent transparent; position: absolute; top: 10px; right: 8px; ');
+                it.addCSSRule('', '.it-sortable-layer .it-sortable-label.open::before', 'transform: rotate(180deg); top: 0;');
+                it.addCSSRule('', '.it-sortable-layer .it-sortable-label.open::after', 'transform: rotate(180deg); top: 4px;');
 
                 if(opt.selector){
-                    it.addCSSRule('', '.sortable-selector', 'max-height: 0; overflow: hidden; display:block; position: absolute; top: 32px; right: 0; background: #fff; border: 1px solid transparent; padding: 0 5px; z-index: 1; transition: max-height 0.25s ease; ');
-                    it.addCSSRule('', '.sortable-selector.open', 'max-height: 200px; padding: 5px; border-color: #ccc; overflow-y: scroll; overflow-x: hidden; ');
-                    it.addCSSRule('', '.sortable-selector td, .sortable-selector th', 'border: 1px solid #ccc; padding: 2px 5px; text-align: center; position: relative; min-width: 48px; font-size: 1rem;');
-                    it.addCSSRule('', '.sortable-selector input[type=radio]', 'position: relative; left: 0; top: 2px; float: none; margin: 0 auto;');
+                    it.addCSSRule('', '.it-sortable-selector', 'max-height: 0; overflow: hidden; display:block; position: absolute; top: 32px; right: 0; background: #fff; border: 1px solid transparent; padding: 0 5px; z-index: 1; transition: max-height 0.25s ease; ');
+                    it.addCSSRule('', '.it-sortable-selector.open', 'max-height: 200px; padding: 5px; border-color: #ccc; overflow-y: scroll; overflow-x: hidden; ');
+                    it.addCSSRule('', '.it-sortable-selector td, .it-sortable-selector th', 'border: 1px solid #ccc; padding: 2px 5px; text-align: center; position: relative; min-width: 48px; font-size: 1rem;');
+                    it.addCSSRule('', '.it-sortable-selector input[type=radio]', 'position: relative; left: 0; top: 2px; float: none; margin: 0 auto;');
                 }
 
                 if(opt.selector) opt.table.previousElementSibling.style.display = '';
@@ -6570,7 +6814,7 @@ function isiToolsCallback(json){
 
                 // Creamos la configuración por defecto
                 cfg.images = !cfg.hasOwnProperty("images") ? null : cfg.images;
-                cfg.type = !cfg.hasOwnProperty("type") ? '' : cfg.type;
+                cfg.overflow = !cfg.hasOwnProperty("overflow") ? false : cfg.overflow;
                 cfg.label = !cfg.hasOwnProperty("label") ? 'Opciones del tabs' : cfg.label;
                 cfg.stylesheet = !cfg.hasOwnProperty("stylesheet") ? false : cfg.stylesheet;
 
@@ -6620,7 +6864,7 @@ function isiToolsCallback(json){
                 }
 
                 // Añadimos la funcionalidad de overflow, si procede
-                if(cfg.type && cfg.type == "overflow"){
+                if(cfg.overflow){
                     it.tabs.initOverflowMode(cfg);
 
                     // Establecemos el ancho del contenedor de botones o enlaces si la funcionalidad de overflow está habilitada
