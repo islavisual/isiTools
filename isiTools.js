@@ -6079,47 +6079,54 @@ function isiToolsCallback(json){
             // If method was called by HTMLSelectElement
             this.targets = this.tagName != undefined ? [this] : (this.entries == undefined ? this.targets : this);
 
+            var opt;
             Array.prototype.slice.call(this.targets).forEach(function(target){
                 var id = target.id, i;
 
-                // Si el target no tiene ID, se lo asignamos
-                if(!id){
-                    if(!id) id = 'it-slider-' + Math.random().toString(36).substr(2, 9);
-                    target.id = id;
-                }
-
                 // Recuperamos la configuración actual
-                var opt = it.slideShow.config[id] || cfg;
-                opt.autoplay = cfg.hasOwnProperty("autoplay") ? cfg.autoplay : false;
-                opt.currentSlide = cfg.hasOwnProperty("currentSlide") ? cfg.currentSlide : (typeof cfg == "number" ? cfg : 1);
-                opt.dots = target.querySelectorAll(".dot");
-                opt.fullscreen = cfg.hasOwnProperty("fullscreen") ? cfg.fullscreen : false;
-                opt.interval = cfg.hasOwnProperty("interval") ? cfg.interval : 5;
-                opt.player = cfg.hasOwnProperty("player") ? cfg.player : false;
-                opt.showNumbers = cfg.hasOwnProperty("showNumbers") ? cfg.showNumbers : false;
-                opt.slides = target.querySelectorAll(".slide");
-                opt.stylesheet = cfg.hasOwnProperty("stylesheet") ? cfg.stylesheet : false;
-                opt.title = cfg.hasOwnProperty("title") ? cfg.title : it.slideShow.language.title;
-                opt.width = cfg.hasOwnProperty("width") ? cfg.width : '100%';
-                opt.height = cfg.hasOwnProperty("height") ? cfg.height : '360px';
+                if(!target.style.height){
+                    // Si el target no tiene ID, se lo asignamos
+                    if(!id){
+                        if(!id) id = 'it-slider-' + Math.random().toString(36).substr(2, 9);
+                        target.id = id;
+                    }
 
-                // Si se solicitó a pantalla completa establecemos los valores calculados
-                if(opt.fullscreen){
-                    opt.height = '100vh';
-                    opt.width = '100vw';
-                    target.classList.add("fullscreen");
+                    opt = it.slideShow.config[id] || cfg;
+                    opt.autoplay = cfg.hasOwnProperty("autoplay") ? cfg.autoplay : false;
+                    opt.currentSlide = cfg.hasOwnProperty("currentSlide") ? cfg.currentSlide : (typeof cfg == "number" ? cfg : 1);
+                    opt.dots = target.querySelectorAll(".dot");
+                    opt.effect = cfg.hasOwnProperty("effect") ? cfg.height : 'fade';
+                    opt.fullscreen = cfg.hasOwnProperty("fullscreen") ? cfg.fullscreen : false;
+                    opt.interval = cfg.hasOwnProperty("interval") ? cfg.interval : 5;
+                    opt.player = cfg.hasOwnProperty("player") ? cfg.player : false;
+                    opt.showNumbers = cfg.hasOwnProperty("showNumbers") ? cfg.showNumbers : false;
+                    opt.slides = target.querySelectorAll(".slide");
+                    opt.stylesheet = cfg.hasOwnProperty("stylesheet") ? cfg.stylesheet : false;
+                    opt.title = cfg.hasOwnProperty("title") ? cfg.title : it.slideShow.language.title;
+                    opt.width = cfg.hasOwnProperty("width") ? cfg.width : '100%';
+                    opt.height = cfg.hasOwnProperty("height") ? cfg.height : '360px';
+
+                    // Si se solicitó a pantalla completa establecemos los valores calculados
+                    if(opt.fullscreen){
+                        opt.height = '100vh';
+                        opt.width = '100vw';
+                        target.classList.add("fullscreen");
+                    }
+
+                    // Si se solicitó el botón de reproducción
+                    if(opt.player){
+                        var aux = document.createElement("button");
+                        aux.classList.add("player");
+                        aux.setAttribute("role", "button")
+                        target.appendChild(aux);
+
+                        it.slideShow.pause(target);
+                    }
+                } else {
+                    opt = it.slideShow.config[id];
+                    opt.currentSlide = (typeof cfg == "number" || typeof cfg == "string") ? cfg : 1;
                 }
-
-                // Si se solicitó el botón de reproducción
-                if(opt.player){
-                    var aux = document.createElement("button");
-                    aux.classList.add("player");
-                    aux.setAttribute("role", "button")
-                    target.appendChild(aux);
-
-                    it.slideShow.pause(target);
-                }
-
+                
                 // Establecemos valores por defecto si el número de slide está fuera de los límites
                 if (opt.currentSlide > opt.slides.length) {opt.currentSlide = 1}
                 if (opt.currentSlide < 1) {opt.currentSlide = opt.slides.length}
@@ -6138,6 +6145,9 @@ function isiToolsCallback(json){
 
                 // Asignamos tamaño si el target no lo tiene todavía
                 if(!target.style.height){
+                    // Asignamos la clase CSS
+                    target.classList.add("it-slideshow");
+
                     // Asignamos los atributos de accesibilidad 
                     target.setAttribute("aria-roledescription", "carousel");
                     target.setAttribute("aria-label", opt.title);
@@ -6146,23 +6156,30 @@ function isiToolsCallback(json){
                     var dots = document.createElement("div");
                         dots.classList.add("dots");
 
-                    // Asignamos los atributos de accesibilidad a cada slide,
-                    // Añadimos un enlace/dot en dots
-                    // Y el número de diapositiva, si procede
+                    // Recorremos los slides
                     for(var i = 0; i < opt.slides.length; i++){
+                        // Asignamos los atributos de accesibilidad a cada slide,
                         opt.slides[i].setAttribute("aria-roledescription", "slide");
                         opt.slides[i].setAttribute("aria-label", (i + 1) + it.slideShow.language.slideOf +  opt.slides.length);
 
-                        var dot = document.createElement("a");
-                            dot.classList.add("dot")
-                            dot.setAttribute("onclick", "it.slideShow.toSlide(this, " + (i + 1) + ")");
-                            dot.setAttribute("role", "button");
-                            dot.setAttribute("aria-controls", target.id);
-                            dot.setAttribute("aria-label", it.slideShow.language.goto + (i + 1));
-                            dot.setAttribute("tabindex", "0");
+                        // Añadimos los enlaces/dots para cada slide con sus
+                        // respectivos atributos de accesibilidad
+                        if(opt.dots.length == 0){
+                            var dot = document.createElement("a");
+                                dot.classList.add("dot")
+                                dot.setAttribute("onclick", "it.slideShow.toSlide(this, " + (i + 1) + ")");
+                                dot.setAttribute("role", "button");
+                                dot.setAttribute("aria-controls", target.id);
+                                dot.setAttribute("aria-label", it.slideShow.language.goto + (i + 1));
+                                dot.setAttribute("tabindex", "0");
 
-                        if(i == opt.currentSlide-1) dot.classList.add("active");
+                            // Asingamos el dot activo
+                            if(i == opt.currentSlide-1) dot.classList.add("active");
 
+                            dots.appendChild(dot);
+                        }
+
+                        // Añadimos el número de diapositiva, si procede
                         if(opt.showNumbers){
                             var sn = document.createElement("span");
                                 sn.classList.add("slide-id")
@@ -6171,8 +6188,14 @@ function isiToolsCallback(json){
                             opt.slides[i].insertAdjacentElement("afterbegin", sn);
                         }
 
-                        dots.appendChild(dot);
+                        // Asignamos a cada slide el efecto de transición solicitado,
+                        // fade, por defecto
+                        opt.slides[i].classList.add(opt.effect);
                     }
+                    // Añadimos el elemento contenedor de dots
+                    target.appendChild(dots);
+
+                    opt.dots = dots.querySelectorAll(".dot");
 
                     // Añadimos los botones y dots a cada target
                     var prev = document.createElement("a");
@@ -6197,13 +6220,9 @@ function isiToolsCallback(json){
 
                         target.appendChild(next);
 
-                    target.appendChild(dots);
-                    
                     // Asignamos el ancho y alto del slideshow
-                    if(!opt.fullscreen){
-                        target.style.height = cfg.height;
-                        target.style.width = cfg.width;
-                    }
+                    target.style.height = opt.height;
+                    target.style.width = opt.width;
 
                     // Guardamos la actual configuración
                     it.slideShow.config[id] = opt;
@@ -6212,10 +6231,13 @@ function isiToolsCallback(json){
                     if(opt.autoplay){
                         it.slideShow.play(target);
                     }
+                
                 }
+
+                it.slideShow.config[id].currentSlide = opt.currentSlide;
             });
 
-            if(!cfg.stylesheet && !it.slideShow._stylesAdded){
+            if(!opt.stylesheet && !it.slideShow._stylesAdded){
                 AddCSSRule('', '.it-slideshow', 'max-width: none; position: relative; margin: 0; padding: 0;');
                 AddCSSRule('', '.it-slideshow .prev, .it-slideshow .next', 'cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none;');
                 AddCSSRule('', '.it-slideshow .next', 'right: 0; border-radius: 3px 0 0 3px;');
