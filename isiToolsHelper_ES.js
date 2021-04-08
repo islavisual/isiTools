@@ -2816,7 +2816,29 @@ _CSS_'
 		description: 'Este componente permite presentar un conjunto de imágenes, comunmente denominadas diapositivas que se muestran secuencialmente una detrás de otra. Sólo permite visualizar una única diapositiva a la vez, sin embargo, ofrece la posibilidad de cambiar de diapositiva mediante unos botones que llevan a la anterior, la siguiente o a un número concreto, y la reproducción automática.\n\
 \n\
 También permite que la presentación cambie automáticamente de siapositiva pasado un tiempo, junto con la posibilidad de que pueda detenerse o reanudarse a través de unos controles de "play" y "stop".\n\
-<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los slideshow o carruseles de imágenes, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/carousel/carousel-1.html</name>',
+<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los slideshow o carruseles de imágenes, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/carousel/carousel-1.html</name>\n\
+\n\
+Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un contenedor <property>div</property> compuesto por varios contenedores hijos <property>div.slide</property> que, a su vez, contienen una imagen, un título y un texto.\n\
+\n\
+<code>\
+<name>&lt;div <field>class=</field><str>"slideshow"</str>></name>\n\
+	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
+		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2021/02/24/09/51/magical-6046020_960_720.jpg"</str>></name>\n\
+		<name>&lt;div <field>class=</field><str>"title"</str>></name>SLOGAN 1<name>&lt;/div></name>\n\
+		<name>&lt;div <field>class=</field><str>"text">Texto adicional 1.<name>&lt;/div></name>\n\
+	<name>&lt;/div></name>\n\
+	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
+		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2019/12/29/13/59/trees-4727156_960_720.jpg"</str>></name>\n\
+		<name>&lt;div <field>class=</field><str>"title"</str>></name>SLOGAN 2<name>&lt;/div></name>\n\
+		<name>&lt;div <field>class=</field><str>"text">Texto adicional 2.<name>&lt;/div></name>\n\
+	<name>&lt;/div></name>\n\
+	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
+		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2017/06/17/10/55/hot-air-balloon-2411851_960_720.jpg"</str>></name>\n\
+		<name>&lt;div <field>class=</field><str>"title"</str>></name>SLOGAN 3<name>&lt;/div></name>\n\
+		<name>&lt;div <field>class=</field><str>"text">Otro texto adicional.<name>&lt;/div></name>\n\
+	<name>&lt;/div></name>\n\
+<name>&lt;/div></name>\n\
+</code>',
 	},
 	additional: [
 		{
@@ -2834,7 +2856,6 @@ También permite que la presentación cambie automáticamente de siapositiva pas
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '_CSS_// Reglas CSS a incluir en tu hoja de estilos\n\
-// Ejemplo de estilo formato batería\n\
 .it-slideshow { max-width: none; position: relative; margin: 0px; padding: 0px; }\n\
 .it-slideshow .prev, .it-slideshow .next { cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: all 0.6s ease 0s; border-radius: 0px 3px 3px 0px; user-select: none; }\n\
 .it-slideshow .next { right: 0px; border-radius: 3px 0px 0px 3px; }\n\
@@ -3612,7 +3633,7 @@ this.Helper = it.helper = function (func, cfg) {
 		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" />\
 		<span>Pantalla de ayuda para </span>' + general.name + " " + general.version + 
 	'</h1>\
-	<p style="margin-top: 10px">'+ general.description + '</p>\
+	<p style="padding-top: 15px">'+ general.description + '</p>\
 	<p class="warning">__WARNING__</p>\
 	__TEXT__\
 <div id="additionalH31p3r" style="display:none; margin-top: 32px">\
@@ -3648,7 +3669,7 @@ this.Helper = it.helper = function (func, cfg) {
 			<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" />\
 			<span>Tabla de contenidos de isiTools</span> ' +  it.version + 
 		'</h1>\
-		<div style="margin-top: 10px">\
+		<div style="padding-top: 15px">\
 		IsiTools es un conjunto de herramientas pensadas para ayudar a los desarrolladores durante el proceso de creación del proyecto. Todas las funcionalidades incluidas están diseñadas para obtener un mejor rendimiento y una experiencia de usuario, un desarrollo más óptimo y ágil y un uso más sencillo y reutilizable. Además, permite que cada funcionalidad se cargue de forma independiente o modular evitando que el DOM se llene de elementos que no van a ser utilizados.<br/></br/>\
 __TEXT__\
 <name style="margin: 15px 0 10px 0; display:block;">Información adicional:</name>\
@@ -3681,7 +3702,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 
 			AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
 			AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 53px;left: 0;width: 100%;height: calc(100% - 53px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
+			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 50px;left: 0;width: 100%;height: calc(100% - 50px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
 			AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center; font-weight:400; background: ' + opt.color + '; padding: 15px; font-size: 18px; line-height: normal; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
 			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + '; text-align: center; font-weight:400; padding: 15px; font-size: 15px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
 			AddCSSRule('', "#h31p3r h2::before, #h31p3r h2::after", 'content: inherit;')
@@ -3726,8 +3747,8 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', '#h31p3r .btn-times::after', 'transform: rotate(-45deg);');
 			AddCSSRule('', '#h31p3r nav', 'position: fixed; right: 48px; top: 15px; width: 22px; height: 24px; z-index: 9; cursor: pointer; text-align: center;');
 			AddCSSRule('', '#h31p3r nav .btn-bars', 'display: block; width: 24px; height: 22px; font-size: 25px; visibility: initial; float: right; border-bottom: 2px solid ' + opt.background + '; transition: all 0.3s ease 0s;');
-			AddCSSRule('', '#h31p3r nav .btn-bars:before', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 4px; transition: all 0.3s ease 0s;');
-			AddCSSRule('', '#h31p3r nav .btn-bars:after', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; height: 10px; transition: all 0.3s ease 0s;');
+			AddCSSRule('', '#h31p3r nav .btn-bars::before', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; position: relative; top: 4px; transition: all 0.3s ease 0s;');
+			AddCSSRule('', '#h31p3r nav .btn-bars::after', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; height: 12px; transition: all 0.3s ease 0s;');
 			AddCSSRule('', '#h31p3r nav a.on .btn-bars:before', 'width: 50%;');
 			AddCSSRule('', '#h31p3r nav a.on .btn-bars:after', 'width: 75%; transition: all 0.3s ease;');
 			AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px;');
