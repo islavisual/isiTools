@@ -172,7 +172,7 @@ WikiHelper.Parents = {
 		example: '// Devolver el elemento TABLE de un TD previamente seleccionado por la variable $0.\n\
 it($0).parents("table");\n\
 // Su resultado podría ser algo como:\n\
-&lt;table class="cebrada"&gt;&lt;/table&gt;\n\
+<name>&lt;table <field>class=</field><str>"cebrada"</str>></name><name>&lt;/table></name>\n\
 \n\
 // Devolver el elemento padre con clase "container" del elemento de formulario con ID "municipio".\n\
 it("#municipio").parents(".container");\n\
@@ -183,7 +183,7 @@ it("input").parents(".dialog.displayed");\n\
 // Devolver todos los padres de un elemento dado en un array.\n\
 it($0).parents();\n\
 // Su resultado podría ser algo como:\n\
-[tr, thead, table, section, main, body, html]',
+<func>[<name>tr</name>, <name>thead</name>, <name>table</name>, <name>section</name>, <name>main</name>, <name>body</name>, <name>html</name>]</func>',
 	},
 }
 
@@ -2544,7 +2544,9 @@ WikiHelper.Password = {
 		description: 'Este componente es una herramienta que ofrece la posibilidad de administrar la creación de contraseñas y sus fortalezas. Permite definir la longitud y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, posee un sistema de detección y penalización por consecución de minúsculas, mayúsculas y dígitos consecutivos o la repeción de tres o más veces sobre un mismo carácter.\n\
 \n\
 // En todos los siguientes casos supondremos que tenemos un elemento o código como el siguiente:\n\
-<code><name>&lt;input</name> <property>id=</property>"pwd" <property>name=</property>"pwd" <property>type=</property>"password" <property>maxlength=</property>"50" <property>autocomplete=</property>"off"<name> /></name></code>',
+<code>\
+<name>&lt;input</name> <field>id=<str>"pwd"</str></field> <field>name=<str>"pwd"</str></field> <field>type=<str>"password"</str></field> <field>maxlength=<str>"50"</str></field> <field>autocomplete=<str>"off"</str></field> <name>/></name>\
+</code>',
 	},
 	additional: [
 		{
@@ -2624,13 +2626,13 @@ autodraw: false,\n\
 		type: 'function',
 		description: 'Permite comprobar la seguridad de la contraseña. Puede definir la longitud mínima y el número mínimo de mayúsculas, minúsculas, números y caracteres especiales para enviar / guardar la contraseña. Además, puede definir los colores utilizados para indicar cuándo la contraseña es correcta y cuándo no.',
 		example: '// Para este ejemplo, primero se debe añadir un evento onkeyup en el INPUT propuesto al principio de este documento de ayuda\n\
-&lt;input\n\
-id="pwd"\n\
-name="pwd"\n\
-type="password"\n\
-maxlength="50"\n\
-autocomplete="off"\n\
-onkeyup="it.password.check(this);" />'
+<name>&lt;input</name>\n\
+<field>id=<str>"pwd"</str></field>\n\
+<field>name=<str>"pwd"</str></field>\n\
+<field>type=<str>"password"</str></field>\n\
+<field>maxlength=<str>"50"</str></field>\n\
+<field>autocomplete=<str>"off"</str></field>\n\
+<field>onkeyup=<str>"it.password.check(this);"</str></field>'
 	},
 	confirmby: {
 		type: 'string',
@@ -2731,7 +2733,24 @@ WikiHelper.Selectpicker = {
 	additional: [
 		{
 			description: 'Habilita la búsqueda dentro del desplegable:',
-			example: '// Supposed the next code:\n&lt;select id="months" name="months" class="select-picker" data-live-search="true">\n\t&lt;option value="01">January&lt;/option>\n\t...\n&lt;/select>\n\n// Once set data-live-search to true into select, initialize\nSelectpicker.init(".select-picker");'
+			example: '// Supposed the next code:\n\
+<name>&lt;select</name> <field>id=<str>"months"</str></field> <field>name=<str>"months"</str></field> <field>class=<str>"select-picker"</str></field> <field>data-live-search=<str>"true"</str></field><name>></name>\n\
+	<name>&lt;option <field>value=</field><str>"01"</str></field>><str>Enero</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"02"</str></field>><str>Febrero</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"03"</str></field>><str>Marzo</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"04"</str></field>><str>Abril</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"05"</str></field>><str>Mayo</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"06"</str></field>><str>Junio</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"07"</str></field>><str>Julio</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"08"</str></field>><str>Agosto</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"09"</str></field>><str>Septiembre</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"10"</str></field>><str>Octubre</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"11"</str></field>><str>Noviembre</str>&lt;/option></name>\n\
+	<name>&lt;option <field>value=</field><str>"12"</str></field>><str>Diciembre</str>&lt;/option></name>\n\
+<name>&lt;/select</name>\n\
+\n\
+// Once set data-live-search to true into select, initialize\n\
+Selectpicker.init(".select-picker");'
 		},
 		{
 			description: 'Personaliza el aspecto del Selectpicker a través de CSS:',
@@ -2820,7 +2839,7 @@ También permite que la presentación cambie automáticamente de siapositiva pas
 \n\
 Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un contenedor <property>div</property> compuesto por varios contenedores hijos <property>div.slide</property> que, a su vez, contienen una imagen, un título y un texto.\n\
 \n\
-<code>\
+<code style="white-space: pre-wrap;">\
 <name>&lt;div <field>class=</field><str>"slideshow"</str>></name>\n\
 	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
 		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2021/02/24/09/51/magical-6046020_960_720.jpg"</str>></name>\n\
@@ -3078,7 +3097,7 @@ WikiHelper.Tabs = {
 Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un código que se alimenta de una lista con enlaces o botones y unos elementos de caja o secciones que contienen los diferenttes contenidos de cada una de las pestañas.\n\
 \n\
 La estructura de la cabecera de los TABS puede definirse mediante un elemento de lista <property>ul</property> con enlaces:\n\
-<code>\
+<code style="white-space: pre-wrap;">\
 <name>&lt;ul <field>class=</field><str>"tabs"</str>></name>\n\
 	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Investigación y Desarrollo</text><name>&lt;/button></name><name>&lt;/li></name>\n\
 	<name>&lt;li></name><name>&lt;a <field>href=</field><str>"javascript:void(0)"</str>></name><text style="display:inline; padding: 0">Planificación y Organización</text><name>&lt;/button></name><name>&lt;/li></name>\n\
@@ -3088,7 +3107,7 @@ La estructura de la cabecera de los TABS puede definirse mediante un elemento de
 <name>&lt;/ul></name>\n\
 </code>\n\
 O mediante un elemento de caja <property>div</property> o de navegación <property>nav</property> con botones:\n\
-<code>\
+<code style="white-space: pre-wrap;">\
 <name>&lt;nav <field>class=</field><str>"tabs"</str>></name>\n\
 	<name>&lt;button></name><text style="display:inline; padding: 0">Investigación y Desarrollo</text><name>&lt;/button></name>\n\
 	<name>&lt;button></name><text style="display:inline; padding: 0">Planificación y Organización</text><name>&lt;/button></name>\n\
@@ -3098,7 +3117,7 @@ O mediante un elemento de caja <property>div</property> o de navegación <proper
 <name>&lt;/nav></name>\n\
 </code>\n\
 Los elementos que representan el cóntenido podrán ser cualquier elemento de caja o sección y sólo deberán ser proporcionados a través de un ID:\n\
-<code>\
+<code style="white-space: pre-wrap;">\
 <name>&lt;div <field>id=</field><str>"tab1"</str>></name>\n\
 	<name>&lt;h3></name><text style="display:inline; padding: 0">Investigación y Desarrollo</text><name>&lt;/h3></name>\n\
 	<name>&lt;p></name>Texto 1<name>&lt;/p></name>\n\
