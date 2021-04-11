@@ -3503,10 +3503,22 @@ function isiToolsCallback(json){
             });
 
             // Recuperamos todas las clases de loa elementos a nivel de columna de los flexbox
-            var items = document.querySelectorAll('.it-flexbox > * > *');
+            var items = document.querySelectorAll('.it-flexbox .row > *');
             Array.prototype.slice.call(items).forEach(function(target){
                 Array.prototype.slice.call(target.classList).forEach(function(cls){
                     var val = Math.round(parseFloat(cls.replace(/[^\.0-9]/ig, '').trim()) * cfg.factor * 10000) / 10000;
+                        val = val.toFixed(4);
+
+                    // Si el valor es igual al valor entero, eliminamos los decimales
+                    if(val == parseInt(val)){ val = parseInt(val) }
+                    
+                    // Si el valor no es NaN, cambiamos la clase del elemento
+                    // para asegurar la asignación
+                    if(!isNaN(val)){
+                        target.classList.replace(cls, cls.replace(/[0-9\.]/g, '')+val)
+                        cls = cls.replace(/[0-9\.]/g, '')+val;
+                    }
+
                     var clss = cls.replace(/\./g, '\\.').trim();
 
                     // Recorremos las diferentes resoluciones para 
@@ -6109,7 +6121,7 @@ function isiToolsCallback(json){
                     // Si se solicitó a pantalla completa establecemos los valores calculados
                     if(opt.fullscreen){
                         opt.height = '100vh';
-                        opt.width = '100vw';
+                        opt.width = '100%';
                         target.classList.add("fullscreen");
                     }
 
