@@ -50,7 +50,7 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.6",
+it.version = "2.0.7",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
 it.lastupdate = "13/04/2021",
@@ -5652,10 +5652,10 @@ function isiToolsCallback(json){
 
     /**
     	Dropdown select
-    	@version: 1.4.2
+    	@version: 1.5
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 19/01/2021
+    	@Last update: 13/04/2021
     **/
     if(json.Selectpicker){
         this.Selectpicker = it.selectpicker = function(cfg){
@@ -5686,7 +5686,7 @@ function isiToolsCallback(json){
                 it.selectpicker._curIndex[trg.id] = -1;
 
                 if(trg.tagName.toLowerCase() != "select"){
-                    alert("Error into #" + trg.id + " element. You need set an SELECT element like target to create Selectpicker!. Please, see the help with the Selectpicker.help();");
+                    alert("Error en el elemento #" + trg.id + ". ¡Se necesita establecer un elemento SELECT como objetivo para crear el Selectpicker!. Por favor, consulta la ayuda con it.helper('selectpicker');");
                     return false;
                 }
 
@@ -5902,8 +5902,25 @@ function isiToolsCallback(json){
                     li.setAttribute("rel", i);
                     li.id = trg.id + '_option_' + i;
                     li.setAttribute("data-value", item.value);
-                    li.innerHTML = item.innerText;
-                    li.setAttribute("onclick", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
+
+                    if(trg.multiple){
+                        var chkLI = document.createElement("input");
+                        chkLI.id = "chk-" + trg.id + li.getAttribute('rel') + i;
+                        chkLI.type = "checkbox";
+                        chkLI.setAttribute("onchange", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
+
+                        var lbl = document.createElement("label");
+                            lbl.setAttribute("for", chkLI.id)
+                            lbl.append(chkLI)
+                            lbl.append(document.createTextNode(item.innerText))
+                        
+                        li.append(lbl);
+
+                    } else {
+                        li.innerHTML = item.innerText;
+                        li.setAttribute("onclick", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
+                    }
+
                     if(item.getAttribute("selected") != null && item.getAttribute("disabled") == null){
                         li.setAttribute("class", "selected");
                         btn.innerText = trg.options[trg.selectedIndex].innerText;
@@ -5945,10 +5962,10 @@ function isiToolsCallback(json){
                 AddCSSRule('', ".it-select-picker", 'position: relative; width: 100%;');
                 AddCSSRule('', ".it-select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 30px; width: 100%; z-index: 99999;');
                 AddCSSRule('', ".it-select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
-                AddCSSRule('', ".it-select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 10px;');
+                AddCSSRule('', ".it-select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 0px;');
                 AddCSSRule('', ".it-select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px;');
                 AddCSSRule('', ".it-select-picker button:hover", 'border-color: #adadad;');
-                AddCSSRule('', ".it-select-picker.open button", ' background: #000; color: #ffffff;');
+                AddCSSRule('', ".it-select-picker.open button", ' background: #000; color: #fff;');
                 AddCSSRule('', ".it-select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); color: rgba(0,0,0,1); padding: 4px 5px; line-height: normal; margin: 0;');
                 AddCSSRule('', ".it-select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
                 AddCSSRule('', ".it-select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%;');
@@ -5958,12 +5975,16 @@ function isiToolsCallback(json){
                 AddCSSRule('', ".it-select-picker > button:focus, select:focus + .it-select-picker > button", 'border: 1px solid red;');
                 AddCSSRule('', '.it-select-picker input[type="search"]::-webkit-search-cancel-button', '-webkit-appearance: none; appearance: none;');
                 AddCSSRule('', '.it-select-picker input[type=search]::-ms-clear, .it-select-picker input[type=search]::-ms-reveal', 'display: none; width: 0; height: 0;');
+                AddCSSRule('', '.it-select-picker button .tag', 'background: #000; color: #fff; margin: 0 0 0 5px; padding: 2px 32px 2px 5px; box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset; position: relative;');
+                AddCSSRule('', '.it-select-picker button .tag::after', 'content: "\\2713"; position: absolute; top: -2px; right: 8px;');
+                AddCSSRule('', '.it-select-picker label', 'width: 100%; display: inline-block; padding-left: 25px;');
+                AddCSSRule('', '.it-select-picker label input', 'position: relative; top: 0px; left: -25px;');
             }
 
             return div
         }
 
-        it.selectpicker.version = '1.4.2';
+        it.selectpicker.version = '1.5';
         it.selectpicker._curIndex = {};
         it.selectpicker.all = [];
 
@@ -5979,20 +6000,34 @@ function isiToolsCallback(json){
         it.selectpicker._update = function(e, i){
             // update HTML select
             e = document.getElementById(e);
-            e.selectedIndex = i;
             var sp = e.nextElementSibling;
 
-            // update selectpicker
-            sp.children[0].innerText = e[i].innerText;
+            if(!e.multiple){
+                e.selectedIndex = i;
+                
+                // Update text in button
+                sp.children[0].innerText = e[i].innerText;
 
-            // Close selectpicker list
-            sp.classList.remove("open");
-            sp.children[1].style.display = "none";
-            sp.children[0].setAttribute("aria-expanded", "false");
-            sp.setAttribute("aria-activedescendant", e[i].value);
+                // Close selectpicker list
+                sp.classList.remove("open");
+                sp.children[1].style.display = "none";
+                sp.children[0].setAttribute("aria-expanded", "false");
+                sp.setAttribute("aria-activedescendant", e[i].value);
 
-            e.dispatchEvent(new Event('change'));
-            e.focus();
+                e.dispatchEvent(new Event('change'));
+                e.focus();
+
+            } else {
+                e.options[i].selected = !e.options[i].selected;
+
+                // Update text in button
+                sp.children[0]. innerHTML = "";
+                for(var j = 0; j < e.options.length; j++){
+                    if(e.options[j].selected){
+                        sp.children[0].insertAdjacentHTML("beforeend", '<span class="tag">' + e.options[j].innerText + '</span>');
+                    }
+                }
+            }
         };
 
         it.selectpicker._windowListener = function(e){
@@ -6337,10 +6372,10 @@ function isiToolsCallback(json){
 
     /**
     	Sort tables functionality
-    	@version: 1.2.1
+    	@version: 1.2.2
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 07/03/2021
+    	@Last update: 13/04/2021
     **/
     if(json.Sorter){
         this.Sorter = it.sorter = function(cfg){
