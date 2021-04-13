@@ -1,31 +1,31 @@
 var itEnabledModules = {
-    AddCSSRule: true,
+    AddCSSRule: false,
     Alert: false,
-    Autocomplete: true,
+    Autocomplete: false,
     Benchmark: false,
     Constraint: false,
     Counter: false,
-    Datepicker: true,
+    Datepicker: false,
     Debugger: false,
     DOM: false,
     Flexbox: true,
     GetBrowser: false,
     GetParam: false,
-    HttpRequest: true,
+    HttpRequest: false,
     Include: false,
     IntelliForm: false,
     IsMobile: false,
     Language: false,
-    Mask: true,
+    Mask: false,
     Slider: false,
     Password: false,
-    Selectpicker: true,
+    Selectpicker: false,
     SendForm: false,
-    SlideShow: false,
+    SlideShow: true,
     Sorter: false,
     StripTags: false,
     Tabs: false,
-    Treeview: true,
+    Treeview: false,
     Validator: false
 }
 
@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.5",
+it.version = "2.0.6",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "08/04/2021",
+it.lastupdate = "13/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -3477,7 +3477,7 @@ function isiToolsCallback(json){
     	@version: 1.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 06/04/2021
+    	@Last update: 11/04/2021
     **/
     if(json.Flexbox){
         this.Flexbox = it.flexbox = function(cfg){
@@ -6079,10 +6079,10 @@ function isiToolsCallback(json){
 
     /**
     	SlideShow functionality
-    	@version: 1.0
+    	@version: 1.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 08/04/2021
+    	@Last update: 13/04/2021
     **/
     if(json.SlideShow){
         this.SlideShow = it.slideShow = function (cfg) {
@@ -6253,7 +6253,7 @@ function isiToolsCallback(json){
                 AddCSSRule('', '.it-slideshow', 'max-width: none; position: relative; margin: 0; padding: 0;');
                 AddCSSRule('', '.it-slideshow .prev, .it-slideshow .next', 'cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none;');
                 AddCSSRule('', '.it-slideshow .next', 'right: 0; border-radius: 3px 0 0 3px;');
-                AddCSSRule('', '.it-slideshow .prev:hover, .it-slideshow .next:hover', 'background-color: rgba(0,0,0,0.8);');
+                AddCSSRule('', '.it-slideshow .prev:hover, .it-slideshow .next:hover, .it-slideshow .prev:focus, .it-slideshow .next:focus', 'background-color: rgba(0,0,0,0.8);');
                 AddCSSRule('', '.it-slideshow .title', 'color: #ffffff; font-size: 2rem; padding: 8px 12px; position: absolute; bottom: 50%; width: 100%; text-align: center;');
                 AddCSSRule('', '.it-slideshow .text', 'background: rgba(0,0,0,0.5); color: #f2f2f2; font-size: 1rem; padding: 8px 12px 22px; position: absolute; bottom: 0; width: 100%; text-align: center;');
                 AddCSSRule('', '.it-slideshow .slide-id', 'background-color: rgba(0,0,0,0.8); color: #f2f2f2; font-size: 0.8rem; padding: 5px 10px; position: absolute; top: 0;');
@@ -6261,7 +6261,7 @@ function isiToolsCallback(json){
                 AddCSSRule('', '.it-slideshow .dot ', 'cursor: pointer; height: 15px; width: 15px; margin: 0 2px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease;');
                 AddCSSRule('', '.it-slideshow .slide', 'position: absolute; top: 0; left: 0; transition: opacity 1s ease-in-out; height: 100%; width: 100%; margin: 0; padding: 0;');
                 AddCSSRule('', '.it-slideshow .slide img', 'max-width: 100%; display: block; object-fit: cover; height: 100%; width: 100%;');
-                AddCSSRule('', '.it-slideshow .active, .dot:hover', 'background-color: #000;');
+                AddCSSRule('', '.it-slideshow .active, .it-slideshow .dot:hover, .it-slideshow .dot:focus', 'background-color: #000;');
                 AddCSSRule('', '.it-slideshow .fade', 'opacity: 1;');
                 AddCSSRule('', '.it-slideshow .hide', 'opacity: 0;');
                 AddCSSRule('', '@keyframes it-slideshow-fade', '0% { display: block; opacity: 0 } 1% { opacity: 0 } 100% { opacity: 1 }');
@@ -6272,7 +6272,7 @@ function isiToolsCallback(json){
                 AddCSSRule('', '.it-slideshow .player', 'position: absolute; top: 5px; right: 5px; font-size: 21px; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 0 , 0, 0.5); color: #fff; width: 32px; height: 32px; line-height: 30px; text-align: center; padding: 0; margin: 0;');
                 AddCSSRule('', '.it-slideshow.playing .player::before', 'content: "\\2590\\a0\\258c"; ');
                 AddCSSRule('', '.it-slideshow.playing .player', 'font-size: 12px;');
-                AddCSSRule('', '.it-slideshow.paused .player::before', 'content: "\\1f782"; ');
+                AddCSSRule('', '.it-slideshow.paused .player::before', 'content: "\\25b6"; ');
                 AddCSSRule('', '.it-slideshow.paused .player', 'font-size: 19px;');
                 
 
@@ -6401,14 +6401,9 @@ function isiToolsCallback(json){
         }
 
         it.sorter._getFirstOrderableColumn = function(opt){
-            var offset, res = 0;
             for(var i = 0; i < opt.columns.length; i++){
-                var col = opt.columns[i];
-
-                if(!col.orderable) res++;
+                if(opt.columns[i].orderable) return i;
             }
-
-            return res;
         }
 
         it.sorter._addSelector = function(opt){
@@ -6599,7 +6594,7 @@ function isiToolsCallback(json){
                         cond = [];
                         for(var j = k; j < sorting.length; j++){
 
-                            if(sorting[j].setto == '' && col != j) continue;
+                            if(!sorting[j].orderable || (sorting[j].setto == '' && col != j)) continue;
 
                             for(var z = 0; z < cond.length; z++){
                                 if(cond[z].indexOf("=") == -1) cond[z] = cond[z].replace(">", '>=').replace("<", '<=')
