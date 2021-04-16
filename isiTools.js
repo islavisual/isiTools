@@ -8,7 +8,7 @@ var itEnabledModules = {
     Datepicker: false,
     Debugger: false,
     DOM: false,
-    Flexbox: true,
+    Flexbox: false,
     GetBrowser: false,
     GetParam: false,
     HttpRequest: false,
@@ -21,7 +21,7 @@ var itEnabledModules = {
     Password: false,
     Selectpicker: false,
     SendForm: false,
-    SlideShow: true,
+    SlideShow: false,
     Sorter: false,
     StripTags: false,
     Tabs: false,
@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.7",
+it.version = "2.0.8",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "13/04/2021",
+it.lastupdate = "16/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -5652,418 +5652,423 @@ function isiToolsCallback(json){
 
     /**
     	Dropdown select
-    	@version: 1.5
+    	@version: 1.6
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 13/04/2021
+    	@Last update: 16/04/2021
     **/
-    if(json.Selectpicker){
-        this.Selectpicker = it.selectpicker = function(cfg){
-            if(typeof cfg == "undefined") cfg = {};
-            else if(typeof cfg == 'string' && cfg == "destroy") return this.selectpicker.destroy(this.targets)
-
-            // If method was called by HTMLSelectElement
-            this.targets = this.targets == undefined ? [this] : this.targets
-
-            Array.prototype.slice.call(this.targets).forEach(function(target, idx){
-                if(target.id.trim() == '') target.id = 'select' + idx;
-                it.selectpicker.all[idx] = { target: target, config: cfg }
-            });
-
-            if(!cfg.hasOwnProperty('stylesheet')) cfg.stylesheet = false;
-
-            for(var x = 0; x < it.selectpicker.all.length; x++){
-                var trg = it.selectpicker.all[x].target;
-
-                // Get options
-                if(typeof cfg == "string") cfg = { target: cfg };
-
-                // select needs searcher
-                if((cfg.hasOwnProperty("liveSearch") && cfg.liveSearch) ||
-                    (trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "true")) cfg.liveSearch = true;
-                else cfg.liveSearch = false;
-
-                it.selectpicker._curIndex[trg.id] = -1;
-
-                if(trg.tagName.toLowerCase() != "select"){
-                    alert("Error en el elemento #" + trg.id + ". ¡Se necesita establecer un elemento SELECT como objetivo para crear el Selectpicker!. Por favor, consulta la ayuda con it.helper('selectpicker');");
-                    return false;
-                }
-
-                // Add layer will contents button and list
-                var div = document.createElement("div");
-                div.setAttribute("class", "it-select-picker");
-                div.setAttribute("role", "combobox");
-                div.setAttribute("aria-autocomplete", "both");
-                div.setAttribute("aria-expanded", "false");
-                div.setAttribute("aria-haspopup", "true");
-                div.setAttribute("aria-owns", "it-sp-options-" + trg.id);
-                div.setAttribute("aria-activedescendant", "");
-
-                // Add button will contents the selected text
-                var btn = document.createElement("button");
-                btn.setAttribute("id", trg.id + "trigger");
-                btn.setAttribute("class", trg.getAttribute('class') + "-trigger");
-                btn.setAttribute("data-id", trg.id);
-                btn.setAttribute("aria-expanded", "false");
-                btn.setAttribute("type", "button");
-                btn.setAttribute("tabindex", "-1");
-                if(parseInt(getComputedStyle(trg, null).minWidth) == 0){
-                    btn.style.minWidth = it.getTextWidth(Array.prototype.slice.call(trg.querySelectorAll("option"), 0),
-                        getComputedStyle(trg, null).fontFamily,
-                        getComputedStyle(trg, null).fontSize) + 'px';
-                }
-
-                // Assign all select properties 
-                for(var i = 0, atts = trg.attributes, n = atts.length; i < n; i++){
-                    var att = atts[i];
-                    if(att.name == "id" || att.name == "name" || att.name == "class" || att.name.indexOf("on") == 0) continue;
-
-                    btn.setAttribute(att.name, att.value);
-                }
-
-                // If select was hidden, remove style
-                btn.style.display = "";
-
-                // Add events to button trigger
-                btn.addEventListener("click", function(e){
-                    var t = e.target, div = t.nextElementSibling;
-
-                    t.parentElement.classList.toggle("open");
-                    div.style.display = div.style.display === 'none' ? '' : 'none';
-
-                    // Set aria attributes
-                    t.setAttribute("aria-expanded", t.getAttribute("aria-expanded") == "false" ? "true" : "false");
-                    t.parentElement.setAttribute("aria-expanded", t.getAttribute("aria-expanded"));
-
-                    // Set focus into input search
-                    var t = t.parentElement;
-                    if(t.classList.contains("open") && t.querySelectorAll("input").length != 0)
-                        t.querySelector("input").focus();
-
-                    // Mark active
-                    var items = t.querySelectorAll("li"), btn = t.querySelector("button");
-                    for(var i = 0; i < items.length; i++){
-                        var item = items[i];
-
-                        if(item.innerHTML == btn.innerText){
-                            item.classList.add("it-select-picker-active");
-                            it.selectpicker._curIndex[t.previousElementSibling.id] = i;
-                        } else {
-                            item.classList.remove("it-select-picker-active");
-                        }
-                    }
-
-                    // Allocate scroll
-                    var active = t.querySelector('.it-select-picker-active');
-                    var trg = t.querySelector("ul");
-                    if(active) trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
+        if(json.Selectpicker){
+            this.Selectpicker = it.selectpicker = function(cfg){
+                if(typeof cfg == "undefined") cfg = {};
+                else if(typeof cfg == 'string' && cfg == "destroy") return this.selectpicker.destroy(this.targets)
+    
+                // If method was called by HTMLSelectElement
+                this.targets = this.targets == undefined ? [this] : this.targets
+    
+                Array.prototype.slice.call(this.targets).forEach(function(target, idx){
+                    if(target.id.trim() == '') target.id = 'select' + idx;
+                    it.selectpicker.config[target.id] = cfg;
                 });
-
-                window.addEventListener("click", it.selectpicker._windowListener);
-
-                // Add dropdown-container
-                var diC = document.createElement("div");
-                diC.setAttribute("class", "dropdown-container");
-                diC.setAttribute("style", "display: none");
-                diC.id = "it-sp-options-" + trg.id;
-
-                // Add list with possibles values
-                var lst = document.createElement("ul");
-                lst.setAttribute("class", "dropdown options");
-                lst.setAttribute("role", "menu");
-
-                // If autocomplete is requested
-                var inp = document.createElement("input");
-                inp.setAttribute("class", "input-search");
-                inp.setAttribute("type", "search");
-                inp.setAttribute("data-id", trg.id);
-                inp.addEventListener("input", function(e){
-                    var trg = e.target, val = trg.value.trim(), lis = trg.parentElement.nextElementSibling.querySelectorAll("li");
-                    for(var i = 0; i < lis.length; i++){
-                        var li = lis[i];
-                        if(val != "" && li.innerHTML.toLowerCase().indexOf(val.toLowerCase()) == -1){
-                            li.style.display = "none";
-                        } else {
-                            li.style.display = "";
-                        }
-                    }
-                });
-
-                // Keyboard management
-                inp.addEventListener("keydown", function(){
-                    var e = arguments[0], trg = e.target, list;
-
-                    function getList(id){
-                        var x = document.getElementById(id).nextElementSibling.querySelectorAll("li");
-                        return x;
-                    }
-
-                    function setActive(x, dir){
-                        if(x >= 0 && x <= list.length - 1) list[x].classList.remove("it-select-picker-active");
-
-                        function getNext(){
-                            if(dir == '+') x++;
-                            else x--;
-                            if(x >= list.length) x = 0;
-                            else if(x < 0) x = list.length - 1;
-
-                            return x;
-                        }
-
-                        x = getNext();
-                        while (list[x].style.display == "none"){ x = getNext(); }
-
-                        list[x].classList.add("it-select-picker-active");
-                        return x;
-                    }
-
-                    function setScrollTop(dir, trg){
-                        try{
-                            trg = trg.parentElement.nextElementSibling;
-
-                            // Move scroll to current position
-                            var active = trg.querySelector('.it-select-picker-active');
-                            if(dir == "down"){
-                                trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
-                            } else if(active.offsetTop < trg.scrollTop || document.querySelector('.it-select-picker-active:last-child').offsetTop == active.offsetTop){
-                                trg.scrollTop = active.offsetTop - trg.offsetHeight + trg.offsetHeight + 2;
-                            }
-                        } catch (e){}
-                    }
-
-                    if(e.keyCode == 27){
-                        it.selectpicker.close(trg.parentElement.parentElement.parentElement)
-
-                    } else if(e.keyCode == 38){ // up
-                        list = getList(trg.dataset.id);
-
-                        it.selectpicker._curIndex[trg.dataset.id] = setActive(it.selectpicker._curIndex[trg.dataset.id], '-');
-                        setScrollTop('up', trg);
-
-                    } else if(e.keyCode == 40){ // down
-                        list = getList(trg.dataset.id);
-                        it.selectpicker._curIndex[trg.dataset.id] = setActive(it.selectpicker._curIndex[trg.dataset.id], '+');
-                        setScrollTop('down', trg);
-
-                    } else if(e.keyCode == 13 || e.keyCode == 9){
-                        if(e.keyCode == 13){
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }
-
-                        list = getList(trg.dataset.id);
-                        document.getElementById(trg.dataset.id).selectedIndex = it.selectpicker._curIndex[trg.dataset.id];
-                        it.selectpicker._update(trg.dataset.id, it.selectpicker._curIndex[trg.dataset.id]);
+    
+                if(!cfg.hasOwnProperty('stylesheet')) cfg.stylesheet = false;
+    
+                for(var key in it.selectpicker.config){
+                    var trg = document.getElementById(key);
+    
+                    // Get options
+                    if(!cfg) cfg = { livesearch: false, stylesheet: false, callback: null };
+    
+                    // select needs searcher
+                    if((cfg.hasOwnProperty("livesearch") && cfg.livesearch) ||
+                        (trg.getAttribute("data-live-search") != null && trg.getAttribute("data-live-search") == "true")) cfg.livesearch = true;
+                    else cfg.livesearch = false;
+    
+                    it.selectpicker._curIndex[trg.id] = -1;
+    
+                    if(trg.tagName.toLowerCase() != "select"){
+                        alert("Error en el elemento #" + trg.id + ". ¡Se necesita establecer un elemento SELECT como objetivo para crear el Selectpicker!. Por favor, consulta la ayuda con it.helper('selectpicker');");
                         return false;
                     }
-                }.bind(it.selectpicker));
-
-                // Create and add input picker
-                var src = document.createElement("div");
-                src.setAttribute("class", "searcher");
-                src.appendChild(inp);
-
-                // If search is disabled, hide searcher
-                if(!cfg.liveSearch) src.style = 'opacity: 0; height: 0; overflow: hidden; min-height: inherit;';
-
-                // Add icon search
-                var ic = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                ic.setAttribute("version", "1.1");
-                ic.setAttribute("x", "0px");
-                ic.setAttribute("y", "0px");
-                ic.setAttribute("viewBox", "0 0 128 128");
-
-                var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", "M 126.351562 118.78125 L 94.644531 87.050781 C 102.144531 77.851562 106.667969 66.140625 106.667969 53.359375 C 106.667969 23.953125 82.753906 0.0117188 53.320312 0.0117188 C 23.890625 0.0117188 0 23.953125 0 53.359375 C 0 82.761719 23.917969 106.679688 53.347656 106.679688 C 66.101562 106.679688 77.839844 102.15625 87.039062 94.65625 L 118.742188 126.363281 C 120.914062 128.53125 124.207031 128.53125 126.375 126.363281 C 128.546875 124.191406 128.546875 120.949219 126.351562 118.78125 Z M 10.636719 53.359375 C 10.636719 29.808594 29.769531 10.675781 53.320312 10.675781 C 76.871094 10.675781 96.03125 29.835938 96.03125 53.386719 C 96.03125 76.933594 76.871094 96.09375 53.320312 96.09375 C 29.769531 96.09375 10.636719 76.910156 10.636719 53.359375 Z M 10.636719 53.359375");
-
-                ic.appendChild(path);
-                src.appendChild(ic);
-
-                // Add like first option
-                diC.appendChild(src);
-
-                var idx = 0;
-                if(trg.getAttribute("placeholder")){
-                    var li = document.createElement("li");
-                    li.setAttribute("rel", "0");
-                    li.setAttribute("data-value", "");
-                    li.innerHTML = trg.getAttribute("placeholder");
-
-                    lst.appendChild(li);
-                    idx++
-                }
-
-                var items = trg.querySelectorAll("option");
-                for(var i = idx; i < items.length; i++){
-                    var item = items[i];
-
-                    var li = document.createElement("li");
-                    li.setAttribute("rel", i);
-                    li.id = trg.id + '_option_' + i;
-                    li.setAttribute("data-value", item.value);
-
-                    if(trg.multiple){
-                        var chkLI = document.createElement("input");
-                        chkLI.id = "chk-" + trg.id + li.getAttribute('rel') + i;
-                        chkLI.type = "checkbox";
-                        chkLI.setAttribute("onchange", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
-
-                        var lbl = document.createElement("label");
-                            lbl.setAttribute("for", chkLI.id)
-                            lbl.append(chkLI)
-                            lbl.append(document.createTextNode(item.innerText))
-                        
-                        li.append(lbl);
-
-                    } else {
-                        li.innerHTML = item.innerText;
-                        li.setAttribute("onclick", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
+    
+                    // Add layer will contents button and list
+                    var div = document.createElement("div");
+                    div.setAttribute("class", "it-select-picker");
+                    div.setAttribute("role", "combobox");
+                    div.setAttribute("aria-autocomplete", "both");
+                    div.setAttribute("aria-expanded", "false");
+                    div.setAttribute("aria-haspopup", "true");
+                    div.setAttribute("aria-owns", "it-sp-options-" + trg.id);
+                    div.setAttribute("aria-activedescendant", "");
+    
+                    // Add button will contents the selected text
+                    var btn = document.createElement("button");
+                    btn.setAttribute("id", trg.id + "trigger");
+                    btn.setAttribute("class", trg.getAttribute('class') + "-trigger");
+                    btn.setAttribute("data-id", trg.id);
+                    btn.setAttribute("aria-expanded", "false");
+                    btn.setAttribute("type", "button");
+                    btn.setAttribute("tabindex", "-1");
+                    if(parseInt(getComputedStyle(trg, null).minWidth) == 0){
+                        btn.style.minWidth = it.getTextWidth(Array.prototype.slice.call(trg.querySelectorAll("option"), 0),
+                            getComputedStyle(trg, null).fontFamily,
+                            getComputedStyle(trg, null).fontSize) + 'px';
                     }
-
-                    if(item.getAttribute("selected") != null && item.getAttribute("disabled") == null){
-                        li.setAttribute("class", "selected");
-                        btn.innerText = trg.options[trg.selectedIndex].innerText;
-
-                        div.setAttribute("aria-activedescendant", item.value)
+    
+                    // Assign all select properties 
+                    for(var i = 0, atts = trg.attributes, n = atts.length; i < n; i++){
+                        var att = atts[i];
+                        if(att.name == "id" || att.name == "name" || att.name == "class" || att.name.indexOf("on") == 0) continue;
+    
+                        btn.setAttribute(att.name, att.value);
                     }
-
-                    lst.appendChild(li);
-                }
-
-                // Add components to layer
-                diC.appendChild(lst);
-                div.appendChild(btn);
-                div.appendChild(diC);
-
-                // Hide select and append new dropdown
-                trg.parentNode.insertBefore(div, trg.nextSibling);
-
-                if(trg.style.length != 0){
-                    var s = trg.style, str = '';
-                    for(var i = 0; i < s.length; i++){
-                        btn.style[s[0]] = s[s[0]];
-                        str = s[0] + ': ' + s[s[0]] + ';';
+    
+                    // If select was hidden, remove style
+                    btn.style.display = "";
+    
+                    // Add events to button trigger
+                    btn.addEventListener("click", function(e){
+                        var t = e.target, div = t.nextElementSibling;
+    
+                        t.parentElement.classList.toggle("open");
+                        div.style.display = div.style.display === 'none' ? '' : 'none';
+    
+                        // Set aria attributes
+                        t.setAttribute("aria-expanded", t.getAttribute("aria-expanded") == "false" ? "true" : "false");
+                        t.parentElement.setAttribute("aria-expanded", t.getAttribute("aria-expanded"));
+    
+                        // Set focus into input search
+                        var t = t.parentElement;
+                        if(t.classList.contains("open") && t.querySelectorAll("input").length != 0)
+                            t.querySelector("input").focus();
+    
+                        // Mark active
+                        var items = t.querySelectorAll("li"), btn = t.querySelector("button");
+                        for(var i = 0; i < items.length; i++){
+                            var item = items[i];
+    
+                            if(item.innerHTML == btn.innerText){
+                                item.classList.add("it-select-picker-active");
+                                it.selectpicker._curIndex[t.previousElementSibling.id] = i;
+                            } else {
+                                item.classList.remove("it-select-picker-active");
+                            }
+                        }
+    
+                        // Allocate scroll
+                        var active = t.querySelector('.it-select-picker-active');
+                        var trg = t.querySelector("ul");
+                        if(active) trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
+                    });
+    
+                    window.addEventListener("click", it.selectpicker._windowListener);
+    
+                    // Add dropdown-container
+                    var diC = document.createElement("div");
+                    diC.setAttribute("class", "dropdown-container");
+                    diC.setAttribute("style", "display: none");
+                    diC.id = "it-sp-options-" + trg.id;
+    
+                    // Add list with possibles values
+                    var lst = document.createElement("ul");
+                    lst.setAttribute("class", "dropdown options");
+                    lst.setAttribute("role", "menu");
+    
+                    // If autocomplete is requested
+                    var inp = document.createElement("input");
+                    inp.setAttribute("class", "input-search");
+                    inp.setAttribute("type", "search");
+                    inp.setAttribute("data-id", trg.id);
+                    inp.addEventListener("input", function(e){
+                        var trg = e.target, val = trg.value.trim(), lis = trg.parentElement.nextElementSibling.querySelectorAll("li");
+                        for(var i = 0; i < lis.length; i++){
+                            var li = lis[i];
+                            if(val != "" && li.innerHTML.toLowerCase().indexOf(val.toLowerCase()) == -1){
+                                li.style.display = "none";
+                            } else {
+                                li.style.display = "";
+                            }
+                        }
+                    });
+    
+                    // Keyboard management
+                    inp.addEventListener("keydown", function(){
+                        var e = arguments[0], trg = e.target, list;
+    
+                        function getList(id){
+                            var x = document.getElementById(id).nextElementSibling.querySelectorAll("li");
+                            return x;
+                        }
+    
+                        function setActive(x, dir){
+                            if(x >= 0 && x <= list.length - 1) list[x].classList.remove("it-select-picker-active");
+    
+                            function getNext(){
+                                if(dir == '+') x++;
+                                else x--;
+                                if(x >= list.length) x = 0;
+                                else if(x < 0) x = list.length - 1;
+    
+                                return x;
+                            }
+    
+                            x = getNext();
+                            while (list[x].style.display == "none"){ x = getNext(); }
+    
+                            list[x].classList.add("it-select-picker-active");
+                            return x;
+                        }
+    
+                        function setScrollTop(dir, trg){
+                            try{
+                                trg = trg.parentElement.nextElementSibling;
+    
+                                // Move scroll to current position
+                                var active = trg.querySelector('.it-select-picker-active');
+                                if(dir == "down"){
+                                    trg.scrollTop = active.offsetTop - trg.offsetHeight + active.offsetHeight + 2;
+                                } else if(active.offsetTop < trg.scrollTop || document.querySelector('.it-select-picker-active:last-child').offsetTop == active.offsetTop){
+                                    trg.scrollTop = active.offsetTop - trg.offsetHeight + trg.offsetHeight + 2;
+                                }
+                            } catch (e){}
+                        }
+    
+                        if(e.keyCode == 27){
+                            it.selectpicker.close(trg.parentElement.parentElement.parentElement)
+    
+                        } else if(e.keyCode == 38){ // up
+                            list = getList(trg.dataset.id);
+    
+                            it.selectpicker._curIndex[trg.dataset.id] = setActive(it.selectpicker._curIndex[trg.dataset.id], '-');
+                            setScrollTop('up', trg);
+    
+                        } else if(e.keyCode == 40){ // down
+                            list = getList(trg.dataset.id);
+                            it.selectpicker._curIndex[trg.dataset.id] = setActive(it.selectpicker._curIndex[trg.dataset.id], '+');
+                            setScrollTop('down', trg);
+    
+                        } else if(e.keyCode == 13 || e.keyCode == 9){
+                            if(e.keyCode == 13){
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+    
+                            list = getList(trg.dataset.id);
+                            document.getElementById(trg.dataset.id).selectedIndex = it.selectpicker._curIndex[trg.dataset.id];
+                            it.selectpicker._update(trg.dataset.id, it.selectpicker._curIndex[trg.dataset.id]);
+                            return false;
+                        }
+                    }.bind(it.selectpicker));
+    
+                    // Create and add input picker
+                    var src = document.createElement("div");
+                    src.setAttribute("class", "searcher");
+                    src.appendChild(inp);
+    
+                    // If search is disabled, hide searcher
+                    if(!cfg.livesearch) src.style = 'opacity: 0; height: 0; overflow: hidden; min-height: inherit;';
+    
+                    // Add icon search
+                    var ic = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    ic.setAttribute("version", "1.1");
+                    ic.setAttribute("x", "0px");
+                    ic.setAttribute("y", "0px");
+                    ic.setAttribute("viewBox", "0 0 128 128");
+    
+                    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute("d", "M 126.351562 118.78125 L 94.644531 87.050781 C 102.144531 77.851562 106.667969 66.140625 106.667969 53.359375 C 106.667969 23.953125 82.753906 0.0117188 53.320312 0.0117188 C 23.890625 0.0117188 0 23.953125 0 53.359375 C 0 82.761719 23.917969 106.679688 53.347656 106.679688 C 66.101562 106.679688 77.839844 102.15625 87.039062 94.65625 L 118.742188 126.363281 C 120.914062 128.53125 124.207031 128.53125 126.375 126.363281 C 128.546875 124.191406 128.546875 120.949219 126.351562 118.78125 Z M 10.636719 53.359375 C 10.636719 29.808594 29.769531 10.675781 53.320312 10.675781 C 76.871094 10.675781 96.03125 29.835938 96.03125 53.386719 C 96.03125 76.933594 76.871094 96.09375 53.320312 96.09375 C 29.769531 96.09375 10.636719 76.910156 10.636719 53.359375 Z M 10.636719 53.359375");
+    
+                    ic.appendChild(path);
+                    src.appendChild(ic);
+    
+                    // Add like first option
+                    diC.appendChild(src);
+    
+                    var idx = 0;
+                    if(trg.getAttribute("placeholder")){
+                        var li = document.createElement("li");
+                        li.setAttribute("rel", "0");
+                        li.setAttribute("data-value", "");
+                        li.innerHTML = trg.getAttribute("placeholder");
+    
+                        lst.appendChild(li);
+                        idx++
                     }
-                    trg.dataset.style = str;
+    
+                    var items = trg.querySelectorAll("option");
+                    for(var i = idx; i < items.length; i++){
+                        var item = items[i];
+    
+                        var li = document.createElement("li");
+                        li.setAttribute("rel", i);
+                        li.id = trg.id + '_option_' + i;
+                        li.setAttribute("data-value", item.value);
+    
+                        if(trg.multiple){
+                            var chkLI = document.createElement("input");
+                            chkLI.id = "chk-" + trg.id + li.getAttribute('rel') + i;
+                            chkLI.type = "checkbox";
+                            chkLI.setAttribute("onchange", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
+    
+                            var lbl = document.createElement("label");
+                                lbl.setAttribute("for", chkLI.id)
+                                lbl.append(chkLI)
+                                lbl.append(document.createTextNode(item.innerText))
+                            
+                            li.append(lbl);
+    
+                        } else {
+                            li.innerHTML = item.innerText;
+                            li.setAttribute("onclick", 'it.selectpicker._update("' + trg.id + '", ' + i + ')');
+                        }
+    
+                        if(item.getAttribute("selected") != null && item.getAttribute("disabled") == null){
+                            li.setAttribute("class", "selected");
+                            btn.innerText = trg.options[trg.selectedIndex].innerText;
+    
+                            div.setAttribute("aria-activedescendant", item.value)
+                        }
+    
+                        lst.appendChild(li);
+                    }
+    
+                    // Add components to layer
+                    diC.appendChild(lst);
+                    div.appendChild(btn);
+                    div.appendChild(diC);
+    
+                    // Hide select and append new dropdown
+                    trg.parentNode.insertBefore(div, trg.nextSibling);
+    
+                    if(trg.style.length != 0){
+                        var s = trg.style, str = '';
+                        for(var i = 0; i < s.length; i++){
+                            btn.style[s[0]] = s[s[0]];
+                            str = s[0] + ': ' + s[s[0]] + ';';
+                        }
+                        trg.dataset.style = str;
+                    }
+                    // Add styles to select element
+                    //trg.style.display = "none";
+                    trg.style = 'border: 0 none; width: 0; height: 0; overflow: hidden !important; opacity: 0; padding: 0; margin: 0; position: absolute;';
+    
+                    trg.addEventListener("change", function(e){
+                        var cfg = it.selectpicker.config[e.target.id]
+    
+                        if(cfg.callback) cfg.callback();
+                    });
+    
+                    it.selectpicker.config[trg.id] = cfg;
                 }
-                // Add styles to select element
-                //trg.style.display = "none";
-                trg.style = 'border: 0 none; width: 0; height: 0; overflow: hidden !important; opacity: 0; padding: 0; margin: 0; position: absolute;';
-
-                trg.addEventListener("change", function(e){
-                    var btn = e.target.nextElementSibling.children[0];
-                    btn.innerHTML = e.target.options[e.target.selectedIndex].text;
-                });
+    
+                // Add default Styles
+                if(!cfg.stylesheet){
+                    AddCSSRule('', ".it-select-picker", 'position: relative; width: 100%;');
+                    AddCSSRule('', ".it-select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 30px; width: 100%; z-index: 99999;');
+                    AddCSSRule('', ".it-select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
+                    AddCSSRule('', ".it-select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 0px;');
+                    AddCSSRule('', ".it-select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px;');
+                    AddCSSRule('', ".it-select-picker button:hover", 'border-color: #adadad;');
+                    AddCSSRule('', ".it-select-picker.open button", ' background: #000; color: #fff;');
+                    AddCSSRule('', ".it-select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); color: rgba(0,0,0,1); padding: 4px 5px; line-height: normal; margin: 0;');
+                    AddCSSRule('', ".it-select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
+                    AddCSSRule('', ".it-select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%;');
+                    AddCSSRule('', ".it-select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; height: auto; min-height: 26px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
+                    AddCSSRule('', ".it-select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 5px; fill: #aaa; width: 15px');
+                    AddCSSRule('', ".it-select-picker-active", 'background: #000; color: #fff !important;');
+                    AddCSSRule('', ".it-select-picker > button:focus, select:focus + .it-select-picker > button", 'border: 1px solid red;');
+                    AddCSSRule('', '.it-select-picker input[type="search"]::-webkit-search-cancel-button', '-webkit-appearance: none; appearance: none;');
+                    AddCSSRule('', '.it-select-picker input[type=search]::-ms-clear, .it-select-picker input[type=search]::-ms-reveal', 'display: none; width: 0; height: 0;');
+                    AddCSSRule('', '.it-select-picker button .tag', 'background: #000; color: #fff; margin: 0 0 0 5px; padding: 2px 32px 2px 5px; box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset; position: relative;');
+                    AddCSSRule('', '.it-select-picker button .tag::after', 'content: "\\2713"; position: absolute; top: -2px; right: 8px;');
+                    AddCSSRule('', '.it-select-picker label', 'width: 100%; display: inline-block; padding-left: 25px;');
+                    AddCSSRule('', '.it-select-picker label input', 'position: relative; top: 0px; left: -25px;');
+                }
+    
+                return div
             }
-
-            // Add default Styles
-            if(!cfg.stylesheet){
-                AddCSSRule('', ".it-select-picker", 'position: relative; width: 100%;');
-                AddCSSRule('', ".it-select-picker .dropdown-container", 'list-style: none; background: #fff; border: 1px solid rgba(0,0,0,0.1); padding: 0; position: absolute; top: 30px; width: 100%; z-index: 99999;');
-                AddCSSRule('', ".it-select-picker ul", 'overflow: auto; max-height: 164px; padding: 0; list-style: none; margin: 0;');
-                AddCSSRule('', ".it-select-picker button", 'background: #fff; border: 1px solid rgba(0,0,0,0.1); width: 100%; height: 28px; text-align: left; line-height: 28px; font-weight: 500; padding: 0 32px 0 5px; position: relative; padding: 0 0px;');
-                AddCSSRule('', ".it-select-picker button::before", 'content: ""; display: inline-block; width: 0; height: 0; margin-left: 2px; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; position: absolute; right: 10px; top: 12px;');
-                AddCSSRule('', ".it-select-picker button:hover", 'border-color: #adadad;');
-                AddCSSRule('', ".it-select-picker.open button", ' background: #000; color: #fff;');
-                AddCSSRule('', ".it-select-picker li", 'border-bottom: 1px solid rgba(0,0,0,0.1); color: rgba(0,0,0,1); padding: 4px 5px; line-height: normal; margin: 0;');
-                AddCSSRule('', ".it-select-picker li:not(.searcher):hover", 'background: #000; color: #fff; cursor:pointer; ');
-                AddCSSRule('', ".it-select-picker .searcher", 'border-bottom: 1px solid rgba(0,0,0,0.1); height: auto; min-height: 28px; padding: 0px; position: relative; width: 100%;');
-                AddCSSRule('', ".it-select-picker .searcher .input-search", 'border: 0 none; border-radius: 0; line-height: normal; height: auto; min-height: 26px; padding: 0 20px 0 5px; color: #000; width: 100%; z-index: 0;');
-                AddCSSRule('', ".it-select-picker .searcher svg", 'position: absolute; right: 5px; width: 16px; top: 5px; fill: #aaa; width: 15px');
-                AddCSSRule('', ".it-select-picker-active", 'background: #000; color: #fff !important;');
-                AddCSSRule('', ".it-select-picker > button:focus, select:focus + .it-select-picker > button", 'border: 1px solid red;');
-                AddCSSRule('', '.it-select-picker input[type="search"]::-webkit-search-cancel-button', '-webkit-appearance: none; appearance: none;');
-                AddCSSRule('', '.it-select-picker input[type=search]::-ms-clear, .it-select-picker input[type=search]::-ms-reveal', 'display: none; width: 0; height: 0;');
-                AddCSSRule('', '.it-select-picker button .tag', 'background: #000; color: #fff; margin: 0 0 0 5px; padding: 2px 32px 2px 5px; box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset; position: relative;');
-                AddCSSRule('', '.it-select-picker button .tag::after', 'content: "\\2713"; position: absolute; top: -2px; right: 8px;');
-                AddCSSRule('', '.it-select-picker label', 'width: 100%; display: inline-block; padding-left: 25px;');
-                AddCSSRule('', '.it-select-picker label input', 'position: relative; top: 0px; left: -25px;');
+    
+            it.selectpicker.version = '1.5';
+            it.selectpicker._curIndex = {};
+            it.selectpicker.config = [];
+    
+            it.selectpicker.help = function(cfg){
+                if(typeof cfg == "undefined") cfg = { help: '' };
+                if(!cfg.hasOwnProperty("help")) cfg.help = '';
+    
+                if(typeof showHelper != "undefined") showHelper("Selectpicker", cfg);
+                else alert("Helper not available!");
+                return;
             }
-
-            return div
-        }
-
-        it.selectpicker.version = '1.5';
-        it.selectpicker._curIndex = {};
-        it.selectpicker.all = [];
-
-        it.selectpicker.help = function(cfg){
-            if(typeof cfg == "undefined") cfg = { help: '' };
-            if(!cfg.hasOwnProperty("help")) cfg.help = '';
-
-            if(typeof showHelper != "undefined") showHelper("Selectpicker", cfg);
-            else alert("Helper not available!");
-            return;
-        }
-
-        it.selectpicker._update = function(e, i){
-            // update HTML select
-            e = document.getElementById(e);
-            var sp = e.nextElementSibling;
-
-            if(!e.multiple){
-                e.selectedIndex = i;
-                
-                // Update text in button
-                sp.children[0].innerText = e[i].innerText;
-
-                // Close selectpicker list
-                sp.classList.remove("open");
-                sp.children[1].style.display = "none";
-                sp.children[0].setAttribute("aria-expanded", "false");
-                sp.setAttribute("aria-activedescendant", e[i].value);
-
+    
+            it.selectpicker._update = function(e, i){
+                // update HTML select
+                e = document.getElementById(e);
+                var sp = e.nextElementSibling;
+    
+                if(!e.multiple){
+                    e.selectedIndex = i;
+                    
+                    // Update text in button
+                    sp.children[0].innerText = e[i].innerText;
+    
+                    // Close selectpicker list
+                    sp.classList.remove("open");
+                    sp.children[1].style.display = "none";
+                    sp.children[0].setAttribute("aria-expanded", "false");
+                    sp.children[0].innerHTML = e.options[e.selectedIndex].text;
+                    sp.setAttribute("aria-activedescendant", e[i].value);
+    
+                } else {
+                    e.options[i].selected = !e.options[i].selected;
+    
+                    // Update text in button
+                    sp.children[0]. innerHTML = "";
+                    for(var j = 0; j < e.options.length; j++){
+                        if(e.options[j].selected){
+                            sp.children[0].insertAdjacentHTML("beforeend", '<span class="tag">' + e.options[j].innerText + '</span>');
+                        }
+                    }
+    
+                }
+    
                 e.dispatchEvent(new Event('change'));
                 e.focus();
-
-            } else {
-                e.options[i].selected = !e.options[i].selected;
-
-                // Update text in button
-                sp.children[0]. innerHTML = "";
-                for(var j = 0; j < e.options.length; j++){
-                    if(e.options[j].selected){
-                        sp.children[0].insertAdjacentHTML("beforeend", '<span class="tag">' + e.options[j].innerText + '</span>');
+            };
+    
+            it.selectpicker._windowListener = function(e){
+                if(document.querySelectorAll("div.it-select-picker.open").length != 0){
+                    var p = e.target;
+    
+                    try{
+                        while (p != document && !p.classList.contains('it-select-picker')){
+                            p = p.parentNode;
+                        }
+                    } catch (e){ p == e.target; }
+    
+                    if(p == document){
+                        var items = document.querySelectorAll("div.it-select-picker.open");
+                        for(var i = 0; i < items.length; i++){
+                            it.selectpicker.close(items[i])
+                        }
                     }
                 }
             }
-        };
-
-        it.selectpicker._windowListener = function(e){
-            if(document.querySelectorAll("div.it-select-picker.open").length != 0){
-                var p = e.target;
-
-                try{
-                    while (p != document && !p.classList.contains('it-select-picker')){
-                        p = p.parentNode;
-                    }
-                } catch (e){ p == e.target; }
-
-                if(p == document){
-                    var items = document.querySelectorAll("div.it-select-picker.open");
-                    for(var i = 0; i < items.length; i++){
-                        it.selectpicker.close(items[i])
-                    }
+    
+            it.selectpicker.close = function(item){
+                item.classList.remove("open");
+                item.querySelector(".dropdown-container").style.display = 'none';
+                item.querySelector("button").setAttribute("aria-expanded", "false");
+            }
+    
+            it.selectpicker.destroy = function(targets){
+                for(var i = 0; i < targets.length; i++){
+                    var item = targets[i];
+    
+                    item.nextElementSibling.remove()
+                    item.style = item.dataset.style
                 }
             }
         }
-
-        it.selectpicker.close = function(item){
-            item.classList.remove("open");
-            item.querySelector(".dropdown-container").style.display = 'none';
-            item.querySelector("button").setAttribute("aria-expanded", "false");
-        }
-
-        it.selectpicker.destroy = function(targets){
-            for(var i = 0; i < targets.length; i++){
-                var item = targets[i];
-
-                item.nextElementSibling.remove()
-                item.style = item.dataset.style
-            }
-        }
-    }
 
     /**
     	Create and send forms in real time.
