@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.8",
+it.version = "2.0.9",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "16/04/2021",
+it.lastupdate = "17/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -6119,10 +6119,10 @@ function isiToolsCallback(json){
 
     /**
     	SlideShow functionality
-    	@version: 1.1
+    	@version: 1.2
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
-    	@Last update: 13/04/2021
+    	@Last update: 17/04/2021
     **/
     if(json.SlideShow){
         this.SlideShow = it.slideShow = function (cfg) {
@@ -6283,7 +6283,29 @@ function isiToolsCallback(json){
                     if(opt.autoplay){
                         it.slideShow.play(target);
                     }
-                
+
+                    target.addEventListener('touchstart', handleTouchStart, {passive: true});        
+                    target.addEventListener('touchmove', handleTouchMove, {passive: true});
+                    var xDown = null, yDown = null;
+                    
+                    function getTouches(evt) { return evt.touches || evt.originalEvent.touches; }                                                     
+
+                    function handleTouchStart(evt) { const firstTouch = getTouches(evt)[0]; xDown = firstTouch.clientX; yDown = firstTouch.clientY; };                                                
+                    function handleTouchMove(evt)  { 
+                        if ( ! xDown || ! yDown ) { return; }
+
+                        var xUp = evt.touches[0].clientX, yUp = evt.touches[0].clientY;
+                        var xDiff = xDown - xUp, yDiff = yDown - yUp;
+
+                        if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
+                            if ( xDiff > 0 ) {
+                                target.querySelector(".next").click();
+                            } else {
+                                target.querySelector(".prev").click();
+                            }
+                        } 
+                        xDown = yDown = null;
+                    };
                 }
 
                 it.slideShow.config[id].currentSlide = opt.currentSlide;
