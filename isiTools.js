@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.0.9",
+it.version = "2.1.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "17/04/2021",
+it.lastupdate = "18/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -6337,6 +6337,11 @@ function isiToolsCallback(json){
                 AddCSSRule('', '.it-slideshow.paused .player::before', 'content: "\\25b6"; ');
                 AddCSSRule('', '.it-slideshow.paused .player', 'font-size: 19px;');
                 
+                AddCSSRule('', '.it-slideshow progress', 'position: absolute; top: 45px; left: 0; height: 4px; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none; border: none; background-color: rgba(var(--fc1), 0.1); color: rgba(var(--borderColor), 1);');
+                AddCSSRule('', '.it-slideshow progress::-webkit-progress-bar', 'background-color: rgba(var(--fc1), 0.1); border-radius: 20px;');
+                AddCSSRule('', '.it-slideshow progress::-webkit-progress-value', 'background-color: rgba(var(--fc1), 1);  transition: 0.2s width ;');
+                AddCSSRule('', '.it-slideshow progress::-moz-progress-bar', 'background-color: rgba(var(--fc1), 1);');
+                AddCSSRule('', '.it-slideshow progress::-ms-fill', 'background-color: rgba(var(--fc1), 1);');
 
                 it.slideShow._stylesAdded = true;
             }
@@ -6356,10 +6361,28 @@ function isiToolsCallback(json){
         it.slideShow.play = function(el){
             var cfg = it.slideShow.config[el.id] || {};
 
+            // Añadimos la barra de progreso
+            var trg = cfg.slides[0].parentElement, prg;
+            if(!trg.querySelector("progress")){
+                prg = document.createElement("progress");
+                    prg.max = "101";
+                    prg.value = "0";
+                trg.insertAdjacentElement("afterbegin", prg);
+            } else {
+                prg = trg.querySelector("progress");
+            }
+
+            cfg.progress = setInterval(function(interval){
+                prg.value += 100 / interval / 10;
+                if(prg.value > 100) prg.value = 0;
+            }.bind(prg, cfg.interval), 100);
+
+            // Habilitamos el intervalo
             it.slideShow._playing = setInterval(function(cfg){
                 it.slideShow.toggle(this, 1)
             }.bind(el.querySelector(".next"), cfg), cfg.interval * 1000);
 
+            // Cambiamos el evento click
             el.querySelector(".player").onclick = function(e){
                 it.slideShow.pause(e.target.parentElement)
             }
@@ -6371,8 +6394,13 @@ function isiToolsCallback(json){
         }
 
         it.slideShow.pause = function(el){
-            clearInterval(it.slideShow._playing);
+            var cfg = it.slideShow.config[el.id] || {};
 
+            // Eliminamos los intervalos
+            clearInterval(it.slideShow._playing);
+            clearInterval(cfg.progress);
+
+            // Cambiamos el evento click
             el.querySelector(".player").onclick = function(e){
                 it.slideShow.play(e.target.parentElement)
             }
