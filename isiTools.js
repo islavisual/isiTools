@@ -5955,7 +5955,7 @@ function isiToolsCallback(json){
                     trg.addEventListener("change", function(e){
                         var cfg = it.selectpicker.config[e.target.id]
     
-                        if(cfg.callback) cfg.callback();
+                        if(cfg.callback) cfg.callback(e);
                     });
     
                     it.selectpicker.config[trg.id] = cfg;
