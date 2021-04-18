@@ -2716,15 +2716,15 @@ showicon: "la la-eye",\n\
 }
 
 /**
-	 Create and send forms in real time.
-	 @version: 1.4.2
+	 SelectPicker Helper
+	 @version: 1.6
 	 @author: Pablo E. Fernández (islavisual@gmail.com).
 	 @Copyright 2017-2021 Islavisual.
-	 @Last update: 08/04/2021
+	 @Last update: 18/04/2021
  **/
 WikiHelper.Selectpicker = {
 	general: {
-		version: '1.4.2',
+		version: '1.6',
 		help: 1,
 		name: 'Selectpicker',
 		description: "Selectpicker es un control de formulario que le permite gestionar una selección como un desplegable propio de HTML5 y que proporciona una capa personalización sencilla de modificar.\n\
@@ -2777,15 +2777,20 @@ select:focus + .it-select-picker > button { border: 1px solid rgba(205, 5, 60, 1
 _CSS_'
 		},
 	],
+	callback: {
+		type: 'function',
+		description: 'Permite que se devuelva el control a una función personalizada cuando el selectpicker cambia su valor.',
+		example: 'it(".select-picker").selectpicker({ callback: function(evt){console.log(evt)} });'
+	},
 	selectpicker: {
 		type: 'function',
 		description: 'Crea y establece los componentes de configuración y presentación para los desplegables solicitados.',
 		example: 'it(".select-picker").selectpicker();'
 	},
-	liveSearch: {
+	livesearch: {
 		type: 'boolean',
 		description: 'Habilita la búsqueda predictiva a través de un campo de texto.',
-		example: 'it(".select-picker").selectpicker({ liveSearch: true });'
+		example: 'it(".select-picker").selectpicker({ livesearch: true });'
 	},
 	stylesheet:{
 		type: 'boolean',
@@ -2822,19 +2827,19 @@ _CSS_'
 
 /**
    SlideShow Helper
-   @version: 1.0
+   @version: 1.1
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 08/04/2021
+   @Last update: 18/04/2021
  **/
    WikiHelper.Slideshow = {
 	general: {
-		version: '1.0',
+		version: '1.1',
 		name: 'SlideShow',
 		help: 1,
-		description: 'Este componente permite presentar un conjunto de imágenes, comunmente denominadas diapositivas que se muestran secuencialmente una detrás de otra. Sólo permite visualizar una única diapositiva a la vez, sin embargo, ofrece la posibilidad de cambiar de diapositiva mediante unos botones que llevan a la anterior, la siguiente o a un número concreto, y la reproducción automática.\n\
+		description: 'Este componente permite presentar un conjunto de imágenes, comunmente denominadas diapositivas que se muestran secuencialmente una detrás de otra. Sólo permite visualizar una única diapositiva a la vez, sin embargo, ofrece la posibilidad de cambiar de diapositiva mediante movimientos táctiles de izquierda a derecha y viceversa, mediante los botones que llevan a la anterior, la siguiente o a un número concreto, y la reproducción automática.\n\
 \n\
-También permite que la presentación cambie automáticamente de siapositiva pasado un tiempo, junto con la posibilidad de que pueda detenerse o reanudarse a través de unos controles de "play" y "stop".\n\
+Esta última opción permite que las diapositivas se vayan mostrando y ocultando pasado un tiempo, junto con la posibilidad de que pueda detenerse o reanudarse a través de unos controles de "play" y "stop". Además, añadirá una barra de progreso en la parte superior de las diapositivas para mostrar el tiempo que queda antes de que cambie.\n\
 <name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los slideshow o carruseles de imágenes, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/carousel/carousel-1.html</name>\n\
 \n\
 Para que sea más sencillo de comprender el componente, a partir de ahora, en todos métodos y propiedades supondremos que tenemos un contenedor <property>div</property> compuesto por varios contenedores hijos <property>div.slide</property> que, a su vez, contienen una imagen, un título y un texto.\n\
@@ -2908,7 +2913,7 @@ _CSS_'
 	],
 	autoplay: {
 		type: 'boolean',
-		description: 'Indica si el slideshow debe o no reproducir de manera automática el avance de slides pasados un determinado número de segundos. Por defecto, está establecido a <property>false</property>. Cabe destacar que la reproducción automática no es una práctica recomendada cuando se desea que las webs sean accesibles.',
+		description: 'Indica si el slideshow debe o no reproducir de manera automática el avance de slides pasados un determinado número de segundos. Por defecto, está establecido a <property>false</property>. Al activar esta opción, el componente añadirá una barra de progreso en la parte superior de las diapositivas para mostrar el tiempo que queda antes de que cambie. No obstante, cabe destacar que la reproducción automática no es una práctica recomendada cuando se desea que las webs sean accesibles.',
 		example: 'it(".it-slideshow").slideShow({autoplay: true);'
 	},
 	fullscreen: {
