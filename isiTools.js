@@ -6373,15 +6373,14 @@ function isiToolsCallback(json){
                 prg = trg.querySelector("progress");
             }
 
-            cfg.progress = setInterval(function(interval){
-                prg.value += 100 / interval / 10;
-                if(prg.value > 100) prg.value = 0;
-            }.bind(prg, cfg.interval), 100);
+            cfg.progress = setInterval(function(interval, el){
+                if(prg.value > 100){
+                    prg.value = 0;
+                    it.slideShow.toggle(el, 1);
+                }
+                prg.value += prg.max / interval / 10;
 
-            // Habilitamos el intervalo
-            it.slideShow._playing = setInterval(function(cfg){
-                it.slideShow.toggle(this, 1)
-            }.bind(el.querySelector(".next"), cfg), cfg.interval * 1000);
+            }.bind(prg, cfg.interval, el.querySelector(".next")), 100);
 
             // Cambiamos el evento click
             el.querySelector(".player").onclick = function(e){
@@ -6397,8 +6396,7 @@ function isiToolsCallback(json){
         it.slideShow.pause = function(el){
             var cfg = it.slideShow.config[el.id] || {};
 
-            // Eliminamos los intervalos
-            clearInterval(it.slideShow._playing);
+            // Paramos el intervalo y barra de progreso
             clearInterval(cfg.progress);
 
             // Cambiamos el evento click
@@ -6422,7 +6420,6 @@ function isiToolsCallback(json){
             it(el).slideShow(n);
         }
 
-        it.slideShow._playing = null;
         it.slideShow._stylesAdded = false;
     }
 
