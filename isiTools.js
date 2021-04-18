@@ -5671,6 +5671,7 @@ function isiToolsCallback(json){
                 });
     
                 if(!cfg.hasOwnProperty('stylesheet')) cfg.stylesheet = false;
+                if(!cfg.hasOwnProperty("callback")) cfg.callback = null;
     
                 for(var key in it.selectpicker.config){
                     var trg = document.getElementById(key);
