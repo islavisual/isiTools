@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.1.0",
+it.version = "2.1.1",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "18/04/2021",
+it.lastupdate = "19/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -800,7 +800,7 @@ function isiToolsCallback(json){
 
     /**
     	Autocomplete functionality
-    	@version: 1.6
+    	@version: 1.6.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
     	@Last update: 23/03/2021
@@ -868,6 +868,7 @@ function isiToolsCallback(json){
                     autoFocus: !cfg.hasOwnProperty('autoFocus') ? false : cfg.autoFocus,
                     autoExpand: !cfg.hasOwnProperty('autoExpand') ? false : cfg.autoExpand,
                     autoSelect: !cfg.hasOwnProperty('autoSelect') ? false : cfg.autoSelect,
+                    autoChoose: !cfg.hasOwnProperty('autoChoose') ? true : cfg.autoChoose,
                     callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
                     className: !cfg.hasOwnProperty('className') ? "it-autocomplete" : cfg.className,
                     currentFocus: -1,
@@ -929,7 +930,7 @@ function isiToolsCallback(json){
                 }
                 it.autocomplete.targets[opt.target.id] = {};
                 it.autocomplete.targets[opt.target.id].opt = opt;
-                opt.target.dataset.helper = "autocomplete";
+                if(opt.helper) opt.target.dataset.helper = opt.target.id
 
                 // Assign aria controls
                 opt.target.setAttribute("role", "combobox");
@@ -1095,6 +1096,14 @@ function isiToolsCallback(json){
 
                         // Searching...
                         it.autocomplete.foreach(val, opt, a)
+
+                        if(opt.autoChoose){
+                            var x = it.autocomplete._getAutocompleteList(this, opt.className);
+                            opt.currentFocus++;
+
+                            it.autocomplete._addActive(x, opt);
+                            it.autocomplete._setScrollTop(e.target.id, opt.className, "down");
+                        }
 
                         // Clean memory
                         a = b = c = val = jsonCluster = wildcard = thead = aux = null;
@@ -3474,7 +3483,7 @@ function isiToolsCallback(json){
 
     /**
     	 FlexBox Plugin
-    	@version: 1.1
+    	@version: 1.2
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
     	@Last update: 11/04/2021
@@ -3534,7 +3543,7 @@ function isiToolsCallback(json){
                         }
 
                         // Si la clase CSS es específica de una resolución la añadimos a la definición de su media-query
-                        if(cls.indexOf(name) != -1 && cs.media.indexOf('.it-flexbox .row > .' + clss) == -1){
+                        if(cls.indexOf('-show') == -1 && cls.indexOf('-hide') == -1 && cls.indexOf(name) != -1 && cs.media.indexOf('.it-flexbox .row > .' + clss) == -1){
                             if(cls.indexOf('offset') != -1){
                                 cs.media += '.it-flexbox .row > .' + clss + '{ margin-left: calc(' + val + '% + var(--gap)) }';
 
@@ -3585,12 +3594,19 @@ function isiToolsCallback(json){
             // Añadimos las medias-queries
             for(var x = 0; x < it.flexbox.config.resolutions.length; x++){
                 var cs = it.flexbox.config.resolutions[x];
+                var csmax = it.flexbox.config.resolutions[x+1];
 
                 if(!cfg.stylesheet){
-                    cs.media += '.it-flexbox .row .' + cs.name + '-hide { display: none !important; }';
-                    cs.media += '.it-flexbox .row .' + cs.name + '-show { display: block !important; }'
-                    
                     it.addCSSRule('', '@media all and (min-width: ' + (cs.minWidth) + 'px)', cs.media);
+
+                    cs.specialMedia = '.it-flexbox .row .' + cs.name + '-hide { display: none !important; }';
+                    cs.specialMedia += '.it-flexbox .row .' + cs.name + '-show { display: block !important; }'
+                    
+                    if(csmax != undefined){
+                        it.addCSSRule('', '@media all and (min-width: ' + (cs.minWidth) + 'px) and (max-width: ' + (csmax.minWidth-1) + 'px)', cs.specialMedia);
+                    } else{
+                        it.addCSSRule('', '@media all and (min-width: ' + (cs.minWidth) + 'px)', cs.specialMedia);
+                    }
                 }
             }
         }
@@ -4954,7 +4970,7 @@ function isiToolsCallback(json){
 
     /**
     	N-State
-    	@version: 2.0
+    	@version: 2.0.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2021 Islavisual.
     	@Last update: 07/03/2021
@@ -5039,7 +5055,7 @@ function isiToolsCallback(json){
                 // Add rule styles
                 if(this.slider.config.type == "switch"){
                     // If not selected parameter
-                    cfg.checked = !cfg.checked ? true : cfg.checked;
+                    cfg.checked = !cfg.hasOwnProperty("checked") ? false : cfg.checked;
 
                     var input = document.createElement("input");
                     input.id = this.target.id;
