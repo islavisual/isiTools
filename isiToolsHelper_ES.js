@@ -648,7 +648,7 @@ it("#vehiculo").autocomplete({\n\
 	},
 	autoExpand: {
 		type: 'boolean',
-		description: 'Indica que se despliegue el autocomplete de forma automática. Por defecto es <str>false</str>.',
+		description: 'Indica si se debe desplegar o no el autocomplete de forma automática. Por defecto es <str>false</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#vehiculo").autocomplete({\n\
 	data: arrayList,\n\
@@ -658,12 +658,22 @@ it("#vehiculo").autocomplete({\n\
 	},
 	autoSelect: {
 		type: 'boolean',
-		description: 'Indica que el valor del elemento de formulario (o input) seleccione todo el texto contenido de forma automática. Por defecto es <str>false</str>.',
+		description: 'Indica si el valor del campo de texto (elemento de formulario input) debe seleccionar todo su contenido de forma automática. Por defecto es <str>false</str>.',
 		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
 it("#vehiculo").autocomplete({\n\
 	data: arrayList,\n\
 	format: "list",\n\
 	autoSelect: true\n\
+})'
+	},
+	autoChoose: {
+		type: 'boolean',
+		description: 'Indica si se debe seleccionar o no el primer elemento de la lista de forma automática. Por defecto es <str>true</str>.',
+		example: 'var arrayList = ["Coche", "Motorcicleta", "Avión", "Tren", "Bicicleta"];\n\
+it("#vehiculo").autocomplete({\n\
+	data: arrayList,\n\
+	format: "list",\n\
+	autoChoose: false\n\
 })'
 	},
 	callback: {
@@ -3796,7 +3806,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 
 			AddCSSRule('', '#h31p3r > h1 > img', 'display: inline-block; width: 163px; position: absolute; left: 112px; top: 12px; image-rendering: -webkit-optimize-contrast;');
 			AddCSSRule('', '#h31p3r.index > h1 > img', 'left: 10px;');
-			AddCSSRule('', '@media all and (max-width: 767px)', '#h31p3r.index > h1 > img { width: 140px; left: 10px; top: 15px; } #h31p3r:not(.index) > h1 > img, #h31p3r > h1 > span{ display: none !important; } #h31p3r.index h3 { width: 50%; }');
+			AddCSSRule('', '@media all and (max-width: 767px)', '#h31p3r h1 {padding-left: 105px; text-align: left; } #h31p3r.index > h1 > img { width: 140px; left: 10px; top: 15px; } #h31p3r:not(.index) > h1 > img, #h31p3r > h1 > span{ display: none !important; } #h31p3r.index h3 { width: 50%; }');
 
 			if(Helper.getParameters("f") == '.me'){
 				AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
