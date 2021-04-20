@@ -3547,10 +3547,10 @@ it("#percent").validator({\n\
 
 /**
    Helper functionality
-   @version: 1.2
+   @version: 1.3
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 08/04/2021
+   @Last update: 20/04/2021
  **/
 
 this.Helper = it.helper = function (func, cfg) {
@@ -3628,6 +3628,8 @@ this.Helper = it.helper = function (func, cfg) {
 		document.querySelector("#h31p3r").remove();
 		document.body.classList.remove('body-hidden');
 	}
+	if(document.body.dataset.spos == null) document.body.dataset.spos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+	it.helper.disableBackButton();
 
 	// Set themes
 	var darkTheme = { fieldColor: '#ff6a6a', stringColor: '#fff', exampleColor: '#ff6694', keyColor: '#467bfe', commentColor: '#828282', funcNameColor: '#0fbf88', boolColor: '#36e05c', strColor: '#c5c5c5', funcColor: '#f1c33d', intColor: '#ffabab', nullColor: '#b1b2b3' };
@@ -3661,8 +3663,8 @@ this.Helper = it.helper = function (func, cfg) {
 	}
 	
 	// Set HTML template
-	var template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
-	<a href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
+	var template = '<i class="btn-times" onclick="it.helper.close()"></i>\
+	<a class= "goBack" href="javascript:void(0)" onclick="Helper(\'index\', {theme: \'' + theme + '\'});">Ir al índice</a>\
 	<h1>\
 		<img src="https://raw.githubusercontent.com/islavisual/isiTools/master/images/logo-isiTools.png" />\
 		<span>Pantalla de ayuda para </span>' + general.name + " " + general.version + 
@@ -3688,7 +3690,7 @@ this.Helper = it.helper = function (func, cfg) {
 	</div>';
 
 	if (general.name.toLowerCase() == "index") {
-		template = '<i class="btn-times" onclick="this.parentElement.remove(); document.body.classList.remove(\'body-hidden\');"></i>\
+		template = '<i class="btn-times" onclick="it.helper.close()"></i>\
 		<nav>\
 			<a href="javascript:void(0)"><i class="btn-bars" onclick="it.helper.toggleMenu(this)"></i></a>\
 			<ul>\
@@ -3736,7 +3738,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 
 			AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
 			AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 50px;left: 0;width: 100%;height: calc(100% - 50px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
+			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 16px; line-height: 1.6; position:fixed;top: 50px;left: 0;width: 100%;height: calc(100% - 50px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
 			AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center; font-weight:400; background: ' + opt.color + '; padding: 15px; font-size: 18px; line-height: normal; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
 			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + '; text-align: center; font-weight:400; padding: 15px; font-size: 15px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
 			AddCSSRule('', "#h31p3r h2::before, #h31p3r h2::after", 'content: inherit;')
@@ -3754,7 +3756,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', '#h31p3r.index h3 text', 'display: inline; padding: 0;');
 
 			AddCSSRule('', '#h31p3r ul li, #h31p3r p ', 'list-style: none; color: ' + opt.color + '; padding: 0 5px; list-style: none');
-			AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 1rem; }');
+			AddCSSRule('', '#h31p3r text, #h31p3r str, #h31p3r ul, #h31p3r ul li, #h31p3r p', '{ font-size: 16px; }');
 			AddCSSRule('', '#h31p3r p.warning', 'background: linear-gradient(45deg, #de1f60, transparent); border-radius: 4px;');
 			AddCSSRule('', '#h31p3r field', 'text-transform: capitalize; padding: 15px 0 5px 32px; display: inline-block; color: ' + opt.strColor + ';');
 			AddCSSRule('', '#h31p3r field.des, #h31p3r field.exa', 'display: block; width: 100%;');
@@ -3771,7 +3773,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', '#h31p3r name', 'color: ' + opt.funcNameColor + ';');
 			AddCSSRule('', '#h31p3r null', 'color: ' + opt.nullColor + ';');
 			AddCSSRule('', '#h31p3r comm, #h31p3r comm int, #h31p3r comm str, #h31p3r comm bool, #h31p3r comm > name', 'color: ' + opt.commentColor + ';');
-			AddCSSRule('', '#h31p3r > code, #h31p3r #additionalH31p3r > code', 'font-size: 14px; color: ' + opt.exampleColor + '; padding: 8px 5px 5px 32px; display: block; width: 100%; white-space: pre-wrap; ');
+			AddCSSRule('', '#h31p3r > code, #h31p3r #additionalH31p3r > code', 'font-size: 16px; color: ' + opt.exampleColor + '; padding: 8px 5px 5px 32px; display: block; width: 100%; white-space: pre-wrap; ');
 			AddCSSRule('', '#h31p3r code field', 'padding: 0; text-transform: none;');
 			AddCSSRule('', '#h31p3r key', 'color: ' + opt.keyColor + ';');
 			AddCSSRule('', '#h31p3r .btn-times', 'position: fixed; right: 10px; top: 11px; width: 32px; height: 32px;  background: ' + opt.buttons + '; z-index:9; cursor: pointer;');
@@ -3785,7 +3787,8 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 			AddCSSRule('', '#h31p3r nav .btn-bars::after', 'content: ""; border-bottom: 2px solid ' + opt.background + '; width: 100%; display: block; height: 12px; transition: all 0.3s ease 0s;');
 			AddCSSRule('', '#h31p3r nav a.on .btn-bars:before', 'width: 50%;');
 			AddCSSRule('', '#h31p3r nav a.on .btn-bars:after', 'width: 75%; transition: all 0.3s ease;');
-			AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px;');
+			AddCSSRule('', '#h31p3r nav > a', 'display: block; background: ' + opt.buttons + '; height: 32px; width: 32px; position: relative; padding: 4px; top: -4px; left: -6px; text-decoration: none;');
+			AddCSSRule('', '#h31p3r nav > a::before, #h31p3r nav > a::after', 'display: none');
 			AddCSSRule('', '#h31p3r nav > a + ul', 'display: none; background: ' + opt.color + '; width: 150px; height: 150px; color: ' + opt.background + '; position: absolute; top: 38px; right: -15px; list-style: none; padding: 0; text-align: left;');
 			AddCSSRule('', '#h31p3r nav > a.on + ul', 'display:block; overflow-x: hidden; overflow-y: auto');
 			AddCSSRule('', '#h31p3r nav > a + ul li', 'padding: 5px 10px;');
@@ -3806,7 +3809,16 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 
 			AddCSSRule('', '#h31p3r > h1 > img', 'display: inline-block; width: 163px; position: absolute; left: 112px; top: 12px; image-rendering: -webkit-optimize-contrast;');
 			AddCSSRule('', '#h31p3r.index > h1 > img', 'left: 10px;');
-			AddCSSRule('', '@media all and (max-width: 767px)', '#h31p3r h1 {padding-left: 105px; text-align: left; } #h31p3r.index > h1 > img { width: 140px; left: 10px; top: 15px; } #h31p3r:not(.index) > h1 > img, #h31p3r > h1 > span{ display: none !important; } #h31p3r.index h3 { width: 50%; }');
+			AddCSSRule('', '@media all and (max-width: 767px)', '\
+							#h31p3r { padding-bottom: 32px; }\
+							#h31p3r .goBack { position: fixed; top: auto; bottom: 0; z-index: 999999; width: 100%; height: 36px; background: rgba(var(--bg2), 1); left: 0; text-align: center; color: #fff; border-radius: 50px 50px 0 0; border: none; border-top: 1px solid rgba(255,255,255,0.1); }\
+							#h31p3r.index > h1 > img { width: 140px; left: 10px; top: 15px; }\
+							#h31p3r:not(.index) > h1 > img, #h31p3r > h1 > span{ display: none !important; }\
+							#h31p3r.index h3 { width: 50%; }\
+							#h31p3r nav > a + ul { width: 100vw; left: 0vw; right: auto; top: 40px; height: calc(100vh - 110px); position: fixed; background: rgb(16, 16, 16); border-bottom: 1px solid #000;; }\
+							#h31p3r nav > a + ul li a { color: #fff; }\
+							#h31p3r nav > a + ul li { border-bottom: 1px solid rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(255, 255, 255, 0.06); height: 40px; padding: 0 10px; line-height: 40px; }\
+							#h31p3r input[type="search"] {  border-color: #777; box-shadow: none; background: #fff; color: #000 !important; }');
 
 			if(Helper.getParameters("f") == '.me'){
 				AddCSSRule('', '#h31p3r type', 'display: block; padding: 0 0px 0px 32px;');
@@ -4125,4 +4137,26 @@ this.Helper.filterh31p3r = function(el){
 			child.parentElement.style.display = "none";
 		}
 	}
+}
+
+this.Helper.close = document.body.onunload = function(){
+	try { document.querySelector("#h31p3r").remove(); } catch(e){}
+	try { document.body.classList.remove('body-hidden'); } catch(e){}
+	if(document.body.dataset.spos){
+		window.scrollTo(0, parseInt(document.body.dataset.spos));
+		delete document.body.dataset.spos;
+	}
+
+	history.back();
+	window.onpopstate = it.helper.onpopstate;
+}
+
+// Disable back button
+this.Helper.disableBackButton = function(){
+	it.helper.onpopstate = window.onpopstate;
+
+	history.pushState("isiTools", null, null);
+	window.onpopstate = function () {
+		history.pushState("isiTools", null, null);
+	};
 }
