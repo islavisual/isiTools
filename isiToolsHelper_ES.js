@@ -2859,20 +2859,38 @@ Para que sea más sencillo de comprender el componente, a partir de ahora, en to
 	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
 		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2021/02/24/09/51/magical-6046020_960_720.jpg"</str>></name>\n\
 		<name>&lt;div <field>class=</field><str>"title"</str>></name>SLOGAN 1<name>&lt;/div></name>\n\
-		<name>&lt;div <field>class=</field><str>"text">Texto adicional 1.<name>&lt;/div></name>\n\
+		<name>&lt;div <field>class=</field><str>"text">Texto adicional 1<name>&lt;/div></name>\n\
 	<name>&lt;/div></name>\n\
 	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
 		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2019/12/29/13/59/trees-4727156_960_720.jpg"</str>></name>\n\
 		<name>&lt;div <field>class=</field><str>"title"</str>></name>SLOGAN 2<name>&lt;/div></name>\n\
-		<name>&lt;div <field>class=</field><str>"text">Texto adicional 2.<name>&lt;/div></name>\n\
+		<name>&lt;div <field>class=</field><str>"text">Texto adicional 2<name>&lt;/div></name>\n\
 	<name>&lt;/div></name>\n\
 	<name>&lt;div <field>class=</field><str>"slide fade"</str>></name>\n\
 		<name>&lt;img <field>src=</field><str>"https://cdn.pixabay.com/photo/2017/06/17/10/55/hot-air-balloon-2411851_960_720.jpg"</str>></name>\n\
 		<name>&lt;div <field>class=</field><str>"title"</str>></name>SLOGAN 3<name>&lt;/div></name>\n\
-		<name>&lt;div <field>class=</field><str>"text">Otro texto adicional.<name>&lt;/div></name>\n\
+		<name>&lt;div <field>class=</field><str>"text">Otro texto adicional<name>&lt;/div></name>\n\
 	<name>&lt;/div></name>\n\
 <name>&lt;/div></name>\n\
-</code>',
+</code>\n\
+\n\
+No obstante, también es posible crear un SlideShow de manera automática mediante la siguiente sintaxis:\n\
+<code style="white-space: pre-wrap;">\
+<name>&lt;it-slideshow></name>\n\
+	<name>&lt;it-slide <field>img=</field><str>"https://cdn.pixabay.com/photo/2021/02/24/09/51/magical-6046020_960_720.jpg"</str>\n\
+		  <field>title=</field><str>"SLOGAN 1"</str>\n\
+		  <field>text=</field><str>"Texto adicional 1"</str>>\n\
+	&lt;/it-slide></name>\n\
+	<name>&lt;it-slide <field>img=</field><str>"https://cdn.pixabay.com/photo/2019/12/29/13/59/trees-4727156_960_720.jpg"</str>\n\
+		  <field>title=</field><str>"SLOGAN 2"</str>\n\
+		  <field>text=</field><str>"Texto adicional 2"</str>>\n\
+	&lt;/it-slide></name>\n\
+	<name>&lt;it-slide <field>img=</field><str>"https://cdn.pixabay.com/photo/2017/06/17/10/55/hot-air-balloon-2411851_960_720.jpg"</str>\n\
+		  <field>title=</field><str>"SLOGAN 3"</str>\n\
+		  <field>text=</field><str>"Otro texto adicional"</str>>\n\
+	&lt;/it-slide></name>\n\
+<name>&lt;/it-slideshow></name>\
+</code>'
 	},
 	additional: [
 		{
