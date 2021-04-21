@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.1.1",
+it.version = "2.1.2",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "19/04/2021",
+it.lastupdate = "21/04/2021",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -6135,309 +6135,353 @@ function isiToolsCallback(json){
     }
 
     /**
-    	SlideShow functionality
-    	@version: 1.2
-    	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
-    	@Last update: 17/04/2021
-    **/
-    if(json.SlideShow){
-        this.SlideShow = it.slideShow = function (cfg) {
-            if(typeof cfg == "undefined") cfg = {};
-            
-            // If method was called by HTMLSelectElement
-            this.targets = this.tagName != undefined ? [this] : (this.entries == undefined ? this.targets : this);
-
-            var opt;
-            Array.prototype.slice.call(this.targets).forEach(function(target){
-                var id = target.id, i;
-
-                // Recuperamos la configuración actual
-                if(!target.style.height){
-                    // Si el target no tiene ID, se lo asignamos
-                    if(!id){
-                        if(!id) id = 'it-slider-' + Math.random().toString(36).substr(2, 9);
-                        target.id = id;
-                    }
-
-                    opt = it.slideShow.config[id] || cfg;
-                    opt.autoplay = cfg.hasOwnProperty("autoplay") ? cfg.autoplay : false;
-                    opt.currentSlide = cfg.hasOwnProperty("currentSlide") ? cfg.currentSlide : (typeof cfg == "number" ? cfg : 1);
-                    opt.dots = target.querySelectorAll(".dot");
-                    opt.effect = cfg.hasOwnProperty("effect") ? cfg.height : 'fade';
-                    opt.fullscreen = cfg.hasOwnProperty("fullscreen") ? cfg.fullscreen : false;
-                    opt.interval = cfg.hasOwnProperty("interval") ? cfg.interval : 5;
-                    opt.player = cfg.hasOwnProperty("player") ? cfg.player : false;
-                    opt.showNumbers = cfg.hasOwnProperty("showNumbers") ? cfg.showNumbers : false;
-                    opt.slides = target.querySelectorAll(".slide");
-                    opt.stylesheet = cfg.hasOwnProperty("stylesheet") ? cfg.stylesheet : false;
-                    opt.title = cfg.hasOwnProperty("title") ? cfg.title : it.slideShow.language.title;
-                    opt.width = cfg.hasOwnProperty("width") ? cfg.width : '100%';
-                    opt.height = cfg.hasOwnProperty("height") ? cfg.height : '360px';
-
-                    // Si se solicitó a pantalla completa establecemos los valores calculados
-                    if(opt.fullscreen){
-                        opt.height = '100vh';
-                        opt.width = '100%';
-                        target.classList.add("fullscreen");
-                    }
-
-                    // Si se solicitó el botón de reproducción
-                    if(opt.player){
-                        var aux = document.createElement("button");
-                        aux.classList.add("player");
-                        aux.setAttribute("role", "button")
-                        target.appendChild(aux);
-
-                        it.slideShow.pause(target);
-                    }
-                } else {
-                    opt = it.slideShow.config[id];
-                    opt.currentSlide = (typeof cfg == "number" || typeof cfg == "string") ? cfg : 1;
-                }
-                
-                // Establecemos valores por defecto si el número de slide está fuera de los límites
-                if (opt.currentSlide > opt.slides.length) {opt.currentSlide = 1}
-                if (opt.currentSlide < 1) {opt.currentSlide = opt.slides.length}
-
-                // Reestablecemos todos los slides y dots activos
-                for (i = 0; i < opt.slides.length; i++) { opt.slides[i].classList.add("hide"); }
-                if(opt.dots.length != 0){
-                    for (i = 0; i < opt.dots.length; i++) { opt.dots[i].classList.remove("active"); }
-                }
-
-                // Asignamos el slide y dot actual
-                opt.slides[opt.currentSlide-1].classList.remove("hide");
-                if(opt.dots.length != 0){
-                    opt.dots[opt.currentSlide-1].classList.add("active");
-                }
-
-                // Asignamos tamaño si el target no lo tiene todavía
-                if(!target.style.height){
-                    // Asignamos la clase CSS
-                    target.classList.add("it-slideshow");
-
-                    // Asignamos los atributos de accesibilidad 
-                    target.setAttribute("aria-roledescription", "carousel");
-                    target.setAttribute("aria-label", opt.title);
-
-                    // Creamos el contenedor de dots
-                    var dots = document.createElement("div");
-                        dots.classList.add("dots");
-
-                    // Recorremos los slides
-                    for(var i = 0; i < opt.slides.length; i++){
-                        // Asignamos los atributos de accesibilidad a cada slide,
-                        opt.slides[i].setAttribute("aria-roledescription", "slide");
-                        opt.slides[i].setAttribute("aria-label", (i + 1) + it.slideShow.language.slideOf +  opt.slides.length);
-
-                        // Añadimos los enlaces/dots para cada slide con sus
-                        // respectivos atributos de accesibilidad
-                        if(opt.dots.length == 0){
-                            var dot = document.createElement("a");
-                                dot.classList.add("dot")
-                                dot.setAttribute("onclick", "it.slideShow.toSlide(this, " + (i + 1) + ")");
-                                dot.setAttribute("role", "button");
-                                dot.setAttribute("aria-controls", target.id);
-                                dot.setAttribute("aria-label", it.slideShow.language.goto + (i + 1));
-                                dot.setAttribute("tabindex", "0");
-
-                            // Asingamos el dot activo
-                            if(i == opt.currentSlide-1) dot.classList.add("active");
-
-                            dots.appendChild(dot);
-                        }
-
-                        // Añadimos el número de diapositiva, si procede
-                        if(opt.showNumbers){
-                            var sn = document.createElement("span");
-                                sn.classList.add("slide-id")
-                                sn.innerHTML = (i + 1) + " / " + opt.slides.length;
-
-                            opt.slides[i].insertAdjacentElement("afterbegin", sn);
-                        }
-
-                        // Asignamos a cada slide el efecto de transición solicitado,
-                        // fade, por defecto
-                        opt.slides[i].classList.add(opt.effect);
-                    }
-                    // Añadimos el elemento contenedor de dots
-                    target.appendChild(dots);
-
-                    opt.dots = dots.querySelectorAll(".dot");
-
-                    // Añadimos los botones y dots a cada target
-                    var prev = document.createElement("a");
-                        prev.classList.add("prev")
-                        prev.setAttribute("onclick", "it.slideShow.toggle(this, -1)");
-                        prev.setAttribute("role", "button");
-                        prev.setAttribute("aria-controls", target.id);
-                        prev.setAttribute("aria-label", it.slideShow.language.prev);
-                        prev.setAttribute("tabindex", "0");
-                        prev.innerHTML = "&#10094;"
-
-                        target.appendChild(prev);
-
-                    var next = document.createElement("a");
-                        next.classList.add("next")
-                        next.setAttribute("onclick", "it.slideShow.toggle(this, 1)");
-                        next.setAttribute("role", "button");
-                        next.setAttribute("aria-controls", target.id);
-                        next.setAttribute("aria-label", it.slideShow.language.next);
-                        next.setAttribute("tabindex", "0");
-                        next.innerHTML = "&#10095;"
-
-                        target.appendChild(next);
-
-                    // Asignamos el ancho y alto del slideshow
-                    target.style.height = opt.height;
-                    target.style.width = opt.width;
-
-                    // Guardamos la actual configuración
-                    it.slideShow.config[id] = opt;
-
-                    // Si se solicitó la reprocucción automática, la activamos
-                    if(opt.autoplay){
-                        it.slideShow.play(target);
-                    }
-
-                    target.addEventListener('touchstart', handleTouchStart, {passive: true});        
-                    target.addEventListener('touchmove', handleTouchMove, {passive: true});
-                    var xDown = null, yDown = null;
-                    
-                    function getTouches(evt) { return evt.touches || evt.originalEvent.touches; }                                                     
-
-                    function handleTouchStart(evt) { const firstTouch = getTouches(evt)[0]; xDown = firstTouch.clientX; yDown = firstTouch.clientY; };                                                
-                    function handleTouchMove(evt)  { 
-                        if ( ! xDown || ! yDown ) { return; }
-
-                        var xUp = evt.touches[0].clientX, yUp = evt.touches[0].clientY;
-                        var xDiff = xDown - xUp, yDiff = yDown - yUp;
-
-                        if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
-                            if ( xDiff > 0 ) {
-                                target.querySelector(".next").click();
-                            } else {
-                                target.querySelector(".prev").click();
-                            }
-                        } 
-                        xDown = yDown = null;
-                    };
-                }
-
-                it.slideShow.config[id].currentSlide = opt.currentSlide;
-            });
-
-            if(!opt.stylesheet && !it.slideShow._stylesAdded){
-                AddCSSRule('', '.it-slideshow', 'max-width: none; position: relative; margin: 0; padding: 0;');
-                AddCSSRule('', '.it-slideshow .prev, .it-slideshow .next', 'cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none;');
-                AddCSSRule('', '.it-slideshow .next', 'right: 0; border-radius: 3px 0 0 3px;');
-                AddCSSRule('', '.it-slideshow .prev:hover, .it-slideshow .next:hover, .it-slideshow .prev:focus, .it-slideshow .next:focus', 'background-color: rgba(0,0,0,0.8);');
-                AddCSSRule('', '.it-slideshow .title', 'color: #ffffff; font-size: 2rem; padding: 8px 12px; position: absolute; bottom: 50%; width: 100%; text-align: center;');
-                AddCSSRule('', '.it-slideshow .text', 'background: rgba(0,0,0,0.5); color: #f2f2f2; font-size: 1rem; padding: 8px 12px 22px; position: absolute; bottom: 0; width: 100%; text-align: center;');
-                AddCSSRule('', '.it-slideshow .slide-id', 'background-color: rgba(0,0,0,0.8); color: #f2f2f2; font-size: 0.8rem; padding: 5px 10px; position: absolute; top: 0;');
-                AddCSSRule('', '.it-slideshow .dots', 'text-align: center; position: absolute; width: 100%; bottom: 0; left: 0;');
-                AddCSSRule('', '.it-slideshow .dot ', 'cursor: pointer; height: 15px; width: 15px; margin: 0 2px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease;');
-                AddCSSRule('', '.it-slideshow .slide', 'position: absolute; top: 0; left: 0; transition: opacity 1s ease-in-out; height: 100%; width: 100%; margin: 0; padding: 0;');
-                AddCSSRule('', '.it-slideshow .slide img', 'max-width: 100%; display: block; object-fit: cover; height: 100%; width: 100%;');
-                AddCSSRule('', '.it-slideshow .active, .it-slideshow .dot:hover, .it-slideshow .dot:focus', 'background-color: #000;');
-                AddCSSRule('', '.it-slideshow .fade', 'opacity: 1;');
-                AddCSSRule('', '.it-slideshow .hide', 'opacity: 0;');
-                AddCSSRule('', '@keyframes it-slideshow-fade', '0% { display: block; opacity: 0 } 1% { opacity: 0 } 100% { opacity: 1 }');
-                AddCSSRule('', '@keyframes it-slideshow-hide', ' 0% { opacity: 1 } 99% { opacity: 0; } 100% { opacity: 0; display: none; }');
-
-                AddCSSRule('', '.it-slideshow.fullscreen', 'height: 100vh; width: 100%;');
-
-                AddCSSRule('', '.it-slideshow .player', 'position: absolute; top: 5px; right: 5px; font-size: 21px; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 0 , 0, 0.5); color: #fff; width: 32px; height: 32px; line-height: 30px; text-align: center; padding: 0; margin: 0;');
-                AddCSSRule('', '.it-slideshow.playing .player::before', 'content: "\\2590\\a0\\258c"; ');
-                AddCSSRule('', '.it-slideshow.playing .player', 'font-size: 12px;');
-                AddCSSRule('', '.it-slideshow.paused .player::before', 'content: "\\25b6"; ');
-                AddCSSRule('', '.it-slideshow.paused .player', 'font-size: 19px;');
-                
-                AddCSSRule('', '.it-slideshow progress', 'position: absolute; top: 45px; left: 0; height: 4px; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none; border: none; background-color: rgba(var(--fc1), 0.1); color: rgba(var(--borderColor), 1);');
-                AddCSSRule('', '.it-slideshow progress::-webkit-progress-bar', 'background-color: rgba(var(--fc1), 0.1); border-radius: 20px;');
-                AddCSSRule('', '.it-slideshow progress::-webkit-progress-value', 'background-color: rgba(var(--fc1), 1);  transition: 0.2s width ;');
-                AddCSSRule('', '.it-slideshow progress::-moz-progress-bar', 'background-color: rgba(var(--fc1), 1);');
-                AddCSSRule('', '.it-slideshow progress::-ms-fill', 'background-color: rgba(var(--fc1), 1);');
-
-                it.slideShow._stylesAdded = true;
-            }
-        }
-
-        it.slideShow.config = {}
-        it.slideShow.language = {
-            prev: "Mostrar diapositiva anterior",
-            next: "Mostrar diapositiva siguiente",
-            goto: "Mostrar diapositiva ",
-            start: "Iniciar presentación automática de diapositivas",
-            stop: "Detener presentación automática de diapositivas",
-            title: "Presentación de diapositivas de imágenes",
-            slideOf: " de "
-        }
+    SlideShow functionality
+    @version: 1.3
+    @author: Pablo E. Fernández (islavisual@gmail.com).
+    @Copyright 2017-2021 Islavisual.
+    @Last update: 21/04/2021
+**/
+if(json.SlideShow){
+    this.SlideShow = it.slideShow = function (cfg) {
+        if(typeof cfg == "undefined") cfg = {};
         
-        it.slideShow.play = function(el){
-            var cfg = it.slideShow.config[el.id] || {};
+        // If method was called by HTMLSelectElement
+        this.targets = this.tagName != undefined ? [this] : (this.entries == undefined ? this.targets : this);
 
-            // Añadimos la barra de progreso
-            var trg = cfg.slides[0].parentElement, prg;
-            if(!trg.querySelector("progress")){
-                prg = document.createElement("progress");
-                    prg.max = "101";
-                    prg.value = "0";
-                trg.insertAdjacentElement("afterbegin", prg);
+        var opt;
+        Array.prototype.slice.call(this.targets).forEach(function(target){
+            var id = target.id, i;
+
+            if(target.tagName == "IT-SLIDESHOW"){
+                target = it.slideShow.build(target, opt);
+            }
+
+            // Recuperamos la configuración actual
+            if(!it.slideShow._init[target.id]){
+                opt = it.slideShow.config[id] || cfg;
+                opt.autoplay = cfg.hasOwnProperty("autoplay") ? cfg.autoplay : false;
+                opt.currentSlide = cfg.hasOwnProperty("currentSlide") ? cfg.currentSlide : (typeof cfg == "number" ? cfg : 1);
+                opt.dots = target.querySelectorAll(".dot");
+                opt.effect = cfg.hasOwnProperty("effect") ? cfg.height : 'fade';
+                opt.fullscreen = cfg.hasOwnProperty("fullscreen") ? cfg.fullscreen : false;
+                opt.interval = cfg.hasOwnProperty("interval") ? cfg.interval : 5;
+                opt.player = cfg.hasOwnProperty("player") ? cfg.player : false;
+                opt.showNumbers = cfg.hasOwnProperty("showNumbers") ? cfg.showNumbers : false;
+                opt.slides = target.querySelectorAll(".slide");
+                opt.stylesheet = cfg.hasOwnProperty("stylesheet") ? cfg.stylesheet : false;
+                opt.title = cfg.hasOwnProperty("title") ? cfg.title : it.slideShow.language.title;
+                opt.width = cfg.hasOwnProperty("width") ? cfg.width : '100%';
+                opt.height = cfg.hasOwnProperty("height") ? cfg.height : '360px';
+
+                // Si el target no tiene ID, se lo asignamos
+                if(!id){
+                    if(!id) id = 'it-slider-' + Math.random().toString(36).substr(2, 9);
+                    target.id = id;
+                }
+
+                // Si se solicitó a pantalla completa establecemos los valores calculados
+                if(opt.fullscreen){
+                    opt.height = '100vh';
+                    opt.width = '100%';
+                    target.classList.add("fullscreen");
+                }
+
+                // Si se solicitó el botón de reproducción
+                if(opt.player){
+                    var aux = document.createElement("button");
+                    aux.classList.add("player");
+                    aux.setAttribute("role", "button")
+                    target.appendChild(aux);
+
+                    it.slideShow.pause(target);
+                }
             } else {
-                prg = trg.querySelector("progress");
+                opt = it.slideShow.config[id];
+                opt.currentSlide = (typeof cfg == "number" || typeof cfg == "string") ? cfg : 1;
+            }
+            
+            // Establecemos valores por defecto si el número de slide está fuera de los límites
+            if (opt.currentSlide > opt.slides.length) {opt.currentSlide = 1}
+            if (opt.currentSlide < 1) {opt.currentSlide = opt.slides.length}
+
+            // Reestablecemos todos los slides y dots activos
+            for (i = 0; i < opt.slides.length; i++) { opt.slides[i].classList.add("hide"); }
+            if(opt.dots.length != 0){
+                for (i = 0; i < opt.dots.length; i++) { opt.dots[i].classList.remove("active"); }
             }
 
-            cfg.progress = setInterval(function(interval, el){
-                if(prg.value > 100){
-                    prg.value = 0;
-                    it.slideShow.toggle(el, 1);
+            // Asignamos el slide y dot actual
+            opt.slides[opt.currentSlide-1].classList.remove("hide");
+            if(opt.dots.length != 0){
+                opt.dots[opt.currentSlide-1].classList.add("active");
+            }
+
+            // Asignamos tamaño si el target no lo tiene todavía
+            if(!it.slideShow._init[target.id]){
+                // Asignamos la clase CSS
+                target.classList.add("it-slideshow");
+
+                // Asignamos los atributos de accesibilidad 
+                target.setAttribute("aria-roledescription", "carousel");
+                target.setAttribute("aria-label", opt.title);
+
+                // Creamos el contenedor de dots
+                var dots = document.createElement("div");
+                    dots.classList.add("dots");
+
+                // Recorremos los slides
+                for(var i = 0; i < opt.slides.length; i++){
+                    // Asignamos los atributos de accesibilidad a cada slide,
+                    opt.slides[i].setAttribute("aria-roledescription", "slide");
+                    opt.slides[i].setAttribute("aria-label", (i + 1) + it.slideShow.language.slideOf +  opt.slides.length);
+
+                    // Añadimos los enlaces/dots para cada slide con sus
+                    // respectivos atributos de accesibilidad
+                    if(opt.dots.length == 0){
+                        var dot = document.createElement("a");
+                            dot.classList.add("dot")
+                            dot.setAttribute("onclick", "it.slideShow.toSlide(this, " + (i + 1) + ")");
+                            dot.setAttribute("role", "button");
+                            dot.setAttribute("aria-controls", target.id);
+                            dot.setAttribute("aria-label", it.slideShow.language.goto + (i + 1));
+                            dot.setAttribute("tabindex", "0");
+
+                        // Asingamos el dot activo
+                        if(i == opt.currentSlide-1) dot.classList.add("active");
+
+                        dots.appendChild(dot);
+                    }
+
+                    // Añadimos el número de diapositiva, si procede
+                    if(opt.showNumbers){
+                        var sn = document.createElement("span");
+                            sn.classList.add("slide-id")
+                            sn.innerHTML = (i + 1) + " / " + opt.slides.length;
+
+                        opt.slides[i].insertAdjacentElement("afterbegin", sn);
+                    }
+
+                    // Asignamos a cada slide el efecto de transición solicitado,
+                    // fade, por defecto
+                    opt.slides[i].classList.add(opt.effect);
                 }
-                prg.value += prg.max / interval / 10;
+                // Añadimos el elemento contenedor de dots
+                target.appendChild(dots);
 
-            }.bind(prg, cfg.interval, el.querySelector(".next")), 100);
+                opt.dots = dots.querySelectorAll(".dot");
 
-            // Cambiamos el evento click
-            el.querySelector(".player").onclick = function(e){
-                it.slideShow.pause(e.target.parentElement)
+                // Añadimos los botones y dots a cada target
+                var prev = document.createElement("a");
+                    prev.classList.add("prev")
+                    prev.setAttribute("onclick", "it.slideShow.toggle(this, -1)");
+                    prev.setAttribute("role", "button");
+                    prev.setAttribute("aria-controls", target.id);
+                    prev.setAttribute("aria-label", it.slideShow.language.prev);
+                    prev.setAttribute("tabindex", "0");
+                    prev.innerHTML = "&#10094;"
+
+                    target.appendChild(prev);
+
+                var next = document.createElement("a");
+                    next.classList.add("next")
+                    next.setAttribute("onclick", "it.slideShow.toggle(this, 1)");
+                    next.setAttribute("role", "button");
+                    next.setAttribute("aria-controls", target.id);
+                    next.setAttribute("aria-label", it.slideShow.language.next);
+                    next.setAttribute("tabindex", "0");
+                    next.innerHTML = "&#10095;"
+
+                    target.appendChild(next);
+
+                // Guardamos la actual configuración
+                it.slideShow.config[id] = opt;
+
+                // Si se solicitó la reprocucción automática, la activamos
+                if(opt.autoplay){
+                    it.slideShow.play(target);
+                }
+
+                target.addEventListener('touchstart', handleTouchStart, {passive: true});        
+                target.addEventListener('touchmove', handleTouchMove, {passive: true});
+                var xDown = null, yDown = null;
+                
+                function getTouches(evt) { return evt.touches || evt.originalEvent.touches; }                                                     
+
+                function handleTouchStart(evt) { const firstTouch = getTouches(evt)[0]; xDown = firstTouch.clientX; yDown = firstTouch.clientY; };                                                
+                function handleTouchMove(evt)  { 
+                    if ( ! xDown || ! yDown ) { return; }
+
+                    var xUp = evt.touches[0].clientX, yUp = evt.touches[0].clientY;
+                    var xDiff = xDown - xUp, yDiff = yDown - yUp;
+
+                    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
+                        if ( xDiff > 0 ) {
+                            target.querySelector(".next").click();
+                        } else {
+                            target.querySelector(".prev").click();
+                        }
+                    } 
+                    xDown = yDown = null;
+                };
+
+                it.slideShow._init[target.id] = target.id
             }
 
-            el.querySelector(".player").setAttribute("aria-label", it.slideShow.language.stop)
+            it.slideShow.config[id].currentSlide = opt.currentSlide;
+        });
 
-            el.classList.add("playing");
-            el.classList.remove("paused");
+        if(!opt.stylesheet && !it.slideShow._stylesAdded){
+            AddCSSRule('', '.it-slideshow', 'max-width: none; position: relative; margin: 0; padding: 0;');
+            AddCSSRule('', '.it-slideshow .prev, .it-slideshow .next', 'cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none;');
+            AddCSSRule('', '.it-slideshow .next', 'right: 0; border-radius: 3px 0 0 3px;');
+            AddCSSRule('', '.it-slideshow .prev:hover, .it-slideshow .next:hover, .it-slideshow .prev:focus, .it-slideshow .next:focus', 'background-color: rgba(0,0,0,0.8);');
+            AddCSSRule('', '.it-slideshow .title', 'color: #ffffff; font-size: 2rem; padding: 8px 12px; position: absolute; bottom: 50%; width: 100%; text-align: center;');
+            AddCSSRule('', '.it-slideshow .text', 'background: rgba(0,0,0,0.5); color: #f2f2f2; font-size: 1rem; padding: 8px 12px 22px; position: absolute; bottom: 0; width: 100%; text-align: center;');
+            AddCSSRule('', '.it-slideshow .slide-id', 'background-color: rgba(0,0,0,0.8); color: #f2f2f2; font-size: 0.8rem; padding: 5px 10px; position: absolute; top: 0;');
+            AddCSSRule('', '.it-slideshow .dots', 'text-align: center; position: absolute; width: 100%; bottom: 0; left: 0;');
+            AddCSSRule('', '.it-slideshow .dot ', 'cursor: pointer; height: 15px; width: 15px; margin: 0 2px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease;');
+            AddCSSRule('', '.it-slideshow .slide', 'position: absolute; top: 0; left: 0; transition: opacity 1s ease-in-out; height: 100%; width: 100%; margin: 0; padding: 0;');
+            AddCSSRule('', '.it-slideshow .slide img, .it-slideshow .slide svg', 'max-width: 100%; display: block; object-fit: cover; height: 100%; width: 100%; display: block;');
+            AddCSSRule('', '.it-slideshow .active, .it-slideshow .dot:hover, .it-slideshow .dot:focus', 'background-color: #000;');
+            AddCSSRule('', '.it-slideshow .fade', 'opacity: 1;');
+            AddCSSRule('', '.it-slideshow .hide', 'opacity: 0;');
+            AddCSSRule('', '@keyframes it-slideshow-fade', '0% { display: block; opacity: 0 } 1% { opacity: 0 } 100% { opacity: 1 }');
+            AddCSSRule('', '@keyframes it-slideshow-hide', ' 0% { opacity: 1 } 99% { opacity: 0; } 100% { opacity: 0; display: none; }');
+
+            AddCSSRule('', '.it-slideshow.fullscreen', 'height: 100vh; width: 100%;');
+
+            AddCSSRule('', '.it-slideshow .player', 'position: absolute; top: 5px; right: 5px; font-size: 21px; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 0 , 0, 0.5); color: #fff; width: 32px; height: 32px; line-height: 30px; text-align: center; padding: 0; margin: 0;');
+            AddCSSRule('', '.it-slideshow.playing .player::before', 'content: "\\2590\\a0\\258c"; ');
+            AddCSSRule('', '.it-slideshow.playing .player', 'font-size: 12px;');
+            AddCSSRule('', '.it-slideshow.paused .player::before', 'content: "\\25b6"; ');
+            AddCSSRule('', '.it-slideshow.paused .player', 'font-size: 19px;');
+            
+            AddCSSRule('', '.it-slideshow progress', 'position: absolute; top: 45px; left: 0; height: 4px; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none; border: none; background-color: rgba(var(--fc1), 0.1); color: rgba(var(--borderColor), 1);');
+            AddCSSRule('', '.it-slideshow progress::-webkit-progress-bar', 'background-color: rgba(var(--fc1), 0.1); border-radius: 20px;');
+            AddCSSRule('', '.it-slideshow progress::-webkit-progress-value', 'background-color: rgba(var(--fc1), 1);  transition: 0.2s width ;');
+            AddCSSRule('', '.it-slideshow progress::-moz-progress-bar', 'background-color: rgba(var(--fc1), 1);');
+            AddCSSRule('', '.it-slideshow progress::-ms-fill', 'background-color: rgba(var(--fc1), 1);');
+
+            it.slideShow._stylesAdded = true;
         }
+    }
 
-        it.slideShow.pause = function(el){
-            var cfg = it.slideShow.config[el.id] || {};
+    it.slideShow.build = function(trg, cfg){
+        var cont, slide, img, tlt, txt;
 
-            // Paramos el intervalo y barra de progreso
-            clearInterval(cfg.progress);
+        // Creamos el DIV contenedor
+        cont = document.createElement("div");
+        cont.classList.add("slideshow");
 
-            // Cambiamos el evento click
-            el.querySelector(".player").onclick = function(e){
-                it.slideShow.play(e.target.parentElement)
-            }
+        // Creamos los elementos de diapositiva
+        for(var i = 0; i < trg.children.length; i++){
+            var item = trg.children[i];
 
-            el.querySelector(".player").setAttribute("aria-label", it.slideShow.language.start)
+            slide = document.createElement("div");
+            slide.classList.add("slide", "fade");
+            if(i > 0){ slide.classList.add("hide"); }
 
-            el.classList.remove("playing");
-            el.classList.add("paused");
+            img = document.createElement("img");
+            img.src = item.getAttribute("img");
+            img.setAttribute("width", "100%");
+            img.setAttribute("height", "100%");
+
+            tlt = document.createElement("div");
+            tlt.classList.add("title");
+            tlt.innerHTML = item.getAttribute("title");
+
+            txt = document.createElement("div");
+            txt.classList.add("text");
+            txt.innerHTML = item.getAttribute("text");
+
+            slide.append(img);
+            slide.append(tlt);
+            slide.append(txt);
+
+            cont.append(slide);
         }
         
-        it.slideShow.toggle = function(el, n){
-            el = el.parentElement;
-            it(el).slideShow(parseInt(el.querySelector(".active").getAttribute("onclick").replace(/[^0-9]/g, '')) + n);
-        }
+        trg.insertAdjacentElement("beforebegin", cont);
+        trg.remove();
 
-        it.slideShow.toSlide = function(el, n){
-            el = el.parentElement.parentElement;
-            it(el).slideShow(n);
-        }
-
-        it.slideShow._stylesAdded = false;
+        return cont;
     }
+
+    it.slideShow.config = {}
+    it.slideShow.language = {
+        prev: "Mostrar diapositiva anterior",
+        next: "Mostrar diapositiva siguiente",
+        goto: "Mostrar diapositiva ",
+        start: "Iniciar presentación automática de diapositivas",
+        stop: "Detener presentación automática de diapositivas",
+        title: "Presentación de diapositivas de imágenes",
+        slideOf: " de "
+    }
+    
+    it.slideShow.play = function(el){
+        var cfg = it.slideShow.config[el.id] || {};
+
+        // Añadimos la barra de progreso
+        var trg = cfg.slides[0].parentElement, prg;
+        if(!trg.querySelector("progress")){
+            prg = document.createElement("progress");
+                prg.max = "101";
+                prg.value = "0";
+            trg.insertAdjacentElement("afterbegin", prg);
+        } else {
+            prg = trg.querySelector("progress");
+        }
+
+        cfg.progress = setInterval(function(interval, el){
+            if(prg.value > 100){
+                prg.value = 0;
+                it.slideShow.toggle(el, 1);
+            }
+            prg.value += prg.max / interval / 10;
+
+        }.bind(prg, cfg.interval, el.querySelector(".next")), 100);
+
+        // Cambiamos el evento click
+        el.querySelector(".player").onclick = function(e){
+            it.slideShow.pause(e.target.parentElement)
+        }
+
+        el.querySelector(".player").setAttribute("aria-label", it.slideShow.language.stop)
+
+        el.classList.add("playing");
+        el.classList.remove("paused");
+    }
+
+    it.slideShow.pause = function(el){
+        var cfg = it.slideShow.config[el.id] || {};
+
+        // Paramos el intervalo y barra de progreso
+        clearInterval(cfg.progress);
+
+        // Cambiamos el evento click
+        el.querySelector(".player").onclick = function(e){
+            it.slideShow.play(e.target.parentElement)
+        }
+
+        el.querySelector(".player").setAttribute("aria-label", it.slideShow.language.start)
+
+        el.classList.remove("playing");
+        el.classList.add("paused");
+    }
+    
+    it.slideShow.toggle = function(el, n){
+        el = el.parentElement;
+        it(el).slideShow(parseInt(el.querySelector(".active").getAttribute("onclick").replace(/[^0-9]/g, '')) + n);
+    }
+
+    it.slideShow.toSlide = function(el, n){
+        el = el.parentElement.parentElement;
+        it(el).slideShow(n);
+    }
+
+    it.slideShow._stylesAdded = false;
+    it.slideShow._init = [];
+}
 
     /**
     	Sort tables functionality
