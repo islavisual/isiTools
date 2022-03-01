@@ -1,5 +1,5 @@
 var itEnabledModules = {
-    AddCSSRule: false,
+    AddCSSRule: true,
     Alert: false,
     Autocomplete: false,
     Benchmark: false,
@@ -11,7 +11,7 @@ var itEnabledModules = {
     Flexbox: false,
     GetBrowser: false,
     GetParam: false,
-    HttpRequest: false,
+    HttpRequest: true,
     Include: false,
     IntelliForm: false,
     IsMobile: false,
@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.1.2",
+it.version = "2.2.0",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
-it.copyright = "2017-2021 Islavisual",
-it.lastupdate = "21/04/2021",
+it.copyright = "2017-2022 Islavisual",
+it.lastupdate = "07/01/2022",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -97,7 +97,7 @@ it.autoload = function(){
 	Devolver el primer elemento de los elementos recuperados por la función constructora
 	@version: 1.0.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 10/06/2020
 **/
 it.first = function(){ return this.targets[0] }
@@ -106,7 +106,7 @@ it.first = function(){ return this.targets[0] }
 	Formatear las fechas a Big Endian (YYYY-MM-DD), Medium Endian (MM-DD-YYYY) o Little Endian (DD-MM-YYYY)
 	@version: 1.00																					
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 14/03/2019
 **/
 it.formatedDate = function(fmt, dt){
@@ -152,7 +152,7 @@ it.get = function(index){ if(index == undefined) index = 0; return this.targets[
 	Recorrer todos los elementos y asignarle propiedades, comportamientos o eventos
 	@version: 1.0.2
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 18/06/2020
 	@Examples 
 **/
@@ -181,7 +181,7 @@ it.each = function(){
 	Función para calcular el ancho de un elemento en base a un texto dado
 	@version: 1.2
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 26/01/2021
 **/
 it.getTextWidth = function(obj, fontFamily, fontSize, padding){
@@ -235,7 +235,7 @@ it.getTextWidth = function(obj, fontFamily, fontSize, padding){
 	Convertir valor hexadecimal en RGB con un valor de alfa determinado
 	@version: 1.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 07/03/2021
 **/
 it.hexToRGBA = function(hex, alpha){
@@ -258,7 +258,7 @@ it.hexToRGBA = function(hex, alpha){
 	Devolver el último elemento de los elementos recuperados por la función constructora
 	@version: 1.0.0
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 10/06/2020
 **/
 it.last = function(){ return this.targets[this.targets.length - 1] }
@@ -267,7 +267,7 @@ it.last = function(){ return this.targets[this.targets.length - 1] }
 	Recuperar un determinado padre establecido por nombre de etiqueta o todos los padres de un elemento
 	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 02/03/2021
 **/
 it.parents = function(e){
@@ -284,7 +284,7 @@ it.parents = function(e){
 	Función para mover el scroll vertical hasta una posición determinada
 	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 26/01/2021
 **/
 it.scrollTo = function(offset){
@@ -304,7 +304,7 @@ it.set = function(){ if(this.so != null) this[this.so].set.call(this[this.so]) }
 	Simular evento como fuese lanzado por el usuario
 	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 21/03/2021
 **/
 it.simulateEvent = function(){
@@ -331,7 +331,7 @@ it.simulateEvent = function(){
 	Convertir el primer carácter a mayúscula y, el resto, minúsculas.
 	@version: 1.1
 	@author: Pablo E. Fernández (islavisual@gmail.com).
-	@Copyright 2017-2021 Islavisual.
+	@Copyright 2017-2022 Islavisual.
 	@Last update: 26/01/2021
 **/
 it.ucwords = function(txt, all){
@@ -374,7 +374,7 @@ function isiToolsCallback(json){
     	 AddCSSRule functionality																		
     	@version: 1.1																					
     	@author: Pablo E. Fernández (islavisual@gmail.com).												
-    	@Copyright 2017-2021 Islavisual. 																	
+    	@Copyright 2017-2022 Islavisual. 																	
     	@Last update: 13/03/2019																			
     **/
     if(json.AddCSSRule){
@@ -439,7 +439,7 @@ function isiToolsCallback(json){
     	 Custom alerts functionality
     	@version: 1.6.3
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 06/04/2021
     **/
     if(json.Alert){
@@ -802,7 +802,7 @@ function isiToolsCallback(json){
     	Autocomplete functionality
     	@version: 1.6.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 23/03/2021
     **/
 
@@ -1756,7 +1756,7 @@ function isiToolsCallback(json){
     	 Constraint to input functionality
     	@version: 1.2
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 19/05/2020
     **/
     if(json.Constraint){
@@ -1984,7 +1984,7 @@ function isiToolsCallback(json){
     	Create counters.
     	@version: 1.1.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 19/05/2020
     **/
     if(json.Counter){
@@ -2238,7 +2238,7 @@ function isiToolsCallback(json){
     	Datepicker functionality
     	@version: 1.2.4
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 06/04/2021
     **/
     if(json.Datepicker){
@@ -2834,7 +2834,7 @@ function isiToolsCallback(json){
     	 Debugger functionality
     	@version: 1.00
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 15/03/2019
     **/
     if(json.Debugger){
@@ -3385,7 +3385,7 @@ function isiToolsCallback(json){
     	 Simple DOM ready() detection in pure JS.
     	@version: 1.00
     	@author: Carl Danley.
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 04/03/2019
     **/
     if(json.DOM){
@@ -3485,7 +3485,7 @@ function isiToolsCallback(json){
     	 FlexBox Plugin
     	@version: 1.2
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 11/04/2021
     **/
     if(json.Flexbox){
@@ -3629,7 +3629,7 @@ function isiToolsCallback(json){
     	 Get Browser Plugin
     	@version: 1.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 05/03/2019
     **/
     if(json.GetBrowser){
@@ -3657,7 +3657,7 @@ function isiToolsCallback(json){
     	 Get parameter from url
     	@version: 1.1
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 07/04/2019
     **/
     if(json.GetParam){
@@ -3689,7 +3689,7 @@ function isiToolsCallback(json){
     	 HttpRequest functionality																		
     	@version: 2.00																					
     	@author: Pablo E. Fernández (islavisual@gmail.com).												
-    	@Copyright 2017-2021 Islavisual. 																	
+    	@Copyright 2017-2022 Islavisual. 																	
     	@Last update: 27/02/2019																			
     **/
     if(json.HttpRequest){
@@ -3785,7 +3785,7 @@ function isiToolsCallback(json){
     	 Include files in HTML through Ajax
     	@version: 1.3.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 27/05/2020
     **/
     if(json.Include){
@@ -3910,7 +3910,7 @@ function isiToolsCallback(json){
     	 IntelliForm functionality
     	@version: 1.00
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 19/03/2019
     **/
     if(json.IntelliForm){
@@ -4569,7 +4569,7 @@ function isiToolsCallback(json){
     	 Function to detect if a device is mobile or tablet.
     	@version: 1.00
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 30/07/2019
     **/
     if(json.IsMobile){
@@ -4608,7 +4608,7 @@ function isiToolsCallback(json){
     	Multi-Language functionality
     	@version: 1.00
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 31/03/2019
     **/
 
@@ -4712,7 +4712,7 @@ function isiToolsCallback(json){
     	Masking inputs functionality
     	@version: 1.1.2																					
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 21/06/2020
     **/
     if(json.Mask){
@@ -4970,10 +4970,10 @@ function isiToolsCallback(json){
 
     /**
     	N-State
-    	@version: 2.0.1
+    	@version: 2.0.3
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
-    	@Last update: 07/03/2021
+    	@Copyright 2017-2022 Islavisual.
+    	@Last update: 12/01/2022
     **/
     if(json.Slider){
         this.Slider = it.slider = function(cfg){
@@ -5066,7 +5066,7 @@ function isiToolsCallback(json){
                         input.setAttribute("disabled", "disabled");
                     }
 
-                    var label = document.createElement("label");
+                    var label = document.createElement("span");
                     label.setAttribute("data-on", cfg.labelOn);
                     label.setAttribute("data-off", cfg.labelOff);
 
@@ -5082,6 +5082,8 @@ function isiToolsCallback(json){
                     cont.setAttribute("role", "switch");
                     cont.setAttribute("aria-checked", input.checked);
                     cont.classList.add("rendered");
+
+                    input.setAttribute("aria-label", ariaLbl);
 
                     this.target.parentNode.insertBefore(cont, this.target.nextElementSibling);
                     this.target.parentNode.removeChild(this.target);
@@ -5189,14 +5191,14 @@ function isiToolsCallback(json){
             if(type == "switch"){
                 it.addCSSRule('', "#slider-" + cfg.id, "background: linear-gradient(to bottom, rgba(0,0,0,0.06) 0%,rgba(0,0,0,0) 100%); border-radius: 0; display: inline-block; height: 24px; padding: 3px; position: relative; vertical-align: top; width: 200px; max-width: none; margin: 0; top: 0;");
                 it.addCSSRule('', "#slider-" + cfg.id + " input", "cursor: pointer; width: calc(100% - 6px); left: 3px; opacity: 0; position: absolute; top: 3px; height: 100% !important; z-index: 1; ");
-                it.addCSSRule('', "#slider-" + cfg.id + " label", "color: #000; font-weight: 600; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.50) inset; display: block; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
-                it.addCSSRule('', "#slider-" + cfg.id + " label::before, #slider-" + cfg.id + " label::after", "font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
-                it.addCSSRule('', "#slider-" + cfg.id + " label::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
-                it.addCSSRule('', "#slider-" + cfg.id + " label::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
-                it.addCSSRule('', "#slider-" + cfg.id + " input ~ label", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
-                it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ label::before", "opacity: 0;");
-                it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ label::after", "opacity: 1;");
-                it.addCSSRule('', "#slider-" + cfg.id + " handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); /*box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);*/ border: 1px solid rgba(0, 0, 0, 0.2); height: 100%; left: 3px; position: absolute; top: 3px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
+                it.addCSSRule('', "#slider-" + cfg.id + " span", "color: #000; font-weight: 600; background: " + this.config.colors.background2 + " none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset, 0 0 2px rgba(0, 0, 0, 0.50) inset; display: block; height: inherit; position: relative; text-transform: uppercase; transition: all 0.15s ease-out 0s;");
+                it.addCSSRule('', "#slider-" + cfg.id + " span::before, #slider-" + cfg.id + " span::after", "font-size: 12px; line-height: 110%; margin-top: -0.5em; position: absolute; top: 50%; transition: inherit;");
+                it.addCSSRule('', "#slider-" + cfg.id + " span::before", "color: " + this.config.colors.textColor + "; content: attr(data-off); right: 7px; ");
+                it.addCSSRule('', "#slider-" + cfg.id + " span::after", "color: " + this.config.colors.textColor + "; content: attr(data-on); left: 7px; opacity: 0; ");
+                it.addCSSRule('', "#slider-" + cfg.id + " input ~ span", "background: linear-gradient(to bottom, " + this.config.colors.trackColor2 + " 0%, " + this.config.colors.trackColor + " 100%); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset; border-radius: 0px; margin: 0; padding:0; ");
+                it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ span::before", "opacity: 0;");
+                it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ span::after", "opacity: 1;");
+                it.addCSSRule('', "#slider-" + cfg.id + " handle", "background: linear-gradient(to bottom, " + this.config.colors.background + " 0%, " + this.config.colors.background2 + " 100%); /*box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);*/ border: 1px solid rgba(0, 0, 0, 0.2); height: 100%; left: 3px; position: absolute; top: 1px; transition: left 0.15s ease-out 0s; width: 50%; border-radius: 0;");
                 it.addCSSRule('', "#slider-" + cfg.id + " handle::before", "background: linear-gradient(to bottom, " + this.config.colors.background2 + " 0%, " + this.config.colors.background + " 100%); border-radius: 6px; box-shadow: 0 1px rgba(0, 0, 0, 0.02) inset; content: ''; height: 12px; left: 50%; margin: -6px 0 0 -6px; position: absolute; top: 50%; width: 12px;");
                 it.addCSSRule('', "#slider-" + cfg.id + " input:checked ~ handle", "/*box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.2);*/ left: calc(50% - 3px);");
 
@@ -5264,7 +5266,7 @@ function isiToolsCallback(json){
     	Password tools
     	@version: 2.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 10/03/2021
     **/
     if(json.Password){
@@ -5670,7 +5672,7 @@ function isiToolsCallback(json){
     	Dropdown select
     	@version: 1.6
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 16/04/2021
     **/
         if(json.Selectpicker){
@@ -6091,7 +6093,7 @@ function isiToolsCallback(json){
     	Create and send forms in real time.
     	@version: 1.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 11/03/2019
     	@status PENDING to UPDATE
     **/
@@ -6138,7 +6140,7 @@ function isiToolsCallback(json){
     SlideShow functionality
     @version: 1.3
     @author: Pablo E. Fernández (islavisual@gmail.com).
-    @Copyright 2017-2021 Islavisual.
+    @Copyright 2017-2022 Islavisual.
     @Last update: 21/04/2021
 **/
 if(json.SlideShow){
@@ -6487,7 +6489,7 @@ if(json.SlideShow){
     	Sort tables functionality
     	@version: 1.2.2
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 13/04/2021
     **/
     if(json.Sorter){
@@ -6949,7 +6951,7 @@ if(json.SlideShow){
     	 StripTags functionality
     	@version: 1.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 09/02/2019
     **/
     if(json.StripTags){
@@ -6973,7 +6975,7 @@ if(json.SlideShow){
     	 Tabs functionality
     	@version: 1.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 25/03/2021
     **/
     if(json.Tabs){
@@ -7263,11 +7265,11 @@ if(json.SlideShow){
     }
 
     /**
-    	 TreeView functionality
-    	@version: 1.2
+    	 TreeView plugin
+    	@version: 1.3
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
-    	@Last update: 05/03/2021
+    	@Copyright 2017-2022 Islavisual.
+    	@Last update: 12/01/2022
     **/
     if(json.Treeview){
         this.Treeview = it.treeview = function(cfg){
@@ -7295,8 +7297,11 @@ if(json.SlideShow){
             } else {
                 opt = {
                     classLeaf: !cfg.hasOwnProperty('classLeaf') ? 'leaf-node' : cfg.classLeaf,
+                    callback: !cfg.hasOwnProperty('callback') ? null : cfg.callback,
                     collapsedIcon: !cfg.hasOwnProperty('collapsedIcon') ? '\u25BA' : cfg.collapsedIcon,
                     customCheck: !cfg.hasOwnProperty('customCheck') ? '' : cfg.customCheck,
+                    customSearch: !cfg.hasOwnProperty('customSearch') ? null : cfg.customSearch,
+                    customSearchWhen: !cfg.hasOwnProperty('customSearchWhen') ? 'auto' : cfg.customSearchWhen,
                     data: null,
                     expandedIcon: !cfg.hasOwnProperty('expandedIcon') ? '\u25BC' : cfg.expandedIcon,
                     leafIcon: !cfg.hasOwnProperty('leafIcon') ? '' : cfg.leafIcon,
@@ -7307,6 +7312,7 @@ if(json.SlideShow){
                     selectable: !cfg.hasOwnProperty('selectable') ? false : cfg.selectable,
                     searchable: !cfg.hasOwnProperty('searchable') ? false : cfg.searchable,
                     placeholderText: !cfg.hasOwnProperty('placeholderText') ? 'Filter...' : cfg.placeholderText,
+                    updateOnExpandNode: !cfg.hasOwnProperty('updateOnExpandNode') ? false : cfg.updateOnExpandNode, 
                     styles: !cfg.hasOwnProperty('styles') ?{ bgTree: "rgba(0,0,0,0)", borderTree: "rgba(0,0,0,0.15)", textColor: "#000", searchColor: "#000", searchBg: "#fff", activeColor: "#ffffff", activeBg: "#000000", linkColor: "#069", linkBg: "rgba(0,0,0,0)" } : cfg.styles,
                     stylesheet: !cfg.hasOwnProperty('stylesheet') ? false : cfg.stylesheet,
                     target: it.targets[0],
@@ -7317,219 +7323,12 @@ if(json.SlideShow){
             for(var key in cfg){ opt[key] = cfg[key]; }
 
             // If configuration object is invalid
-            if(!opt.data){ alert("Se necesita establecer un conjunto de datos!. Por favor, consulta la ayuda. Helper('Treeview');"); return false; }
-
-            function render(items, target, level){
-                if(level == 0){
-                    target.classList.add("it-treeview");
-                    target.setAttribute("role", "tree")
-
-                    if(opt.searchable){
-                        var input = document.createElement("input");
-                        input.setAttribute("type", "search");
-                        input.setAttribute("placeholder", opt.placeholderText);
-                        input.setAttribute("name", "twSearch");
-                        input.setAttribute("autocomplete", "off");
-
-                        var li = document.createElement("li");
-                        li.classList.add('search-box');
-                        li.appendChild(input);
-
-                        target.appendChild(li);
-                    }
-                }
-
-                for(var i = 0; i < items.length; i++){
-                    var item = items[i];
-
-                    // Set values by default
-                    item.expanded = item.hasOwnProperty('expanded') ? item.expanded : false;
-                    item.checkable = item.hasOwnProperty('checkable') ? item.checkable : false;
-                    item.checked = item.hasOwnProperty('checked') ? item.checked : false;
-
-                    // Create li item 
-                    var li = document.createElement("li");
-                    li.classList.add(item.expanded ? 'expanded' : 'collapsed');
-                    li.setAttribute("aria-expanded", item.expanded ? 'true' : 'false')
-                    li.setAttribute("role", "treeitem")
-                    li.classList.add('level-' + (level + 1));
-
-                    target.appendChild(li);
-
-                    // Insert toggler
-                    if(item.hasOwnProperty('children')){
-                        var toggler = document.createElement("i");
-                        toggler.setAttribute("class", "toggler");
-                        toggler.innerHTML = item.expanded ? opt.expandedIcon : opt.collapsedIcon;
-
-                        li.appendChild(toggler);
-                    }
-
-                    // Insert checkbox
-                    if(item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() == ''){
-                        var chk = document.createElement("input");
-                        chk.setAttribute("type", "checkbox");
-                        chk.setAttribute("name", opt.target.id + "_twNode" + (level + "" + i));
-                        chk.setAttribute("id", "tw_" + Math.random().toString(36).substr(2, 9));
-                        if(item.hasOwnProperty("id")) chk.setAttribute("data-id", item.id);
-                        chk.checked = item.hasOwnProperty('checked') ? item.checked : false;
-                        chk.setAttribute("aria-label", item.label);
-
-                        li.appendChild(chk);
-                    } else if(item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() != ""){
-                        li.innerHTML += opt.customCheck;
-                    }
-
-                    // Insert checkbox
-                    if(item.hasOwnProperty('href')){
-                        var a = document.createElement("a");
-                        a.setAttribute("href", item.href);
-                        a.innerHTML = '<label ' + (item.hasOwnProperty("id") ? ('data-id="' + item.id + '"') : '') + '>' + item.label + '</label>';
-
-                        li.appendChild(a);
-                    } else {
-                        var s = document.createElement("label");
-                        s.setAttribute("for", "tw" + item.id);
-                        s.innerHTML = item[opt.label];
-
-                        if(item.hasOwnProperty("selectable") && !item.selectable) s.classList.add("no-select");
-                        if(item.hasOwnProperty("id")) s.setAttribute("data-id", item.id);
-
-                        li.appendChild(s);
-                    }
-
-                    if(item.hasOwnProperty('children')){
-                        var ul = document.createElement("ul");
-                        ul.setAttribute("role", "group");
-                        if(opt.hasOwnProperty('branchIcon')){
-                            li.innerHTML = '<i class="icon">' + opt.branchIcon + "</i>" + li.innerHTML;
-                        }
-
-                        li.appendChild(ul);
-
-                        render(item.children, ul, level + 1);
-                    } else {
-                        if(opt.classLeaf.trim() != "") li.classList.add(opt.classLeaf);
-                        if(opt.hasOwnProperty('leafIcon')){
-                            li.innerHTML = '<i class="icon">' + opt.leafIcon + "</i>" + li.innerHTML;
-                        }
-                    }
-                }
-            }
+            if(!opt.data){ alert("Se necesita establecer un conjunto de datos. Por favor, consulta la ayuda. Helper('Treeview');"); return false; }
+            if(!opt.customSearch && opt.updateOnExpandNode && opt.searchable){ alert("Se necesita establecer una función de búsqueda personalizada a través de la propiedad 'customSearch'. Por favor, consulta la ayuda. Helper('Treeview');"); return false; }
 
             // function to check one item
             function checkID(){
                 opt.target.querySelector("input[data-id='" + cfg.id + "']").checked = cfg.checked;
-            }
-
-            function assignEvents(){
-                // Toggle status to hierarchical list
-                var items = opt.target.querySelectorAll(".toggler");
-                for(var i = 0; i < items.length; i++){
-                    var item = items[i];
-
-                    item.addEventListener("click", function(e){
-                        var trg = e.target;
-                        if(!trg.classList.contains("toggler")){
-                            trg = trg.parentElement;
-                        }
-
-                        trg.parentElement.classList.toggle("collapsed");
-                        if(trg.parentElement.classList.contains("collapsed")){
-                            trg.parentElement.setAttribute("aria-expanded", 'false');
-                        } else {
-                            trg.parentElement.setAttribute("aria-expanded", 'true');
-                        }
-                        trg.innerHTML = trg.parentElement.classList.contains("collapsed") ? opt.collapsedIcon : opt.expandedIcon;
-                    });
-                }
-
-                // Event to set active node when this is focused
-                if(opt.selectable){
-                    var items = opt.target.querySelectorAll("label");
-                    for(var i = 0; i < items.length; i++){
-                        var item = items[i];
-
-                        if(item.classList.contains("no-select")) continue;
-
-                        item.addEventListener("click", function(e){
-                            var lbl = e.target;
-
-                            // Reset active items
-                            var items = opt.target.querySelectorAll("label");
-                            for(var i = 0; i < items.length; i++){
-                                items[i].classList.remove("active");
-                            }
-
-                            lbl.classList.toggle("active");
-
-                            if(opt.onSelectNode) opt.onSelectNode(lbl);
-                        });
-                    }
-                } else {
-                    var items = opt.target.querySelectorAll("label");
-                    for(var i = 0; i < items.length; i++){
-                        var item = items[i];
-
-                        try{ item.setAttribute("for", item.previousElementSibling.id); } catch (e) {}
-                    }
-                }
-
-                // Event to set active node when this is focused
-                var items = opt.target.querySelectorAll("input");
-                for(var i = 0; i < items.length; i++){
-                    var item = items[i];
-
-                    item.addEventListener("change", function(e){
-                        if(opt.onCheckNode) opt.onCheckNode(e.target);
-                    });
-                }
-
-                // Filter elements from Treeview
-                if(opt.searchable){
-                    opt.target.querySelector('[type=search]').addEventListener("input", function(e){
-                        var items = e.target.parentElement.parentElement.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
-
-                        for(var x = 0; x < items.length; x++){
-                            var item = items[x];
-
-                            item.style.display = "";
-                            if(str.length > 0 && item.querySelector("label").innerHTML.toLowerCase().indexOf(str.toLowerCase()) != -1){
-
-                                var aux = item.parentElement;
-                                while (!aux.classList.contains("it-treeview")){
-                                    if(item.tagName.toLowerCase() == "li"){
-                                        aux.style.display = "";
-                                        if(aux.classList.contains("collapsed")){
-                                            aux.classList.remove("collapsed");
-                                            aux.classList.add("expanded");
-                                            aux.setAttribute("aria-expanded", 'true');
-                                            if(!aux.classList.contains("leaf-node")) aux.querySelector(".toggler").innerHTML = opt.expandedIcon;
-                                        }
-                                    }
-                                    aux = aux.parentElement;
-                                }
-
-                            } else if(str.length > 0){
-                                item.style.display = "none";
-                                if(item.classList.contains("expanded")){
-                                    item.classList.remove("expanded");
-                                    item.classList.add("collapsed");
-                                    item.setAttribute("aria-expanded", 'false');
-                                    if(!item.classList.contains("leaf-node")) item.querySelector(".toggler").innerHTML = opt.collapsedIcon;
-                                }
-                            } else {
-                                item.style.display = "";
-                                if(item.classList.contains("collapsed")){
-                                    item.classList.remove("collapsed");
-                                    item.classList.add("expanded");
-                                    item.setAttribute("aria-expanded", 'true');
-                                    if(!item.classList.contains("leaf-node")) item.querySelector(".toggler").innerHTML = opt.expandedIcon;
-                                }
-                            }
-                        }
-                    });
-                }
             }
 
             function _addCSSRules(){
@@ -7537,6 +7336,7 @@ if(json.SlideShow){
                 AddCSSRule('', "ul.it-treeview, ul.it-treeview ul", "list-style: none;", 0);
                 AddCSSRule('', "ul.it-treeview li", "color: " + opt.styles.textColor + ";");
                 AddCSSRule('', "ul.it-treeview li i", "cursor: pointer;");
+                AddCSSRule('', "ul.it-treeview li i.toggler *", "pointer-events: none;");
                 AddCSSRule('', "ul.it-treeview li ul", "transition: 0.3s; max-height: 10000px; overflow: hidden;");
                 AddCSSRule('', "ul.it-treeview li ul li", "padding-left: 15px;");
                 AddCSSRule('', "ul.it-treeview li.collapsed ul", "max-height: 0;");
@@ -7555,19 +7355,287 @@ if(json.SlideShow){
                     _addCSSRules();
                 }
 
-                // Render tree
-                render(opt.data.items, opt.target, 0);
+                if(typeof opt.data == "string" && opt.data.indexOf("url(") == 0){
+                    if(it.httpRequest){
+                        HttpRequest({
+                            url: opt.data.substr(3).replace(/^(\(|\))+|(\(|\))+$/g, ''),
+                            contentType: "application/json; charset=utf-8",
+                            ajax: true,
+                            callback: function(e){
+                                if(typeof e == "string") e = JSON.parse(e);
+                                this.data = e;
 
-                // Assign events to element
-                assignEvents();
+                                // Render tree
+                                it.treeview.render(e.items, this.target, 0, this);
+
+                                // Assign events to element
+                                it.treeview.assignEvents(this);
+
+                                if(this.callback){ this.callback(e) }
+                            }.bind(opt)
+                        });
+                    } else {
+                        alert("HttpRequest must be enabled. Please, reviewed your IsiTools library!!")
+                    }
+                } else {
+                    // Render tree
+                    it.treeview.render(opt.data.items, opt.target, 0, opt);
+
+                    // Assign events to element
+                    it.treeview.assignEvents(opt);
+                }
+
+                
             }
 
             init();
 
-            it[opt.target.id] = {};
-            it[opt.target.id].options = opt;
+            it.treeview[opt.target.id] = {};
+            it.treeview[opt.target.id].options = opt;
 
             return it.treeview;
+        }
+
+        it.treeview.assignEvents = function(opt){
+            // Event to set active node when this is focused
+            if (opt.selectable) {
+                var items = opt.target.querySelectorAll("label");
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+
+                    if (item.classList.contains("no-select")) continue;
+
+                    item.onclick = function (e) {
+                        var lbl = e.target;
+
+                        // Reset active items
+                        var items = opt.target.querySelectorAll("label");
+                        for (var i = 0; i < items.length; i++) {
+                            items[i].classList.remove("active");
+                        }
+
+                        lbl.classList.toggle("active");
+
+                        if (opt.onSelectNode) opt.onSelectNode(lbl);
+                    };
+                }
+            } else {
+                var items = opt.target.querySelectorAll("label");
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+
+                    try { item.setAttribute("for", item.previousElementSibling.id); } catch (e) { }
+                }
+            }
+
+            // Event to set active node when this is focused
+            var items = opt.target.querySelectorAll("input");
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+
+                item.onchange = function (e) {
+                    if (opt.onCheckNode) opt.onCheckNode(e.target);
+                };
+            }
+
+            // Filter elements from Treeview
+            if (opt.searchable) {
+                var typeSearch = opt.customSearchWhen == 'auto' ? "input" : (opt.customSearchWhen == "enter" ? "keydown" : opt.customSearchWhen);
+                if (!opt.updateOnExpandNode) {
+                    console.log('on' + typeSearch)
+                    opt.target.querySelector('[type=search]')['on' + typeSearch] = function (e) {
+                        var items = e.target.parentElement.parentElement.parentElement.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
+                        
+                        if(this.customSearchWhen == "enter"){
+                            var key = e.key || e.which || e.keyCode;
+                            if(key != "Enter" && key != "NumpadEnter" && key != 13){
+                                return;
+                            }
+                        }
+                        console.log(this, e)
+
+                        for (var x = 0; x < items.length; x++) {
+                            var item = items[x];
+
+                            item.style.display = "";
+                            if (str.length > 0 && item.querySelector("label").innerHTML.toLowerCase().indexOf(str.toLowerCase()) != -1) {
+
+                                var aux = item.parentElement;
+                                while (!aux.classList.contains("it-treeview")) {
+                                    if (item.tagName.toLowerCase() == "li") {
+                                        aux.style.display = "";
+                                        if (aux.classList.contains("collapsed")) {
+                                            aux.classList.remove("collapsed");
+                                            aux.classList.add("expanded");
+                                            aux.setAttribute("aria-expanded", 'true');
+                                            if (!aux.classList.contains("leaf-node")) aux.querySelector(".toggler").innerHTML = opt.expandedIcon;
+                                        }
+                                    }
+                                    aux = aux.parentElement;
+                                }
+
+                            } else if (str.length > 0) {
+                                item.style.display = "none";
+                                if (item.classList.contains("expanded")) {
+                                    item.classList.remove("expanded");
+                                    item.classList.add("collapsed");
+                                    item.setAttribute("aria-expanded", 'false');
+                                    if (!item.classList.contains("leaf-node")) item.querySelector(".toggler").innerHTML = opt.collapsedIcon;
+                                }
+                            } else {
+                                item.style.display = "";
+                                if (item.classList.contains("collapsed")) {
+                                    item.classList.remove("collapsed");
+                                    item.classList.add("expanded");
+                                    item.setAttribute("aria-expanded", 'true');
+                                    if (!item.classList.contains("leaf-node")) item.querySelector(".toggler").innerHTML = opt.expandedIcon;
+                                }
+                            }
+                        }
+                    }.bind(opt);
+                } else {
+                    opt.target.querySelector('[type=search]')['on' + typeSearch] = function (e) {
+                        if(this.customSearchWhen == "enter"){
+                            var key = e.key || e.which || e.keyCode;
+                            if(key != "Enter" && key != "NumpadEnter" && key != 13){
+                                return;
+                            }
+                        }
+
+                        opt.customSearch(e.target);
+                    }.bind(opt);
+                }
+            }
+        }
+
+        it.treeview.render = function(items, target, level, opt){
+            if(level == 0){
+                target.classList.add("it-treeview");
+                target.setAttribute("role", "tree");
+
+                if(opt.searchable){
+                    var form = document.createElement("form");
+                    form.setAttribute("role", "search");
+                    form.setAttribute("onsubmit", "return false")
+
+                    var input = document.createElement("input");
+                    input.setAttribute("type", "search");
+                    input.setAttribute("placeholder", opt.placeholderText);
+                    input.setAttribute("name", "twSearch");
+                    input.setAttribute("autocomplete", "off");
+                    input.setAttribute("aria-label", opt.placeholderText);
+
+                    form.appendChild(input);
+
+                    var li = document.createElement("li");
+                    li.classList.add('search-box');
+                    li.appendChild(form);
+
+                    target.appendChild(li);
+                }
+            }
+
+            for(var i = 0; i < items.length; i++){
+                var item = items[i];
+
+                // Set values by default
+                item.expanded = item.hasOwnProperty('expanded') ? item.expanded : false;
+                item.checkable = item.hasOwnProperty('checkable') ? item.checkable : false;
+                item.checked = item.hasOwnProperty('checked') ? item.checked : false;
+
+                // Create li item 
+                var li = document.createElement("li");
+                li.classList.add(item.expanded ? 'expanded' : 'collapsed');
+                li.setAttribute("aria-expanded", item.expanded ? 'true' : 'false')
+                li.setAttribute("role", "treeitem")
+                li.classList.add('level-' + (level + 1));
+
+                target.appendChild(li);
+
+                // Insert toggler
+                if(item.hasOwnProperty('children')){
+                    var toggler = document.createElement("i");
+                    toggler.setAttribute("class", "toggler");
+                    toggler.innerHTML = item.expanded ? opt.expandedIcon : opt.collapsedIcon;
+                    toggler.setAttribute("onclick", "it.treeview.handleClick(this)");
+
+                    li.appendChild(toggler);
+                }
+
+                // Insert checkbox
+                if(item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() == ''){
+                    var chk = document.createElement("input");
+                    chk.setAttribute("type", "checkbox");
+                    chk.setAttribute("name", opt.target.id + "_twNode" + (level + "" + i));
+                    chk.setAttribute("id", "tw_" + Math.random().toString(36).substr(2, 9));
+                    if(item.hasOwnProperty("id")) chk.setAttribute("data-id", item.id);
+                    chk.setAttribute("aria-label", item.label);
+
+                    li.appendChild(chk);
+                    if(item.checked) chk.setAttribute("checked", item.checked);
+
+                } else if(item.hasOwnProperty('checkable') && item.checkable && opt.customCheck.trim() != ""){
+                    li.innerHTML += opt.customCheck;
+                }
+
+                // Insert checkbox
+                if(item.hasOwnProperty('href')){
+                    var a = document.createElement("a");
+                    a.setAttribute("href", item.href);
+                    a.innerHTML = '<label ' + (item.hasOwnProperty("id") ? ('data-id="' + item.id + '"') : '') + '>' + item.label + '</label>';
+
+                    li.appendChild(a);
+                } else {
+                    var s = document.createElement("label");
+                    s.setAttribute("for", "tw" + item.id);
+                    s.innerHTML = item[opt.label];
+
+                    if(item.hasOwnProperty("selectable") && !item.selectable) s.classList.add("no-select");
+                    if(item.hasOwnProperty("id")) s.setAttribute("data-id", item.id);
+
+                    li.appendChild(s);
+                }
+
+                if(item.hasOwnProperty('children')){
+                    var ul = document.createElement("ul");
+                    ul.setAttribute("role", "group");
+                    if(opt.hasOwnProperty('branchIcon')){
+                        li.innerHTML = '<i class="icon">' + opt.branchIcon + "</i>" + li.innerHTML;
+                    }
+
+                    li.appendChild(ul);
+
+                    it.treeview.render(item.children, ul, level + 1, opt);
+                } else {
+                    if(opt.classLeaf.trim() != "") li.classList.add(opt.classLeaf);
+                    if(opt.hasOwnProperty('leafIcon')){
+                        li.innerHTML = '<i class="icon">' + opt.leafIcon + "</i>" + li.innerHTML;
+                    }
+                }
+            }
+        }
+
+        it.treeview.handleClick = function(trg){
+            var options = it.treeview[it(trg).parents(".it-treeview").id].options;
+
+            if(options.updateOnExpandNode && trg.parentElement.querySelector("ul") && trg.parentElement.querySelector("ul").querySelectorAll("li").length == 0){
+                options.updateOnExpandNode(trg.nextElementSibling)
+
+            } else {
+                it.treeview.updateToggler(trg)
+            }
+        }
+
+        it.treeview.updateToggler = function(trg){
+            var options = it.treeview[it(trg).parents(".it-treeview").id].options;
+
+            trg.parentElement.classList.toggle("collapsed");
+            if(trg.parentElement.classList.contains("collapsed")){
+                trg.parentElement.setAttribute("aria-expanded", 'false');
+            } else {
+                trg.parentElement.setAttribute("aria-expanded", 'true');
+            }
+            trg.innerHTML = trg.parentElement.classList.contains("collapsed") ? options.collapsedIcon : options.expandedIcon;
         }
     }
 
@@ -7575,7 +7643,7 @@ if(json.SlideShow){
     	 Validator functionality
     	@version: 2.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
-    	@Copyright 2017-2021 Islavisual.
+    	@Copyright 2017-2022 Islavisual.
     	@Last update: 22/03/2021
     **/
     if(json.Validator){
