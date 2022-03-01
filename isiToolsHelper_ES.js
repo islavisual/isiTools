@@ -3254,14 +3254,14 @@ _CSS_'
 
 /**
    TreeView Helper
-   @version: 1.2
+   @version: 1.3
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 05/03/2021
+   @Last update: 12/01/2022
  **/
-WikiHelper.Treeview = {
+   WikiHelper.Treeview = {
 	general: {
-		version: '1.2',
+		version: '1.3',
 		name: 'Treeview',
 		description: "Treeview es un componente de la interfaz gráfica de usuario que muestra una vista jerárquica de la información. Cada elemento puede tener cero, uno o más subelementos o hijos. Normalmente, se visualiza como una lista tabulada y cada elemento revela sus subelementos a través de un cambio de estado (de expandido a colapsado o viceversa).\n\
 		<name><bool>NOTA</bool>: Si se desean consultar las recomendaciones sobre la accesibilidad y los diálogos modales, se puede visitar la URL https://www.w3.org/TR/wai-aria-practices/examples/treeview/treeview-2/treeview-2a.html</name>",
@@ -3270,113 +3270,233 @@ WikiHelper.Treeview = {
 		{
 			description: 'Personalizar los estilos a través de las reglas CSS. Por ejemplo:',
 			example: '_CSS_\n\
-// Reglas CSS a incluir en tu hoja de estilos\n\
-ul.it-treeview, ul.it-treeview ul { list-style: none; }\n\
-ul.it-treeview { background: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }\n\
-ul.it-treeview li { color: rgb(0, 0, 0); }\n\
-ul.it-treeview li i { cursor: pointer; }\n\
-ul.it-treeview li ul { transition: all 0.3s ease 0s; max-height: 10000px; overflow: hidden; }\n\
-ul.it-treeview li ul li { padding-left: 15px; }\n\
-ul.it-treeview li.collapsed ul { max-height: 0px; }\n\
-ul.it-treeview li a { color: rgb(36, 84, 156); background: rgba(0, 0, 0, 0); }\n\
-ul.it-treeview li label { padding: 2px 5px; display: inline-block; }\n\
-ul.it-treeview li i.icon { margin-right: 8px; }\n\
-ul.it-treeview li.search-box input { width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0, 0, 0, 0.1); }\n\
-ul.it-treeview li .active { background: rgb(56, 104, 176); color: rgb(255, 255, 255); }\n\
-ul.it-treeview input[type="checkbox"]:focus,\n\
-ul.it-treeview input[type="checkbox"]:focus::before { border-color: rgb(0, 0, 0); }\n\
-ul.it-treeview input[type="checkbox"]:focus + label { background: rgb(0, 0, 0); color: rgb(255, 255, 255); }\n\
+// styles.css (from your site)\n\
+ul.it-treeview{ background: color: rgb(255, 255, 255); width: 100%; border: 1px solid rgba(0, 0, 0, 0.15); padding: 5px; }\n\
+ul.it-treeview, ul.it-treeview ul{ list-style: none; }\n\
+ul.it-treeview li{ color: color: rgb(51, 51, 51); }\n\
+ul.it-treeview li i{ cursor: pointer; }\n\
+ul.it-treeview li ul{ transition: 0.3s; max-height: 10000px; overflow: hidden; }\n\
+ul.it-treeview li.collapsed ul{ max-height: 0; }\n\
+ul.it-treeview li a{ color: rgb(0, 153, 102); background: rgba(0, 0, 0, 0); }\n\
+ul.it-treeview li label{ padding: 2px 5px; display: inline-block; }\n\
+ul.it-treeview li i.icon{ margin-right: 8px; }\n\
+ul.it-treeview li.search-box input{ width: 100%; background: rgb(255, 255, 255); color: rgb(0, 0, 0); border: 1px solid rgba(0,0,0,0.1) }\n\
+ul.it-treeview li .active{ background: lightgray; color: rgb(51, 51, 51); }\n\
+ul.it-treeview input[type="checkbox"]:focus, ul.it-treeview input[type="checkbox"]:focus::before{ border-color: #000; }\n\
+ul.it-treeview input[type="checkbox"]:focus + label{ background: #000;color: #fff; }\n\
 _CSS_'
 		}
 	],
 	classLeaf: {
 		type: 'string',
 		description: 'El parámetro "classLeaf" indica el nombre de clase que se aplicará a los nodos hoja (los de último nivel). Esta clase, por ejemplo, puede utilizarse para proporcionar un estilo diferente a este tipo de nodos. Por defecto está vacío.',
-		example: 'it("#treeview").treeview({data: treeviewJSON, classLeaf: "leaf-node"});'
+		example: 'it("#treeview1").treeview({data: treeviewJSON, classLeaf: "leaf-node"});'
 	},
 	collapsedIcon: {
 		type: 'string',
 		description: 'El parámetro "collapsedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de colapsado" que refleja que la rama está cerrada de manera predeterminada. Si no se establece, por defecto es contendrá \u25BA.',
-		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, collapsedIcon: \'&lt;i class=\"plus\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, collapsedIcon: "+"});'
+		example: '// Example with Vectorial icons\nit("#treeview1").treeview({data: treeviewJSON, collapsedIcon: \'&lt;i class=\"plus\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview1").treeview({data: treeviewJSON, collapsedIcon: "+"});'
 	},
 	expandedIcon: {
 		type: 'string',
 		description: 'El parámetro "expandedIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de expandido" que refleja que la rama está abierta de forma predeterminada. Si no se establece, Por defecto es \u25BC.',
-		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, expandedIcon: \'&lt;i class=\"less\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, expandedIcon: "-"});'
+		example: '// Example with Vectorial icons\nit("#treeview1").treeview({data: treeviewJSON, expandedIcon: \'&lt;i class=\"less\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview1").treeview({data: treeviewJSON, expandedIcon: "-"});'
 	},
 	leafIcon: {
 		type: 'string',
 		description: 'El parámetro "leafIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de hoja" que refleja que, este nodo, no tiene más hijos. Si no se establece, por defecto está vacío.',
-		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, leafIcon: \'&lt;i class=\"leaf\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, leafIcon: "\\uD83D\\uDE54"});'
+		example: '// Example with Vectorial icons\nit("#treeview1").treeview({data: treeviewJSON, leafIcon: \'&lt;i class=\"leaf\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview1").treeview({data: treeviewJSON, leafIcon: "\\uD83D\\uDE54"});'
 	},
 	branchIcon: {
 		type: 'string',
 		description: 'El parámetro "branchIcon" indica el carácter, el icono vectorial o el código html que se mostrará en lugar del "icono de rama" que refleja que este nodo tiene, al menos, un hijo. Si no se establece, por defecto está vacío.',
-		example: '// Example with Vectorial icons\nit("#treeview").treeview({data: treeviewJSON, branchIcon: \'&lt;i class=\"folder\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview").treeview({data: treeviewJSON, branchIcon: "\\uD83D\\uDCC2"});'
+		example: '// Example with Vectorial icons\nit("#treeview1").treeview({data: treeviewJSON, branchIcon: \'&lt;i class=\"folder\">&lt;/i>\'});\n// Example with Unicode icons\nit("#treeview1").treeview({data: treeviewJSON, branchIcon: "\\uD83D\\uDCC2"});'
 	},
 	customCheck: {
 		type: 'string',
 		description: 'Cadena HTML con la nueva definición del checkbox. Por defecto está vacío (deshabilitado).',
-		example: 'it("#treeview").treeview({\n\tdata: treeviewJSON,\n\tcustomCheck: "&lt;label>Two&lt;input type=\'checkbox\'>&lt;span class=\'checkmark\'>&lt;/span>&lt;/label>"\n});'
+		example: 'it("#treeview1").treeview({\n\tdata: treeviewJSON,\n\tcustomCheck: "&lt;label>Two&lt;input type=\'checkbox\'>&lt;span class=\'checkmark\'>&lt;/span>&lt;/label>"\n});'
+	},
+	customSearch: {
+		type: 'function',
+		description: 'El parámetro "customSearch" indica la función que se debe utilizar para realizar búsquedas. Por defecto, esta funcionalidad viene implementada para trabajar de manera interna cuando se realiza una entrada en la caja de búsqueda.\n\n<b>NOTA:</b> Puede ser útil, por ejemplo, cuando se desean hacer búsquedas por servidor en vez de con datos en memoria.',
+		example: 'it("#treeview1").treeview({data: treeviewJSON, customSearch: customTreeviewSearch});\n\
+function function customTreeviewSearch(trg){\n\
+    var ul = trg.parentElement.parentElement.nextElementSibling.querySelector("ul");\n\
+\n\
+    if(trg.value.length != 0 && trg.value.length < 3) return;\n\
+\n\
+    HttpRequest({\n\
+        url: "cities.php?s=taric&id=" + trg.value,\n\
+        contentType: "application/json; charset=utf-8",\n\
+        ajax: true,\n\
+        callback: function(e){\n\
+            // Creamos la estructura de TreeView\n\
+            var opt = it.treeview["treeview1"].options;\n\
+            var items = JSON.parse(e);\n\
+\n\
+            if(items.hasOwnProperty("items")) items = items.items;\n\
+\n\
+            ul.innerHTML = "";\n\
+            console.log(items)\n\
+            it.treeview.render(items, ul, 1, opt);\n\
+        }\n\
+    });\n\
+}'
+	},
+	customSearchWhen: {
+		type: 'function',
+		description: 'El parámetro "customSearchWhen" indica si la búsqueda se debe hacer cuando se recibe una entrada cualquiera del usuario, si se debe hacer al presionar la tecla "Enter" o en un evento concreto como pueda ser "change". Por defecto, está habilitado a "auto", lo que significa que la búsqueda se realizará cada vez que se reciba una entrada cualquiera por el usuario (en cuanto cambie el valor de la caja de búsqueda).',
+		example: '//Búsqueda automática (en cuanto cambie el valor de la caja de filtrado o búsqueda)\n\
+it("#treeview1").treeview({data: treeviewJSON, customSearch: customTreeviewSearch, customSearchWhen: "auto"});\n\n\
+//Búsqueda cada vez que se pulse la tecla "Enter"\n\
+it("#treeview1").treeview({data: treeviewJSON, customSearch: customTreeviewSearch, customSearchWhen: "enter"});\n\n\
+//Búsqueda cuando se produzca el evento "change"\n\
+it("#treeview1").treeview({data: treeviewJSON, customSearch: customTreeviewSearch, customSearchWhen: "change"});'
 	},
 	data: {
 		type: 'object',
-		description: 'Es un objeto con los elementos a tratar. Este objeto debe estar en formato JSON.',
-		example: '//Example JSON to send to Treeview component.\nvar treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\texpanded: true,\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n}\it("#treeview").treeview({data: treeviewJSON});'
+		description: 'Es un objeto con los elementos a tratar. Este objeto puede ser un objeto en formato JSON o una URL.',
+		example: '// Si es un objeto JSON:\n\
+var treeviewJSON = {\n\
+	items: [{\n\
+		id: 1,\n\
+		label: "Parent 1",\n\
+		expanded: true,\n\
+		children: [{\n\
+			id: 2,\n\
+			label : "Element 1",\n\
+			children : [\n\
+				{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\
+				{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\
+			]\n\
+		},\n\
+		{\n\
+			id: 5,\n\
+			label : "Element 2",\n\
+			children : [\n\
+				{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\
+				{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\
+			]\n\
+		}]\n\
+	}]\n\
+}\n\
+it("#treeview1").treeview({data: treeviewJSON});\n\
+\n\
+// Si es una URL:\n\
+it("#treeview1").treeview({data: "url(cities.json)"});'
+	},
+	callback: {
+		type: 'function',
+		description: 'El método "callback" indica la función de devolución de llamada cuando se carga el árbol o se realiza una búsqueda. Por defecto, esta funcionalidad está deshabilitada.',
+		example: 'it("#treeview1").treeview({data: treeviewJSON, callback: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
 	},
 	onSelectNode: {
 		type: 'function',
 		description: 'El parámetro "onSelectNode" indica la función de devolución de llamada cuando se selecciona un nodo. Por defecto, esta funcionalidad está deshabilitada.',
-		example: 'it("#treeview").treeview({data: treeviewJSON, onSelectNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
+		example: 'it("#treeview1").treeview({data: treeviewJSON, onSelectNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
 	},
 	onCheckNode: {
 		type: 'function',
 		description: 'El parámetro "onCheckNode" indica la función de devolución de llamada cuando se chequea un nodo. Por defecto, esta funcionalidad está deshabilitada.',
-		example: 'it("#treeview").treeview({data: treeviewJSON, onCheckNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
+		example: 'it("#treeview1").treeview({data: treeviewJSON, onCheckNode: callback});\nfunction callback(e){\n\tconsole.log(e);\n}'
 	},
 	selectable: {
 		type: 'boolean',
 		description: 'El parámetro "selectable" indica si los nodos serán seleccionables. Por defecto es false.',
-		example: 'it("#treeview").treeview({data: treeviewJSON, selectable: false});'
+		example: 'it("#treeview1").treeview({data: treeviewJSON, selectable: false});'
 	},
 	searchable: {
 		type: 'boolean',
 		description: 'El parámetro "searchable" indica si el árbol permitirá la búsqueda de nodos. Por defecto es false.',
-		example: 'it("#treeview").treeview({data: treeviewJSON, searchable: false});'
+		example: 'it("#treeview1").treeview({data: treeviewJSON, searchable: false});'
 	},
 	placeholderText: {
 		type: 'string',
 		description: 'El parámetro "placeholderText" indica el texto que se muestra dentro de la caja de texto cuando la búsqueda está habilitada (searchable es true). Por defecto es "Filter...".',
-		example: 'it("#treeview").treeview({data: treeviewJSON, placeholderText: "Escribe para filtrar dentro del árbol"});'
+		example: 'it("#treeview1").treeview({data: treeviewJSON, placeholderText: "Escribe para filtrar dentro del árbol"});'
 	},
 	styles: {
 		type: 'object',
 		description: 'El parámetro "styles" indica los estilos básicos que deben mostrarse en el componente de vista de árbol. Este objeto permitirá los siguientes subparámetros:\n\t● <b>bgTree</b>: fondo del árbol. Por defecto es transparent.\n\t● <b>borderTree </b>: Borde del árbol. Por defecto es rgba (0,0,0,0.15).\n\t● <b>textColor</b>: color del texto de los nodos. Por defecto es #000000.\n\t● <b>searchColor</b>: color de texto para la entrada de la búsqueda. Por defecto es #000000.\n\t● <b>searchBg</b>: color de fondo para la entrada de la búsqueda. Por defecto es #f0f0f0.\n\t● <b>activeColor</b>: color del texto del nodo seleccionado. De forma predeterminada es #ffffff.\n\t● <b>activeBg</b>: color de fondo del nodo seleccionado. Por defecto es #000000.\n\t● <b>linkColor</b>: color de texto para nodos con enlace. Por defecto es #006699.\n\t● <b>linkBg</b>: color de fondo para los nodos con enlace. Por defecto es transparent.',
-		example: 'it("#treeview").treeview({\n\tdata: treeviewJSON,\n\tselectable: true,\n\tstyles: {\n\t\tbgTree: "#ffffff",\n\t\tborderTree: "rgba(0,0,0,0.15)",\n\t\ttextColor: "#000",\n\t\tsearchColor: "#000",\n\t\tsearchBg: "#fff",\n\t\tactiveColor: "#333",\n\t\tactiveBg: "lightgray",\n\t\tlinkColor: "#009966",\n\t\tlinkBg: "rgba(0,0,0,0)"\n\t}\n});'
+		example: 'it("#treeview1").treeview({\n\tdata: treeviewJSON,\n\tselectable: true,\n\tstyles: {\n\t\tbgTree: "#ffffff",\n\t\tborderTree: "rgba(0,0,0,0.15)",\n\t\ttextColor: "#000",\n\t\tsearchColor: "#000",\n\t\tsearchBg: "#fff",\n\t\tactiveColor: "#333",\n\t\tactiveBg: "lightgray",\n\t\tlinkColor: "#009966",\n\t\tlinkBg: "rgba(0,0,0,0)"\n\t}\n});'
 
 	},
-	target: {
-		type: 'string',
-		description: 'ID del elemento donde se implementará el componente Treeview. Este ID debe pertenecer a una etiqueta UL de HTML.',
-		example: 'it("#treeview").treeview({data: treeviewJSON});'
-	},
-	checked: {
-		type: 'boolean',
-		description: 'El parámetro "verified" indica al componente Treeview que el nodo debería cambiar su estado. Esta funcionalidad necesita un ID para seleccionar el elemento a verificar.',
-		example: '// ULItem is the ID from HTML element where treeview is implemented\nfor(var i = 0; i < 20; i++){\n\tdocument.ULItem.Treeview({id; i, checked: true});\n}'
-	},
-	refresh: {
+	render: {
 		type: 'function',
-		description: 'El parámetro "refresh" indica que el componente de vista de árbol debe volver a cargarse.',
-		example: 'var treeviewJSON = {\n\titems: [{\n\t\tid: 1,\n\t\tlabel: "Parent 1",\n\t\tchildren: [{\n\t\t\tid: 2,\n\t\t\tlabel : "Element 1",\n\t\t\tchildren : [\n\t\t\t\t{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\t\t\t\t{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tid: 5,\n\t\t\tlabel : "Element 2",\n\t\t\tchildren : [\n\t\t\t\t{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\t\t\t\t{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\t\t\t]\n\t\t}]\n\t}]\n};\n// ULItem is the ID from HTML element where Treeview is implemented\ndocument.ULItem.Treeview({data: treeviewJSON, refresh: true})'
+		description: 'El método "render" es el encargado de actualizar el arbol en pantalla. En otras palabras, si alguno de los valores del árbol, referenciados por el parámetro "data" cambia, la forma de hacer que se haga visible en pantalla es llamando a este método.\n<br>\n\
+Para que este método funcione correctamente se le deben administrar cuatro parámetros:\n\
+<ul>\
+<li><name>Items</name>: Es el JSON con los todos los elementos que se desean enviar al árbol.</li>\
+<li><name>Destino</name>: Es el elemento HTML de la página dónde se encuentra el árbol. Este valor se puede conseguir, por ejemplo, a través del método "getElementById" de JavaScript y el ID del árbol.</li>\
+<li><name>Nivel</name>: Indica el nivel dónde actuar. Sólo puede tomar dos valores:\n\
+<ul>\
+<li>● Si el nivel es 0, reseteará todo el árbol, incluyendo la caja de filtrado. Cuando se desea actualizar el elemento padre de primer nivel, el destino deberá ser el que lleva el ID asociado. Es decir, si se desea actualizar el primer elemento del árbol, el elemento a actualizar deberá ser el UL que tenga el ID que se administró originalmente.</li>\
+<li>● Si el nivel es 1, sólo se actualizarán los elementos en el arbol a partir de ese nivel. Cuando se desea actualizar un elemento de nivel secundario, el destino deberá ser uno de los UL hijos que lleva que lleva el ID asociado. Es decir, si se desean actualizar los hijos del primer elemento del árbol, el elemento a actualizar deberá ser el UL descendiente que tenga el ID que se administró originalmente.</li>\
+</ul>\
+</li>\
+<li><name>Opciones de configuración</name>: Es el JSON de configuración con las preferencias del árbol. Este valor se puede conseguir, por ejemplo, a través del objeto it.treeview["XXX"].options, dónde "XXX" es el ID del árbol.</li>\
+</ul>',
+		example: 'var treeviewJSON = [{\n\
+	id: 1,\n\
+	label: "Parent 1",\n\
+	expanded: true,\n\
+	children: [{\n\
+		id: 2,\n\
+		label : "Element 1",\n\
+		children : [\n\
+			{ id: 3, label: "Child 1 of Element 1", href: "#"},\n\
+			{ id: 4, label: "Child 2 of Element 1", href: "#"},\n\
+		]\n\
+	},\n\
+	{\n\
+		id: 5,\n\
+		label : "Element 2",\n\
+		children : [\n\
+			{ id: 6, label: "Child 1 of Element 2", href: "#"},\n\
+			{ id: 7, label: "Child 2 of Element 2", href: "#"},\n\
+		]\n\
+	}]\n\
+}]\n\
+var ul = document.getElementById("treeview1").querySelector("ul")\n\
+ul.innerHTML = "";\n\
+it.treeview.render(treeviewJSON, ul, 1, it.treeview["treeview1"].options);'
 	},
 	stylesheet:{
 		type: 'boolean',
 		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
-		example: 'it("#treeview").treeview({\n\
+		example: 'it("#treeview1").treeview({\n\
 	data: treeviewJSON,\n\
 	stylesheet: true\n\
 });'
+	},
+	updateOnExpandNode: {
+		type: 'function',
+		description: 'Indica la función a usar cuando se expande un nodo. Esto es útil cuando se desea que el árbol sea gestionado a través de Ajax, en vez de directamente desde el DOM.',
+		example: 'it("#treeview1").treeview({\n\
+	data: treeviewJSON,\n\
+	updateOnExpandNode: refreshTree\n\
+});\n\
+\n\
+function refreshTree(trg){\n\
+	// Esto sirve para enviarlo como parámetro a la URL del servidor\n\
+	var idElemento = trg.dataset.id;\n\
+\n\
+	HttpRequest({\n\
+		url: "https://islavisual.com/getchildren.php?&id=" + idElemento,\n\
+		contentType: "application/json; charset=utf-8",\n\
+		ajax: true,\n\
+		callback: function(e){\n\
+			// Creamos la estructura de TreeView\n\
+			var opt = it.treeview["treeview"].options;\n\
+			var items = JSON.parse(e);\n\
+\n\
+			it.treeview.render(items, trg.nextElementSibling.nextElementSibling, parseInt(trg.parentElement.getAttribute("class").split("level-")[1]), opt);\n\
+\n\
+			it.treeview.updateToggler(trg.previousElementSibling)\n\
+		}\n\
+	});\n\
+}'
 	}
 }
 
