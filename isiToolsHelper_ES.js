@@ -1637,10 +1637,10 @@ WikiHelper.Dom = {
 
 /**
    FlexBox Helper						
-   @version: 1.0
+   @version: 1.3
    @author: Pablo E. Fernández (islavisual@gmail.com).
    @Copyright 2017-2021 Islavisual.
-   @Last update: 1/04/2021
+   @Last update: 08/03/2022
  **/
 WikiHelper.Flexbox = {
 	general: {
@@ -1709,7 +1709,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 	col:{
 		type: 'string',
 		description: 'Permite definir las clases genéricas en cualquier resolución. Si no lleva guión y tamaño asociados, el porcentage será equitativo para todas las columnas.',
-		example: '&lt;div class="flexbox">\n\
+		example: '&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col-33.333"> 1/3 &lt;/div>\n\
 		&lt;div class="col-33.333"> 1/3 &lt;/div>\n\
@@ -1718,7 +1718,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 &lt;/div>\n\
 \n\
 // El ejemplo anterior debería ser lo mismo que:\n\
-&lt;div class="flexbox">\n\
+&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col"> 1/3 &lt;/div>\n\
 		&lt;div class="col"> 1/3 &lt;/div>\n\
@@ -1729,7 +1729,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 	offset:{
 		type: 'string',
 		description: 'Permite definir márgenes a la izquierda para mover las columnas hasta una posición concreta. Para que las celdas no pierdan la línea diferenciadora, y se caigan debajo, el total del ancho de las columnas y los márgenes deben sumar 100.',
-		example: '&lt;div class="flexbox">\n\
+		example: '&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col-25 offset-10"> 1/3 &lt;/div>\n\
 		&lt;div class="col-30"> 1/3 &lt;/div>\n\
@@ -1738,7 +1738,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 &lt;/div>\n\
 \n\
 // También es posible definir un margen para una unidad de medida en particular añadiéndole uno de los prefijos:\n\
-&lt;div class="flexbox">\n\
+&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col xs-90 md-25 lg-25 xl-25 xs-offset-10"> A &lt;/div>\n\
 		&lt;div class="col xs-100 md-50 lg-50 xl-50"> B &lt;/div>\n\
@@ -1749,7 +1749,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 	order:{
 		type: 'string',
 		description: 'Permite definir el orden de las columnas. Cabe destacar que, esta característica, no es muy recomendable puesto que perjudica la accesibilidad web de las páginas.',
-		example: '&lt;div class="flexbox">\n\
+		example: '&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col order-1"> 1 &lt;/div>\n\
 		&lt;div class="col order-3"> 2 &lt;/div>\n\
@@ -1758,7 +1758,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 &lt;/div>\n\
 \n\
 // También es posible definir un orden para una unidad de medida en particular añadiéndole uno de los prefijos:\n\
-&lt;div class="flexbox">\n\
+&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col xs-order-1"> 1 &lt;/div>\n\
 		&lt;div class="col xs-order-3"> 2 &lt;/div>\n\
@@ -1796,7 +1796,7 @@ it-flexbox { --gap: 5px; --padding: 5px; display: block; flex-direction: column;
 });\n\
 \n\
 // El siguiente ejemplo define un ancho igual en todas las celdas para las resoluciones que estén dentro de los límites marcados por los prefijos <property>sm</property> y <property>xl</property>, un ancho del 25% para las resoluciones que estén dentro de los límites marcados por los prefijos <property>md</property> y <property>lg</property>, y un ancho del 100% para las resoluciones que estén dentro de los límites marcados por el prefijo <property>xs</property>.\n\
-&lt;div class="flexbox">\n\
+&lt;div class="it-flexbox">\n\
 	&lt;div class="row">\n\
 		&lt;div class="col xs-100 md-25 lg-25"> A &lt;/div>\n\
 		&lt;div class="col xs-100 md-25 lg-25"> B &lt;/div>\n\
