@@ -3494,17 +3494,17 @@ function isiToolsCallback(json){
 
             cfg.factor = !cfg.hasOwnProperty('factor') ? it.flexbox.config.factor : cfg.factor;
             cfg.gap = !cfg.hasOwnProperty('gap') ? it.flexbox.config.gap : cfg.gap;
-            cfg.padding = !cfg.hasOwnProperty('padding') ? it.flexbox.config.padding : cfg.padding;
             cfg.resolutions = !cfg.hasOwnProperty('resolutions') ? it.flexbox.config.resolutions : cfg.resolutions;
             cfg.stylesheet = !cfg.hasOwnProperty('stylesheet') ? it.flexbox.config.stylesheet : cfg.stylesheet;
 
             // Añadimos las clases CSS genéricas
             if(!cfg.stylesheet){
-                it.addCSSRule('', '.it-flexbox *', 'box-sizing: border-box;');
-                it.addCSSRule('', '.it-flexbox', '--gap: ' + cfg.gap + '; --padding: ' + cfg.padding + '; display: block; flex-direction: column; margin: calc( -1 * var(--gap)) 0 0 calc( -1 * var(--gap)); padding: var(--padding);');
+				it.addCSSRule('', '.it-flexbox *', 'box-sizing: border-box;');
+                it.addCSSRule('', '.it-flexbox', '--gap: ' + cfg.gap + '; display: block; flex-direction: column;');
                 it.addCSSRule('', '.it-flexbox > .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%; position: relative;');
-                it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: flex; flex-flow: column wrap; justify-content: left; align-items: flex-start; flex: none; margin: 0 0 0 var(--gap); padding: 0;');
-                it.addCSSRule('', '.it-flexbox .row .row', 'display: flex; flex-flow: row wrap; width: 100%; ');
+                it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: flex; flex-flow: column wrap; justify-content: left; align-items: flex-start; flex: none; margin: 0; padding: 0;');
+				it.addCSSRule('', '.it-flexbox .col + .col, .it-flexbox [class*="col-"] + [class*="col-"]', 'padding: 0 0 0 var(--gap);');
+				it.addCSSRule('', '.it-flexbox .row .row', 'display: flex; flex-flow: row wrap; width: 100%; ');
             }
 
             // Recuperamos todos los nombres de resoluciones
@@ -3553,7 +3553,7 @@ function isiToolsCallback(json){
                                 cs.media += '.it-flexbox .row > .' + clss + '{order:' + val + ';}';
 
                             } else {
-                                cs.media += '.it-flexbox .row > .' + clss + '{' + ('flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));') + '}';
+                                cs.media += '.it-flexbox .row > .' + clss + '{' + ('flex-basis: ' + val + '%; max-width: ' + val + '%;') + '}';
                             }
                         }
                     }
@@ -3561,7 +3561,7 @@ function isiToolsCallback(json){
                     // Si la clase CSS NO es específica de una resolución, la añadimos directamente
                     if(cls.indexOf('col') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo COL
-                        it.addCSSRule('', '.it-flexbox .row > .' + clss, 'flex-basis: calc(' + val + '% - var(--gap)); max-width: calc(' + val + '% - var(--gap));');
+                        it.addCSSRule('', '.it-flexbox .row > .' + clss, 'flex-basis: ' + val + '%; max-width: ' + val + '%;');
 
                     } else if(names.indexOf(cls.substr(0, 2)) == -1 && cls.indexOf('offset') != -1 && val > 0 && !cfg.stylesheet){
                         // Si es de tipo OFFSET
