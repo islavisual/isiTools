@@ -3499,12 +3499,12 @@ function isiToolsCallback(json){
 
             // Añadimos las clases CSS genéricas
             if(!cfg.stylesheet){
-				it.addCSSRule('', '.it-flexbox *', 'box-sizing: border-box;');
+                it.addCSSRule('', '.it-flexbox *', 'box-sizing: border-box;');
                 it.addCSSRule('', '.it-flexbox', '--gap: ' + cfg.gap + '; display: block; flex-direction: column;');
                 it.addCSSRule('', '.it-flexbox > .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%; position: relative;');
                 it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: flex; flex-flow: column wrap; justify-content: left; align-items: flex-start; flex: none; margin: 0; padding: 0;');
-				it.addCSSRule('', '.it-flexbox .col + .col, .it-flexbox [class*="col-"] + [class*="col-"]', 'padding: 0 0 0 var(--gap);');
-				it.addCSSRule('', '.it-flexbox .row .row', 'display: flex; flex-flow: row wrap; width: 100%; ');
+                it.addCSSRule('', '.it-flexbox .col + .col, .it-flexbox [class*="col-"] + [class*="col-"]', 'padding: 0 0 0 var(--gap);');
+                it.addCSSRule('', '.it-flexbox .row .row', 'display: flex; flex-flow: row wrap; width: 100%; ');
             }
 
             // Recuperamos todos los nombres de resoluciones
