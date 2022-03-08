@@ -50,10 +50,10 @@ var it = function(t, f){
 };
 
 it.name = "isiTools";
-it.version = "2.2.1",
+it.version = "2.2.2",
 it.author = "Pablo E. Fernández (islavisual@gmail.com)",
 it.copyright = "2017-2022 Islavisual",
-it.lastupdate = "01/03/2022",
+it.lastupdate = "08/03/2022",
 it.loading = true;
 it.enabledModules = {},
 it.targets = null,
@@ -3483,10 +3483,10 @@ function isiToolsCallback(json){
 
     /**
     	 FlexBox Plugin
-    	@version: 1.2
+    	@version: 1.3
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2022 Islavisual.
-    	@Last update: 11/04/2021
+    	@Last update: 08/03/2022
     **/
     if(json.Flexbox){
         this.Flexbox = it.flexbox = function(cfg){
@@ -3501,8 +3501,8 @@ function isiToolsCallback(json){
             // Añadimos las clases CSS genéricas
             if(!cfg.stylesheet){
                 it.addCSSRule('', '.it-flexbox', '--gap: ' + cfg.gap + '; --padding: ' + cfg.padding + '; display: block; flex-direction: column; margin: calc( -1 * var(--gap)) 0 0 calc( -1 * var(--gap)); padding: var(--padding);');
-                it.addCSSRule('', '.it-flexbox .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%; position: relative;');
-                it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: block; align-items: center; flex: auto; box-sizing: border-box; margin: var(--gap) 0 0 var(--gap); padding: var(--padding);');
+                it.addCSSRule('', '.it-flexbox > .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%; position: relative;');
+                it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: block; align-items: center; flex: auto; box-sizing: border-box; margin: 0; padding: 0;');
             }
 
             // Recuperamos todos los nombres de resoluciones
