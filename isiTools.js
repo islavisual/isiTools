@@ -3500,6 +3500,7 @@ function isiToolsCallback(json){
 
             // Añadimos las clases CSS genéricas
             if(!cfg.stylesheet){
+                it.addCSSRule('', '.it-flexbox *', 'box-sizing: border-box;');
                 it.addCSSRule('', '.it-flexbox', '--gap: ' + cfg.gap + '; --padding: ' + cfg.padding + '; display: block; flex-direction: column; margin: calc( -1 * var(--gap)) 0 0 calc( -1 * var(--gap)); padding: var(--padding);');
                 it.addCSSRule('', '.it-flexbox > .row', 'display: flex; flex-flow: row wrap; flex-direction: row; width: 100%; position: relative;');
                 it.addCSSRule('', '.it-flexbox .col, .it-flexbox [class*="col-"]', 'display: block; align-items: center; flex: auto; box-sizing: border-box; margin: 0; padding: 0;');
