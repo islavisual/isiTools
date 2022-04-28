@@ -73,7 +73,7 @@ Los componentes que ofrece son:
 <script src="js/isiTools/isiToolsHelper_ES.js"></script>
 
 // Aunque también es posible insertarlo en las páginas a través de las siguientes intrucciones
-<script src="https://cdn.jsdelivr.net/gh/islavisual/isiTools/isiTools.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/islavisual/isiTools/isiTools.js?modules=AddCSSRule+Alert+Autocomplete+DOM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/gh/islavisual/isiTools/isiToolsHelper_ES.js" crossorigin="anonymous"></script>
 ```
 
