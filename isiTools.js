@@ -651,7 +651,7 @@ function isiToolsCallback(json){
 
             function getData(e, accepted){
                 var trg = e.target.parentElement.parentElement;
-                var items = trg.querySelectorAll('[id], [name], [contenteditable="true"]');
+                var items = trg.querySelectorAll('[name], [contenteditable="true"]');
 
                 var json = { general:{ title: opt.title, accepted: accepted ? true : false }, elements: [] };
                 for(var i = 0; i < items.length; i++){
@@ -662,7 +662,17 @@ function isiToolsCallback(json){
                     for(var x = 0, atts = item.attributes; x < atts.length; x++){
                         aux[atts[x].nodeName] = atts[x].nodeValue;
                     }
-                    aux.value = item.value || item.innerHTML;
+                    
+                    if(item.tagName == "SELECT"){
+                        aux.value = Array.prototype.slice.call(item.querySelectorAll('option:checked'),0).map(function(v,i,a) { 
+                            return v.value; 
+                        }).join();
+                    } else if(item.type && (item.type == "radio" || item.type == "checkbox")){
+                        aux.value = item.checked
+                    } else {
+                        aux.value = item.value || item.innerHTML
+                    }
+
                     json.elements.push(aux);
                 }
 
@@ -675,21 +685,23 @@ function isiToolsCallback(json){
 
                 if(addcb && addcb.length == undefined) addcb = [addcb];
 
-                for(var arg in addcb){
-                    item = addcb[arg];
-                    if(item instanceof HTMLElement){
-                        if(item.id == "") item.id = arg;
-                        for(var x = 0, atts = item.attributes; x < atts.length; x++){
-                            aux = {};
-                            aux._id = arg;
-                            aux[atts[x].nodeName] = atts[x].nodeValue;
+                if(typeof addcb != "undefined" && JSON.stringify(addcb[0]) != '{}'){
+                    for(var arg in addcb){
+                        item = addcb[arg];
+                        if(item instanceof HTMLElement){
+                            if(item.id == "") item.id = arg;
+                            for(var x = 0, atts = item.attributes; x < atts.length; x++){
+                                aux = {};
+                                aux._id = arg;
+                                aux[atts[x].nodeName] = atts[x].nodeValue;
+                            }
+                            aux.node = item;
+                        } else {
+                            aux = { arg: item }
                         }
-                        aux.node = item;
-                    } else {
-                        aux = { arg: item }
-                    }
 
-                    json.elements.push(aux);
+                        json.elements.push(aux);
+                    }
                 }
 
                 return json;
@@ -6489,90 +6501,134 @@ if(json.SlideShow){
 
     /**
     	Sort tables functionality
-    	@version: 1.2.2
+    	@version: 1.3.0
     	@author: Pablo E. Fernández (islavisual@gmail.com).
     	@Copyright 2017-2022 Islavisual.
-    	@Last update: 13/04/2021
+    	@Last update: 13/07/2022
     **/
     if(json.Sorter){
-        this.Sorter = it.sorter = function(cfg){
+        this.sorter = it.sorter = function(cfg){
             if(cfg == undefined) cfg = {};
-
+        
             // Recorremos todos los resultados que devuelve la función constructora
             Array.prototype.slice.call(this.targets).forEach(function(target, idx){
                 // Rescumeramos el ID de la tabla
                 var id = target.id;
-
+        
                 // Si el atributo id no está configurado, por defecto, lo asignamos
                 if(id == ""){
                     id = 'Sorter_' + idx;
                     target.id = id;
                 }
                 target.classList.add("it-sortable");
-
+        
+                // Si no se definido una función de renderizado avisamos.
+                if(cfg.hasOwnProperty("render") && typeof cfg.render != "function"){
+                    alert("No se ha asignado la función de renderizado. Añade el parámetro render con la función que renderiza la tabla...\n\nEj: it('#results').sorter({ render: loadedJSON });")
+                    return;
+                }
+        
+                // Si no hay datos avisamos con un mensaje emergente.
+                if(!cfg.hasOwnProperty("data") || cfg.data == undefined || cfg.data.length == 0){
+                    alert("No se han asignado los datos de la tabla. Añade el parámetro data con el array de datos...\n\nEj: it('#results').sorter({ data: [{id: 1, n: 'Paul'}, {id: 2, n: 'Michael'}] });")
+                    return;
+                } 
+        
                 // Establecemos la configuración requerida para la tabla
                 var opt = {
-                    cols: target.querySelectorAll("tbody tr:first-child td").length,
+                    cols: 0,
                     columns: !cfg.hasOwnProperty('columns') ? Array(target.querySelectorAll("thead tr:last-child th").length).fill('') : cfg.columns,
+                    data: cfg.data,
+                    fields: !cfg.hasOwnProperty('fields') ? [] : cfg.fields,
                     icons:{
                         sort: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('sort') ? 'fa fa-sort' : cfg.icons.sort,
                         asc: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('asc') ? 'fa fa-sort-alpha-asc' : cfg.icons.asc,
                         desc: !cfg.hasOwnProperty('icons') || !cfg.icons.hasOwnProperty('desc') ? 'fa fa-sort-alpha-desc' : cfg.icons.desc,
                     },
-                    rows: target.rows.length,
+                    multiple: !cfg.hasOwnProperty('multiple') ? false : cfg.multiple,
+                    render: !cfg.hasOwnProperty('render') ? null : cfg.render,
+                    rows: 0,
                     selector: !cfg.hasOwnProperty('selector') ? false : cfg.selector,
                     table: target,
                     stylesheet: !cfg.hasOwnProperty('stylesheet') ? false : cfg.stylesheet
                 }
                 if(!it.sorter.config) it.sorter.config = [];
                 it.sorter.config[id] = opt;
-
+        
+                // Actualizamos el JSON de datos
+                for (var index = 0; index < cfg.data.length; index++) {
+                    cfg.data[index]._index = index;
+        
+                    var keys = Object.keys(cfg.data[index]);
+                    for(var i = 0; i < keys.length; i++){
+                        if(cfg.columns[i] && cfg.columns[i].hasOwnProperty("enum")){
+                            cfg.data[index][keys[i] + 'Enum'] = cfg.columns[i].enum.indexOf(cfg.data[index][keys[i]]);
+                        }
+                    }
+                }
+        
+                // Primero renderizamos los datos
+                if(typeof cfg.render == "function"){
+                    opt.render(opt.data);
+                } else {
+                    it.sorter.render(target, opt);
+                }
+                opt.cols = target.querySelectorAll("tbody tr:first-child td").length;
+                opt.rows = target.rows.length;
+                
                 // Añadimos la funcionalidad de ordenar
                 try{ it.sorter._remove(opt); } catch (e){}
                 it.sorter._addIndexes(opt);
                 it.sorter._setOrder(opt);
                 it.sorter._addIcons(opt);
-
+        
                 if(opt.selector) it.sorter._addSelector(opt);
-
+        
                 if(!opt.stylesheet){
                     it.sorter._addCSSRules(opt);
                 }
-
+        
                 it.sorter.sort(it.sorter._getFirstOrderableColumn(opt), target);
             });
-
         }
-
-        it.sorter._getColSpan = function(opt, col){
-            var offset = 0
-            for(var i = 0; i < col; i++){
-                offset += opt.columns[i].colspan > 1 ? (opt.columns[i].colspan - 1) : 0
+        
+        it.sorter._addIcons = function(opt){
+            var ths = opt.table.querySelectorAll('table tr:last-child th')
+            for(var i = 0; i < opt.sorting.length; i++){
+                var item = opt.sorting[i], th = ths[i];
+        
+                if(item.orderable){
+                    th.innerHTML += '<i class="' + opt.icons[item.setto == '' ? 'sort' : item.setto] + '"></i>';
+                    th.setAttribute("onclick", "it.sorter.sort(" + i + ", this, 'toggle')");
+        
+                    if(th.style.width) th.style.width = "calc(" + th.style.width + " + 12px)";
+                }
             }
-            return offset;
         }
-
-        it.sorter._getFirstOrderableColumn = function(opt){
-            for(var i = 0; i < opt.columns.length; i++){
-                if(opt.columns[i].orderable) return i;
+        
+        it.sorter._addIndexes = function(opt){
+            // Establecemos el orden inicial
+            var rows = opt.table.querySelectorAll("tbody tr");
+            for(var i = 0; i < rows.length; i++){
+                rows[i].dataset.index = i;
             }
         }
-
+        
         it.sorter._addSelector = function(opt){
             // Añadimos una capa envolvente para meter todos los elementos
             var div = document.createElement("div");
             div.classList.add("it-sortable-layer");
             div.innerHTML = opt.table.outerHTML;
-
+        
             opt.table.parentElement.append(div)
             opt.table.remove();
             opt.table = div.querySelector("table");
-
+        
             // Añadimos el selector para ordenación múltiple
             var tbl = document.createElement("table");
             tbl.classList.add("it-sortable-selector");
             tbl.style.display = 'none';
-
+        
             // Creamos la cabecera de la tabla
             var thead = document.createElement("thead");
             var tr = document.createElement("tr");
@@ -6580,51 +6636,51 @@ if(json.SlideShow){
             var th2 = document.createElement("th");
             var th3 = document.createElement("th");
             var th4 = document.createElement("th");
-
+        
             th1.innerHTML = "Columna"
             th2.innerHTML = 'Asc';
             th3.innerHTML = 'Desc';
             th4.innerHTML = 'No';
-
+        
             tr.append(th1);
             tr.append(th2);
             tr.append(th3);
             tr.append(th4);
-
+        
             thead.append(tr);
             tbl.append(thead);
-
+        
             // Creamos la cabecera de la tabla
             var tbody = document.createElement("tbody");
-
+        
             var ths = opt.table.querySelectorAll("thead tr:last-child th");
             for(var i = 0; i < ths.length; i++){
                 if(ths[i].innerText.trim() != ""){
                     var tr = document.createElement("tr");
-
+        
                     var td1 = document.createElement("td");
                     var td2 = document.createElement("td");
                     var td3 = document.createElement("td");
                     var td4 = document.createElement("td");
-
+        
                     td1.innerHTML = ths[i].innerText;
                     td2.innerHTML = '<input type="radio" name="sorter_ri' + i + '" data-index="' + i + '" data-order="asc" onchange="it.sorter.selectorClick(this, 1)" />';
                     td3.innerHTML = '<input type="radio" name="sorter_ri' + i + '" data-index="' + i + '" data-order="desc" onchange="it.sorter.selectorClick(this, -1)" />';
                     td4.innerHTML = '<input type="radio" name="sorter_ri' + i + '" checked data-index="' + i + '" data-order="none" onchange="it.sorter.selectorClick(this, 0)" />';
-
+        
                     tr.append(td1);
                     tr.append(td2);
                     tr.append(td3);
                     tr.append(td4);
-
+        
                     tbody.append(tr);
                 }
             }
-
+        
             tbl.append(tbody);
-
+        
             opt.table.insertAdjacentElement('beforebegin', tbl);
-
+        
             // Añadimos el label para desplegar la lista de ordenación múltiple
             var lbl = document.createElement("label");
             lbl.classList.add("it-sortable-label");
@@ -6633,55 +6689,98 @@ if(json.SlideShow){
                 e.target.classList.toggle("open");
             }
             lbl.innerHTML = "Ordenación";
-
+        
             tbl.insertAdjacentElement('beforebegin', lbl);
         }
-
+        
+        it.sorter._getColSpan = function(opt, col){
+            var offset = 0
+            for(var i = 0; i < col; i++){
+                offset += opt.columns[i].colspan > 1 ? (opt.columns[i].colspan - 1) : 0
+            }
+            return offset;
+        }
+        
+        it.sorter._getFirstOrderableColumn = function(opt){
+            for(var i = 0; i < opt.columns.length; i++){
+                if(opt.columns[i].orderable) return i;
+            }
+        }
+        
         it.sorter.selectorClick = function(el, ord){
             ord = ord == 0 ? '' : (ord == 1 ? 'asc' : 'desc');
             it.sorter.sort(el.dataset.index, el.parentElement.parentElement.parentElement.parentElement.nextElementSibling, ord)
         }
-
-        it.sorter._addIndexes = function(opt){
-            // Establecemos el orden inicial
-            var rows = opt.table.querySelectorAll("tbody tr");
-            for(var i = 0; i < rows.length; i++){
-                rows[i].dataset.index = i;
-            }
-        }
-
-        it.sorter._addIcons = function(opt){
-            var ths = opt.table.querySelectorAll('table tr:last-child th')
-            for(var i = 0; i < opt.sorting.length; i++){
-                var item = opt.sorting[i], th = ths[i];
-
-                if(item.orderable){
-                    th.innerHTML += '<i class="' + opt.icons[item.setto == '' ? 'sort' : item.setto] + '"></i>';
-                    th.setAttribute("onclick", "it.sorter.sort(" + i + ", this, 'toggle')");
-
-                    if(th.style.width) th.style.width = "calc(" + th.style.width + " + 12px)";
+        
+        it.sorter._remove = function(opt){
+            var trg = opt.table;
+        
+            // Eliminamos los iconos y eventos de las celdas de cabecera
+            var ics = trg.querySelectorAll("thead th i, th");
+            for(var i = 0; i < ics.length; i++){
+                if(ics[i].tagName == "I"){
+                    ics[i].remove();
+                } else {
+                    ics[i].removeAttribute('onclick');
                 }
             }
+        
+            // Eliminamos la lista
+            if(trg.previousElementSibling) trg.previousElementSibling.remove();
+        
+            // Eliminamos el label
+            if(trg.previousElementSibling) trg.previousElementSibling.remove();
+        
+            // Ordenamos por la columna indicada por el parámetro "data-index"
+            // en orden ascendente
+            var i, x, y, switching = true;
+            while (switching){
+                switching = false;
+        
+                var rows = opt.table.rows;
+                for(i = 1; i < (rows.length - 1); i++){
+                    exchange = false;
+        
+                    x = rows[i].dataset.index;
+                    y = rows[i + 1].dataset.index;
+        
+                    if(x > y){
+                        exchange = true;
+                        break;
+                    }
+                }
+        
+                if(exchange){
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        
+            // Eliminamos los índices añadidos por el componente
+            var els = opt.table.rows;
+            for(var i = 0; i < els.length; i++){
+                delete els[i].dataset.index;
+            }
         }
-
+        
         it.sorter._setOrder = function(opt){
             if(opt.columns.length == 0) return;
-
+        
             opt.sorting = [];
-
+        
             for(var i = 0; i < opt.columns.length; i++){
                 var ord = opt.columns[i];
-
+        
                 if(typeof ord == "string"){
                     if(ord != "none"){
                         opt.sorting.push({ id: 'sorterCol' + i, orderable: true, setto: ord, type: 'string' })
                         opt.columns[i] = { id: 'sorterCol' + i, orderable: true, type: 'string' }
-
+        
                     } else {
                         opt.sorting.push({ id: 'sorterCol' + i, orderable: false })
                         opt.columns[i] = { id: 'sorterCol' + i, orderable: false }
                     }
-
+        
                 } else if(typeof ord == "object"){
                     var id, orderable, setto, type;
                     id = ord.hasOwnProperty("id") ? ord.id : 'sorterCol' + i;
@@ -6694,255 +6793,214 @@ if(json.SlideShow){
                         opt.sorting.push({ id: id, orderable: orderable })
                     }
                 }
-
-                opt.columns[i].colspan = opt.table.querySelector("thead tr:last-child th:nth-child(" + (i + 1) + ")").colSpan;
+        
+                try{ opt.columns[i].colspan = opt.table.querySelector("thead tr:last-child th:nth-child(" + (i + 1) + ")").colSpan; } catch(e){ }
+                try{ opt.sorting[i].field = opt.table.querySelector("tbody tr td:nth-child(" + (i + 1) + ")").dataset.field; } catch(e){ }
+                
             }
         }
-
-        it.sorter.sort = function(col, trg, ord){
-            // Recuperamos la tabla a reordenar
-            var table = trg;
-            if(trg == undefined) table = it.targets[0];
-            else if(trg.tagName == "TH") table = trg.parentElement.parentElement.parentElement;
-            var opt = this.config[table.id];
-
-            if(!ord) ord = opt.columns[col].setto;
-
-            it.sorter.sort_string(col, ord, table)
-        }
-
-        it.sorter.sort_string = function(col, ord, table){
-            if(col == undefined) col = 0;
-            col = col.toString();
-            if(ord == undefined) ord = 'asc';
-            else if(ord == 'none') ord = '';
-
-            // Recuperamos la configuración de la tabla
-            var opt = this.config[table.id];
-
-            // Recuperamos la tabla a ordenar
-            var rows = opt.table.rows;
-
-            // Recuperamos la ordenación actual de la tabla, tipo y formato
-            var sorting = opt.sorting;
-
-            // Actualizamos la ordenación de la columna solicitada
-            if(ord == 'toggle'){
-                ord = sorting[col].setto == '' ? 'asc' : (sorting[col].setto == 'asc' ? 'desc' : '')
-            }
-            sorting[col].setto = ord;
-
-            // Ordenamos por la columna indicada respetando
-            // el orden de las columnas anateriores
-            var i, x, y, exchange, cond, switching = true, xCount = 0;
-            while (switching){
-                switching = false;
-
-                for(i = 1; i < (rows.length - 1); i++){
-                    exchange = false;
-                    for(var k = 0; k < sorting.length; k++){
-                        if(!sorting[k].orderable) continue;
-
-                        cond = [];
-                        for(var j = k; j < sorting.length; j++){
-
-                            if(!sorting[j].orderable || (sorting[j].setto == '' && col != j)) continue;
-
-                            for(var z = 0; z < cond.length; z++){
-                                if(cond[z].indexOf("=") == -1) cond[z] = cond[z].replace(">", '>=').replace("<", '<=')
-                            }
-
-                            if(sorting[j].setto == ''){
-                                x = rows[i].dataset.index;
-                                y = rows[i + 1].dataset.index;
-
-                                cond.push(x + " > " + y);
-
-                            } else if(sorting[j].setto == 'asc'){
-                                x = it.sorter._get(opt, i, j);
-                                y = it.sorter._get(opt, i + 1, j);
-
-                                cond.push(x + " > " + y);
-
-                            } else {
-                                x = it.sorter._get(opt, i, j);
-                                y = it.sorter._get(opt, i + 1, j);
-
-                                cond.push(x + " < " + y);
-                            }
-                        }
-
-                        cond = cond.join(" && ");
-
-                        if(cond != "") eval('exchange = ' + cond + ";");
-                        else continue;
-
-                        if(exchange) break;
-                    }
-                    if(exchange) break;
-                }
-
-                if(exchange){
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                }
-
-                xCount++;
-                if(xCount > 1000) switching = false;
-            }
-
-            //console.log("TOTAL: ", xCount, "SORTING:", sorting)
-
-            // Recuperamos todos los iconos de cada celda
-            var ic = table.querySelectorAll("thead tr:last-child th");
-            if(ic){
-                // Eliminamos todas las clases que hacen referencia los iconos de ordenación
-                var icc = opt.icons.sort.split(' ').concat(opt.icons.asc.split(' ')).concat(opt.icons.desc.split(' '));
-                for(var i = 0; i < ic.length; i++){
-                    if(!sorting[i].orderable || !ic[i].querySelector("i")) continue;
-
-                    for(var j = 0; j < icc.length; j++){
-                        ic[i].querySelector('i').classList.remove(icc[j]);
-                    }
-                }
-
-                // Asignamos los iconos correspondientes en cada celda de la cabecera
-                for(var i = 0; i < sorting.length; i++){
-                    if(!sorting[i].orderable || !ic[i].querySelector("i")) continue;
-
-                    icc = sorting[i].setto == '' ? opt.icons.sort.split(' ') : (sorting[i].setto == 'asc' ? opt.icons.asc.split(' ') : opt.icons.desc.split(' '));
-                    for(var j = 0; j < icc.length; j++){
-                        ic[i].querySelector('i').classList.add(icc[j]);
-                    }
-
-                    if(opt.selector){
-                        var item = opt.table.previousElementSibling.querySelector('input[name="sorter_ri' + i + '"][data-order="' + (sorting[i].setto == "" ? 'none' : sorting[i].setto) + '"]');
-                        if(item) item.checked = true;
-                    }
-                }
-            }
-        }
-
-        it.sorter._get = function(opt, row, col){
-            // Recuperamos el tipo y máscara
-            var type = opt.columns[col].type ? opt.columns[col].type : 'string',
-                mask = opt.columns[col].hasOwnProperty("format") ? opt.columns[col].format : (opt.columns[col].enum ? opt.columns[col].enum : '');
-
-            // Si tiene establecidas columnas unidas con colSpan
-            col += it.sorter._getColSpan(opt, col)
-
-            function toTS(v, m){
-                var dd = v.substr(m.indexOf("DD"), 2)
-                var mm = v.substr(m.indexOf("MM"), 2)
-                var yy = v.substr(m.indexOf("YYYY"), 4)
-
-                return Math.floor(Date.UTC(yy, mm - 1, dd) / 1000);
-            }
-
-            function toIdx(v, m){
-                return m.indexOf(v);
-            }
-
-            function toStr(v){
-                return "'" + v.toLowerCase() + "'";
-            }
-
-            // Recuperamos el valor y lo convertimos a un valor ordenable
-            var v = opt.table.rows[row].querySelectorAll("td")[col].innerText;
-
-            if(type == 'string'){
-                return toStr(v);
-            } else if(type == 'number'){
-                return parseFloat(v)
-            } else if(type == 'date'){
-                return toTS(v, mask);
-            } else if(type == 'enum'){
-                return toIdx(v, mask);
-            }
-
-            return v;
-        }
-
+        
         it.sorter._addCSSRules = function(opt){
             setTimeout(function(){
                 it.addCSSRule('', '.it-sortable th', 'cursor: pointer; position: relative; ');
                 it.addCSSRule('', '.it-sortable th ' + "." + opt.icons.sort.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 3px; right: 5px; font-size: 1em; color: #aaa; width: auto;');
                 it.addCSSRule('', '.it-sortable th ' + "." + opt.icons.asc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
                 it.addCSSRule('', '.it-sortable th ' + "." + opt.icons.desc.split(' ').join('.'), 'line-height: 24px; position: absolute; top: 4px; right: 5px; font-size: 1em; color: #000; width: auto;');
-
+        
                 it.addCSSRule('', '.it-sortable-layer', 'position: relative;');
                 it.addCSSRule('', '.it-sortable-layer .it-sortable-label', 'border: 1px solid #ccc; cursor: pointer; float: right; min-width: auto; height: 28px; text-align: right; line-height: 26px; padding: 0 25px 0 5px; margin: 5px 0; position: relative; z-index: 2;');
                 it.addCSSRule('', '.it-sortable-layer .it-sortable-label::before', 'content: ""; border: 1px solid #000; border-width: 8px; border-color: #000 transparent transparent transparent; position: absolute; top: 10px; right: 6px; ');
                 it.addCSSRule('', '.it-sortable-layer .it-sortable-label::after', 'content: ""; border: 1px solid #000; border-width: 6px; border-color: #fff transparent transparent transparent; position: absolute; top: 10px; right: 8px; ');
                 it.addCSSRule('', '.it-sortable-layer .it-sortable-label.open::before', 'transform: rotate(180deg); top: 0;');
                 it.addCSSRule('', '.it-sortable-layer .it-sortable-label.open::after', 'transform: rotate(180deg); top: 4px;');
-
+        
                 if(opt.selector){
                     it.addCSSRule('', '.it-sortable-selector', 'max-height: 0; overflow: hidden; display:block; position: absolute; top: 32px; right: 0; background: #fff; border: 1px solid transparent; padding: 0 5px; z-index: 1; transition: max-height 0.25s ease; ');
                     it.addCSSRule('', '.it-sortable-selector.open', 'max-height: 200px; padding: 5px; border-color: #ccc; overflow-y: scroll; overflow-x: hidden; ');
                     it.addCSSRule('', '.it-sortable-selector td, .it-sortable-selector th', 'border: 1px solid #ccc; padding: 2px 5px; text-align: center; position: relative; min-width: 48px; font-size: 1rem;');
                     it.addCSSRule('', '.it-sortable-selector input[type=radio]', 'position: relative; left: 0; top: 2px; float: none; margin: 0 auto;');
                 }
-
+        
                 if(opt.selector) opt.table.previousElementSibling.style.display = '';
             }, 150);
         }
-
-        it.sorter._remove = function(opt){
-            var trg = opt.table;
-
-            // Eliminamos los iconos y eventos de las celdas de cabecera
-            var ics = trg.querySelectorAll("thead th i, th");
-            for(var i = 0; i < ics.length; i++){
-                if(ics[i].tagName == "I"){
-                    ics[i].remove();
-                } else {
-                    ics[i].removeAttribute('onclick');
-                }
+        
+        it.sorter.render = function(trg, cfg){
+            if(!trg) return;
+        
+            // Recuperamos la tabla a reconstruir
+            var table = trg;
+            if(trg == undefined) table = it.targets[0];
+            else if(trg.tagName == "TH") table = trg.closest("table");
+        
+            // Vaciamos la tabla
+            table.querySelector("tbody").innerHTML = "";
+            
+            // Recuperamos la configuración de la tabla
+            var opt = typeof cfg != "undefined" ? cfg : this.config[table.id];
+        
+            // Si no tiene la etiqueta TBODY, la añadimos
+            if(!table.querySelector("tbody")){
+                table.insertAdjacentHTML("beforeend", '<tbody></tbody>');
             }
-
-            // Eliminamos la lista
-            if(trg.previousElementSibling) trg.previousElementSibling.remove();
-
-            // Eliminamos el label
-            if(trg.previousElementSibling) trg.previousElementSibling.remove();
-
-            // Ordenamos por la columna indicada por el parámetro "data-index"
-            // en orden ascendente
-            var i, x, y, switching = true;
-            while (switching){
-                switching = false;
-
-                var rows = opt.table.rows;
-                for(i = 1; i < (rows.length - 1); i++){
-                    exchange = false;
-
-                    x = rows[i].dataset.index;
-                    y = rows[i + 1].dataset.index;
-
-                    if(x > y){
-                        exchange = true;
-                        break;
+            var tbody = table.querySelector("tbody");
+        
+            for(var i = 0; i < opt.data.length; i++){
+                var item = opt.data[i];
+        
+                var tr = document.createElement("tr");
+                for(var key in opt.fields){
+                    var td = document.createElement("td");
+                
+                    // Establecemos el atributo CLASS si lo tiene
+                    if(opt.columns[key].hasOwnProperty("class")){
+                        var clss = opt.columns[key].class.split(" ");
+        
+                        for(var j = 0; j < clss.length; j++){
+                            td.classList.add(clss[j])
+                        }
                     }
+                    td.classList.add(opt.fields[key])
+        
+                    // Establecemos el contenido del campo
+                    var aux = item[opt.fields[key]];
+                                                                                                 //opt.columns[key].value(opt.data[i][opt.fields[key]])
+                    td.innerHTML = aux == undefined ? '' : ( opt.columns[key].value != undefined ? opt.columns[key].value(opt.data[i]) : aux);
+        
+                    // Establecemos el dataset con el nombre del campo
+                    td.dataset.field = opt.fields[key];
+                    try{ td.dataset.header = opt.table.querySelector("thead tr:last-child th:nth-child(" + (parseInt(key) + 1) + ")").innerText; } catch(e) {}
+        
+                    tr.append(td);
                 }
-
-                if(exchange){
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                }
-            }
-
-            // Eliminamos los índices añadidos por el componente
-            var els = opt.table.rows;
-            for(var i = 0; i < els.length; i++){
-                delete els[i].dataset.index;
+        
+                tbody.append(tr)
             }
         }
-
+        
+        it.sorter.sort = function(col, trg, ord){
+            function sortby(col, ord, table, opt){
+                col = col == undefined ? '0': col.toString();
+                ord = ord == undefined ? ord = 'asc': (ord == 'none' ? '': ord);
+              
+                // Recuperamos la ordenación actual de la tabla, tipo y formato
+                var sorting = opt.sorting;
+        
+                // Reseteamos la ordenación si la ordenación por múltiples columnas está desactivado
+                if(!opt.multiple){
+                    for(var i = 0; i < sorting.length; i++){
+                        if(i != col) sorting[i].setto = "";
+                    }
+                }
+        
+                // Actualizamos la ordenación de la columna solicitada
+                if(ord == 'toggle'){
+                    ord = sorting[col].setto == '' ? 'asc' : (sorting[col].setto == 'asc' ? 'desc' : '')
+                }
+                sorting[col].setto = ord;
+        
+                // Creamos la condición de ordenación
+                var str = [];
+                for(var k = 0; k < opt.sorting.length; k++){
+                    var field = opt.sorting[k].field;
+        
+                    if(opt.sorting[k].setto == "asc" && opt.sorting[k].type == "string"){
+                        str.push('a.name == ".." || b.name == ".." || a.' + field + '.localeCompare(b.' + field + ')');
+        
+                    } else if(opt.sorting[k].setto == "desc" && opt.sorting[k].type == "string"){
+                        str.push('a.name == ".." || b.name == ".." || b.' + field + '.localeCompare(a.' + field + ')');
+                        
+                    } else if(opt.sorting[k].setto == "asc" && opt.sorting[k].type == "number"){
+                        str.push('a.' + field + ' - b.' + field);
+        
+                    } else if(opt.sorting[k].setto == "desc" && opt.sorting[k].type == "number"){
+                        str.push('b.' + field + ' - a.' + field);
+        
+                    } else if(opt.sorting[k].setto == "asc" && opt.sorting[k].type == "enum"){
+                        field = field + "Enum";
+                        str.push('a.' + field + ' - b.' + field);
+        
+                    } else if(opt.sorting[k].setto == "desc" && opt.sorting[k].type == "enum"){
+                        field = field + "Enum";
+                        str.push('b.' + field + ' - a.' + field);
+        
+                    } else if(opt.sorting[k].setto == "asc" && opt.sorting[k].type == "date"){
+                        str.push('new Date(a.' + field + ') - new Date(b.' + field + ')');
+        
+                    } else if(opt.sorting[k].setto == "desc" && opt.sorting[k].type == "date"){
+                        str.push('new Date(b.' + field + ') - new Date(a.' + field + ')');
+        
+                    }
+                }
+        
+                // Si la condición está vacía, ordenamos por posición de llegada (_index)
+                if(str.length == 0){
+                    field = '_index';
+                    str.push('a.' + field + ' - b.' + field);
+                }
+                str = str.join(" || ");
+                console.log(str)
+        
+                // Creamos y ejecutamos la función de ordenación
+                var fn = new Function('opt', `opt.data.sort(function(a,b){ return ${str} });`);
+                fn(opt);
+        
+                // Renderizamos la tabla
+                if(typeof opt.render == "function"){
+                    opt.render(opt.data);
+                } else {
+                    it.sorter.render(table, opt);
+                }
+        
+                // Recuperamos todos los iconos de cada celda
+                var ic = table.querySelectorAll("thead tr:last-child th");
+                if(ic){
+                    // Eliminamos todas las clases que hacen referencia los iconos de ordenación
+                    var icc = opt.icons.sort.split(' ').concat(opt.icons.asc.split(' ')).concat(opt.icons.desc.split(' '));
+                    for(var i = 0; i < ic.length; i++){
+                        if(!sorting[i].orderable || !ic[i].querySelector("i")) continue;
+        
+                        for(var j = 0; j < icc.length; j++){
+                            ic[i].querySelector('i').classList.remove(icc[j]);
+                        }
+                    }
+        
+                    // Asignamos los iconos correspondientes en cada celda de la cabecera
+                    for(var i = 0; i < sorting.length; i++){
+                        if(!sorting[i].orderable || !ic[i].querySelector("i")) continue;
+        
+                        icc = sorting[i].setto == '' ? opt.icons.sort.split(' ') : (sorting[i].setto == 'asc' ? opt.icons.asc.split(' ') : opt.icons.desc.split(' '));
+                        for(var j = 0; j < icc.length; j++){
+                            ic[i].querySelector('i').classList.add(icc[j]);
+                        }
+        
+                        if(opt.selector){
+                            var item = opt.table.previousElementSibling.querySelector('input[name="sorter_ri' + i + '"][data-order="' + (sorting[i].setto == "" ? 'none' : sorting[i].setto) + '"]');
+                            if(item) item.checked = true;
+                        }
+                    }
+                }
+            }
+        
+            // Recuperamos la tabla a reordenar
+            var table = trg;
+            if(trg == undefined) table = it.targets[0];
+            else if(trg.tagName == "TH") table = trg.closest("table");
+            
+            // Recuperamos la configuración de la tabla
+            var opt = this.config[table.id];
+        
+            // Si ord no viene establecido lo recuperamos por la columna
+            if(!ord) ord = opt.columns[col].setto;
+        
+            // Llamamos a la función de ordenación
+            sortby(col, ord, table, opt);
+        }
+        
         it.sorter.help = function(cfg){
             if(typeof cfg == "undefined") cfg = { help: '' };
             if(!cfg.hasOwnProperty("help")) cfg.help = '';
-
+        
             if(typeof showHelper != "undefined") showHelper("Sorter", cfg);
             else alert("Helper not available!");
             return;
@@ -7444,7 +7502,7 @@ if(json.SlideShow){
             if (opt.searchable) {
                 var typeSearch = opt.customSearchWhen == 'auto' ? "input" : (opt.customSearchWhen == "enter" ? "keydown" : opt.customSearchWhen);
                 if (!opt.updateOnExpandNode) {
-                    console.log('on' + typeSearch)
+                    
                     opt.target.querySelector('[type=search]')['on' + typeSearch] = function (e) {
                         var items = e.target.parentElement.parentElement.parentElement.querySelectorAll("li:not(.search-box)"), str = e.target.value.trim();
                         
@@ -7454,8 +7512,7 @@ if(json.SlideShow){
                                 return;
                             }
                         }
-                        console.log(this, e)
-
+                    
                         for (var x = 0; x < items.length; x++) {
                             var item = items[x];
 
@@ -7852,7 +7909,6 @@ if(json.SlideShow){
 
             if(typeof fn == 'function'){
                 fn = 'document.getElementById("' + this.opt.target.id + '").addEventListener("' + type + '", ' + fn.toLocaleString() + '\n);';
-                console.log(fn)
                 eval(fn);
 
             } else {
@@ -7972,5 +8028,5 @@ window.addEventListener("load", function(){
             (function(){ Include({ attribute: "auto-include", callback: typeof onPageReady == "function" ? onPageReady : null }); })()
         }
     }
-    it.loading = false;
+    it.loading = false;    
 }, false);
