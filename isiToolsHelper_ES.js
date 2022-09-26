@@ -2995,9 +2995,9 @@ _CSS_'
  **/
 WikiHelper.Sorter = {
 	general: {
-		version: '1.2.1',
+		version: '1.3.0',
 		name: 'Sorter',
-		description: "Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.",
+		description: 'Función que permite ordenar tablas por múltiples columnas.\nLa ordenación se realiza de izquierda a derecha, es decir, en una ordenación múltiple, primero se ordenarán las columnas más de la izquierda y se continuará hacia la derecha respetando el orden de las columnas anteiores.',
 	},
 	additional: [
 		{
@@ -3031,28 +3031,59 @@ table: table#table01.it-sortable\n\
 _CSS_'
 		},
 	],
+	cols: {
+		type: 'integer',
+		description: 'Indica el número de columnas de la tabla.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+console.log(it.sorter.config.results.cols);'
+	},
 	columns: {
 		type: 'object',
-		description: 'Define la ordenación de las columnas. Los posibles tipos son "string", "number", "date" y "enum". Este parámetro es opcional.\n\
-Cosas a tener en cuenta:\n\
-\t\u2022 Si orderable es false, las propiedades "setto" y "type" no es necesario establecerlas porque serán ignoradas.\n\
-\t\u2022 Si no se establece la propiedad ID, se asignará automáticamente a "sorterColN", donde N es el número de columna\n\
-\t\u2022 Si no se especifica tipo de ordenación, se asignará como alfanumérica, es decir, de tipo "string".\n\
-\t\u2022 Si se especifica la ordenación de tipo fecha (date), se deberá asignar también el formato a través de la propiedad "format".\n\
-\t\u2022 Si se especifica la ordenación de tipo numeral (enum), se deberá asignar también el array de datos numerales a través de la propiedad "enum".',
+		description: 'Define las características de las columnas y el ordenación de las mismas. Este parámetro es opcional.\n\
+Los parámetros permitidos son los siguientes:\n\
+\t\u2022 <property>type</property>:Permite definir el tipo de ordenación asociado a los datos de la columna. Los posibles tipos son <property>"string"</property>, <property>"number"</property>, <property>"date"</property> y <property>"enum"</property>.\n\
+\t\u2022 <property>orderable</property>: Si está establecido a <property>false</property> no permitirá la ordenación de la columna.\n\
+\t\t\u2022 Si no se especifica tipo de ordenación, se asignará como alfanumérica, es decir, de tipo <property>"string"</property>.\n\
+\t\t\u2022 Si se especifica la ordenación de tipo numeral <property>enum</property>, se requerirá asignar también el array de datos numerales a través de la propiedad <property>enum</property>.\n\
+\t\u2022 <property>setto</property>: Permite definir el orden establecido en la columna. Sus posibles valores son <property>""</property> para indicar que no está ordenada, <property>"asc"</property> para indicar que se ordene o está ordenada ascendentemente y <property>"desc"</property> para indicar que se ordene o está ordenada descendentemente.\n\
+\t\u2022 <property>id</property>: Permite definir un identificacdor asociado a una columna. Si no se establece se asignará automáticamente un ID como "sorterColN", donde N es el número de columna.\n\
+\t\u2022 <property>class</property>: Permite añadir una clase CSS a las celdas de datos (al los TD) de la tabla.\n\
+\t\u2022 <property>value</property>: Permite renderizar un valor de campo tras ser procesado mediante una función. El paámetro que recibe es el registro actual con todos los campos, contenido dentro del JSON que fue asignado a la propiedad <property>data</property>',
 		example: '// Habilitar el componente de ordención para todas las tablas de la página\n\
 it("table").sorter(\n\
 {\n\
 	columns: [\n\
-		{id: "c1", orderable: true, setto: "asc", type: "string"},\n\
-		{id: "c2", orderable: true, setto: "",    type: "number"},\n\
-		{id: "c3", orderable: true,               type: "date", format: "DD-MM-YYYY"},\n\
-		{id: "c4", orderable: true,               type: "enum", enum: ["Alto", "Medio", "Bajo"]},\n\
-		"",\n\
-		{id: "actions", orderable: false}\n\
+		{\n\
+			id: "c0",\n\
+			orderable: true,\n\
+			type: "number",\n\
+			class: "no-editable",\n\
+			value: function(rowData){\n\
+				return rowData.type == 1\n\
+					? \'&lt;i class="icon-file">&lt;/i>\'\n\
+					: \'&lt;i class="icon-folder">&lt;/i>\'\n\
+			}\n\
+		},\n\
+		{ id: "c1", orderable: true, setto: "asc", type: "string", class: "negrita"},\n\
+		{ id: "c2", orderable: true, setto: "",    type: "number" },\n\
+		{ id: "c3", orderable: true,               type: "date" },\n\
+		{ id: "c4", orderable: true,               type: "enum", enum: ["Alto", "Medio", "Bajo"]},\n\
+		{ id: "actions", orderable: false }\n\
 	]\n\
 }\n\
 );'
+	},
+	data: {
+		type: 'object',
+		description: 'Establece el JSON con los datos que están contenidos actualmente en la tabla la tabla.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+it("#results").sorter({ data: [{id: 1, name: "Paul"}, {id: 2, name: "Michael"}, {...}] });'
+	},
+	fields: {
+		type: 'array',
+		description: 'Establece los campos que se representarán en cada una de las columnas de la tabla.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+it("#results").sorter({ fields: ["id", "name", "email", "phone"] });'
 	},
 	icons: {
 		type: 'object',
@@ -3068,6 +3099,42 @@ icons: {\n\
 \n\
 // Que es lo mismo que el siguiente ejemplo debido a que, los iconos anteriores, son los por defecto.\n\
 it("table").sorter();'
+	},
+	multiple: {
+		type: 'boolean',
+		description: 'Establece si el la ordenación es por una única columna o por varias. Si está establecido a <property>false</property>, sólo se podrán ordenar por una única columna. Si está establecido a <property>true</property>, se permitirá la ordenación por múltiples columnas.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+it("#results").sorter({ multiple: false });'
+	},
+	render: {
+		type: 'function',
+		description: 'Permite establecer un método personalizado para renderizar las filas y celdas de la tabla. Si no se establece utilizará un método interno para mostrar los datos de la tabla.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+it("#results").sorter({ render: renderJSONAlter });\n\
+function renderJSONAlter(data){\n\
+	document.body.querySelector("#results tbody").innerHTML = "";\n\
+\n\
+	for(var i = 0; i < data.length; i++){\n\
+		var tr = document.createElement("tr");\n\
+		var td = document.createElement("td");\n\
+		td.innerHTML = data.id;\n\
+		tr.append(td);\n\
+\n\
+		td = document.createElement("td");\n\
+		td.innerHTML = data.name;\n\
+		tr.append(td);\n\
+\n\
+		...\n\
+\n\
+		document.querySelector("#results tbody").append(tr);\n\
+	}\n\
+}'
+	},
+	rows: {
+		type: 'integer',
+		description: 'Indica el número de filas de la tabla.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+console.log(it.sorter.config.results.rows);'
 	},
 	selector: {
 		type: 'boolean',
@@ -3085,11 +3152,17 @@ it.sorter.sort(3, "desc", document.getElementById("table01"));\n\
 // Dejar la columna de la tabla con ID "table01" como estaba antes de ser ordenada"\n\
 it.sorter.sort(3, "none", it.sorter.config.table01);'
 	},
+	table: {
+		type: 'object',
+		description: 'Establece un acceso directo al objeto vinculado a la tabla.',
+		example: '// En el siguiente ejemplo, results, es el ID de la tabla.\n\
+console.log(it.sorter.config.results.table);'
+	},
 	stylesheet:{
 		type: 'boolean',
 		description: 'Indica al componente si las reglas CSS necesarias para su utilización están en una hoja de estilos aparte. Por defecto, su valor es <property>false</property>, lo que significa que el componente añadirá todas las reglas CSS necesarias durante el proceso de carga, pero, que podrán ser sobreescritas por otras reglas CSS con igual selector dentro de las hojas de estilo definidas en la actual página web.',
 		example: 'it("table").sorter({ stylesheet: true });'
-	}
+	},
 }
 
 /**
@@ -3876,7 +3949,7 @@ Para llamar al ayudante de isiTools puede utilizarse la sintaxis <property>Helpe
 
 			AddCSSRule('', "body.body-hidden", 'margin: 0; padding: 0; position: fixed; left: 0; top: 0; right: auto; bottom: auto; overflow: hidden !important; height:0 !important; width: 0 !important;')
 			AddCSSRule('', "#h31p3rOptions p:first-of-type", 'text-transform: uppercase; padding-left: 0; margin-top: 50px; color: ' + opt.stringColor + '; border-bottom: 2px solid ' + opt.highlight + ';');
-			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 16px; line-height: 1.6; position:fixed;top: 50px;left: 0;width: 100%;height: calc(100% - 50px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
+			AddCSSRule('', "#h31p3r", 'font-family: "Open Sans"; font-size: 14px; line-height: 1.6; position:fixed;top: 50px;left: 0;width: 100%;height: calc(100% - 50px); white-space: pre-line; padding: 0 15px 15px;margin: 0;border: 0 none; border-radius:0;background-color: ' + opt.background + '; color: ' + opt.color + ';z-index: 99999999; overflow: auto; ');
 			AddCSSRule('', "#h31p3r h1", 'color: ' + opt.background + ';text-align: center; font-weight:400; background: ' + opt.color + '; padding: 15px; font-size: 18px; line-height: normal; font-variant: small-caps; position: fixed; width: 100%; left: 0; top: 0; border-bottom: 1px solid rgba(255,255,255,.1); margin: 0;')
 			AddCSSRule('', "#h31p3r h2", 'color: ' + opt.funcNameColor + '; text-align: center; font-weight:400; padding: 15px; font-size: 15px; font-variant: small-caps; width: 100%; margin: 15px 0 0 0 !important;')
 			AddCSSRule('', "#h31p3r h2::before, #h31p3r h2::after", 'content: inherit;')
