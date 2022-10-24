@@ -3394,11 +3394,11 @@ function isiToolsCallback(json){
     }
 
     /**
-    	 Simple DOM ready() detection in pure JS.
+    	Simple DOM ready() detection methods in pure JS.
     	@version: 1.00
-    	@author: Carl Danley.
+    	@author: Carl Danley an Pablo E. Fernández Casado.
     	@Copyright 2017-2022 Islavisual.
-    	@Last update: 04/03/2019
+    	@Last update: 24/10/2022
     **/
     if(json.DOM){
         this.DOM = it.DOM = new function(){
@@ -3491,6 +3491,113 @@ function isiToolsCallback(json){
             else alert("Helper no disponible!")
             return;
         }
+	
+	// This method is more efficient that used by jQuery and it's more fast.
+	it.isReady = function(fnWhenReady){
+		let myTimeout;
+		var fireCallbacks = function(e){
+			if(it.isReady.IS_READY === true && it.isReady.LIST.length == 0){
+				// Ejecutamos las instrucciones solicitadas
+				document.addEventListener('isReady', function(){ fnWhenReady(); }, false);
+				document.dispatchEvent(it.isReady.event);
+
+				// Limpiamos el DOM
+				document.removeEventListener('DOMContentLoaded', fireCallbacks.bind(this, 'DOM'), false);
+				window.removeEventListener('load', fireCallbacks.bind(this, 'LOAD'), false);
+				if(typeof jQuery == "function"){ jQuery(document).unbind('ajaxComplete'); }
+
+				fnWhenReady = function(){ return false }
+
+				// Regresamos al contexto normal
+				clearTimeout(myTimeout);
+				return;
+			} else {
+				myTimeout = setTimeout(function(){
+					fireCallbacks(e);
+				}, 100)
+			}
+
+			it.isReady.COUNTER--;
+			it.isReady.LIST.splice(it.isReady.LIST.indexOf(e), 1)
+
+			it.isReady.IS_READY = true;
+		};
+
+		var init = function(){
+			it.isReady.addControl("READY");
+			var intervalDocIsReady = setInterval(function(){
+				if(document.readyState === 'complete'){
+					fireCallbacks("READY");
+					clearInterval(intervalDocIsReady)
+				}
+			}, 50);
+
+			it.isReady.addControl("DOM");
+			document.addEventListener('DOMContentLoaded', fireCallbacks.bind(this, 'DOM'), false);
+
+			it.isReady.addControl("LOAD");
+			window.addEventListener('load', fireCallbacks.bind(this, 'LOAD'), false);
+
+			if(typeof jQuery == "function"){
+				it.isReady.addControl("AJAX");
+				jQuery(document).ajaxComplete(function(e) {
+					fireCallbacks("AJAX");
+				});
+
+				it.isReady.addControl("ACTIVE");
+				var intervaljQueryActive = setInterval(function(){
+					if(jQuery.active === 0){
+						fireCallbacks("ACTIVE");
+						clearInterval(intervaljQueryActive)
+					}
+				}, 50);
+			}
+
+			if(typeof it.isReady.check == "object"){
+				var intervalsCheck = [];
+				for(var key in it.isReady.check){
+					it.isReady.addControl("CHECK"+key);
+
+					for(var b in window) { if(b == key) vKey = b; }
+
+					intervalsCheck[key] = setInterval(function(key, vKey){
+						if(typeof window[key] != "function" && vKey == key && window[vKey] == it.isReady.check[key]){
+							fireCallbacks("CHECK"+key);
+							clearInterval(intervalsCheck[key])
+						} 
+						if(typeof window[key] == "function" && window[vKey]() == it.isReady.check[key]){
+							fireCallbacks("CHECK"+key);
+							clearInterval(intervalsCheck[key])
+						}
+
+					}.bind(this, key, vKey), 50);
+				}
+			}
+		};
+
+		init();
+	}
+
+	it.isReady.addControl = function(p){
+		it.isReady.COUNTER++;
+		it.isReady.LIST.push(p);
+	}
+
+	it.isReady.event = new Event("isReady");
+
+	it.isReady.IS_READY = false;
+	it.isReady.COUNTER = 0;
+	it.isReady.LIST = [];
+	it.isReady.check = null;
+
+	it.isReady.help = function(cfg){
+		if(typeof cfg == "undefined") cfg = { help: '' };
+		if(!cfg.hasOwnProperty("help")) cfg.help = '';
+
+		if(typeof showHelper != "undefined") showHelper("DOM", cfg);
+		else alert("Helper no disponible!")
+		return;
+	}
     }
 
     /**
