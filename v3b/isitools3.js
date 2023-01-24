@@ -2,7 +2,7 @@
 /** 
     @description Componente que permite realizar consultas al DOM como querySelectorAll, pero mejorado.
     @version 1.0
-    @author Pablo E. Fernández Casado (pefc72@gmail.com)
+    @author Pablo E. Fernández Casado (islavisual@gmail.com)
     @Copyright 2017-2023 Islavisual.
     @param {void || string || object} selector - Es el selector CSS o elemento padre desde donde empezar a buscar.
     @param {object || string} parent - Es el selector CSS que se desea buscar, al igual que hace el método querySelectorAll.
@@ -18,7 +18,7 @@ $ = function (selector, parent = document) {
 /** 
     @description Propiedad que establece la longitud a 1 en cualquier elemento HTML. Esto nos sirve también para controlar si está vacío o es nulo.
     @version 1.0
-    @author Pablo E. Fernández Casado (pefc72@gmail.com)
+    @author Pablo E. Fernández Casado (islavisual@gmail.com)
     @Copyright 2017-2023 Islavisual.
     @param {string} sel - Es el selector CSS que se desea coincida con los ancestros.
     @returns {NodeList}
@@ -28,7 +28,7 @@ HTMLElement.prototype.length = 1;
 /** 
     @description Componente que permite recuperar todos los ancestros de un elemento en orden ascendente.
     @version 1.0
-    @author Pablo E. Fernández Casado (pefc72@gmail.com)
+    @author Pablo E. Fernández Casado (islavisual@gmail.com)
     @Copyright 2017-2023 Islavisual.
     @param {string} sel - Es el selector CSS que se desea coincida con los ancestros.
     @returns {NodeList}
@@ -47,7 +47,7 @@ HTMLElement.prototype.parents = NodeList.prototype.parents = function (sel = '*'
 /**
     @description Devolver el primer elemento de los elementos de un NodeList
     @version 1.0
-    @author Pablo E. Fernández (pefc72@gmail.com).
+    @author Pablo E. Fernández (islavisual@gmail.com).
     @param {void} void No requiere de ningún parámetro o argumento.
     @Copyright 2017-2023 Islavisual.
     @Last update: 10/06/2020
@@ -57,7 +57,7 @@ NodeList.prototype.first = function () { return this[0] }
 /**
     @description Devolver el último elemento de los elementos de un NodeList
     @version 1.0
-    @author Pablo E. Fernández (pefc72@gmail.com).
+    @author Pablo E. Fernández (islavisual@gmail.com).
     @param {void} void No requiere de ningún parámetro o argumento.
     @Copyright 2017-2023 Islavisual.
     @Last update: 10/06/2020
